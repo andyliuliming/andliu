@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "AzureWebTerminal", "AzureWebTerminal\AzureWebTerminal.ccproj", "{DDCA6A29-B1F4-44D8-A521-D3C77CA140A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureWebTerminalService", "AzureWebTerminalService\AzureWebTerminalService.csproj", "{238D76FF-C5A6-4F64-A437-FB47049E535A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureWebTerminalStepNode", "AzureWebTerminalStepNode\AzureWebTerminalStepNode.csproj", "{E4B18642-3ED5-4C3B-8B82-A9B931C6EB12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Renci.SshNet", "Renci.SshNet\Renci.SshNet.csproj", "{2F5F8C90-0BD1-424F-997C-7BC6280919D1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B194793E-2796-4E50-8BA7-F5777DD2CF15}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DDCA6A29-B1F4-44D8-A521-D3C77CA140A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDCA6A29-B1F4-44D8-A521-D3C77CA140A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDCA6A29-B1F4-44D8-A521-D3C77CA140A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDCA6A29-B1F4-44D8-A521-D3C77CA140A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{238D76FF-C5A6-4F64-A437-FB47049E535A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{238D76FF-C5A6-4F64-A437-FB47049E535A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{238D76FF-C5A6-4F64-A437-FB47049E535A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{238D76FF-C5A6-4F64-A437-FB47049E535A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4B18642-3ED5-4C3B-8B82-A9B931C6EB12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4B18642-3ED5-4C3B-8B82-A9B931C6EB12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4B18642-3ED5-4C3B-8B82-A9B931C6EB12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4B18642-3ED5-4C3B-8B82-A9B931C6EB12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F5F8C90-0BD1-424F-997C-7BC6280919D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F5F8C90-0BD1-424F-997C-7BC6280919D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F5F8C90-0BD1-424F-997C-7BC6280919D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F5F8C90-0BD1-424F-997C-7BC6280919D1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

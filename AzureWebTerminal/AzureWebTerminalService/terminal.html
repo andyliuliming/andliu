@@ -1,0 +1,89 @@
+﻿<!doctype html>
+<head>
+    <title>term.js</title>
+    <script src="./Scripts/jquery-1.11.1.js"></script>
+    <script src="./Scripts/jquery.cookie.js"></script>
+</head>
+<!--
+  term.js
+  Copyright (c) 2012-2013,  Andy Liu (MIT License)
+-->
+<style>
+    html {
+        background: #555;
+    }
+             body{
+                 padding:0px;
+                 margin:0px;
+             }
+    h1 {
+        display:none;
+        margin-bottom: 20px;
+        font: 20px/1.5 sans-serif;
+    }
+
+
+    .terminal {
+        margin:0px;
+        padding:0px;
+        width:100%;
+        float: left;
+        border: #000 solid 5px;
+        font-family: "Segoe UI",monospace;
+        font-size: 12px;
+    }
+
+    .terminal-cursor {
+        color: #000;
+        background: #f0f0f0;
+    }
+</style>
+<h1>azure web terminal</h1>
+<script src="./Scripts/term.js"></script>
+<script>
+    var term = null;
+    var ws = null;
+    (function () {
+
+        window.onload = function () {
+            term = new Terminal({
+                cols: 120,
+                rows: 60,
+                useStyle: true,
+                screenKeys: true,
+                cursorBlink: false
+            });
+
+            term.on('data', function (data) {
+                ws.send(data);
+            });
+
+            term.on('title', function (title) {
+                document.title = title;
+            });
+
+            term.open(document.body);
+
+            var hostName = $.cookie("HostName");
+            var port = $.cookie("Port");
+            var userName = $.cookie("UserName");
+            var passWord = $.cookie("Password");
+            ws = new WebSocket("ws://azurewebterminal.cloudapp.net:8080/api/TerminalSession?hostName=" + hostName + "&userName=" + userName + "&passWord=" + passWord
+                + "&port=" + port);
+
+            ws.onmessage = function (result) {
+                //alert(result.data);
+                term.write(result.data);
+            };
+            ws.onopen = function () {
+                //alert("Connected!");
+            };
+            ws.onerror = function (error) {
+                alert(error.data);
+            };
+            ws.onclose = function () {
+                alert("Disconnected!");
+            };
+        };
+    }).call(this);
+</script>

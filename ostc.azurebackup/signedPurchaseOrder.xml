@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><saml:Assertion xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion" AssertionID="_109106ca-1f49-48a3-b5d5-dcb9550c61f6" IssueInstant="2014-12-15T06:02:16.221Z" Issuer="dae35feb789317bf9087d58271850dc4ef54c28a-rcertissuer" MajorVersion="1" MinorVersion="1">
+	<saml:Conditions NotBefore="2014-12-15T05:47:16.221Z" NotOnOrAfter="2014-12-15T07:02:16.221Z">
+		<saml:AudienceRestrictionCondition>
+			<saml:Audience>https://wuspod01rp1users.accesscontrol.windows.net/v2/OAuth2-13
+			</saml:Audience>
+		</saml:AudienceRestrictionCondition>
+	</saml:Conditions>
+	<saml:AttributeStatement>
+		<saml:Subject>
+			<saml:SubjectConfirmation>
+				<saml:ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:bearer
+				</saml:ConfirmationMethod>
+			</saml:SubjectConfirmation>
+		</saml:Subject>
+		<saml:Attribute AttributeName="certid" AttributeNamespace="http://schemas.windowscloudbackup.com/2010/10/identity/claims">
+			<saml:AttributeValue>dae35feb789317bf9087d58271850dc4ef54c28a
+			</saml:AttributeValue>
+		</saml:Attribute>
+	</saml:AttributeStatement>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><DigestValue>9M2r4GWuQZDNPBTIn6MuAeXr1P3OnOcEKmGbbaFDDA0=</DigestValue></Reference></SignedInfo><SignatureValue>JvSrmY4aPxCfAJcBQq8sOa0luP4wX+YopHoSUQKdOd5A572Jb/xbBSYMlCcFj0/O8LS/ufSR5E98
+3b3ju03nHw40/WFaVpaZPGYDC6hxyB4EtzG6T5PKovrQ0qccczkpnCFlZExPxh4gmKqxFhrXzUvr
+DLVrosDhngo0/SQ7V/IEX2VcwFg4VXn4xOG6P+NsdaqiIsv8TiNIM+gmijLDqzL8g6B/LeToYmlK
+nFrKlW9sKIWixUYVsju17u1gJbfjKtvslVYuuNwg0eIdT34zdhumLKO0GYRPERffMjAdNX1HXxWB
+RRxQEuJkE/rDdVLETs07fTl3ABBMTYx7C0l/EA==</SignatureValue><KeyInfo><X509Data><X509SubjectName>CN=Windows Azure Tools</X509SubjectName><X509Certificate>MIIC3TCCAcWgAwIBAgIQcVMGAdSJrqBGeb4sReLnLTANBgkqhkiG9w0BAQUFADAeMRwwGgYDVQQD
+ExNXaW5kb3dzIEF6dXJlIFRvb2xzMB4XDTE0MTIxNTA1MTgzNFoXDTE0MTIxNzA1MjgzNFowHjEc
+MBoGA1UEAxMTV2luZG93cyBBenVyZSBUb29sczCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+ggEBAMK/Jw2V3BRsOL0ieCjnnPJYlmTQD1O0DF4cN85Ql48s5T3D+V7mIhTX3LqeDwhLqK45oSO5
+uspuIWrdqNLYIM2hfHdzhutsxBePvkQlzhIFiehWebzp76svGTAgkoykrSBBBnzxu0jKJ4SmrG45
+Z1ws2AtA5c+uf7ZypEuAnF4GM+Ybdk6ZHEtYNA4+q8QYczen92iB+1jQ9Ryek4xs4FP5TTL9ij24
+z/IBTqqkh02gLE/+jzjaZdY0LRKNHeZ9u85a0TBDWaznBRtGeMK3fX73neSarBwinXktw0In9iwq
+C8GBP44BpgZ9wDhFdr5ogEJpYx9gpFAdWDED1opz7G8CAwEAAaMXMBUwEwYDVR0lBAwwCgYIKwYB
+BQUHAwIwDQYJKoZIhvcNAQEFBQADggEBAFKnjdaVHBhoZU9z0ec+lkuAZSxSFgbQz9kZGAj3gOls
+GsEUGOGJuLm+YgC0IU+/CfhmSnSH6fMpNhk03SI6+THlTnSUPNaiCLcMiTEjtp2tmKZLIbdSRAMe
+W63T1Rv0AG/SUGEi+fjtnx/6HMhSHveVO/MK5K6cmyvAO0YPXjbfvMOXu76KhDOupZ32POyzV78T
+EfMfp8jvB2+0ckA3sivPKFV1uyq48dMuK82iG3Un0M3BGkllwCRGKIlI6dqKlEH4/VwSulriRcM6
+Nf0FWBXApua0UQil/pnqv6fLpuS86BKSsoWOU1qc5nHPl2QHvnRP/5ggDhpObYnkuGhKS5M=</X509Certificate></X509Data></KeyInfo></Signature></saml:Assertion>

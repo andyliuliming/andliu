@@ -1,0 +1,1 @@
+define("MsPortalImpl/Extension/CachedExtensionManifests",function(){return{manifests:null}})
