@@ -38,6 +38,8 @@ from parameterparser import ParameterParser
 from Utils import HandlerUtil
 from encryption import *
 from devmanager import DevManager
+from environmentvalidator import EnvironmentValidator
+from rebootmanager import RebootManager
 
 #Main function is the only entrence to this extension handler
 def main():
@@ -75,7 +77,7 @@ def enable():
         protected_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('protectedSettings')
         public_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('publicSettings')
 
-        para_parser = ParameterParser(hutil,protected_settings, public_settings)
+        para_parser = ParameterParser(hutil, protected_settings, public_settings)
         para_validate_result = para_parser.validate()
         if(para_validate_result != 0):
             hutil.do_exit(0, 'Enable', 'error',str(para_validate_result), "parameter not right")
@@ -86,33 +88,44 @@ def enable():
         else:
             MyPatching.install_extras(para_parser)
 
-        if(para_parser.query is None):
-            hutil.do_exit(0,'Enable','error','3','you should specify the device query')
-        else:
-            if(para_parser.query.has_key("devpath")):
-                para_parser.devpath = para_parser.query["devpath"]
-            else:
-                # scsi_host,channel,target_number,LUN
-                # find the scsi using the filter
-                dev_manager = DevManager()
-                para_parser.devpath = dev_manager.query_dev_uuid_path(para_parser.query["scsi_number"])
+
+
+        #construct the encryption parameters starts
+        encryption_parameters = EncryptionParameter()
+        encryption_parameters.mountpoint = para_parser.mountpoint
 
         if(para_parser.mountname is None or para_parser.mountname == ""):
-            para_parser.mountname = CommonVariables.default_mount_name
+            encryption_parameters.mountname = CommonVariables.default_mount_name
 
         if(para_parser.filesystem is None or para_parser.filesystem == ""):
-            para_parser.filesystem = "ext4"
+            encryption_parameters.filesystem = "ext4"
 
         if(para_parser.devmapper_name is None or para_parser.devmapper_name == ""):
-            para_parser.devmapper_name = CommonVariables.default_mapper_name
+            encryption_parameters.devmapper_name = CommonVariables.default_mapper_name
 
-        encryption = Encryption(hutil,para_parser)
-        environment_validation_result = encryption.validate_environment()
+        if(para_parser.query.has_key("devpath")):
+            encryption_parameters.devpath = para_parser.query["devpath"]
+        else:
+            # scsi_host,channel,target_number,LUN
+            # find the scsi using the filter
+            dev_manager = DevManager()
+            encryption_parameters.devpath = dev_manager.query_dev_uuid_path(para_parser.query["scsi_number"])
+        #construct the encryption parameters ends
+
+
+
+
+        encryption = Encryption(hutil)
+        environment_validator = EnvironmentValidator(hutil)
+        reboot_manager = RebootManager(hutil)
+        environment_validation_result = environment_validator.validate_environment(encryption_parameters)
         if(environment_validation_result != CommonVariables.success):
             hutil.do_exit(0, 'Enable', 'error',str(environment_validation_result), 'error when validating the environment')
         else:
-            config_reboot_result = encryption.config_reboot()
-            encryption_result = encryption.encrypt(config_reboot_result)
+            # the config_reboot is a decorator, it will modify the encryption_parameters .
+            # TODO: make the return parameter a error code.
+            encryption_parameters = reboot_manager.configure_reboot(encryption_parameters)
+            encryption_result = encryption.encrypt(encryption_parameters)
             hutil.do_exit(0, 'Enable', encryption_result.state,str(encryption_result.code), encryption_result.info)
 
     except Exception, e:

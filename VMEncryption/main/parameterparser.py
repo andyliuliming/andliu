@@ -24,9 +24,14 @@ from common import CommonVariables
 
 
 # parameter format should be like this:
-# {"command":"disk","query":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdb"},"force":"true"
+# {"command":"newdisk","query":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdb"},"force":"true"
 # "filesystem":"ext4","devmapper":"sdb_encrypt","mountname":"mountname","mountpoint":"/mnt/","password":"password1","passphrase":"User@123"
 # }
+
+# {"command":"existingdisk","query":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdb"},"force":"true","olddevice":"/dev/sdb
+# "devmapper":"sdb_encrypt","mountname":"mountname","mountpoint":"/mnt/","password":"password1","passphrase":"User@123"
+# }
+
 # {"command":"folder","path":"/home/andy/Private","password":"password1"}
 class ParameterParser(object):
 
@@ -34,7 +39,7 @@ class ParameterParser(object):
         """
         TODO: we should validate the parameter first
         """
-        self.hutil=hutil
+        self.hutil = hutil
         self.command = protected_settings.get('command')
         self.force = protected_settings.get('force')
         self.devpath = None
@@ -46,17 +51,18 @@ class ParameterParser(object):
         #password is the password of the pfx file.
         self.password = protected_settings.get('password')
         self.passphrase = protected_settings.get('passphrase')
-        self.keyaddess = protected_settings.get('key_address')
-        self.devmapper_name = protected_settings.get('devmapper_name')
 
     def validate(self):
         # 0 means ok
         # 1 means
+        if(self.query is None):
+            return CommonVariables.parameter_error
         if(self.passphrase is None):
             self.hutil.log("passphrase is none")
-            return 1
+            return CommonVariables.parameter_error
         if(self.force is not None):
             if(self.force != "true" and self.force != "false"):
                 self.hutil.log("parameter 'force' should be 'true' or 'false'")
                 return 1
         return 0
+

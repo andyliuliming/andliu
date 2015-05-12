@@ -21,7 +21,7 @@
 class CommonVariables:
     azure_path = 'main/azure'
     utils_path_name = 'Utils'
-    extension_name = 'VMEncryption'
+    extension_name = 'VMEncryption2'
     extension_version = 0.1 
     extension_type = extension_name
     extension_media_link = 'https://andliu.blob.core.windows.net/extensions/' + extension_name + '-' + str(extension_version) + '.zip'
@@ -34,6 +34,7 @@ class CommonVariables:
     dev_mapper_path = '/dev/mapper/'
     default_mapper_name = 'encrypted_disk_mapper'
     passphrase_file_name = 'keyfile2'
+
     # error code
     success = 0
     os_not_supported = 1
@@ -47,4 +48,4 @@ class CommonVariables:
     mount_error = 9
     mount_point_not_exists = 10
     passphrase_too_long_or_none = 11
-   
+    parameter_error = 12
