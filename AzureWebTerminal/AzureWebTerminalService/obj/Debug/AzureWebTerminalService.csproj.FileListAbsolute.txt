@@ -1,3 +1,4 @@
+C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\obj\Debug\AzureWebTerminalService.csprojResolveAssemblyReference.cache
 C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\bin\AzureWebTerminalService.dll.config
 C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\bin\AzureWebTerminalService.dll
 C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\bin\AzureWebTerminalService.pdb
@@ -51,7 +52,9 @@ C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService
 C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\bin\Newtonsoft.Json.xml
 C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\bin\System.Net.Http.Formatting.xml
 C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\bin\System.Web.Helpers.xml
+C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\bin\System.Web.Http.xml
 C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\bin\System.Web.Http.WebHost.xml
+C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\bin\System.Web.Mvc.xml
 C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\bin\System.Web.Optimization.xml
 C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\bin\System.Web.Razor.xml
 C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\bin\System.Web.WebPages.xml
@@ -109,6 +112,5 @@ C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService
 C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\bin\ru\System.Spatial.resources.dll
 C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\bin\zh-Hans\System.Spatial.resources.dll
 C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\bin\zh-Hant\System.Spatial.resources.dll
-C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\obj\Debug\AzureWebTerminalService.csprojResolveAssemblyReference.cache
 C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\obj\Debug\AzureWebTerminalService.dll
 C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\AzureWebTerminalService\obj\Debug\AzureWebTerminalService.pdb

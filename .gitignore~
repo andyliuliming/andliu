@@ -28,7 +28,7 @@ Utils/*
 # Locally stored "Eclipse launch configurations"
 *.launch
 # VM Encryption ignores
-AzureWebTerminal/packages/*
+AzureWebTerminal/packages
 VMEncryption/azure-sdk/*
 VMEncryption/main/azure/*
 VMEncryption/main/azure/http/*
