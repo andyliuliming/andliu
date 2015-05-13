@@ -35,13 +35,19 @@ class EnvironmentManager(object):
         encryption_parameters = EncryptionParameter()
         if(extension_parameter.mountname is None or extension_parameter.mountname == ""):
             encryption_parameters.mountname = CommonVariables.default_mount_name
+        else:
+            encryption_parameters.mountname = extension_parameter.mountname
 
         if(extension_parameter.filesystem is None or extension_parameter.filesystem == ""):
             encryption_parameters.filesystem = CommonVariables.default_file_system
+        else:
+            encryption_parameters.filesystem=extension_parameter.filesystem
 
         if(extension_parameter.devmapper_name is None or extension_parameter.devmapper_name == ""):
             encryption_parameters.devmapper_name = CommonVariables.default_mapper_name
-        
+        else:
+            encryption_parameters.devmapper_name = CommonVariables.devmapper_name
+
         encryption_parameters.passphrase = extension_parameter.passphrase
 
         if(extension_parameter.query.has_key("devpath")):
@@ -49,8 +55,10 @@ class EnvironmentManager(object):
         else:
             # scsi_host,channel,target_number,LUN
             # find the scsi using the filter
-            dev_manager = DevManager()
+            dev_manager = DevManager(self.hutil)
             encryption_parameters.devpath = dev_manager.query_dev_uuid_path(extension_parameter.query["scsi_number"])
+            if(encryption_parameters.devpath==None):
+                raise Exception("the scsi number is not found")
         encryption_parameters.mountpoint = extension_parameter.mountpoint
 
         if(not os.path.exists(encryption_parameters.mountpoint)):
@@ -99,7 +107,7 @@ class EnvironmentManager(object):
         out_lsblk_output, err = p.communicate()
         out_lsblk_output = str(out_lsblk_output)
 
-        self.hutil.log("out_lsblk_output" + out_lsblk_output)
+        self.hutil.log("out_lsblk_output:\n" + out_lsblk_output)
         lines = out_lsblk_output.splitlines()
         line_number = len(lines)
         self.hutil.log("first line is " + str(lines[0]))
@@ -122,7 +130,7 @@ class EnvironmentManager(object):
             if(datas[type_index].strip().lower() == 'disk'):
                 is_blank_disk = False
 
-        self.hutil.log("out_lsblk_output" + str(out_lsblk_output))
+        self.hutil.log("out_lsblk_output:\n" + str(out_lsblk_output))
         if(not is_blank_disk):
             if(encryption_parameters.force == "true"):
                 return CommonVariables.success

@@ -55,7 +55,7 @@ class Encryption(object):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_format_error
             error.info = "devpath is " + str(encryption_parameters.devpath)
-            self.hutil.Log('cryptsetup -y luksFormat returnCode is ' + str(returnCode))
+            self.hutil.log('cryptsetup -y luksFormat returnCode is ' + str(returnCode))
             return error
 
         commandToExecute = '/bin/bash -c "' + 'echo -n "' + encryption_parameters.passphrase + '" | cryptsetup luksOpen ' + encryption_parameters.devpath + ' ' + encryption_parameters.dev_mapper_name + '"'
@@ -66,7 +66,7 @@ class Encryption(object):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_open_error
             error.info = "devpath is " + str(encryption_parameters.devpath) + " dev_mapper_name is " + str(encryption_parameters.dev_mapper_name)
-            self.hutil.Log('cryptsetup luksOpen returnCode is ' + str(returnCode))
+            self.hutil.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
             return error
 
         # we should specify the file system?
@@ -82,14 +82,14 @@ class Encryption(object):
             mkfs_command = "mkfs.btrfs"
 
         commandToExecute = '/bin/bash -c "' + mkfs_command + ' ' + encryption_parameters.dev_mapper_path + ' <<< ' + encryption_parameters.mount_name + ' 2> /dev/null"'
-        self.hutil.Log("command to execute :" + commandToExecute)
+        self.hutil.log("command to execute :" + commandToExecute)
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
         if(returnCode != 0):
             error.errorcode = returnCode
             error.code = CommonVariables.mkfs_error
             error.info = "commandToExecute is " + commandToExecute
-            self.hutil.Log('mkfs_command returnCode is ' + str(returnCode))
+            self.hutil.log('mkfs_command returnCode is ' + str(returnCode))
         return error
 
 
@@ -100,5 +100,5 @@ class Encryption(object):
         returnCode = proc.wait() 
         if(returnCode != 0):
             error.errorcode = returnCode
-            self.hutil.Log('returnCode is ' + str(returnCode))
+            self.hutil.log('returnCode is ' + str(returnCode))
         return error

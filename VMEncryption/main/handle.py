@@ -104,11 +104,12 @@ def enable():
         #construct the encryption parameters ends
 
         ########### the new disk scenario starts ###################
-        
+
         if(extension_parameter.command == CommonVariables.newdisk_command):
             encryption_parameters = environment_manager.prepare_newdisk_encryption_parameters(extension_parameter)
 
             environment_validation_result = environment_manager.validate_environment_for_newdisk(encryption_parameters)
+
             if(environment_validation_result != CommonVariables.success):
                 hutil.do_exit(0, 'Enable', 'error', str(environment_validation_result), 'error when validating the environment')
             else:

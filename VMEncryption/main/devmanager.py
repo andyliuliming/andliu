@@ -19,10 +19,9 @@
 # Requires Python 2.7+
 #
 import subprocess
+import os.path
 from Utils import HandlerUtil
 from common import CommonVariables
-import os.path
-
 # parameter format should be like this:
 # {"command":"disk","query":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdb"},"force":"true"
 # "filesystem":"ext4","devmapper":"sdb_encrypt","mountname":"mountname","mountpoint":"/mnt/","password":"password1","passphrase":"User@123"
@@ -30,7 +29,8 @@ import os.path
 # {"command":"folder","path":"/home/andy/Private","password":"password1"}
 class DevManager(object):
 
-    def __init__(self):
+    def __init__(self,hutil):
+        self.hutil = hutil
         pass
 
     def query_dev_uuid_path(self,scsi_number):
@@ -38,8 +38,10 @@ class DevManager(object):
         p = subprocess.Popen(['lsscsi', scsi_number], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         identity, err = p.communicate()
         # identity sample: [5:0:0:0] disk Msft Virtual Disk 1.0 /dev/sdc
-        print(identity)
+        self.hutil.log("identity is " + identity)
         vals = identity.split()
+        if(vals == None or len(vals)==0):
+            return None
         sdx_path = vals[len(vals) - 1]
         # blkid /dev/sdc
         p = subprocess.Popen(['blkid',sdx_path],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
