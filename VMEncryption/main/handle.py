@@ -42,14 +42,15 @@ from devmanager import DevManager
 from environmentmanager import EnvironmentManager
 from rebootmanager import RebootManager
 from diskcopy import DiskCopy
-
+from logger import Logger
 #Main function is the only entrence to this extension handler
 def main():
     global hutil
     HandlerUtil.LoggerInit('/var/log/waagent.log','/dev/stdout')
     HandlerUtil.waagent.Log("%s started to handle." % (CommonVariables.extension_name)) 
     hutil = HandlerUtil.HandlerUtility(HandlerUtil.waagent.Log, HandlerUtil.waagent.Error, CommonVariables.extension_name)
-
+    global logger
+    logger = Logger(hutil)
     for a in sys.argv[1:]:
         if re.match("^([-/]*)(disable)", a):
             disable()
@@ -91,7 +92,7 @@ def enable():
         # install the required softwares.
         MyPatching = GetMyPatching()
         if MyPatching == None:
-            hutil.do_exit(0,'Enable','error', str(CommonVariables.os_not_supported), 'the os is not supported')
+            hutil.do_exit(0, 'Enable','error', str(CommonVariables.os_not_supported), 'the os is not supported')
         else:
             MyPatching.install_extras(extension_parameter)
 
@@ -104,7 +105,9 @@ def enable():
 
         ########### the new disk scenario starts ###################
         
-        if(extension_parameter.command == 'newdisk'):
+        if(extension_parameter.command == CommonVariables.newdisk_command):
+            encryption_parameters = environment_manager.prepare_newdisk_encryption_parameters(extension_parameter)
+
             environment_validation_result = environment_manager.validate_environment_for_newdisk(encryption_parameters)
             if(environment_validation_result != CommonVariables.success):
                 hutil.do_exit(0, 'Enable', 'error', str(environment_validation_result), 'error when validating the environment')
@@ -113,8 +116,6 @@ def enable():
                 # encryption_parameters .
                 # TODO: make the return parameter a error code.
                 # we should encrypt the disk first, then configure_reboot
-
-                encryption_parameters = environment_manager.prepare_newdisk_encryption_parameters(extension_parameter)
 
                 encryption = Encryption(hutil)
 
@@ -137,7 +138,7 @@ def enable():
 
 
         ########### the existing scenario starts ###################
-        elif(encryption_parameters.command == 'existingdisk'):
+        elif(encryption_parameters.command == CommonVariables.existdisk_command):
             environment_validation_result = environment_manager.validate_environment_for_existingdisk(encryption_parameters)
             if(environment_validation_result != CommonVariables.success):
                 hutil.do_exit(0, 'Enable', 'error', str(environment_validation_result), 'error when validating the environment')

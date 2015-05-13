@@ -54,6 +54,6 @@ class DevManager(object):
         # output /dev/sdc: UUID="7a396578-5701-4ce6-8fc6-ff31316d5672"
         # TYPE="crypto_LUKS"
         #print("uuid=" + uuid)
-        if(uuid.strip()==""):
+        if(uuid.strip() == ""):
             return sdx_path
         return os.path.join("/dev/disk/by-uuid/",uuid)

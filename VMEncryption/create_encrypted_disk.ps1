@@ -1,3 +1,5 @@
+#scp -r main root@fareast-andliu.cloudapp.net:/var/lib/waagent/Microsoft.OSTCExtensions.VMEncryption-0.1/main
+
 function Create-Encrypted-Disk
 {
 	param

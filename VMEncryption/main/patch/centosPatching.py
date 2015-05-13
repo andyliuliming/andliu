@@ -30,13 +30,14 @@ import traceback
 import datetime
 import subprocess
 from redhatPatching import redhatPatching
+from main.common import CommonVariables
 
 class centosPatching(redhatPatching):
     def __init__(self):
         super(centosPatching,self).__init__()
     def install_extras(self,paras):
         print("installing in oracle")
-        if(paras.command == "disk"):
+        if(paras.command == CommonVariables.newdisk_command or paras.command == CommonVariables.existdisk_command):
             common_extras = ['cryptsetup','lsscsi']
             for extra in common_extras:
                 print("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
@@ -47,7 +48,7 @@ class centosPatching(redhatPatching):
                     print("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
             pass
 
-        elif(paras.command == "folder"):
+        elif(paras.command == CommonVariables.folder_command):
             common_extras = ['ecryptfs-utils']
             for extra in common_extras:
                     print("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))

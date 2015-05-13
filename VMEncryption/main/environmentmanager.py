@@ -18,9 +18,13 @@
 #
 # Requires Python 2.7+
 #
-
+import os
+import os.path
+import subprocess
 from encryptionparameter import EncryptionParameter
 from common import CommonVariables
+from devmanager import DevManager
+
 
 class EnvironmentManager(object):
     def __init__(self, hutil):
@@ -37,7 +41,8 @@ class EnvironmentManager(object):
 
         if(extension_parameter.devmapper_name is None or extension_parameter.devmapper_name == ""):
             encryption_parameters.devmapper_name = CommonVariables.default_mapper_name
-
+        
+        encryption_parameters.passphrase = extension_parameter.passphrase
 
         if(extension_parameter.query.has_key("devpath")):
             encryption_parameters.devpath = extension_parameter.query["devpath"]
@@ -50,7 +55,7 @@ class EnvironmentManager(object):
 
         if(not os.path.exists(encryption_parameters.mountpoint)):
         # create it
-            self.hutil.Log("the mountpoint does not exist, create it" + encryption_parameters.mountpoint)
+            self.hutil.log("the mountpoint does not exist, create it" + encryption_parameters.mountpoint)
             os.mkdir(encryption_parameters.mountpoint)
 
         encryption_parameters.keydisk_mount_point = os.path.join(encryption_parameters.mountpoint, CommonVariables.key_disk_mountname)
@@ -59,7 +64,7 @@ class EnvironmentManager(object):
             i+=1
             encryption_parameters.keydisk_mount_point = os.path.join(encryption_parameters.mountpoint, CommonVariables.key_disk_mountname + str(i))
         
-        self.hutil.Log("creating the keydisk_mount_point " + encryption_parameters.keydisk_mount_point)
+        self.hutil.log("creating the keydisk_mount_point " + encryption_parameters.keydisk_mount_point)
         os.mkdir(encryption_parameters.keydisk_mount_point)
 
         keydisk_mount_item = "/dev/disk/by-label/" + CommonVariables.key_disk_label + " " + encryption_parameters.keydisk_mount_point + " " + CommonVariables.key_disk_fs_type + " defaults\n"
@@ -80,7 +85,7 @@ class EnvironmentManager(object):
             i += 1
             encryption_parameters.mount_name = encryption_parameters.mountname + str(i)
             encryption_parameters.encrypted_disk_mount_point = os.path.join(encryption_parameters.mountpoint, encryption_parameters.mountname + str(i))
-        self.hutil.Log("creating the encrypted_disk_mount_point " + encryption_parameters.encrypted_disk_mount_point)
+        self.hutil.log("creating the encrypted_disk_mount_point " + encryption_parameters.encrypted_disk_mount_point)
         os.mkdir(encryption_parameters.encrypted_disk_mount_point)
 
         return encryption_parameters

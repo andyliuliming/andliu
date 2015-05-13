@@ -49,6 +49,7 @@ class ExtensionParameter(object):
         self.mountname = protected_settings.get('mountname')
         self.mountpoint = protected_settings.get('mountpoint')
         self.passphrase = protected_settings.get('passphrase')
+        self.devmapper_name = protected_settings.get('devmapper')
 
     def validate_parameter_format(self):
         if(self.query is None):
@@ -58,7 +59,7 @@ class ExtensionParameter(object):
             return CommonVariables.parameter_error
         if(self.command is None):
             return CommonVariables.parameter_error
-        elif(self.command=='newdisk'):
+        elif(self.command == 'newdisk'):
 
             pass
         if(self.force is not None):

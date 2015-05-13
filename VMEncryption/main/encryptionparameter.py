@@ -9,4 +9,6 @@ class EncryptionParameter(object):
          self.keydisk_mount_point = None
          self.dev_mapper_path = None
          self.encrypted_disk_mount_point = None
+         self.devmapper_name = None
+         self.passphrase = None
          pass

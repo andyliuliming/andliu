@@ -1,5 +1,6 @@
 class Mounter(object):
-    def __init__(self):
+    def __init__(self,hutil):
+        self.hutil = hutil
         pass
 
     def mount_all(self):

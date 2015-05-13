@@ -30,6 +30,7 @@ import traceback
 import datetime
 import subprocess
 from AbstractPatching import AbstractPatching
+from common import CommonVariables
 
 
 class UbuntuPatching(AbstractPatching):
@@ -38,7 +39,7 @@ class UbuntuPatching(AbstractPatching):
 
     def install_extras(self, paras):
         print("installing in ubuntu")
-        if(paras.command == "disk"):
+        if(paras.command == CommonVariables.newdisk_command or paras.command == CommonVariables.existdisk_command):
             common_extras = ['cryptsetup-bin','lsscsi']
             for extra in common_extras:
                 print("installation for " + extra + 'result is ' + str(subprocess.call(['apt-get', 'install','-y', extra])))
@@ -49,7 +50,7 @@ class UbuntuPatching(AbstractPatching):
                     print("installation for " + extra + 'result is ' + str(subprocess.call(['apt-get', 'install','-y', extra])))
             pass
 
-        elif(paras.command == "folder"):
+        elif(paras.command == CommonVariables.folder_command):
             common_extras = ['ecryptfs-utils']
             for extra in common_extras:
                     print("installation for " + extra + 'result is ' + str(subprocess.call(['apt-get', 'install','-y', extra])))

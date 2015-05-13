@@ -30,6 +30,7 @@ import traceback
 import datetime
 import subprocess
 from AbstractPatching import AbstractPatching
+from common import CommonVariables
 
 
 class SuSEPatching(AbstractPatching):
@@ -38,7 +39,7 @@ class SuSEPatching(AbstractPatching):
 
     def install_extras(self,paras):
         print("installing in suse")
-        if(paras.command == "disk"):
+        if(paras.command == CommonVariables.newdisk_command or paras.command == CommonVariables.existdisk_command):
             #p = subprocess.Popen(["rescan-scsi-bus.sh"])
             common_extras = ['cryptsetup','lsscsi']
             for extra in common_extras:
