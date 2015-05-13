@@ -19,7 +19,8 @@
 # Requires Python 2.7+
 #
 from encryption import EncryptionError
-
+import os
+import os.path
 class RebootManager(object):
     def __init__(self, hutil):
         self.hutil = hutil
