@@ -28,7 +28,7 @@ function Create-Encrypted-Disk
 
     $privateConfig='
     {
-		"command":"disk",
+		"command":"newdisk",
 		"query":{"scsi_number":"[5:0:0:'+$lun+']"},
 		"passphrase":"MicrosoftLoveLinuxBecauseWeHaveCCIC@123",
 		"filesystem":"ext4",

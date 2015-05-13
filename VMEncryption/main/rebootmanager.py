@@ -18,50 +18,20 @@
 #
 # Requires Python 2.7+
 #
+from encryption import EncryptionError
+
 class RebootManager(object):
     def __init__(self, hutil):
         self.hutil = hutil
         pass
+
     def configure_reboot(self, encryption_parameters):
+        error = EncryptionError()
         # append an item in the /etc/fstab
         # first we should try to mount the key disk
         # /dev/disk/by-label/KEYDISK /mnt/keydisk vfat defaults
         # /dev/mapper/sdc_encrypted /mnt/sdc_encrypted ext4 defaults
 
-        if(not os.path.exists(encryption_parameters.mountpoint)):
-            # create it
-            self.hutil.Log("the mountpoint does not exist, create it" + encryption_parameters.mountpoint)
-            os.mkdir(encryption_parameters.mountpoint)
-
-        encryption_parameters.keydisk_mount_point = os.path.join(encryption_parameters.mountpoint, CommonVariables.key_disk_mountname)
-        i = 0
-        while(os.path.exists(encryption_parameters.keydisk_mount_point)):
-            i+=1
-            encryption_parameters.keydisk_mount_point = os.path.join(encryption_parameters.mountpoint, CommonVariables.key_disk_mountname + str(i))
-        
-        self.hutil.Log("creating the keydisk_mount_point " + encryption_parameters.keydisk_mount_point)
-        os.mkdir(encryption_parameters.keydisk_mount_point)
-
-        keydisk_mount_item = "/dev/disk/by-label/" + CommonVariables.key_disk_label + " " + encryption_parameters.keydisk_mount_point + " " + CommonVariables.key_disk_fs_type + " defaults\n"
-
-        encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_path,encryption_parameters.devmapper_name)
-        i = 0
-        encryption_parameters.dev_mapper_name = encryption_parameters.devmapper_name
-        while(os.path.exists(encryption_parameters.dev_mapper_path)):
-            i+=1
-            encryption_parameters.dev_mapper_name = encryption_parameters.devmapper_name + str(i)
-            encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_path, encryption_parameters.devmapper_name + str(i))
-
-
-        encryption_parameters.encrypted_disk_mount_point = os.path.join(encryption_parameters.mountpoint,encryption_parameters.mountname)
-        i = 0
-        encryption_parameters.mount_name = encryption_parameters.mountname
-        while(os.path.exists(encryption_parameters.encrypted_disk_mount_point)):
-            i += 1
-            encryption_parameters.mount_name = encryption_parameters.mountname + str(i)
-            encryption_parameters.encrypted_disk_mount_point = os.path.join(encryption_parameters.mountpoint, encryption_parameters.mountname + str(i))
-        self.hutil.Log("creating the encrypted_disk_mount_point " + encryption_parameters.encrypted_disk_mount_point)
-        os.mkdir(encryption_parameters.encrypted_disk_mount_point)
         # the string line would be add in the /etc/fstab
         encrypted_disk_mount_item = encryption_parameters.dev_mapper_path + " " + encryption_parameters.encrypted_disk_mount_point + " " + encryption_parameters.filesystem + " defaults\n"
 
@@ -91,4 +61,4 @@ class RebootManager(object):
 
         #TODO we should run the cryptdisks_start encrypted_disk_mapper to do a
         #check
-        return encryption_parameters
+        return error

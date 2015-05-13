@@ -33,13 +33,15 @@ import traceback
 import urllib2
 import urlparse
 import httplib
-from common import CommonVariables
-from parameterparser import ParameterParser
 from Utils import HandlerUtil
+from common import CommonVariables
+from extensionparameter import ExtensionParameter
 from encryption import *
+from mounter import Mounter
 from devmanager import DevManager
-from environmentvalidator import EnvironmentValidator
+from environmentmanager import EnvironmentManager
 from rebootmanager import RebootManager
+from diskcopy import DiskCopy
 
 #Main function is the only entrence to this extension handler
 def main():
@@ -77,56 +79,92 @@ def enable():
         protected_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('protectedSettings')
         public_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('publicSettings')
 
-        para_parser = ParameterParser(hutil, protected_settings, public_settings)
-        para_validate_result = para_parser.validate()
-        if(para_validate_result != 0):
-            hutil.do_exit(0, 'Enable', 'error',str(para_validate_result), "parameter not right")
+        extension_parameter = ExtensionParameter(hutil, protected_settings, public_settings)
 
+        # validate the parameters format
+        para_validate_result = extension_parameter.validate_parameter_format()
+
+        if(para_validate_result != 0):
+            hutil.do_exit(0, 'Enable', 'error', str(para_validate_result), "parameter not right")
+
+
+        # install the required softwares.
         MyPatching = GetMyPatching()
         if MyPatching == None:
-            hutil.do_exit(0,'Enable','error',str(CommonVariables.os_not_supported),'the os is not supported')
+            hutil.do_exit(0,'Enable','error', str(CommonVariables.os_not_supported), 'the os is not supported')
         else:
-            MyPatching.install_extras(para_parser)
-
-
+            MyPatching.install_extras(extension_parameter)
 
         #construct the encryption parameters starts
-        encryption_parameters = EncryptionParameter()
-        encryption_parameters.mountpoint = para_parser.mountpoint
+        
+        environment_manager = EnvironmentManager(hutil)
+        
 
-        if(para_parser.mountname is None or para_parser.mountname == ""):
-            encryption_parameters.mountname = CommonVariables.default_mount_name
-
-        if(para_parser.filesystem is None or para_parser.filesystem == ""):
-            encryption_parameters.filesystem = "ext4"
-
-        if(para_parser.devmapper_name is None or para_parser.devmapper_name == ""):
-            encryption_parameters.devmapper_name = CommonVariables.default_mapper_name
-
-        if(para_parser.query.has_key("devpath")):
-            encryption_parameters.devpath = para_parser.query["devpath"]
-        else:
-            # scsi_host,channel,target_number,LUN
-            # find the scsi using the filter
-            dev_manager = DevManager()
-            encryption_parameters.devpath = dev_manager.query_dev_uuid_path(para_parser.query["scsi_number"])
         #construct the encryption parameters ends
 
+        ########### the new disk scenario starts ###################
+        
+        if(extension_parameter.command == 'newdisk'):
+            environment_validation_result = environment_manager.validate_environment_for_newdisk(encryption_parameters)
+            if(environment_validation_result != CommonVariables.success):
+                hutil.do_exit(0, 'Enable', 'error', str(environment_validation_result), 'error when validating the environment')
+            else:
+                # the config_reboot is a decorator, it will modify the
+                # encryption_parameters .
+                # TODO: make the return parameter a error code.
+                # we should encrypt the disk first, then configure_reboot
+
+                encryption_parameters = environment_manager.prepare_newdisk_encryption_parameters(extension_parameter)
+
+                encryption = Encryption(hutil)
+
+                reboot_manager = RebootManager(hutil)
+
+                mounter = Mounter(hutil)
+
+                encryption_result = encryption.encrypt_disk(encryption_parameters)
+                encryption_parameters = reboot_manager.configure_reboot(encryption_parameters)
+                mounter.mount_all()
+                # execute the mount -a
+                # then check the volume is mounted successfully
+                #mounter.mount(encryption_parameters)
+                # mount the disk..
+                hutil.do_exit(0, 'Enable', encryption_result.state, str(encryption_result.code), encryption_result.info)
+
+        ########### the new disk scenario ends ###################
 
 
 
-        encryption = Encryption(hutil)
-        environment_validator = EnvironmentValidator(hutil)
-        reboot_manager = RebootManager(hutil)
-        environment_validation_result = environment_validator.validate_environment(encryption_parameters)
-        if(environment_validation_result != CommonVariables.success):
-            hutil.do_exit(0, 'Enable', 'error',str(environment_validation_result), 'error when validating the environment')
-        else:
-            # the config_reboot is a decorator, it will modify the encryption_parameters .
-            # TODO: make the return parameter a error code.
-            encryption_parameters = reboot_manager.configure_reboot(encryption_parameters)
-            encryption_result = encryption.encrypt(encryption_parameters)
-            hutil.do_exit(0, 'Enable', encryption_result.state,str(encryption_result.code), encryption_result.info)
+
+        ########### the existing scenario starts ###################
+        elif(encryption_parameters.command == 'existingdisk'):
+            environment_validation_result = environment_manager.validate_environment_for_existingdisk(encryption_parameters)
+            if(environment_validation_result != CommonVariables.success):
+                hutil.do_exit(0, 'Enable', 'error', str(environment_validation_result), 'error when validating the environment')
+            else:
+
+                # check whether the new attached disk is bigger than the
+                # existing one.
+                encryption_parameters = environment_manager.prepare_newdisk_encryption_parameters(extension_parameter)
+
+                encryption = Encryption(hutil)
+
+                reboot_manager = RebootManager(hutil)
+                mounter = Mounter(hutil)
+                disk_copy = DiskCopy(hutil)
+                encryption_result = encryption.encrypt_disk(encryption_parameters)
+
+
+                # copy the old content in the old partition to the new
+
+                # partitions
+
+                # add the mount information back
+                # encryption_parameters =
+                # reboot_manager.configure_reboot(encryption_parameters)
+                mounter.mount_all()
+                pass
+            pass
 
     except Exception, e:
         print(str(e))

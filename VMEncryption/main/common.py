@@ -30,10 +30,13 @@ class CommonVariables:
     key_disk_label = 'KEYDISK'
     key_disk_mountname = 'azurekeydisk'
     key_disk_fs_type = 'vfat'
+    default_file_system = 'ext4'
     default_mount_name = 'encrypted_disk'
     dev_mapper_path = '/dev/mapper/'
     default_mapper_name = 'encrypted_disk_mapper'
     passphrase_file_name = 'keyfile2'
+    extension_success_status = 'success'
+    extension_error_status = 'error'
 
     # error code
     success = 0

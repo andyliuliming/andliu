@@ -26,6 +26,8 @@
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="attach_key_disk.ps1" />
+    <Content Include="create_encrypted_disk.ps1" />
     <Content Include="linuxencryption.pfx" />
     <Content Include="MANIFEST.in" />
     <Content Include="README.txt" />
@@ -35,10 +37,19 @@
     <Compile Include="main\devmanager.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="main\diskcopy.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="main\encryption.py" />
+    <Compile Include="main\encryptionparameter.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="main\environmentmanager.py" />
     <Compile Include="main\handle.py" />
-    <Compile Include="main\keymanager.py" />
-    <Compile Include="main\parameterparser.py" />
+    <Compile Include="main\mounter.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="main\extensionparameter.py" />
     <Compile Include="main\patch\AbstractPatching.py" />
     <Compile Include="main\patch\centosPatching.py" />
     <Compile Include="main\patch\OraclePatching.py" />
@@ -46,6 +57,7 @@
     <Compile Include="main\patch\SuSEPatching.py" />
     <Compile Include="main\patch\UbuntuPatching.py" />
     <Compile Include="main\patch\__init__.py" />
+    <Compile Include="main\rebootmanager.py" />
     <Compile Include="main\Utils\HandlerUtil.py" />
     <Compile Include="main\Utils\WAAgentUtil.py" />
     <Compile Include="main\__init__.py" />
