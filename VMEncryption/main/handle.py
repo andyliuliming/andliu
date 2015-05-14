@@ -161,7 +161,7 @@ def enable():
                 
                 #freeze_return_code = subprocess.call(['fsfreeze', '-f', exist_encryption_parameters.exist_devpath])
                 disk_copy = DiskCopy(hutil)
-                disk_copy.copy(exist_encryption_parameters.exist_devpath, exist_encryption_parameters.dev_mapper_path+exist_encryption_parameters.dev_mapper_name)
+                disk_copy.copy(exist_encryption_parameters.exist_devpath, exist_encryption_parameters.dev_mapper_path)
                 #unfreeze_return_code = subprocess.call(['fsfreeze', '-u', exist_encryption_parameters.exist_devpath])
                 # copy the old content in the old partition to the new
                 #encryption_parameters.devpath

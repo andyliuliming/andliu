@@ -66,7 +66,7 @@ class Encryption(object):
         return error
 
     def encrypt_disk(self, encryption_parameters):
-        
+        error = EncryptionError()
         self.hutil.log("dev path to cryptsetup luksFormat " + encryption_parameters.devpath)
         commandToExecute = '/bin/bash -c "' + 'echo -n "' + encryption_parameters.passphrase + '" | cryptsetup luksFormat ' + encryption_parameters.devpath + '"'
 
