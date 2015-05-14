@@ -36,7 +36,7 @@ class Encryption(object):
     """
     description of class
     """
-    def __init__(self,hutil):
+    def __init__(self, hutil):
         self.hutil = hutil
 
     #validate whether the paras are ok, check if the block device is indeed an
@@ -44,8 +44,7 @@ class Encryption(object):
 
     def encrypt_disk(self, encryption_parameters):
         error = EncryptionError()
-        print("#########"+encryption_parameters.passphrase)
-        print("#########"+encryption_parameters.devpath)
+        self.hutil.log("dev path to cryptsetup luksFormat " + encryption_parameters.devpath)
         commandToExecute = '/bin/bash -c "' + 'echo -n "' + encryption_parameters.passphrase + '" | cryptsetup luksFormat ' + encryption_parameters.devpath + '"'
 
         proc = Popen(commandToExecute, shell=True)
@@ -87,7 +86,7 @@ class Encryption(object):
         if(returnCode != 0):
             error.errorcode = returnCode
             error.code = CommonVariables.mkfs_error
-            error.info = "commandToExecute is " + commandToExecute
+            error.info = "command to execute is " + commandToExecute
             self.hutil.log('mkfs_command returnCode is ' + str(returnCode))
         return error
 

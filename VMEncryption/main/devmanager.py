@@ -19,6 +19,7 @@
 # Requires Python 2.7+
 #
 import subprocess
+from subprocess import *
 import os.path
 from Utils import HandlerUtil
 from common import CommonVariables
@@ -32,22 +33,24 @@ class DevManager(object):
     def __init__(self,hutil):
         self.hutil = hutil
         pass
-
-    def query_dev_uuid_path(self,scsi_number):
-        # find the scsi using the filter
-        p = subprocess.Popen(['lsscsi', scsi_number], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    def query_dev_sdx_path(self,scsi_number):
+        p = Popen(['lsscsi', scsi_number], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         identity, err = p.communicate()
         # identity sample: [5:0:0:0] disk Msft Virtual Disk 1.0 /dev/sdc
-        self.hutil.log("identity is " + identity)
+        self.hutil.log("lsscsi output is: \n" + identity)
         vals = identity.split()
         if(vals == None or len(vals)==0):
             return None
         sdx_path = vals[len(vals) - 1]
+        return sdx_path
+    def query_dev_uuid_path(self,scsi_number):
+        # find the scsi using the filter
+        sdx_path=self.query_dev_sdx_path(scsi_number)
         # blkid /dev/sdc
-        p = subprocess.Popen(['blkid',sdx_path],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        p = Popen(['blkid',sdx_path],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         identity,err = p.communicate()
         identity = identity.lower()
-        print(identity)
+        self.hutil.log("blkid output is: \n"+identity)
         uuid_pattern = 'uuid="'
         index_of_uuid = identity.find(uuid_pattern)
         identity = identity[index_of_uuid + len(uuid_pattern):]

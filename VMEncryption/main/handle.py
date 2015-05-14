@@ -139,7 +139,7 @@ def enable():
             # "devmapper":"sdb_encrypt","passphrase":"User@123"
             # }
             exist_encryption_parameters = environment_manager.prepare_existingdisk_encryption_parameters(extension_parameter)
-
+            # devpath would be come /dev/disk/
             environment_validation_result = environment_manager.validate_environment_for_existingdisk(exist_encryption_parameters)
             if(environment_validation_result != CommonVariables.success):
                 hutil.do_exit(0, 'Enable', 'error', str(environment_validation_result), 'error when validating the environment')
@@ -157,7 +157,7 @@ def enable():
                 
                 #freeze_return_code = subprocess.call(['fsfreeze', '-f', exist_encryption_parameters.exist_devpath])
                 disk_copy = DiskCopy(hutil)
-                disk_copy.copy(exist_encryption_parameters.exist_devpath,exist_encryption_parameters.devpath)
+                disk_copy.copy(exist_encryption_parameters.exist_devpath, exist_encryption_parameters.dev_mapper_path+exist_encryption_parameters.dev_mapper_name)
                 #unfreeze_return_code = subprocess.call(['fsfreeze', '-u', exist_encryption_parameters.exist_devpath])
                 # copy the old content in the old partition to the new
                 #encryption_parameters.devpath

@@ -78,7 +78,7 @@ class EnvironmentManager(object):
 
         keydisk_mount_item = "/dev/disk/by-label/" + CommonVariables.key_disk_label + " " + encryption_parameters.keydisk_mount_point + " " + CommonVariables.key_disk_fs_type + " defaults\n"
 
-        encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_root,encryption_parameters.dev_mapper_name)
+        encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_root, encryption_parameters.dev_mapper_name)
         i = 0
         encryption_parameters.dev_mapper_name = encryption_parameters.dev_mapper_name
         while(os.path.exists(encryption_parameters.dev_mapper_path)):
@@ -152,7 +152,7 @@ class EnvironmentManager(object):
             exist_encryption_parameters.dev_mapper_name = extension_parameter.dev_mapper_name
 
         exist_encryption_parameters.passphrase = extension_parameter.passphrase
-        
+        exist_encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_root, encryption_parameters.dev_mapper_name)
         dev_manager = DevManager(self.hutil)
 
         if(extension_parameter.query.has_key("devpath")):

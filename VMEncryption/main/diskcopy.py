@@ -20,6 +20,9 @@
 #
 import subprocess
 import sys  
+from subprocess import *  
+from encryption import EncryptionError
+
 class DiskCopy(object):
     def __init__(self,hutil):
         self.hutil = hutil
@@ -28,7 +31,7 @@ class DiskCopy(object):
         #dd if=/dev/sda of=/dev/mapper/sda-crypt bs=512
         error = EncryptionError()
         self.hutil.log("copying from " + from_device + " to " + to_device)
-        commandToExecute = '/bin/bash -c "' + 'if=' + from_device + ' of=' + to_device + ' bs=512"'
+        commandToExecute = '/bin/bash -c dd"' + 'if=' + from_device + ' of=' + to_device + ' bs=512"'
 
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
