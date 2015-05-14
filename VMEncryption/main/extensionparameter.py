@@ -49,7 +49,7 @@ class ExtensionParameter(object):
         self.mountname = protected_settings.get('mountname')
         self.mountpoint = protected_settings.get('mountpoint')
         self.passphrase = protected_settings.get('passphrase')
-        self.devmapper_name = protected_settings.get('devmapper')
+        self.dev_mapper_name = protected_settings.get('devmapper')
 
     def validate_parameter_format(self):
         if(self.query is None):

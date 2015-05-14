@@ -44,10 +44,10 @@ class EnvironmentManager(object):
         else:
             encryption_parameters.filesystem = extension_parameter.filesystem
 
-        if(extension_parameter.devmapper_name is None or extension_parameter.devmapper_name == ""):
-            encryption_parameters.devmapper_name = CommonVariables.default_mapper_name
+        if(extension_parameter.dev_mapper_name is None or extension_parameter.dev_mapper_name == ""):
+            encryption_parameters.dev_mapper_name = CommonVariables.default_mapper_name
         else:
-            encryption_parameters.devmapper_name = extension_parameter.devmapper_name
+            encryption_parameters.dev_mapper_name = extension_parameter.dev_mapper_name
 
         encryption_parameters.passphrase = extension_parameter.passphrase
 
@@ -78,13 +78,13 @@ class EnvironmentManager(object):
 
         keydisk_mount_item = "/dev/disk/by-label/" + CommonVariables.key_disk_label + " " + encryption_parameters.keydisk_mount_point + " " + CommonVariables.key_disk_fs_type + " defaults\n"
 
-        encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_root,encryption_parameters.devmapper_name)
+        encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_root,encryption_parameters.dev_mapper_name)
         i = 0
-        encryption_parameters.dev_mapper_name = encryption_parameters.devmapper_name
+        encryption_parameters.dev_mapper_name = encryption_parameters.dev_mapper_name
         while(os.path.exists(encryption_parameters.dev_mapper_path)):
             i+=1
-            encryption_parameters.dev_mapper_name = encryption_parameters.devmapper_name + str(i)
-            encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_root, encryption_parameters.devmapper_name + str(i))
+            encryption_parameters.dev_mapper_name = encryption_parameters.dev_mapper_name + str(i)
+            encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_root, encryption_parameters.dev_mapper_name + str(i))
 
 
         encryption_parameters.encrypted_disk_mount_point = os.path.join(encryption_parameters.mountpoint,encryption_parameters.mountname)
@@ -144,32 +144,34 @@ class EnvironmentManager(object):
         return CommonVariables.success
 
     def prepare_existingdisk_encryption_parameters(self, extension_parameter):
-        encryption_parameters = ExistEncryptionParameter()
+        exist_encryption_parameters = ExistEncryptionParameter()
 
-        if(extension_parameter.devmapper_name is None or extension_parameter.devmapper_name == ""):
-            encryption_parameters.devmapper_name = CommonVariables.devmapper_name
+        if(extension_parameter.dev_mapper_name is None or extension_parameter.dev_mapper_name == ""):
+            exist_encryption_parameters.dev_mapper_name = CommonVariables.default_mapper_name
         else:
-            encryption_parameters.devmapper_name = extension_parameter.devmapper_name
+            exist_encryption_parameters.dev_mapper_name = extension_parameter.dev_mapper_name
 
-        encryption_parameters.passphrase = extension_parameter.passphrase
+        exist_encryption_parameters.passphrase = extension_parameter.passphrase
         
         dev_manager = DevManager(self.hutil)
 
         if(extension_parameter.query.has_key("devpath")):
-            encryption_parameters.devpath = extension_parameter.query["devpath"]
+            exist_encryption_parameters.devpath = extension_parameter.query["devpath"]
         else:
             # scsi_host,channel,target_number,LUN
             # find the scsi using the filter
-            encryption_parameters.devpath = dev_manager.query_dev_uuid_path(extension_parameter.query["scsi_number"])
-            if(encryption_parameters.devpath == None):
+            self.hutil.log("scsi_number to query is " + extension_parameter.query["scsi_number"])
+            exist_encryption_parameters.devpath = dev_manager.query_dev_uuid_path(extension_parameter.query["scsi_number"])
+            if(exist_encryption_parameters.devpath == None):
                 raise Exception("the scsi number is not found")
         
         if(extension_parameter.exist_query.has_key("devpath")):
-            encryption_parameters.e = extension_parameter.exist_query["devpath"]
+            exist_encryption_parameters.e = extension_parameter.exist_query["devpath"]
         else:
             # scsi_host,channel,target_number,LUN
             # find the scsi using the filter
-            encryption_parameters.exist_devpath = dev_manager.query_dev_uuid_path(extension_parameter.exist_query["scsi_number"])
-            if(encryption_parameters.exist_devpath == None):
+            self.hutil.log("scsi_number to query is " + extension_parameter.exist_query["scsi_number"])
+            exist_encryption_parameters.exist_devpath = dev_manager.query_dev_uuid_path(extension_parameter.exist_query["scsi_number"])
+            if(exist_encryption_parameters.exist_devpath == None):
                 raise Exception("the scsi number is not found")
-        pass
+        return exist_encryption_parameters

@@ -21,6 +21,7 @@
 from encryption import EncryptionError
 import os
 import os.path
+from common import CommonVariables
 class RebootManager(object):
     def __init__(self, hutil):
         self.hutil = hutil
@@ -37,7 +38,7 @@ class RebootManager(object):
         encrypted_disk_mount_item = encryption_parameters.dev_mapper_path + " " + encryption_parameters.encrypted_disk_mount_point + " " + encryption_parameters.filesystem + " defaults\n"
 
         # the string added in to the /etc/crypttab
-        passphrase_file_path = os.path.join(encryption_parameters.keydisk_mount_point,CommonVariables.passphrase_file_name)
+        passphrase_file_path = os.path.join(encryption_parameters.keydisk_mount_point, CommonVariables.passphrase_file_name)
         attached_encrypted_disk_item = encryption_parameters.dev_mapper_name + " " + encryption_parameters.devpath + " " + passphrase_file_path + " luks\n"
 
        

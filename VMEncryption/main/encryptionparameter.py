@@ -4,7 +4,7 @@ class EncryptionParameter(object):
          self.mountname = None
          self.mountpoint = None
          self.filesystem = None
-         self.devmapper_name = None
+         self.dev_mapper_name = None
          self.force = False
          self.keydisk_mount_point = None
          self.dev_mapper_path = None
@@ -16,7 +16,7 @@ class ExistEncryptionParameter(object):
     def __init__(self):
          self.devpath = None
          self.dev_mapper_path = None
-         self.devmapper_name = None
+         self.dev_mapper_name = None
          self.exist_devpath = None
          self.force = False
          self.passphrase = None

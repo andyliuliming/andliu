@@ -33,7 +33,8 @@ function Encrypt-Disk
 		"command":"existdisk",
 		"query":{"scsi_number":"[5:0:0:'+$lun+']"},
 		"passphrase":"MicrosoftLoveLinuxBecauseWeHaveCCIC@123",
-		"existQuery":{"scsi_number":"[5:0:0:0]"}}
+		"existQuery":{"scsi_number":"[5:0:0:0]"}
+	}
     '
 
     $tempAzurevm = (Get-AzureVM -ServiceName $cloudServiceName -Name $virtualMachineName)
@@ -44,4 +45,4 @@ function Encrypt-Disk
 
 Add-AzureAccount
 Select-AzureSubscription "OSTC Shanghai Dev"
-Create-Encrypted-Disk -cloudServiceName "fareast-andliu" -virtualMachineName "fareast-andliu"
+Encrypt-Disk -cloudServiceName "fareast-andliu" -virtualMachineName "fareast-andliu"

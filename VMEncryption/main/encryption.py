@@ -44,7 +44,8 @@ class Encryption(object):
 
     def encrypt_disk(self, encryption_parameters):
         error = EncryptionError()
-
+        print("#########"+encryption_parameters.passphrase)
+        print("#########"+encryption_parameters.devpath)
         commandToExecute = '/bin/bash -c "' + 'echo -n "' + encryption_parameters.passphrase + '" | cryptsetup luksFormat ' + encryption_parameters.devpath + '"'
 
         proc = Popen(commandToExecute, shell=True)
