@@ -42,15 +42,13 @@ from devmanager import DevManager
 from environmentmanager import EnvironmentManager
 from rebootmanager import RebootManager
 from diskcopy import DiskCopy
-from logger import Logger
 #Main function is the only entrence to this extension handler
 def main():
     global hutil
     HandlerUtil.LoggerInit('/var/log/waagent.log','/dev/stdout')
     HandlerUtil.waagent.Log("%s started to handle." % (CommonVariables.extension_name)) 
     hutil = HandlerUtil.HandlerUtility(HandlerUtil.waagent.Log, HandlerUtil.waagent.Error, CommonVariables.extension_name)
-    global logger
-    logger = Logger(hutil)
+
     for a in sys.argv[1:]:
         if re.match("^([-/]*)(disable)", a):
             disable()
@@ -169,7 +167,6 @@ def enable():
             pass
 
     except Exception, e:
-        print(str(e))
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
         hutil.do_exit(1, 'Enable','error','1', 'Enable failed.')
     finally:
