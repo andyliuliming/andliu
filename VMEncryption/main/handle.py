@@ -97,7 +97,6 @@ def enable():
         #construct the encryption parameters starts
         
         environment_manager = EnvironmentManager(hutil)
-        
 
         #construct the encryption parameters ends
 
@@ -117,9 +116,7 @@ def enable():
                 # we should encrypt the disk first, then configure_reboot
 
                 encryption = Encryption(hutil)
-
                 reboot_manager = RebootManager(hutil)
-
                 mounter = Mounter(hutil)
 
                 encryption_result = encryption.encrypt_disk(encryption_parameters)
@@ -137,33 +134,39 @@ def enable():
 
 
         ########### the existing scenario starts ###################
-        elif(encryption_parameters.command == CommonVariables.existdisk_command):
-            environment_validation_result = environment_manager.validate_environment_for_existingdisk(encryption_parameters)
+        elif(extension_parameter.command == CommonVariables.existdisk_command):
+            # {"command":"existingdisk","query":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdb"},"force":"true","existQuery":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdc"}
+            # "devmapper":"sdb_encrypt","passphrase":"User@123"
+            # }
+            exist_encryption_parameters = environment_manager.prepare_existingdisk_encryption_parameters(extension_parameter)
+
+            environment_validation_result = environment_manager.validate_environment_for_existingdisk(exist_encryption_parameters)
             if(environment_validation_result != CommonVariables.success):
                 hutil.do_exit(0, 'Enable', 'error', str(environment_validation_result), 'error when validating the environment')
             else:
 
                 # check whether the new attached disk is bigger than the
                 # existing one.
-                encryption_parameters = environment_manager.prepare_newdisk_encryption_parameters(extension_parameter)
 
                 encryption = Encryption(hutil)
 
                 reboot_manager = RebootManager(hutil)
                 mounter = Mounter(hutil)
                 disk_copy = DiskCopy(hutil)
-                encryption_result = encryption.encrypt_disk(encryption_parameters)
-
-
+                encryption_result = encryption.encrypt_disk(exist_encryption_parameters)
+                
+                #freeze_return_code = subprocess.call(['fsfreeze', '-f', exist_encryption_parameters.exist_devpath])
+                disk_copy = DiskCopy(hutil)
+                disk_copy.copy(exist_encryption_parameters.exist_devpath,exist_encryption_parameters.devpath)
+                #unfreeze_return_code = subprocess.call(['fsfreeze', '-u', exist_encryption_parameters.exist_devpath])
                 # copy the old content in the old partition to the new
-
+                #encryption_parameters.devpath
                 # partitions
 
                 # add the mount information back
                 # encryption_parameters =
-                # reboot_manager.configure_reboot(encryption_parameters)
+                # reboot_manager.configure_reboot(exist_encryption_parameters)
                 mounter.mount_all()
-                pass
             pass
 
     except Exception, e:

@@ -35,7 +35,7 @@ class CommonVariables:
     existdisk_command = 'existdisk'
     default_file_system = 'ext4'
     default_mount_name = 'encrypted_disk'
-    dev_mapper_path = '/dev/mapper/'
+    dev_mapper_root = '/dev/mapper/'
     default_mapper_name = 'encrypted_disk_mapper'
     passphrase_file_name = 'keyfile2'
     extension_success_status = 'success'

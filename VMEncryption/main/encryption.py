@@ -31,8 +31,6 @@ class EncryptionError(object):
         self.state = None
         self.code = None
         self.info = None
-        
-
 
 class Encryption(object):
     """
@@ -59,7 +57,7 @@ class Encryption(object):
             return error
 
         commandToExecute = '/bin/bash -c "' + 'echo -n "' + encryption_parameters.passphrase + '" | cryptsetup luksOpen ' + encryption_parameters.devpath + ' ' + encryption_parameters.dev_mapper_name + '"'
-        
+
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
         if(returnCode != 0):
