@@ -152,7 +152,7 @@ class EnvironmentManager(object):
             exist_encryption_parameters.dev_mapper_name = extension_parameter.dev_mapper_name
 
         exist_encryption_parameters.passphrase = extension_parameter.passphrase
-        exist_encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_root, encryption_parameters.dev_mapper_name)
+        exist_encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_root, exist_encryption_parameters.dev_mapper_name)
         dev_manager = DevManager(self.hutil)
 
         if(extension_parameter.query.has_key("devpath")):

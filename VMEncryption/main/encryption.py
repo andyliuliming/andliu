@@ -27,7 +27,7 @@ from __builtin__ import False
 
 class EncryptionError(object):
     def __init__(self):
-        self.errorcode = None
+        self.errorcode = CommonVariables.success
         self.state = None
         self.code = None
         self.info = None
@@ -42,33 +42,8 @@ class Encryption(object):
     #validate whether the paras are ok, check if the block device is indeed an
     #empty disk.
 
-    def encrypt_disk(self, encryption_parameters):
+    def format_disk(self,encryption_parameters):
         error = EncryptionError()
-        self.hutil.log("dev path to cryptsetup luksFormat " + encryption_parameters.devpath)
-        commandToExecute = '/bin/bash -c "' + 'echo -n "' + encryption_parameters.passphrase + '" | cryptsetup luksFormat ' + encryption_parameters.devpath + '"'
-
-        proc = Popen(commandToExecute, shell=True)
-        returnCode = proc.wait()
-        if(returnCode != 0):
-            error.errorcode = returnCode
-            error.code = CommonVariables.luks_format_error
-            error.info = "devpath is " + str(encryption_parameters.devpath)
-            self.hutil.log('cryptsetup -y luksFormat returnCode is ' + str(returnCode))
-            return error
-
-        commandToExecute = '/bin/bash -c "' + 'echo -n "' + encryption_parameters.passphrase + '" | cryptsetup luksOpen ' + encryption_parameters.devpath + ' ' + encryption_parameters.dev_mapper_name + '"'
-
-        proc = Popen(commandToExecute, shell=True)
-        returnCode = proc.wait()
-        if(returnCode != 0):
-            error.errorcode = returnCode
-            error.code = CommonVariables.luks_open_error
-            error.info = "devpath is " + str(encryption_parameters.devpath) + " dev_mapper_name is " + str(encryption_parameters.dev_mapper_name)
-            self.hutil.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
-            return error
-
-        # we should specify the file system?
-        # if self.paras.fstype is specified, then use it, if not, use ext4
         mkfs_command = ""
         if(encryption_parameters.filesystem == "ext4"):
             mkfs_command = "mkfs.ext4"
@@ -88,6 +63,36 @@ class Encryption(object):
             error.code = CommonVariables.mkfs_error
             error.info = "command to execute is " + commandToExecute
             self.hutil.log('mkfs_command returnCode is ' + str(returnCode))
+        return error
+
+    def encrypt_disk(self, encryption_parameters):
+        
+        self.hutil.log("dev path to cryptsetup luksFormat " + encryption_parameters.devpath)
+        commandToExecute = '/bin/bash -c "' + 'echo -n "' + encryption_parameters.passphrase + '" | cryptsetup luksFormat ' + encryption_parameters.devpath + '"'
+
+        proc = Popen(commandToExecute, shell=True)
+        returnCode = proc.wait()
+        if(returnCode != 0):
+            error.errorcode = returnCode
+            error.code = CommonVariables.luks_format_error
+            error.info = "devpath is " + str(encryption_parameters.devpath)
+            self.hutil.log('cryptsetup -y luksFormat returnCode is ' + str(returnCode))
+            return error
+
+        commandToExecute = '/bin/bash -c "' + 'echo -n "' + encryption_parameters.passphrase + '" | cryptsetup luksOpen ' + encryption_parameters.devpath + ' ' + encryption_parameters.dev_mapper_name + '"'
+        self.hutil.log("dev mapper name to cryptsetup luksFormat " + encryption_parameters.dev_mapper_name)
+        proc = Popen(commandToExecute, shell=True)
+        returnCode = proc.wait()
+        if(returnCode != 0):
+            error.errorcode = returnCode
+            error.code = CommonVariables.luks_open_error
+            error.info = "devpath is " + str(encryption_parameters.devpath) + " dev_mapper_name is " + str(encryption_parameters.dev_mapper_name)
+            self.hutil.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
+            return error
+
+        # we should specify the file system?
+        # if self.paras.fstype is specified, then use it, if not, use ext4
+        
         return error
 
 

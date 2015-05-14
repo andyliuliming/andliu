@@ -120,13 +120,17 @@ def enable():
                 mounter = Mounter(hutil)
 
                 encryption_result = encryption.encrypt_disk(encryption_parameters)
+                if(encryption_result.errorcode != CommonVariables.success):
+                    hutil.do_exit(0, 'Enable', encryption_result.state, str(encryption_result.code), encryption_result.info)
+                encryption_result = encryption.format_disk(encryption_parameters)
                 encryption_parameters = reboot_manager.configure_reboot(encryption_parameters)
                 mounter.mount_all()
+                
+                hutil.do_exit(0, 'Enable', encryption_result.state, str(encryption_result.code), encryption_result.info)
                 # execute the mount -a
                 # then check the volume is mounted successfully
                 #mounter.mount(encryption_parameters)
                 # mount the disk..
-                hutil.do_exit(0, 'Enable', encryption_result.state, str(encryption_result.code), encryption_result.info)
 
         ########### the new disk scenario ends ###################
 

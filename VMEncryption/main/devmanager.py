@@ -33,6 +33,7 @@ class DevManager(object):
     def __init__(self,hutil):
         self.hutil = hutil
         pass
+
     def query_dev_sdx_path(self,scsi_number):
         p = Popen(['lsscsi', scsi_number], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         identity, err = p.communicate()
@@ -43,6 +44,7 @@ class DevManager(object):
             return None
         sdx_path = vals[len(vals) - 1]
         return sdx_path
+
     def query_dev_uuid_path(self,scsi_number):
         # find the scsi using the filter
         sdx_path=self.query_dev_sdx_path(scsi_number)
