@@ -22,7 +22,7 @@ import subprocess
 import sys  
 from subprocess import *  
 from encryption import EncryptionError
-
+from common import CommonVariables
 class DiskCopy(object):
     def __init__(self,hutil):
         self.hutil = hutil
