@@ -26,7 +26,7 @@ function Encrypt-Disk
     }
     $lun+=1
     Write-Output "the lun of your newly attached disk is "+$lun
-    Add-AzureDataDisk -CreateNew -DiskSizeInGB 12 -DiskLabel "disklabel$lun" -VM $vm -LUN $lun -MediaLocation $destinationKeyDiskPath| update-azurevm
+    Add-AzureDataDisk -CreateNew -DiskSizeInGB 1 -DiskLabel "disklabel$lun" -VM $vm -LUN $lun -MediaLocation $destinationKeyDiskPath| update-azurevm
 
     $privateConfig='
     {
