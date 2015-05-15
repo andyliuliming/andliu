@@ -5,99 +5,87 @@
 -->
 
 <head>
-<title>Azure Web Terminal</title>
-<script src="./scripts/jquery-1.11.1.js"></script>
-<script src="./scripts/jquery.cookie.js"></script>
-<script src="https://www.java.com/js/deployJava.js"></script>
+    <title>Azure Web Terminal</title>
+    <script src="./scripts/jquery-1.11.1.js"></script>
+    <script src="./scripts/jquery.cookie.js"></script>
+    <script src="https://www.java.com/js/deployJava.js"></script>
 
-<script src="./scripts/applet.js"></script>
-<script src="./scripts/login.js"></script>
-<script src="./scripts/terminal.js"></script>
+    <script src="./scripts/applet.js"></script>
+    <script src="./scripts/login.js"></script>
+    <script src="./scripts/terminal.js"></script>
 
-<link href="./css/login.css" rel="stylesheet" />
-<link href="./css/terminal.css" rel="stylesheet" />
+    <link href="./css/login.css" rel="stylesheet" />
+    <link href="./css/terminal.css" rel="stylesheet" />
 </head>
 <body>
-<script>
-	$(document).ready(function() {
-		$(".auth_button1").addClass("auth_button_selected");
-	    $("#loginbutton").css("color", "white");
-	    $("#loginbutton").css("background", "rgb(0, 188, 242)");
-	    $(".auth_button").click(function (butt) {
-	        $(".auth_button").removeClass("auth_button_selected");
-	        $(butt.target).addClass("auth_button_selected");
-	    })
+    <script>
+        $(document).ready(function () {
+            $(".auth_button1").addClass("auth_button_selected");
+            $("#loginbutton").css("color", "white");
+            $("#loginbutton").css("background", "rgb(0, 188, 242)");
+            $(".auth_button").click(function (butt) {
+                $(".auth_button").removeClass("auth_button_selected");
+                $(butt.target).addClass("auth_button_selected");
+            })
 
-	    $("#loginbutton").click(function () {
-	        var hostname = $("#hostname");
-	        var username = $("#username");
-	        var password = $("#password");
-	        var port = $("#port");
+            $("#loginbutton").click(function () {
+                loginIn();
+            })
+            initializeLogin();
 
-	        $.cookie("HostName", hostname.val());
-	        $.cookie("Port", port.val());
-	        $.cookie("UserName", username.val());
-	        $.cookie("Password", password.val());
+            function docWriteWrapper(jq, func) {
+                var oldwrite = document.write, content = '';
+                document.write = function (text) {
+                    content += text;
+                }
+                func();
+                document.write = oldwrite;
+                jq.html(content);
+            }
 
-	        $("#login_main_panel").css("display","none");
-			$("#terminal_main_panel").css("display","block");
-	    })
-	    var hostName = getUrlVars()["host"];
-	    if (hostName != null) {
-	        $("#hostname").val(hostName);
-	    }
-	    function docWriteWrapper(jq, func) {
-	        var oldwrite = document.write, content = '';
-	        document.write = function(text) {
-	            content += text;
-	        }
-	        func();
-	        document.write = oldwrite;
-	        jq.html(content);
-	    }
+            docWriteWrapper($('#terminal_embedded_applet'), function () {
+                initializeApplet();
+            });
+        });
+    </script>
+    <div id="terminal_embedded_applet"></div>
+    <div id="login_main_panel">
+        <div class="mg-login">
+            <div class="login_header">
+                <label class="login_header_label">Login</label>
+            </div>
+            <ul class="mg-login-ul">
+                <li class="input_label_li"><label>Host Name:</label></li>
+                <li><input class="login_input" id="hostname" type="text" /></li>
+                <li class="input_label_li"><label>Username:</label></li>
 
-	    docWriteWrapper($('#mydiv'), function () {
-			initializeApplet();
-	    });
-	});
-</script>
-	<div id="mydiv"></div>
-	<div id="login_main_panel">
-		<div class="mg-login">
-			<div class="login_header">
-				<label class="login_header_label">Login</label>
-			</div>
-			<ul class="mg-login-ul">
-				<li class="input_label_li"><label>Host Name:</label></li>
-				<li><input class="login_input" id="hostname" type="text" /></li>
-				<li class="input_label_li"><label>Username:</label></li>
+                <li><input class="login_input" id="username" type="text" /></li>
+                <li class="input_label_li"><label>Port:</label></li>
 
-				<li><input class="login_input" id="username" type="text" /></li>
-				<li class="input_label_li"><label>Port:</label></li>
+                <li>
+                    <input class="login_input" id="port" type="text" value="22" />
+                </li>
+                <li class="input_label_li">
+                    <button class="auth_button1 auth_button">Password</button>
+                    <button class="auth_button2 auth_button">SSH Private Key</button>
+                </li>
+                <li class="input_label_li"><label>Password:</label></li>
+                <li>
+                    <input class="login_input" id="password" type="password" />
+                </li>
+                <li class="input_label_li">
+                    <button class="connect_button" name="login" id="loginbutton">Connect</button>
+                </li>
+            </ul>
+        </div>
+        <div class="decoration_panel">
+            <label class="decoration_label">Make Your Connection Easier...</label>
+        </div>
+    </div>
 
-				<li><input class="login_input" id="port" type="text" value="22" />
-				</li>
-				<li class="input_label_li">
-					<button class="auth_button1 auth_button">Password</button>
-					<button class="auth_button2 auth_button">SSH Private Key</button>
-				</li>
-				<li class="input_label_li"><label>Password:</label></li>
-				<li><input class="login_input" id="password" type="password" />
-				</li>
-				<li class="input_label_li">
-					<button class="connect_button" name="login" id="loginbutton">Connect</button>
-				</li>
-			</ul>
-		</div>
-		<div class="decoration_panel">
-			<label class="decoration_label">Make Your Connection Easier...</label>
-		</div>
-	</div>
-
-
-	<div id="terminal_main_panel">
-		<div class="terminal_action_bar"></div>
-		<div class="terminal_terminal"></div>
-	</div>
+    <div id="terminal_main_panel">
+        <div class="terminal_action_bar"></div>
+        <div class="terminal_terminal"></div>
+    </div>
 
 </body>

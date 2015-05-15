@@ -8,3 +8,27 @@
     }
     return vars;
 }
+
+function initializeLogin() {
+    var hostName = getUrlVars()["host"];
+    if (hostName != null) {
+        $("#hostname").val(hostName);
+    }
+}
+
+function loginIn() {
+    var hostname = $("#hostname");
+    var username = $("#username");
+    var password = $("#password");
+    var port = $("#port");
+
+    $.cookie("HostName", hostname.val());
+    $.cookie("Port", port.val());
+    $.cookie("UserName", username.val());
+    $.cookie("Password", password.val());
+
+
+
+    $("#login_main_panel").css("display", "none");
+    $("#terminal_main_panel").css("display", "block");
+}
