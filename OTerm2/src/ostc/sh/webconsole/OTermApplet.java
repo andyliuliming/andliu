@@ -13,25 +13,26 @@ public class OTermApplet extends JApplet implements WebFacade {
 	 * Create the applet.
 	 */
 	public OTermApplet() {
-		
+		commandExecuter = new CommandExecuter();
+		Thread commandExecuterThread = new Thread(commandExecuter);
+		commandExecuterThread.start();
 	}
 
-	@Override
-	public void SetUserName(String userName) {
-		// TODO Auto-generated method stub
-		System.err.println("set the user name" + userName);
-	}
-
-	@Override
-	public void SetPassword(String passWord) {
-		// TODO Auto-generated method stub
-		System.err.println("set the password ");
-	}
+	public StringBuilder sb;
+	private CommandExecuter commandExecuter;
 
 	@Override
 	public void SetAction(String action, String parameter) {
 		// TODO Auto-generated method stub
 		System.err.println("set action " + action);
+		commandExecuter.getCommandQueue().add(new Command(action, parameter));
+	}
+
+	
+	@Override
+	public String GetOutput() {
+		// TODO Auto-generated method stub
+		return "a";
 	}
 
 }

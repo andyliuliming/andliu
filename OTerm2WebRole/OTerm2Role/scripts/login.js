@@ -30,10 +30,16 @@ function loginIn() {
 
     if (otermApplet != null)
     {
-        otermApplet.SetUserName(username);
-        otermApplet.SetPassword(password);
+       // otermApplet.SetUserName(username);
+        //otermApplet.SetPassword(password);
+        otermApplet.SetAction("SetUserName", username);
+        otermApplet.SetAction("SetPassword", password);
+        otermApplet.SetAction("Login", "");
     }
+
     //wait for the success, then swith the panel
     $("#login_main_panel").css("display", "none");
     $("#terminal_main_panel").css("display", "block");
+
+    renderTerminal();
 }

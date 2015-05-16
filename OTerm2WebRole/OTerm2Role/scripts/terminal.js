@@ -5,13 +5,15 @@ function renderTerminal() {
         rows: 60,
         useStyle: true,
         screenKeys: true,
-        cursorBlink: false
+        cursorBlink: true
     });
-    term.open(document.body);
 
-    //term.on('data', function (data) {
-    //    ws.send(data);
-    //});
+    term.open($("#terminal_terminal")[0]);
+    term.write("shit");
+    term.on('data', function (data) {
+        //ws.send(data);
+        otermApplet.SetAction("Input", data);
+    });
     //ws.onmessage = function (result) {
     //    //alert(result.data);
     //    term.write(result.data);
