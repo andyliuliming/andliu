@@ -4,19 +4,18 @@
   <information>
     <title>Windows Azure Web Terminal</title>
     <vendor>Oracle</vendor>
-    <description>Windows Azure Web Terminal</description>    
+    <description>Windows Azure Web Terminal</description>  
   </information>
   <resources>
     <j2se version="1.7+"/>
-    <jar href=".\OTerm.jar" main="true"/>
-    <jar href=".\jsch-0.1.52.jar" />
+    <jar href="OTerm.jar" main="true"/>
+    <jar href="jsch-0.1.52.jar" />
   </resources>
   <security>
       <all-permissions/>
   </security>
   <applet-desc
          name="ostc.sh.webconsole.OTermApplet"
-         main-class="ostc.sh.webconsole.OTermApplet"
-         progress-class="ostc.sh.webconsole.progress.CustomProgress" width="1" height="1">
+         main-class="ostc.sh.webconsole.OTermApplet" width="1" height="1">
      </applet-desc>
 </jnlp>
