@@ -77,7 +77,6 @@ public class OTermEnvironment {
 						.getSshConnection().GetChannelShell().getOutputStream();
 				isw = new BufferedWriter(new OutputStreamWriter(inputStream,
 						"UTF-8"), fileSize);
-				isw.flush();
 			} catch (IOException | JSchException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -97,12 +96,20 @@ public class OTermEnvironment {
 	private Object outputLock = new Object();
 
 	public String GetOutput() {
-		return null;
+		synchronized (outputLock) {
+			String output = sb.toString();
+			sb = new StringBuilder();
+			return output;
+		}
 	}
 
+	public StringBuilder sb = new StringBuilder();
+
 	public void AppendOutput(char[] output, int offset, int length) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(output, offset, length);
+		synchronized (outputLock) {
+			// StringBuilder sb = new StringBuilder();
+			sb.append(output, offset, length);
+		}
 	}
 
 }

@@ -1,5 +1,6 @@
 package ostc.sh.webconsole;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -42,7 +43,9 @@ public class CommandExecuter implements Runnable {
 						break;
 					case Actions.Input:
 						try {
-							OTermEnvironment.Instance().getShellOutputStream().write(current.getParameter());
+							BufferedWriter writer=OTermEnvironment.Instance().getShellOutputStream();
+							writer.write(current.getParameter());
+							writer.flush();
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

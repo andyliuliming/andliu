@@ -9,7 +9,7 @@ function renderTerminal() {
     });
 
     term.open($("#terminal_terminal")[0]);
-    term.write("shit");
+   // term.write("shit");
     term.on('data', function (data) {
         //ws.send(data);
         otermApplet.SetAction("Input", data);
