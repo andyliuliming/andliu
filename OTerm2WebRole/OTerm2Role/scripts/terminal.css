@@ -4,18 +4,7 @@
     margin: 0;
     padding: 0;
 }
-    /*html {
-        background: #555;
-    }
-             body{
-                 padding:0px;
-                 margin:0px;
-             }
-    h1 {
-        display:none;
-        margin-bottom: 20px;
-        font: 20px/1.5 sans-serif;
-    }*/
+
 #deployJavaPlugin {
     position: absolute;
 }
@@ -33,7 +22,7 @@
     width: 100%;
     float: left;
     border: #000 solid 5px;
-    font-family: "Segoe UI", monospace;
+    font-family: "Courier New", monospace;
     font-size: 13px;
 }
 

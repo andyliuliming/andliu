@@ -43,7 +43,7 @@ public class CommandExecuter implements Runnable {
 						break;
 					case Actions.Input:
 						try {
-							BufferedWriter writer=OTermEnvironment.Instance().getShellOutputStream();
+							BufferedWriter writer = OTermEnvironment.Instance().getShellOutputStream();
 							writer.write(current.getParameter());
 							writer.flush();
 						} catch (IOException e) {
@@ -53,7 +53,7 @@ public class CommandExecuter implements Runnable {
 						break;
 					}
 				}
-				Thread.sleep(1000);
+				Thread.sleep(50);
 			} catch (InterruptedException | JSchException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

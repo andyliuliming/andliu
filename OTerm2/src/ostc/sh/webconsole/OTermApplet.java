@@ -27,13 +27,11 @@ public class OTermApplet extends JApplet implements WebFacade {
 
 	@Override
 	public void SetAction(String action, String parameter) {
-		System.err.println("set action " + action + " parameter " + parameter);
 		commandExecuter.getCommandQueue().add(new Command(action, parameter));
 	}
 
 	@Override
 	public String GetOutput() {
-		System.err.println("GetOutput");
 		return OTermEnvironment.Instance().GetOutput();
 	}
 
