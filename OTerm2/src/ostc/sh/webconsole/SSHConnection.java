@@ -1,5 +1,6 @@
 package ostc.sh.webconsole;
 
+import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -9,9 +10,19 @@ public class SSHConnection {
 
 	IdentityInfo identityInfo;
 	private Session session;
+	private ChannelShell channel;
 
 	public SSHConnection(IdentityInfo identityInfo) {
 		this.identityInfo = identityInfo;
+	}
+
+	public ChannelShell GetChannelShell() throws JSchException {
+		if (channel == null) {
+			channel = (ChannelShell) session.openChannel("shell");
+			channel.setPtyType("xterm");
+			channel.connect();
+		}
+		return channel;
 	}
 
 	public void Connect() throws JSchException {

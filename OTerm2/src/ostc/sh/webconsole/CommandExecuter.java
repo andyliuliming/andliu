@@ -1,5 +1,6 @@
 package ostc.sh.webconsole;
 
+import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -33,6 +34,18 @@ public class CommandExecuter implements Runnable {
 					case Actions.SetPassword:
 						OTermEnvironment.Instance().getIdentityInfo().Password = current
 								.getParameter();
+						break;
+					case Actions.SetHostName:
+						OTermEnvironment.Instance().getIdentityInfo().HostName = current
+								.getParameter();
+						break;
+					case Actions.Input:
+						try {
+							OTermEnvironment.Instance().getShellOutputStream().write(current.getParameter());
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						break;
 					}
 				}

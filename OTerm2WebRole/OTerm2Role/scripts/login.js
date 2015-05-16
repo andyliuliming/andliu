@@ -30,10 +30,9 @@ function loginIn() {
 
     if (otermApplet != null)
     {
-       // otermApplet.SetUserName(username);
-        //otermApplet.SetPassword(password);
-        otermApplet.SetAction("SetUserName", username);
-        otermApplet.SetAction("SetPassword", password);
+        otermApplet.SetAction("SetUserName", username.val());
+        otermApplet.SetAction("SetPassword", password.val());
+        otermApplet.SetAction("SetHostName", hostname.val());
         otermApplet.SetAction("Login", "");
     }
 

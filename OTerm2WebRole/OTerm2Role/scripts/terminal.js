@@ -14,17 +14,9 @@ function renderTerminal() {
         //ws.send(data);
         otermApplet.SetAction("Input", data);
     });
-    //ws.onmessage = function (result) {
-    //    //alert(result.data);
-    //    term.write(result.data);
-    //};
-    //ws.onopen = function () {
-    //    //alert("Connected!");
-    //};
-    //ws.onerror = function (error) {
-    //    alert(error.data);
-    //};
-    //ws.onclose = function () {
-    //    alert("Disconnected!");
-    //};
+
+    setInterval(function () {
+        var output = otermApplet.GetOutput();
+        term.write(output);
+    }, 5000);
 }
