@@ -10,10 +10,27 @@
 }
 
 function initializeLogin() {
+    $(".auth_button").click(function (butt) {
+        $(".auth_button").removeClass("auth_button_selected");
+        $(butt.target).addClass("auth_button_selected");
+    })
+
+    $("#loginbutton").click(function () {
+        loginIn();
+    })
+
+    $("#password").keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            loginIn();
+        }
+    });
+
     var hostName = getUrlVars()["host"];
     if (hostName != null) {
         $("#hostname").val(hostName);
     }
+
 }
 
 function loginIn() {

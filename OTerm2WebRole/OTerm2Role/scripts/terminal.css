@@ -14,6 +14,7 @@
     width: 100%;
     height: 100%;
     width: 100%;
+    background-color: black;
 }
 
 #terminal_action_bar {
@@ -26,13 +27,16 @@
 
 #terminal_action_items {
     height: 100%;
+    position: relative;
+    width: 100px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .terminal_action_item {
-    height: 30px;
-    width: 30px;
-    margin-top: 20px;
-    background-color: red;
+    height: 60px;
+    width: 60px;
+    margin-top: 30px;
     background-repeat: no-repeat;
     background-position: center;
     -webkit-background-size: cover;
@@ -41,14 +45,19 @@
     background-size: cover;
 }
 
+
 .terminal_action_item_text {
     color: white;
     font-size: 18px;
     margin: 0px;
-    padding: 0px;
     height: 20px;
-    width: 30px;
+    width: 60px;
 }
+
+    .terminal_action_item_text p {
+        margin: 0px;
+        text-align: center;
+    }
 
 #terminal_action_file {
     background-image: url(./File.png);
@@ -66,6 +75,8 @@
     font-family: 'Segoe UI';
     height: 100%;
     float: left;
+    position: absolute;
+    padding-left: 100px;
 }
 
 .terminal {

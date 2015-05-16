@@ -24,14 +24,7 @@
             $(".auth_button1").addClass("auth_button_selected");
             $("#loginbutton").css("color", "white");
             $("#loginbutton").css("background", "rgb(0, 188, 242)");
-            $(".auth_button").click(function (butt) {
-                $(".auth_button").removeClass("auth_button_selected");
-                $(butt.target).addClass("auth_button_selected");
-            })
-
-            $("#loginbutton").click(function () {
-                loginIn();
-            })
+           
             initializeLogin();
 
             function docWriteWrapper(jq, func) {
