@@ -14,6 +14,7 @@ public class OTermEnvironment {
 	static Object object = new Object();
 	static OTermEnvironment environment;
 
+	private boolean signedIn;
 	private IdentityInfo identityInfo;
 	private SSHConnection sshConnection;
 
@@ -83,6 +84,25 @@ public class OTermEnvironment {
 			}
 		}
 		return isw;
+	}
+
+	public boolean isSignedIn() {
+		return signedIn;
+	}
+
+	public void setSignedIn(boolean signedIn) {
+		this.signedIn = signedIn;
+	}
+
+	private Object outputLock = new Object();
+
+	public String GetOutput() {
+		return null;
+	}
+
+	public void AppendOutput(char[] output, int offset, int length) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(output, offset, length);
 	}
 
 }

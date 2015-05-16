@@ -1,7 +1,5 @@
 package ostc.sh.webconsole;
 
-import java.io.IOException;
-
 import javax.swing.JApplet;
 
 public class OTermApplet extends JApplet implements WebFacade {
@@ -18,6 +16,10 @@ public class OTermApplet extends JApplet implements WebFacade {
 		commandExecuter = new CommandExecuter();
 		Thread commandExecuterThread = new Thread(commandExecuter);
 		commandExecuterThread.start();
+
+		OutputFlusher outputFlusher = new OutputFlusher();
+		Thread outputFlusherThread = new Thread(outputFlusher);
+		outputFlusherThread.start();
 	}
 
 	public StringBuilder sb;
@@ -34,16 +36,7 @@ public class OTermApplet extends JApplet implements WebFacade {
 	public String GetOutput() {
 		// TODO Auto-generated method stub
 		System.err.println("GetOutput");
-		try {
-			char[] cBuf = new char[100];
-			int readCount = OTermEnvironment.Instance().getShellInputStream()
-					.read(cBuf);
-			return new String(cBuf, 0, readCount);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return OTermEnvironment.Instance().GetOutput();
 	}
 
 }

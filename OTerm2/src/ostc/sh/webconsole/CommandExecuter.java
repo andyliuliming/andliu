@@ -26,6 +26,7 @@ public class CommandExecuter implements Runnable {
 					case Actions.Login:
 						OTermEnvironment.Instance().getSshConnection()
 								.Connect();
+						OTermEnvironment.Instance().setSignedIn(true);
 						break;
 					case Actions.SetUserName:
 						OTermEnvironment.Instance().getIdentityInfo().UserName = current

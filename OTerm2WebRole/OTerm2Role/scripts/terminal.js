@@ -18,5 +18,5 @@ function renderTerminal() {
     setInterval(function () {
         var output = otermApplet.GetOutput();
         term.write(output);
-    }, 5000);
+    }, 50);
 }
