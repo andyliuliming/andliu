@@ -17,8 +17,6 @@
   <applet-desc
          name="ostc.sh.webconsole.OTermApplet"
          main-class="ostc.sh.webconsole.OTermApplet"
-         progress-class="ostc.sh.webconsole.progress.CustomProgress"
-         width="0"
-         height="0">
+         progress-class="ostc.sh.webconsole.progress.CustomProgress" width="1" height="1">
      </applet-desc>
 </jnlp>

@@ -2,7 +2,7 @@ package ostc.sh.webconsole;
 
 import javax.swing.JApplet;
 
-public class OTermApplet extends JApplet {
+public class OTermApplet extends JApplet implements WebFacade {
 
 	/**
 	 * 
@@ -14,6 +14,24 @@ public class OTermApplet extends JApplet {
 	 */
 	public OTermApplet() {
 		
+	}
+
+	@Override
+	public void SetUserName(String userName) {
+		// TODO Auto-generated method stub
+		System.err.println("set the user name" + userName);
+	}
+
+	@Override
+	public void SetPassword(String passWord) {
+		// TODO Auto-generated method stub
+		System.err.println("set the password ");
+	}
+
+	@Override
+	public void SetAction(String action, String parameter) {
+		// TODO Auto-generated method stub
+		System.err.println("set action " + action);
 	}
 
 }

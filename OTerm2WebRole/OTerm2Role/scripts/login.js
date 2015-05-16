@@ -28,7 +28,12 @@ function loginIn() {
     $.cookie("Password", password.val());
 
 
-
+    if (otermApplet != null)
+    {
+        otermApplet.SetUserName(username);
+        otermApplet.SetPassword(password);
+    }
+    //wait for the success, then swith the panel
     $("#login_main_panel").css("display", "none");
     $("#terminal_main_panel").css("display", "block");
 }
