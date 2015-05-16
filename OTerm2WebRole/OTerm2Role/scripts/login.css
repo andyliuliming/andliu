@@ -112,7 +112,7 @@ li {
     background-repeat: no-repeat;
     background-position: center;
     background-color: rgb(46,127,170);
-    background-image: url("../images/heroillustration.png");
+    background-image: url("./heroillustration.png");
     width: 64%;
     height: 100%;
     float: left;

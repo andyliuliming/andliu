@@ -7,4 +7,5 @@ public class Actions {
 	public static final String SetHostName = "SetHostName";
 	public static final String Input = "Input";
 	public static final String CopyFile = "CopyFile";
+	public static final String CertPair = "CertPair";
 }

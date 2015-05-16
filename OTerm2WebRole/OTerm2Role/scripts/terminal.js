@@ -18,4 +18,13 @@ function renderTerminal() {
         var output = otermApplet.GetOutput();
         term.write(output);
     }, 50);
+
+    // bind the actions
+    $("#terminal_action_file").click(function (e) {
+        otermApplet.SetAction("CopyFile", "");
+    });
+
+    $("#terminal_action_actions").click(function (e) {
+        otermApplet.SetAction("CertPair", "");
+    });
 }

@@ -31,16 +31,35 @@
 .terminal_action_item {
     height: 30px;
     width: 30px;
+    margin-top: 20px;
     background-color: red;
+    background-repeat: no-repeat;
+    background-position: center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.terminal_action_item_text {
+    color: white;
+    font-size: 18px;
+    margin: 0px;
+    padding: 0px;
+    height: 20px;
+    width: 30px;
 }
 
 #terminal_action_file {
+    background-image: url(./File.png);
 }
 
 #terminal_action_settings {
+    background-image: url(./settings.png);
 }
 
 #terminal_action_actions {
+    background-image: url(./Action.png);
 }
 
 #terminal_terminal {

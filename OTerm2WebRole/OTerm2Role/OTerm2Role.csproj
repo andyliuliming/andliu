@@ -185,20 +185,27 @@
     <Content Include="css\login.css" />
     <Content Include="css\terminal.css" />
     <Content Include="Global.asax" />
-    <Content Include="index.html" />
+    <Content Include="scripts\Action.png" />
     <Content Include="scripts\applet.js" />
+    <Content Include="scripts\Arrow_left.png" />
+    <Content Include="scripts\Arrow_right.png" />
+    <Content Include="scripts\copyfile.png" />
     <Content Include="scripts\deployJava.js" />
+    <Content Include="scripts\File.png" />
+    <Content Include="scripts\heroillustration.png" />
     <Content Include="scripts\index.html" />
     <Content Include="scripts\jquery-1.11.1.js" />
     <Content Include="scripts\jquery.cookie.js" />
+    <Content Include="scripts\keypair.png" />
     <Content Include="scripts\login.css" />
     <Content Include="scripts\login.js" />
+    <Content Include="scripts\settings.png" />
     <Content Include="scripts\term.js" />
     <Content Include="scripts\terminal.css" />
     <Content Include="scripts\terminal.js" />
+    <Content Include="scripts\warning.png" />
     <Content Include="scripts\WebConsoleJNLP.html" />
     <Content Include="terminal.html" />
-    <Content Include="WebConsoleJNLP.html" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web.config" />
@@ -210,7 +217,6 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
-    <Content Include="WebConsole.jnlp" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
