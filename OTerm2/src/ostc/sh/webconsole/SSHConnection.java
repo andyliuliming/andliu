@@ -10,6 +10,14 @@ public class SSHConnection {
 
 	IdentityInfo identityInfo;
 	private Session session;
+	public Session getSession() {
+		return session;
+	}
+
+	public void setSession(Session session) {
+		this.session = session;
+	}
+
 	private ChannelShell channel;
 
 	public SSHConnection(IdentityInfo identityInfo) {

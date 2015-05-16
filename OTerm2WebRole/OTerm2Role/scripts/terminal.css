@@ -16,6 +16,39 @@
     width: 100%;
 }
 
+#terminal_action_bar {
+    font-family: 'Segoe UI';
+    width: 100px;
+    height: 100%;
+    float: left;
+    background-color: black;
+}
+
+#terminal_action_items {
+    height: 100%;
+}
+
+.terminal_action_item {
+    height: 30px;
+    width: 30px;
+    background-color: red;
+}
+
+#terminal_action_file {
+}
+
+#terminal_action_settings {
+}
+
+#terminal_action_actions {
+}
+
+#terminal_terminal {
+    font-family: 'Segoe UI';
+    height: 100%;
+    float: left;
+}
+
 .terminal {
     margin: 0px;
     padding: 0px;

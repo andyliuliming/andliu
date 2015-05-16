@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import ostc.sh.webconsole.filecopy.SCPDialog;
+
 import com.jcraft.jsch.JSchException;
 
 public class CommandExecuter implements Runnable {
@@ -50,6 +52,11 @@ public class CommandExecuter implements Runnable {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						break;
+					case Actions.CopyFile:
+						SCPDialog dialog = new SCPDialog();
+						dialog.setLocationRelativeTo(null);
+						dialog.setVisible(true);
 						break;
 					}
 				}
