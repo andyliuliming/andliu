@@ -1,6 +1,7 @@
 package ostc.sh.webconsole;
 
 import com.jcraft.jsch.ChannelShell;
+import com.jcraft.jsch.ContentIdentity;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -10,6 +11,7 @@ public class SSHConnection {
 
 	IdentityInfo identityInfo;
 	private Session session;
+
 	public Session getSession() {
 		return session;
 	}
@@ -40,8 +42,10 @@ public class SSHConnection {
 
 			haveKeyFile = identityInfo.PrivateKey != null
 					&& !identityInfo.PrivateKey.isEmpty();
-			if (haveKeyFile) {
-				jsch.addIdentity(identityInfo.PrivateKey, identityInfo.Password);
+			if (haveKeyFile) {				
+				ContentIdentity contentIdentity = new ContentIdentity(jsch,
+						null, OTermEnvironment.Instance().getIdentityInfo().PrivateKey.getBytes());
+				jsch.addIdentity(contentIdentity, null);
 			}
 
 			String host = identityInfo.HostName;
