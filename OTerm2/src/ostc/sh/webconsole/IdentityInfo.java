@@ -3,7 +3,7 @@ package ostc.sh.webconsole;
 /**
  * 
  * @author andliu
- *
+ * 
  */
 public class IdentityInfo {
 	public IdentityInfo() {
@@ -15,6 +15,7 @@ public class IdentityInfo {
 
 	public String HostName;
 	public String PrivateKey;
+	public String PublicKey;
 	public String UserName;
 	public String Password;
 }

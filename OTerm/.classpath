@@ -16,7 +16,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Personal/Programes/Java/jdk1.8.0_45/jre/lib/javaws.jar"/>
-	<classpathentry kind="lib" path="C:/Personal/Programes/Java/jdk1.8.0_45/jre/lib/plugin.jar"/>
+	<classpathentry kind="lib" path="C:/Personal/Programs/Java/jdk1.8.0_45/jre/lib/javaws.jar"/>
+	<classpathentry kind="lib" path="C:/Personal/Programs/Java/jdk1.8.0_45/jre/lib/plugin.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

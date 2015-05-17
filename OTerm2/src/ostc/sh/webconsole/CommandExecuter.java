@@ -62,13 +62,14 @@ public class CommandExecuter implements Runnable {
 							e.printStackTrace();
 						}
 						break;
-
+					case Actions.SetPublicKey:
+						OTermEnvironment.Instance().getIdentityInfo().PublicKey = current.getParameter();
+						break;
 					case Actions.SetPrivateKey:
-						OTermEnvironment.Instance().getIdentityInfo().PrivateKey = current
-						.getParameter();
+						OTermEnvironment.Instance().getIdentityInfo().PrivateKey = current.getParameter();
 						break;
 					case Actions.SetSize:
-						String[] widthAndHeight=current.getParameter().split(":");
+						String[] widthAndHeight = current.getParameter().split(":");
 						int width=Integer.valueOf(widthAndHeight[0]);
 						int height=Integer.valueOf(widthAndHeight[1]);
 						OTermEnvironment.Instance().getSshConnection().GetChannelShell().setPtySize(height, width, 0, 0);
@@ -145,7 +146,7 @@ public class CommandExecuter implements Runnable {
 						break;
 					}
 				}
-			} catch (InterruptedException | JSchException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

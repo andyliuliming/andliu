@@ -19,6 +19,7 @@ function initializeLogin() {
     $("#password_option_button").click(function (e) {
         useIdentityFile = false;
         $("#identity_file").css("display", "none");
+        $("#identity_pub_file").css("display", "none");
         $("#password").css("display", "block");
         $("#auth_type_label").html("Password:");
     });
@@ -27,6 +28,7 @@ function initializeLogin() {
         useIdentityFile = true;
         $("#password").css("display", "none");
         $("#identity_file").css("display", "block");
+        $("#identity_pub_file").css("display", "block");
         $("#auth_type_label").html("Private Key:");
     });
 
@@ -60,9 +62,10 @@ function loginIn() {
 
     if (useIdentityFile) {
         var identityFile = $("#identity_file")[0].files[0];
-        if (identityFile != null) {
-            var r = new FileReader();
-            r.onload = function (e) {
+        var identity_pub_file = $("#identity_pub_file")[0].files[0];
+        if (identityFile != null&&identity_pub_file!=null) {
+            var identityReader = new FileReader();
+            identityReader.onload = function (e) {
                 var contents = e.target.result;
                 //alert("Got the file.n"
                 //      + "name: " + f.name + "n"
@@ -70,21 +73,26 @@ function loginIn() {
                 //      + "size: " + f.size + " bytesn"
                 //      + "starts with: " + contents.substr(1, contents.indexOf("n"))
                 //);
-                if (otermApplet != null) {
-                    otermApplet.SetAction("SetUserName", username.val());
-                    otermApplet.SetAction("SetPassword", password.val());
-                    otermApplet.SetAction("SetHostName", hostname.val());
-                    otermApplet.SetAction("SetPrivateKey", contents);
-                    otermApplet.SetAction("Login", "");
-                }
+                var publicIdentityReader = new FileReader();
+
+                publicIdentityReader.onload = function (e2) {
+                    var publicContents = e2.target.result;
+                    if (otermApplet != null) {
+                        otermApplet.SetAction("SetUserName", username.val());
+                        otermApplet.SetAction("SetPassword", password.val());
+                        otermApplet.SetAction("SetHostName", hostname.val());
+                        otermApplet.SetAction("SetPrivateKey", contents);
+                        otermApplet.SetAction("SetPublicKey", publicContents);
+                        otermApplet.SetAction("Login", "");
+                    }
+                };
+                publicIdentityReader.readAsText(identity_pub_file);
             }
-            r.readAsText(identityFile);
+            identityReader.readAsText(identityFile);
         }
     } else {
 
         $.cookie("Password", password.val());
-
-
         if (otermApplet != null) {
             otermApplet.SetAction("SetUserName", username.val());
             otermApplet.SetAction("SetPassword", password.val());

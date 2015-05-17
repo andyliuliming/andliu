@@ -12,13 +12,9 @@ public class ContentIdentity implements Identity {
 	private KeyPair kpair;
 	private String identity;
 
-	public ContentIdentity(JSch jsch, String name, byte[] prvkey)
+	public ContentIdentity(JSch jsch, String name, byte[] prvkey, byte[] pubkey)
 			throws JSchException {
-
-		this.kpair = KeyPair.load(jsch, prvkey, null) /*
-													 * KeyPair.load(jsch,
-													 * prvfile, pubfile)
-													 */;
+		this.kpair = KeyPair.load(jsch, prvkey, pubkey);
 		this.jsch = jsch;
 		this.identity = name;
 	}

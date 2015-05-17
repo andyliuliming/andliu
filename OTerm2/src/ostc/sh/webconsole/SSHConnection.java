@@ -1,5 +1,7 @@
 package ostc.sh.webconsole;
 
+import java.io.UnsupportedEncodingException;
+
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.ContentIdentity;
 import com.jcraft.jsch.JSch;
@@ -35,17 +37,22 @@ public class SSHConnection {
 		return channel;
 	}
 
-	public void Connect() throws JSchException {
+	public void Connect() throws Exception {
 		try {
 			JSch jsch = new JSch();
 			Boolean haveKeyFile = false;
 
 			haveKeyFile = identityInfo.PrivateKey != null
 					&& !identityInfo.PrivateKey.isEmpty();
-			if (haveKeyFile) {				
+			if (haveKeyFile) {		
+				
+				//jsch.addIdentity("C:\\Users\\andliu\\Desktop\\ssh_private_key",identityInfo.Password);
+				System.err.println(OTermEnvironment.Instance().getIdentityInfo().PrivateKey);
+				System.err.println(OTermEnvironment.Instance().getIdentityInfo().PublicKey);
 				ContentIdentity contentIdentity = new ContentIdentity(jsch,
-						null, OTermEnvironment.Instance().getIdentityInfo().PrivateKey.getBytes());
-				jsch.addIdentity(contentIdentity, null);
+						"ssh_private_key", OTermEnvironment.Instance().getIdentityInfo().PrivateKey.getBytes("UTF-8"),
+						OTermEnvironment.Instance().getIdentityInfo().PublicKey.getBytes("UTF-8"));
+				jsch.addIdentity(contentIdentity, identityInfo.Password.getBytes("UTF-8"));
 			}
 
 			String host = identityInfo.HostName;
@@ -78,7 +85,7 @@ public class SSHConnection {
 			session.connect(30000); // making a connection with timeout.
 			session.setServerAliveInterval(60000);
 
-		} catch (JSchException e) {
+		} catch (Exception e) {
 			throw e;
 		}
 	}

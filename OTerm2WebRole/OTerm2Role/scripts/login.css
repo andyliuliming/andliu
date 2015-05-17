@@ -21,6 +21,10 @@ body {
     display: none;
 }
 
+#identity_pub_file {
+    display: none;
+}
+
 .auth_button1 {
     float: left;
     margin: 0;
