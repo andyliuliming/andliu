@@ -45,8 +45,7 @@ function loginIn() {
     $.cookie("Password", password.val());
 
 
-    if (otermApplet != null)
-    {
+    if (otermApplet != null) {
         otermApplet.SetAction("SetUserName", username.val());
         otermApplet.SetAction("SetPassword", password.val());
         otermApplet.SetAction("SetHostName", hostname.val());
