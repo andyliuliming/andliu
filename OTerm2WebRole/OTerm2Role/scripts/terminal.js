@@ -12,7 +12,7 @@ function renderTerminal() {
     });
     term = new Terminal({
         cols: 120,
-        rows: 24,
+        rows: 30,
         useStyle: true,
         screenKeys: true,
         cursorBlink: false
@@ -29,6 +29,8 @@ function renderTerminal() {
         if (output != null && output != "") {
             term.write(output);
         }
+        $(".terminal").focus();
+        //term.getCopyTextarea().focus();
     }, 10);
 
     // bind the actions

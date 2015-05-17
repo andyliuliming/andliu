@@ -477,6 +477,7 @@
         if (this.useStyle) {
             Terminal.insertStyle(document, this.colors[256], this.colors[257]);
         }
+        this.fixFirefoxPaste();
     };
 
     /**
@@ -598,6 +599,42 @@
     };
 
     /**
+  * We set design mode because in firefox, this is the only way
+  * to get the paste event to fire because of this bug:
+  * https://bugzilla.mozilla.org/show_bug.cgi?id=846674
+  *
+  */
+    Terminal.prototype.fixFirefoxPaste = function () {
+
+        function disableDesignMode() {
+            if (Terminal.setDesignMode) {
+                document.designMode = Terminal.originalDesignMode;
+                Terminal.setDesignMode = false;
+            }
+        }
+
+        function enableDesignMode() {
+            Terminal.originalDesignMode = document.designMode;
+            Terminal.setDesignMode = true;
+            document.designMode = "on";
+        }
+
+        if (this.isFirefox || this.isChrome) {
+        var window = document.defaultView;
+
+
+        //When a right click menu is available, enable design mode so the paste event will fire.
+        on(document, 'contextmenu', enableDesignMode);
+
+        //Make sure we snap out of design mode after any action that would hide the context menu
+        //and actually allow the user to start modifying the document.
+        on(window, 'blur', disableDesignMode);
+        on(document, 'mousedown', disableDesignMode, true);
+        on(window, 'paste', disableDesignMode, true);
+        }
+    };
+
+    /**
      * Fix Mobile
      */
 
@@ -709,6 +746,8 @@
             this.isAndroid = !!~this.context.navigator.userAgent.indexOf('Android');
             this.isMobile = this.isIpad || this.isIphone || this.isAndroid;
             this.isMSIE = !!~this.context.navigator.userAgent.indexOf('MSIE');
+            this.isFirefox = !!~this.context.navigator.userAgent.indexOf('Firefox');
+            this.isChrome = !!~this.context.navigator.userAgent.indexOf('Chrome');
         }
 
         // Create our main terminal element.

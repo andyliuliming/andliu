@@ -75,9 +75,9 @@
     height: 100%;
     position: relative;
     overflow: scroll;
-    background-color: blue;
     padding: 0px;
     margin: 0px;
+    background-color: black;
 }
 
 #terminal_terminal {
