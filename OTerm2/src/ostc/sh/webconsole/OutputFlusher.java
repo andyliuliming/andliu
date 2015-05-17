@@ -11,15 +11,18 @@ public class OutputFlusher implements Runnable {
 			try {
 				if (OTermEnvironment.Instance().isSignedIn()) {
 					try {
-						char[] cBuf = new char[100];
-						int readCount = OTermEnvironment.Instance().getShellInputStream().read(cBuf);
-						OTermEnvironment.Instance().AppendOutput(cBuf,0,readCount);
+						char[] cBuf = new char[10000];
+						int readCount = OTermEnvironment.Instance()
+								.getShellInputStream().read(cBuf);
+						OTermEnvironment.Instance().AppendOutput(cBuf, 0,
+								readCount);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+				} else {
+					Thread.sleep(50);
 				}
-				Thread.sleep(50);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

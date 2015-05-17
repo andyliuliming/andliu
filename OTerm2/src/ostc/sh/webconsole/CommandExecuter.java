@@ -19,7 +19,7 @@ import com.jcraft.jsch.JSchException;
 
 public class CommandExecuter implements Runnable {
 
-	private Queue<Command> commandQueue;
+	private ArrayBlockingQueue<Command> commandQueue;
 
 	public CommandExecuter() {
 
@@ -31,7 +31,7 @@ public class CommandExecuter implements Runnable {
 		// TODO Auto-generated method stub
 		while (true) {
 			try {
-				Command current = commandQueue.poll();
+				Command current = commandQueue.take();
 				if (current != null) {
 					switch (current.getAction()) {
 					case Actions.Login:
@@ -134,7 +134,6 @@ public class CommandExecuter implements Runnable {
 						break;
 					}
 				}
-				Thread.sleep(50);
 			} catch (InterruptedException | JSchException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -146,7 +145,7 @@ public class CommandExecuter implements Runnable {
 		return commandQueue;
 	}
 
-	public void setCommandQueue(Queue<Command> commandQueue) {
+	public void setCommandQueue(ArrayBlockingQueue<Command> commandQueue) {
 		this.commandQueue = commandQueue;
 	}
 
