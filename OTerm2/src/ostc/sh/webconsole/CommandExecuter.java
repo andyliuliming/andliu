@@ -67,6 +67,12 @@ public class CommandExecuter implements Runnable {
 						OTermEnvironment.Instance().getIdentityInfo().KeyPath = current
 						.getParameter();
 						break;
+					case Actions.SetSize:
+						String[] widthAndHeight=current.getParameter().split(":");
+						int width=Integer.valueOf(widthAndHeight[0]);
+						int height=Integer.valueOf(widthAndHeight[1]);
+						OTermEnvironment.Instance().getSshConnection().GetChannelShell().setPtySize(height, width, 0, 0);
+						break;
 					case Actions.CopyFile:
 						SCPDialog dialog = new SCPDialog();
 						dialog.setLocationRelativeTo(null);
