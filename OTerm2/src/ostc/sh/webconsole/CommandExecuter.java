@@ -62,6 +62,11 @@ public class CommandExecuter implements Runnable {
 							e.printStackTrace();
 						}
 						break;
+
+					case Actions.SetIdentityFilePath:
+						OTermEnvironment.Instance().getIdentityInfo().KeyPath = current
+						.getParameter();
+						break;
 					case Actions.CopyFile:
 						SCPDialog dialog = new SCPDialog();
 						dialog.setLocationRelativeTo(null);

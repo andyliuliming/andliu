@@ -15,6 +15,15 @@ function initializeLogin() {
         $(butt.target).addClass("auth_button_selected");
     })
 
+    $("#password_option_button").click(function (e) {
+
+    });
+
+    $("#privatekey_option_button").click(function (e) {
+
+    });
+
+
     $("#loginbutton").click(function () {
         loginIn();
     })
