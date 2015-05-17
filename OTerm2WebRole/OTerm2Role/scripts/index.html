@@ -24,7 +24,11 @@
             $(".auth_button1").addClass("auth_button_selected");
             $("#loginbutton").css("color", "white");
             $("#loginbutton").css("background", "rgb(0, 188, 242)");
-           
+            
+            $(window).resize(function () {
+                terminalResize();
+            });
+
             initializeLogin();
 
             function docWriteWrapper(jq, func) {

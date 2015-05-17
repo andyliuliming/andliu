@@ -1,8 +1,10 @@
+var term;
 function renderTerminal() {
 
-    var term = new Terminal({
+    
+    term = new Terminal({
         cols: 120,
-        rows: 60,
+        rows: 40,
         useStyle: true,
         screenKeys: true,
         cursorBlink: false
@@ -17,7 +19,7 @@ function renderTerminal() {
     setInterval(function () {
         var output = otermApplet.GetOutput();
         term.write(output);
-    }, 50);
+    }, 10);
 
     // bind the actions
     $("#terminal_action_file").click(function (e) {
@@ -27,4 +29,8 @@ function renderTerminal() {
     $("#terminal_action_actions").click(function (e) {
         otermApplet.SetAction("CertPair", "");
     });
+}
+
+function terminalResize() {
+    // implements the resize
 }
