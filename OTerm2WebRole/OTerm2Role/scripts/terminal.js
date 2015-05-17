@@ -29,10 +29,9 @@ function renderTerminal() {
         if (output != null && output != "") {
             term.write(output);
         }
-         if(term.isMSIE){
-             $(".terminal").focus();
-         }
-        //term.getCopyTextarea().focus();
+        if (term.isMSIE) {
+            $(".terminal").focus();
+        }
     }, 10);
 
     // bind the actions
