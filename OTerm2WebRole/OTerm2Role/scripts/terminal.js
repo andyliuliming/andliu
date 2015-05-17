@@ -29,7 +29,9 @@ function renderTerminal() {
         if (output != null && output != "") {
             term.write(output);
         }
-        $(".terminal").focus();
+         if(term.isMSIE){
+             $(".terminal").focus();
+         }
         //term.getCopyTextarea().focus();
     }, 10);
 
