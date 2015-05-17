@@ -81,9 +81,9 @@
 }
 
 #terminal_terminal {
-    background-color: pink;
     float: left;
-    position: relative;
+    margin-left: 100px;
+    position: absolute;
 }
 
 .terminal {
