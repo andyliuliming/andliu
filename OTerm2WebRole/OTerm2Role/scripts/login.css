@@ -17,6 +17,10 @@ body {
     margin: 0;
 }
 
+#identity_file {
+    display: none;
+}
+
 .auth_button1 {
     float: left;
     margin: 0;
@@ -33,10 +37,10 @@ body {
     font-family: 'Segoe UI';
     border-width: 0px;
     height: 35px;
-    width:90px;
+    width: 90px;
     border-color: rgb(117, 117, 117);
     font-size: 12px;
-    font-weight:bold;
+    font-weight: bold;
     color: rgb(117, 117, 117);
     background: white;
 }
@@ -83,7 +87,7 @@ li {
 .login_header {
     background-color: black;
     color: white;
-    padding-bottom:10px;
+    padding-bottom: 10px;
 }
 
 .login_header_label {

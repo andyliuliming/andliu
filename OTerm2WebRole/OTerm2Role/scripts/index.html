@@ -18,6 +18,7 @@
     <!--<link href="./jquery-ui.css" rel="stylesheet" />-->
     <link href="./login.css" rel="stylesheet" />
     <link href="./terminal.css" rel="stylesheet" />
+    <link href="./dialog.css" rel="stylesheet" />
 </head>
 <body>
     <script>
@@ -68,9 +69,10 @@
                     <button id="password_option_button" class="auth_button1 auth_button">Password</button>
                     <button id="privatekey_option_button" class="auth_button2 auth_button">SSH Private Key</button>
                 </li>
-                <li class="input_label_li"><label>Password:</label></li>
+                <li class="input_label_li"><label id="auth_type_label">Password:</label></li>
                 <li>
                     <input class="login_input" id="password" type="password" />
+                    <input type="file" id="identity_file" />
                 </li>
                 <li class="input_label_li">
                     <button class="connect_button" name="login" id="loginbutton">Connect</button>
@@ -103,8 +105,16 @@
     </div>
 
     <div id="setting_dialog">
-        <label for="setting_width">Width:</label> <input id="setting_width" />
-        <label for="setting_height">Height:</label> <input id="setting_height" />
+        <ul>
+            <li><label for="setting_width">Width:</label></li>
+            <li><input id="setting_width" /></li>
+            <li><label for="setting_height">Height:</label>   </li>
+            <li><input id="setting_height" />               </li>
+            <li>
+                <input type="button" id="setting_dialog_ok" value="OK" />
+                <input type="button" id="setting_dialog_cancel" value="Cancel" />
+            </li>
+        </ul>
     </div>
 
 </body>

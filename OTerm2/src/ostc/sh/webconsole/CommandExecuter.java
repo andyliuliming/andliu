@@ -63,8 +63,8 @@ public class CommandExecuter implements Runnable {
 						}
 						break;
 
-					case Actions.SetIdentityFilePath:
-						OTermEnvironment.Instance().getIdentityInfo().KeyPath = current
+					case Actions.SetPrivateKey:
+						OTermEnvironment.Instance().getIdentityInfo().PrivateKey = current
 						.getParameter();
 						break;
 					case Actions.SetSize:

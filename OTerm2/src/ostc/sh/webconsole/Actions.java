@@ -8,6 +8,6 @@ public class Actions {
 	public static final String Input = "Input";
 	public static final String CopyFile = "CopyFile";
 	public static final String CertPair = "CertPair";
-	public static final String SetIdentityFilePath = "SetIdentityFilePath";
+	public static final String SetPrivateKey = "SetPrivateKey";
 	public static final String SetSize = "SetSize";
 }

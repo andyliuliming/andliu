@@ -38,10 +38,10 @@ public class SSHConnection {
 			JSch jsch = new JSch();
 			Boolean haveKeyFile = false;
 
-			haveKeyFile = identityInfo.KeyPath != null
-					&& !identityInfo.KeyPath.isEmpty();
+			haveKeyFile = identityInfo.PrivateKey != null
+					&& !identityInfo.PrivateKey.isEmpty();
 			if (haveKeyFile) {
-				jsch.addIdentity(identityInfo.KeyPath, identityInfo.Password);
+				jsch.addIdentity(identityInfo.PrivateKey, identityInfo.Password);
 			}
 
 			String host = identityInfo.HostName;

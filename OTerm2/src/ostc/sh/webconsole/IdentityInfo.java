@@ -10,11 +10,11 @@ public class IdentityInfo {
 		this.HostName = "";
 		this.UserName = "";
 		this.Password = "";
-		this.KeyPath = "";
+		this.PrivateKey = "";
 	}
 
 	public String HostName;
-	public String KeyPath;
+	public String PrivateKey;
 	public String UserName;
 	public String Password;
 }

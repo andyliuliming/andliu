@@ -1,29 +1,15 @@
 var term;
 function renderTerminal() {
-    $("#setting_dialog").dialog({
-        autoOpen: false,
-        show: {
-            effect: "blind",
-            duration: 1000
-        },
-        hide: {
-            effect: "explode",
-            duration: 1000
-        }, modal: true,
-        buttons: {
-            Ok: function () {
-                var width = $("#setting_width").val();
-                var height = $("#setting_height").val();
-                otermApplet.SetAction("SetSize", width + ":" + height);
-                term.resize(parseInt(width), parseInt(height));
-                $(this).dialog("close");
-            },
-            Cancel: function () {
-                $(this).dialog("close");
-            }
-        }
+    $("#setting_dialog_ok").click(function () {
+        var width = $("#setting_width").val();
+        var height = $("#setting_height").val();
+        otermApplet.SetAction("SetSize", width + ":" + height);
+        term.resize(parseInt(width), parseInt(height));
+        $("#setting_dialog").css("display", "none");
     });
-
+    $("#setting_dialog_cancel").click(function () {
+        $("#setting_dialog").css("display", "none");
+    });
     term = new Terminal({
         cols: 120,
         rows: 24,
@@ -55,7 +41,8 @@ function renderTerminal() {
     });
 
     $("#terminal_action_settings").click(function (e) {
-        $("#setting_dialog").dialog("open");
+        //$("#setting_dialog").dialog("open");
+        $("#setting_dialog").css("display", "block");
     })
 }
 
