@@ -81,7 +81,7 @@ public class SCPDialog extends JDialog {
 		localFileComboBox.setForeground(Color.GRAY);
 		localFileComboBox.setBackground(Color.WHITE);
 		localFileComboBox.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-		localFileComboBox.setBounds(31, 41, 286, 20);
+		localFileComboBox.setBounds(31, 41, 286, 30);
 		contentPanel.add(localFileComboBox);
 		
 		util = new FileCopyUtil();		
@@ -91,7 +91,7 @@ public class SCPDialog extends JDialog {
 		remoteFileComboBox.setForeground(Color.GRAY);
 		remoteFileComboBox.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		remoteFileComboBox.setBorder(new CompoundBorder(new LineBorder(new Color(192, 192, 192)), null));
-		remoteFileComboBox.setBounds(445, 41, 275, 20);
+		remoteFileComboBox.setBounds(445, 41, 275, 30);
 		contentPanel.add(remoteFileComboBox);
 		
 		sendToRemoteButton = new AutoScaleImage(new ImageIcon(SCPDialog.class.getResource("/ostc/sh/webconsole/images/Arrow_right.png")).getImage());
