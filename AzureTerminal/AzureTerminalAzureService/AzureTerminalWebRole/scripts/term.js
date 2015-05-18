@@ -1377,6 +1377,7 @@
         }
 
         if (parent) parent.appendChild(this.element);
+        if (this.focus) self.focus();
     };
 
     Terminal.prototype._cursorBlink = function () {

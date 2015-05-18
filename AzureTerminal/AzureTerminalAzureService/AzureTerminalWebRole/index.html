@@ -1,24 +1,19 @@
-<!doctype html>
-<!--
-  term.js
-  Copyright (c) 2012-2013, Andy Liu (MIT License)
--->
-
+<!DOCTYPE html>
+<html>
 <head>
     <title>Azure Web Terminal</title>
     <script src="./scripts/jquery-1.11.1.js"></script>
     <script src="./scripts/jquery.cookie.js"></script>
     <script src="./java/deployJava.js"></script>
-
     <script src="./scripts/applet.js"></script>
     <script src="./scripts/login.js"></script>
     <script src="./scripts/terminal.js"></script>
     <script src="./scripts/term.js"></script>
     <script src="./scripts/authcheck.js"></script>
-    <link href="./css/dialog.css" rel="stylesheet" />
-    <link href="./css/login.css" rel="stylesheet" />
-    <link href="./css/terminal.css" rel="stylesheet" />
-    <link href="./css/TestFontSize.css" rel="stylesheet" />
+    <link href="./css/dialog.css" rel="stylesheet" type="text/css"/>
+    <link href="./css/login.css" rel="stylesheet" type="text/css" />
+    <link href="./css/terminal.css" rel="stylesheet" type="text/css" />
+    <link href="./css/TestFontSize.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <script>
@@ -26,26 +21,35 @@
             $(".auth_button1").addClass("auth_button_selected");
             $("#loginbutton").css("color", "white");
             $("#loginbutton").css("background", "rgb(0, 188, 242)");
-            //if (checkAuth()) {
-                //$(window).resize(function () {
-                //    terminalResize();
-                //});
 
-                initializeLogin();
-
-                function docWriteWrapper(jq, func) {
-                    var oldwrite = document.write, content = '';
-                    document.write = function (text) {
-                        content += text;
-                    }
-                    func();
-                    document.write = oldwrite;
-                    jq.html(content);
+            $(".terminal").bind('mousewheel', function (e) {
+                if (e.originalEvent.wheelDelta / 120 > 0) {
+                    term.scrollDisp(1);
                 }
+                else {
+                    term.scrollDisp(-1);
+                }
+            });
+            //if (checkAuth()) {
+            //$(window).resize(function () {
+            //    terminalResize();
+            //});
 
-                docWriteWrapper($('#terminal_embedded_applet'), function () {
-                    initializeApplet();
-                });
+            initializeLogin();
+
+            function docWriteWrapper(jq, func) {
+                var oldwrite = document.write, content = '';
+                document.write = function (text) {
+                    content += text;
+                }
+                func();
+                document.write = oldwrite;
+                jq.html(content);
+            }
+
+            docWriteWrapper($('#terminal_embedded_applet'), function () {
+                initializeApplet();
+            });
             //}
             //else {
             //    $("body").html("You are not authorized to access this web site");
@@ -93,3 +97,4 @@
     <div id="terminal_main_panel">
     </div>
 </body>
+</html>
