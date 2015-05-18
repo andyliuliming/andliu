@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "OTerm2", "OTerm2.ccproj", "{D8BB500D-0EC9-459A-B7DA-B2CBA3B62BDB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OTerm2Role", "OTerm2Role\OTerm2Role.csproj", "{1A62CC12-D116-4E2A-A0AB-38F437A8E1F5}"
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "AzureTerminalAzureService", "AzureTerminalAzureService.ccproj", "{D8BB500D-0EC9-459A-B7DA-B2CBA3B62BDB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B697D219-0122-483B-A6DF-F0137827F8A3}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B697D2
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTerminalWebRole", "AzureTerminalWebRole\AzureTerminalWebRole.csproj", "{1A62CC12-D116-4E2A-A0AB-38F437A8E1F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

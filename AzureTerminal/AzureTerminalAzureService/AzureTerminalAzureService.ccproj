@@ -11,7 +11,7 @@
     <RootNamespace>OTerm2</RootNamespace>
     <AssemblyName>OTerm2</AssemblyName>
     <StartDevelopmentStorage>True</StartDevelopmentStorage>
-    <Name>OTerm2</Name>
+    <Name>AzureTerminalAzureService</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,24 +37,24 @@
     <ServiceConfiguration Include="ServiceConfiguration.Cloud.cscfg" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="OTerm2Role\OTerm2Role.csproj">
-      <Name>OTerm2Role</Name>
-      <Project>{1a62cc12-d116-4e2a-a0ab-38f437a8e1f5}</Project>
-      <Private>True</Private>
-      <RoleType>Web</RoleType>
-      <RoleName>OTerm2Role</RoleName>
-      <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="OTerm2RoleContent\" />
+    <Folder Include="AzureTerminalWebRoleContent" />
     <Folder Include="Profiles" />
   </ItemGroup>
   <ItemGroup>
-    <DiagnosticsConfiguration Include="OTerm2RoleContent\diagnostics.wadcfgx" />
+    <DiagnosticsConfiguration Include="AzureTerminalWebRoleContent\diagnostics.wadcfgx" />
   </ItemGroup>
   <ItemGroup>
     <PublishProfile Include="Profiles\oterm2Production.azurePubxml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="AzureTerminalWebRole\AzureTerminalWebRole.csproj">
+      <Name>AzureTerminalWebRole</Name>
+      <Project>{1a62cc12-d116-4e2a-a0ab-38f437a8e1f5}</Project>
+      <Private>True</Private>
+      <RoleType>Web</RoleType>
+      <RoleName>AzureTerminalWebRole</RoleName>
+      <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
+    </ProjectReference>
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>
