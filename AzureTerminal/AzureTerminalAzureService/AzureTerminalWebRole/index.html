@@ -30,7 +30,7 @@
                     term.scrollDisp(-1);
                 }
             });
-            //if (checkAuth()) {
+            if (checkAuth()) {
             //$(window).resize(function () {
             //    terminalResize();
             //});
@@ -50,10 +50,10 @@
             docWriteWrapper($('#terminal_embedded_applet'), function () {
                 initializeApplet();
             });
-            //}
-            //else {
-            //    $("body").html("You are not authorized to access this web site");
-            //}
+            }
+            else {
+                $("body").html("You are not authorized to access this web site");
+            }
 
         });
     </script>
