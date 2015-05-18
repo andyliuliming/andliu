@@ -1,0 +1,73 @@
+﻿#terminal_actions_panel {
+    display: none;
+    position: absolute;
+    /* display: none; */
+    background: url(../images/settings.png);
+    /*background-color: red;*/
+    /* width: 300px; */
+    height: 20px;
+    /* height: auto; */
+    width: 20px;
+    top: 0px;
+    right: 20px;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
+}
+
+#terminal_actions_list {
+    display: none;
+    position: absolute;
+    top: 20px;
+    right: 0px;
+    padding: 0px;
+    margin: 0px;
+    color: white;
+}
+
+#terminal_actions_list_ul {
+    margin: 0px;
+    padding: 0px;
+}
+
+    #terminal_actions_list_ul li {
+        margin: 0px;
+        cursor: pointer;
+    }
+
+
+
+#terminal_action_file {
+    /*background-image: url(../images/File.png);*/
+    border-width: 1px;
+    border-color: white;
+    /* border-right-width: 10px; */
+    /* border-left-width: 10px; */
+    border-style: solid;
+    cursor: pointer;
+}
+
+#terminal_action_settings {
+    /*background-image: url(../images/settings.png);*/
+    border-width: 1px;
+    border-color: white;
+    /* border-right-width: 10px; */
+    /* border-left-width: 10px; */
+    border-style: solid;
+    cursor: pointer;
+}
+
+#terminal_action_generate_key {
+    /*background-image: url(../images/Action.png);*/
+    border-width: 1px;
+    border-color: white;
+    border-top: 0px;
+    /* border-right-width: 10px; */
+    /* border-left-width: 10px; */
+    border-style: solid;
+    cursor: pointer;
+}

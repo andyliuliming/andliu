@@ -186,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\dialog.css" />
+    <Content Include="css\terminal_actions.css" />
     <Content Include="css\TestFontSize.css" />
     <Content Include="Global.asax" />
     <Content Include="images\Action.png" />

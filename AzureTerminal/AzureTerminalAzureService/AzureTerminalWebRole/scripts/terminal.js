@@ -1,8 +1,17 @@
 var term;
 var termWidth;
 var termHeight;
+var showSettings = false;
 function renderTerminal() {
-
+    $("#terminal_actions_panel").css("display", "block");
+    $("#terminal_actions_panel").click(function (e) {
+        if (!showSettings) {
+            $("#terminal_actions_list").css("display", "block");
+        } else {
+            $("#terminal_actions_list").css("display", "none");
+        }
+        showSettings = !showSettings;
+    });
     term = new Terminal({
         cols: termWidth,
         rows: termHeight,
@@ -24,13 +33,13 @@ function renderTerminal() {
     }, 10);
 
     // bind the actions
-    //$("#terminal_action_file").click(function (e) {
-    //    otermApplet.SetAction("CopyFile", "");
-    //});
+    $("#terminal_action_file").click(function (e) {
+        otermApplet.SetAction("CopyFile", "");
+    });
 
-    //$("#terminal_action_actions").click(function (e) {
-    //    otermApplet.SetAction("CertPair", "");
-    //});
+    $("#terminal_action_generate_key").click(function (e) {
+        otermApplet.SetAction("CertPair", "");
+    });
 
     //$("#terminal_action_settings").click(function (e) {
     //    $("#setting_dialog").css("display", "block");
@@ -44,8 +53,8 @@ function terminalResize() {
     var test = document.getElementById("TestFontSize");
     var charHeight = (test.clientHeight);
     var charWidth = (test.clientWidth);
-    termWidth = Math.floor(width / charWidth)-1;
-    termHeight = Math.floor(height / charHeight)-1;
+    termWidth = Math.floor(width / charWidth) - 1;
+    termHeight = Math.floor(height / charHeight) - 1;
     if (otermApplet != null) {
         otermApplet.SetAction("SetSize", termWidth + ":" + termHeight);
     }

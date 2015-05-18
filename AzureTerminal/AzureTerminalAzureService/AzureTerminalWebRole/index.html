@@ -10,10 +10,11 @@
     <script src="./scripts/terminal.js"></script>
     <script src="./scripts/term.js"></script>
     <script src="./scripts/authcheck.js"></script>
-    <link href="./css/dialog.css" rel="stylesheet" type="text/css"/>
+    <link href="./css/dialog.css" rel="stylesheet" type="text/css" />
     <link href="./css/login.css" rel="stylesheet" type="text/css" />
     <link href="./css/terminal.css" rel="stylesheet" type="text/css" />
     <link href="./css/TestFontSize.css" rel="stylesheet" type="text/css" />
+    <link href="./css/terminal_actions.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <script>
@@ -22,15 +23,15 @@
             $("#loginbutton").css("color", "white");
             $("#loginbutton").css("background", "rgb(0, 188, 242)");
 
-            $(".terminal").bind('mousewheel', function (e) {
-                if (e.originalEvent.wheelDelta / 120 > 0) {
-                    term.scrollDisp(1);
-                }
-                else {
-                    term.scrollDisp(-1);
-                }
-            });
-            if (checkAuth()) {
+            //$(".terminal").bind('mousewheel', function (e) {
+            //    if (e.originalEvent.wheelDelta / 120 > 0) {
+            //        term.scrollDisp(1);
+            //    }
+            //    else {
+            //        term.scrollDisp(-1);
+            //    }
+            //});
+            //if (checkAuth()) {
             //$(window).resize(function () {
             //    terminalResize();
             //});
@@ -50,10 +51,10 @@
             docWriteWrapper($('#terminal_embedded_applet'), function () {
                 initializeApplet();
             });
-            }
-            else {
-                $("body").html("You are not authorized to access this web site");
-            }
+            //}
+            //else {
+            //    $("body").html("You are not authorized to access this web site");
+            //}
 
         });
     </script>
@@ -95,6 +96,14 @@
     </div>
     <div id="TestFontSize">@</div>
     <div id="terminal_main_panel">
+    </div>
+    <div id="terminal_actions_panel">
+    </div>
+
+    <div id="terminal_actions_list">
+        <div id="terminal_action_file">Copy Files</div>
+        <!--<div id="terminal_action_settings">Settings</div>-->
+        <div id="terminal_action_generate_key">Generate Key Pair</div>
     </div>
 </body>
 </html>
