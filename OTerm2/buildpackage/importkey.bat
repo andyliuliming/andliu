@@ -1,1 +1,0 @@
-keytool -importkeystore -srckeystore azurewebterminal.pfx -srcstoretype pkcs12 -destkeystore LimingStore.jks -deststoretype JKS
