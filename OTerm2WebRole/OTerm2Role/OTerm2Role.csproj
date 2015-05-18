@@ -189,6 +189,7 @@
     <Content Include="scripts\applet.js" />
     <Content Include="scripts\Arrow_left.png" />
     <Content Include="scripts\Arrow_right.png" />
+    <Content Include="scripts\authcheck.js" />
     <Content Include="scripts\copyfile.png" />
     <Content Include="scripts\deployJava.js" />
     <Content Include="scripts\File.png" />
@@ -205,6 +206,7 @@
     <Content Include="scripts\terminal.js" />
     <Content Include="scripts\warning.png" />
     <Content Include="scripts\WebConsoleJNLP.html" />
+    <Content Include="scripts\whitelist.txt" />
     <Content Include="terminal.html" />
   </ItemGroup>
   <ItemGroup>
