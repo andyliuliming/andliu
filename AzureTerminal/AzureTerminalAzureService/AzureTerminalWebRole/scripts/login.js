@@ -50,6 +50,18 @@ function initializeLogin() {
 
 }
 
+var waitForSignedInInterval;
+function WaitForSignedIn() {
+    if (otermApplet != null) {
+        if (otermApplet.IsSignedIn()) {
+            clearInterval(waitForSignedInInterval);
+            $("#login_main_panel").css("display", "none");
+            $("#terminal_main_panel").css("display", "block");
+
+            renderTerminal();
+        }
+    }
+}
 function loginIn() {
     var hostname = $("#hostname");
     var username = $("#username");
@@ -63,7 +75,7 @@ function loginIn() {
     if (useIdentityFile) {
         var identityFile = $("#identity_file")[0].files[0];
         var identity_pub_file = $("#identity_pub_file")[0].files[0];
-        if (identityFile != null&&identity_pub_file!=null) {
+        if (identityFile != null && identity_pub_file != null) {
             var identityReader = new FileReader();
             identityReader.onload = function (e) {
                 var contents = e.target.result;
@@ -86,7 +98,7 @@ function loginIn() {
         }
     } else {
 
-        $.cookie("Password", password.val());
+        //$.cookie("Password", password.val());
         if (otermApplet != null) {
             otermApplet.SetAction("SetUserName", username.val());
             otermApplet.SetAction("SetPassword", password.val());
@@ -94,9 +106,8 @@ function loginIn() {
             otermApplet.SetAction("Login", "");
         }
     }
-    //wait for the success, then swith the panel
-    $("#login_main_panel").css("display", "none");
-    $("#terminal_main_panel").css("display", "block");
 
-    renderTerminal();
+    waitForSignedInInterval=setInterval(WaitForSignedIn, 500);
+    //wait for the success, then swith the panel
+
 }

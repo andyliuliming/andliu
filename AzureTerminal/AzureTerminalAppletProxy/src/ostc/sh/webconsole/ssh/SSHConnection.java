@@ -32,6 +32,8 @@ public class SSHConnection {
 		if (channel == null) {
 			channel = (ChannelShell) session.openChannel("shell");
 			channel.setPtyType("xterm256");
+			System.err.println("now we are connecting"+OTermEnvironment.Instance().getWidth()+ " "+OTermEnvironment.Instance().getHeight());
+			channel.setPtySize(OTermEnvironment.Instance().getWidth()	, OTermEnvironment.Instance().getHeight(), 8*OTermEnvironment.Instance().getWidth(), 20*OTermEnvironment.Instance().getHeight());
 			channel.connect();
 		}
 		return channel;

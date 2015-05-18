@@ -1,25 +1,30 @@
 var term;
+
+
+
 function renderTerminal() {
-    $("#setting_dialog_ok").click(function () {
-        var width = $("#setting_width").val();
-        var height = $("#setting_height").val();
-        otermApplet.SetAction("SetSize", width + ":" + height);
-        term.resize(parseInt(width), parseInt(height));
-        $("#setting_dialog").css("display", "none");
-    });
-    $("#setting_dialog_cancel").click(function () {
-        $("#setting_dialog").css("display", "none");
-    });
+    var width = $("body").width();
+    var height = $("body").height();
+
+    var test = document.getElementById("TestFontSize");
+    var charHeight = (test.clientHeight);
+    var charWidth = (test.clientWidth);
+    var termWidth = Math.floor(width / charWidth);
+    var termHeight = Math.floor(height / charHeight);
+    if (otermApplet != null) {
+        otermApplet.SetAction("SetSize", termWidth + ":" + termHeight);
+    }
+
     term = new Terminal({
-        cols: 120,
-        rows: 30,
+        cols: termWidth,
+        rows: termHeight,
         useStyle: true,
         screenKeys: true,
         cursorBlink: false
     });
 
-    term.open($("#terminal_terminal")[0]);
-
+    term.open($("#terminal_main_panel")[0]);
+    //terminalResize();
     term.on('data', function (data) {
         otermApplet.SetAction("Input", data);
     });
@@ -29,26 +34,38 @@ function renderTerminal() {
         if (output != null && output != "") {
             term.write(output);
         }
-        if (term.isMSIE) {
-            $(".terminal").focus();
-        }
+        //if (term.isMSIE) {
+        //    $(".terminal").focus();
+        //}
     }, 10);
 
     // bind the actions
-    $("#terminal_action_file").click(function (e) {
-        otermApplet.SetAction("CopyFile", "");
-    });
+    //$("#terminal_action_file").click(function (e) {
+    //    otermApplet.SetAction("CopyFile", "");
+    //});
 
-    $("#terminal_action_actions").click(function (e) {
-        otermApplet.SetAction("CertPair", "");
-    });
+    //$("#terminal_action_actions").click(function (e) {
+    //    otermApplet.SetAction("CertPair", "");
+    //});
 
-    $("#terminal_action_settings").click(function (e) {
-        //$("#setting_dialog").dialog("open");
-        $("#setting_dialog").css("display", "block");
-    })
+    //$("#terminal_action_settings").click(function (e) {
+    //    $("#setting_dialog").css("display", "block");
+    //})
 }
 
 function terminalResize() {
-    // implements the resize
+    var width = $("body").width();
+    var height = $("body").height();
+
+    var test = document.getElementById("TestFontSize");
+    var charHeight = (test.clientHeight);
+    var charWidth = (test.clientWidth);
+    var termWidth = Math.floor(width / charWidth);
+    var termHeight = Math.floor(height / charHeight);
+    if (otermApplet != null) {
+        otermApplet.SetAction("SetSize", termWidth + ":" + termHeight);
+    }
+    if(term != null){
+        term.resize(termWidth, termHeight);
+    }
 }

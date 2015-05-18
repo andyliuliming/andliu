@@ -18,6 +18,7 @@
     <link href="./css/dialog.css" rel="stylesheet" />
     <link href="./css/login.css" rel="stylesheet" />
     <link href="./css/terminal.css" rel="stylesheet" />
+    <link href="./css/TestFontSize.css" rel="stylesheet" />
 </head>
 <body>
     <script>
@@ -26,9 +27,9 @@
             $("#loginbutton").css("color", "white");
             $("#loginbutton").css("background", "rgb(0, 188, 242)");
             //if (checkAuth()) {
-                $(window).resize(function () {
-                    terminalResize();
-                });
+                //$(window).resize(function () {
+                //    terminalResize();
+                //});
 
                 initializeLogin();
 
@@ -88,9 +89,9 @@
             <label class="decoration_label">Make Your Connection Easier...</label>
         </div>
     </div>
-
+    <div id="TestFontSize">@</div>
     <div id="terminal_main_panel">
-        <div id="terminal_action_bar">
+        <!--<div id="terminal_action_bar">
             <ul id="terminal_action_items">
                 <li id="terminal_action_file" class="terminal_action_item"></li>
                 <li class="terminal_action_item_text">
@@ -105,11 +106,11 @@
                     <p>Actions</p>
                 </li>
             </ul>
-        </div>
-        <div id="terminal_terminal"></div>
+        </div>-->
+        <!--<div id="terminal_terminal"></div>-->
     </div>
 
-    <div id="setting_dialog">
+    <!--<div id="setting_dialog">
         <ul>
             <li><label id="setting_width_label" for="setting_width">Width:</label></li>
             <li><input id="setting_width" /></li>
@@ -120,6 +121,6 @@
                 <input type="button" id="setting_dialog_cancel" value="Cancel" />
             </li>
         </ul>
-    </div>
+    </div>-->
 
 </body>

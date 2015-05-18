@@ -186,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\dialog.css" />
+    <Content Include="css\TestFontSize.css" />
     <Content Include="Global.asax" />
     <Content Include="images\Action.png" />
     <Content Include="java\jsch-0.1.52.jar" />

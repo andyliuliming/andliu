@@ -70,10 +70,18 @@ public class CommandExecuter implements Runnable {
 						OTermEnvironment.Instance().getIdentityInfo().PrivateKey = current.getParameter();
 						break;
 					case Actions.SetSize:
-						String[] widthAndHeight = current.getParameter().split(":");
-						int width=Integer.valueOf(widthAndHeight[0]);
-						int height=Integer.valueOf(widthAndHeight[1]);
-						OTermEnvironment.Instance().getSshConnection().GetChannelShell().setPtySize(height, width, 0, 0);
+						String[] widthAndHeight = current.getParameter().split(
+								":");
+						int width = Integer.valueOf(widthAndHeight[0]);
+						int height = Integer.valueOf(widthAndHeight[1]);
+						OTermEnvironment.Instance().setWidth(width);
+						OTermEnvironment.Instance().setHeight(height);
+						if (OTermEnvironment.Instance().isSignedIn()) {
+							System.err.println("setsize again"+width+ " "+height);
+							OTermEnvironment.Instance().getSshConnection()
+									.GetChannelShell()
+									.setPtySize(width, height ,  width*8, height*20);
+						}
 						break;
 					case Actions.CopyFile:
 						SCPDialog dialog = new SCPDialog();

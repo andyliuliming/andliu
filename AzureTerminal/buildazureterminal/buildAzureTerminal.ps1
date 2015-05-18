@@ -5,7 +5,7 @@ if(!$env:Path.Contains("MSBuild"))
 
 
 .\pack_and_sign.bat
-xcopy /Y .\release\*.jar ..\AzureTerminalWebRole\java
+xcopy /Y .\release\*.jar ..\AzureTerminalAzureService\AzureTerminalWebRole\java
 
 msbuild /t:Clean
 

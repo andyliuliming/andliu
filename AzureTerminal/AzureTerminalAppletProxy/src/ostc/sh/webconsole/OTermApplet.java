@@ -88,4 +88,9 @@ public class OTermApplet extends JApplet implements WebFacade {
 		return OTermEnvironment.Instance().GetOutput();
 	}
 
+	@Override
+	public String IsSignedIn() {
+		return ""+OTermEnvironment.Instance().isSignedIn();
+	}
+
 }

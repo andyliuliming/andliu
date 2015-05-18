@@ -21,6 +21,8 @@ public class OTermEnvironment {
 	private IdentityInfo identityInfo;
 	private SSHConnection sshConnection;
 
+	private int width;
+	private int height;
 	public static OTermEnvironment Instance() {
 		if (environment == null) {
 			synchronized (object) {
@@ -118,6 +120,22 @@ public class OTermEnvironment {
 			}
 			sb.append(output, offset, length);
 		}
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
 	}
 
 }

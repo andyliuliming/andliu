@@ -14,7 +14,7 @@
     width: 100px;
     height: 100%;
     float: left;
-    background-color: black;
+    background-color: rgb(31,31,31);
 }
 
 #terminal_action_items {
@@ -30,6 +30,7 @@
     height: 60px;
     width: 60px;
     margin-top: 30px;
+    cursor: pointer;
     background-repeat: no-repeat;
     background-position: center;
     -webkit-background-size: contain;
@@ -94,6 +95,7 @@
     border: #000 solid 5px;
     font-family: "Courier New", monospace;
     font-size: 13px;
+    z-index:999;
 }
 
 .terminal-cursor {
