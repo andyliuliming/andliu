@@ -31,7 +31,7 @@ public class SSHConnection {
 	public ChannelShell GetChannelShell() throws JSchException {
 		if (channel == null) {
 			channel = (ChannelShell) session.openChannel("shell");
-			channel.setPtyType("xterm256");
+			channel.setPtyType("xterm");
 			System.err.println("now we are connect using  "
 					+ OTermEnvironment.Instance().getWidth() + " "
 					+ OTermEnvironment.Instance().getHeight());
