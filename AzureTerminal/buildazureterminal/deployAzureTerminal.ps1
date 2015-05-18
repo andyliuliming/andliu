@@ -101,13 +101,13 @@ function NewOrUpgradeDeployment
 
 
 "deploying the azure terminal service"
-$azureTerminalServiceConfig = "$currentFolder/AzureTerminalAzureService/bin/$buildType/app.publish/ServiceConfiguration.Cloud.cscfg"
+$azureTerminalServiceConfig = "$currentFolder/../AzureTerminalAzureService/bin/$buildType/app.publish/ServiceConfiguration.Cloud.cscfg"
 
-$azureTerminalServiceDiagnosticConfig = "$currentFolder/AzureTerminalAzureService/bin/$buildType/app.publish/Extensions/PaaSDiagnostics.AzureTerminalWebRole.PubConfig.xml"
+$azureTerminalServiceDiagnosticConfig = "$currentFolder/../AzureTerminalAzureService/bin/$buildType/app.publish/Extensions/PaaSDiagnostics.AzureTerminalWebRole.PubConfig.xml"
 
 
 NewOrUpgradeDeployment -ServiceName $azureWebTerminalAzureServiceName `
-            -Package "$currentFolder/AzureTerminalAzureService/bin/$buildType/app.publish/AzureTerminalAzureService.cspkg" `
+            -Package "$currentFolder/../AzureTerminalAzureService/bin/$buildType/app.publish/AzureTerminalAzureService.cspkg" `
             -Configuration $azureTerminalServiceConfig `
             -DiagnosticConfigPath $azureTerminalServiceDiagnosticConfig `
             -RoleName "AzureTerminalWebRole"`
