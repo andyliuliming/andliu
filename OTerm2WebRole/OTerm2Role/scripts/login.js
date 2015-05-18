@@ -67,12 +67,6 @@ function loginIn() {
             var identityReader = new FileReader();
             identityReader.onload = function (e) {
                 var contents = e.target.result;
-                //alert("Got the file.n"
-                //      + "name: " + f.name + "n"
-                //      + "type: " + f.type + "n"
-                //      + "size: " + f.size + " bytesn"
-                //      + "starts with: " + contents.substr(1, contents.indexOf("n"))
-                //);
                 var publicIdentityReader = new FileReader();
 
                 publicIdentityReader.onload = function (e2) {

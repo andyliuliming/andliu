@@ -1,10 +1,15 @@
-﻿function checkAuth() {
+﻿function endsWith(str, match) {
+    var d = str.length - match.length;
+    return d >= 0 && str.lastIndexOf(match) === d;
+}
+
+function checkAuth() {
     var idToken = getUrlVars()["id_token"];
     if (idToken != null) {
         var decodedString = atob(idToken.split('.')[1]);
         var id = JSON.parse(decodedString);
         if (id.unique_name != null) {
-            if (id.unique_name.endsWith("@microsoft.com")) {
+            if (endsWith(unique_name, "@microsoft.com")) {
                 return true;
             }
             else {
@@ -13,7 +18,7 @@
         }
 
         if (id.email != null) {
-            if (id.email.endsWith("@microsoft.com")) {
+            if (endsWith(email, "@microsoft.com")) {
                 return true;
             }
             else {

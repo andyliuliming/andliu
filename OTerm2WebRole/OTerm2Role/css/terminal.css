@@ -1,0 +1,102 @@
+#terminal_embedded_applet {
+    height: 0;
+    width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#deployJavaPlugin {
+    position: absolute;
+}
+
+#terminal_action_bar {
+    font-family: 'Segoe UI';
+    width: 100px;
+    height: 100%;
+    float: left;
+    background-color: black;
+}
+
+#terminal_action_items {
+    height: 100%;
+    position: relative;
+    width: 60px;
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.terminal_action_item {
+    height: 60px;
+    width: 60px;
+    margin-top: 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+    .terminal_action_item:first-of-type {
+        margin-top: 0px;
+    }
+
+.terminal_action_item_text {
+    color: white;
+    font-size: 18px;
+    margin: 0px;
+    height: 20px;
+    width: 60px;
+}
+
+    .terminal_action_item_text p {
+        margin: 0px;
+        text-align: center;
+    }
+
+#terminal_action_file {
+    background-image: url(../images/File.png);
+}
+
+#terminal_action_settings {
+    background-image: url(../images/settings.png);
+}
+
+#terminal_action_actions {
+    background-image: url(../images/Action.png);
+}
+
+
+
+#terminal_main_panel {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: scroll;
+    padding: 0px;
+    margin: 0px;
+    background-color: black;
+}
+
+#terminal_terminal {
+    float: left;
+    margin-left: 100px;
+    position: absolute;
+}
+
+.terminal {
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    float: left;
+    border: #000 solid 5px;
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+}
+
+.terminal-cursor {
+    color: #000;
+    background: #f0f0f0;
+}

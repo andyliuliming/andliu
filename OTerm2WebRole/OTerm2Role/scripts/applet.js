@@ -8,7 +8,7 @@ function initializeApplet() {
 	};
 
 	var parameters = {
-		jnlp_href : 'WebConsole.jnlp'
+		jnlp_href : './java/WebConsole.jnlp'
 	};
 
 	deployJava.runApplet(attributes, parameters, '1.7');

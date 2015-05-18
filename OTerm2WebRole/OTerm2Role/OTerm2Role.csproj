@@ -182,37 +182,37 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="css\login.css" />
-    <Content Include="css\terminal.css" />
+    <Content Include="java\jsch-0.1.52.jar" />
+    <Content Include="java\OTerm.jar" />
     <Content Include="Global.asax" />
-    <Content Include="scripts\Action.png" />
+    <Content Include="images\Action.png" />
     <Content Include="scripts\applet.js" />
-    <Content Include="scripts\Arrow_left.png" />
-    <Content Include="scripts\Arrow_right.png" />
+    <Content Include="images\Arrow_left.png" />
+    <Content Include="images\Arrow_right.png" />
     <Content Include="scripts\authcheck.js" />
-    <Content Include="scripts\copyfile.png" />
-    <Content Include="scripts\deployJava.js" />
-    <Content Include="scripts\File.png" />
-    <Content Include="scripts\heroillustration.png" />
-    <Content Include="scripts\index.html" />
+    <Content Include="images\copyfile.png" />
+    <Content Include="java\deployJava.js" />
+    <Content Include="images\File.png" />
+    <Content Include="images\heroillustration.png" />
+    <Content Include="index.html" />
     <Content Include="scripts\jquery-1.11.1.js" />
     <Content Include="scripts\jquery.cookie.js" />
-    <Content Include="scripts\keypair.png" />
-    <Content Include="scripts\login.css" />
+    <Content Include="images\keypair.png" />
+    <Content Include="css\login.css" />
     <Content Include="scripts\login.js" />
-    <Content Include="scripts\settings.png" />
+    <Content Include="images\settings.png" />
     <Content Include="scripts\term.js" />
-    <Content Include="scripts\terminal.css" />
+    <Content Include="css\terminal.css" />
     <Content Include="scripts\terminal.js" />
-    <Content Include="scripts\warning.png" />
-    <Content Include="scripts\WebConsoleJNLP.html" />
+    <Content Include="images\warning.png" />
+    <Content Include="WebConsoleJNLP.html" />
     <Content Include="scripts\whitelist.txt" />
     <Content Include="terminal.html" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web.config" />
     <Content Include="packages.config" />
-    <Content Include="scripts\WebConsole.jnlp" />
+    <Content Include="java\WebConsole.jnlp" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
