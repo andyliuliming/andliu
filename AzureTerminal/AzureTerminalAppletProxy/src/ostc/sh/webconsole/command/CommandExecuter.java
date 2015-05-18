@@ -16,8 +16,6 @@ import ostc.sh.webconsole.filecopy.SCPDialog;
 import ostc.sh.webconsole.keypair.KeyGenerator;
 import ostc.sh.webconsole.keypair.KeyPairDialog;
 
-import com.jcraft.jsch.JSchException;
-
 public class CommandExecuter implements Runnable {
 
 	private ArrayBlockingQueue<Command> commandQueue;
@@ -36,9 +34,15 @@ public class CommandExecuter implements Runnable {
 				if (current != null) {
 					switch (current.getAction()) {
 					case Actions.Login:
+						try{
+							OTermEnvironment.Instance().setSignedInStatus("ongoing");
 						OTermEnvironment.Instance().getSshConnection()
 								.Connect();
-						OTermEnvironment.Instance().setSignedIn(true);
+						OTermEnvironment.Instance().setSignedInStatus("success");
+						}catch(Exception e){
+
+							OTermEnvironment.Instance().setSignedInStatus("failed");
+						}
 						break;
 					case Actions.SetUserName:
 						OTermEnvironment.Instance().getIdentityInfo().UserName = current
@@ -70,17 +74,17 @@ public class CommandExecuter implements Runnable {
 						OTermEnvironment.Instance().getIdentityInfo().PrivateKey = current.getParameter();
 						break;
 					case Actions.SetSize:
-						String[] widthAndHeight = current.getParameter().split(
-								":");
+						String[] widthAndHeight = current.getParameter().split(":");
 						int width = Integer.valueOf(widthAndHeight[0]);
 						int height = Integer.valueOf(widthAndHeight[1]);
 						OTermEnvironment.Instance().setWidth(width);
 						OTermEnvironment.Instance().setHeight(height);
-						if (OTermEnvironment.Instance().isSignedIn()) {
-							System.err.println("setsize again"+width+ " "+height);
+						if (OTermEnvironment.Instance().getSignedInStatus()
+								!=null&&OTermEnvironment.Instance().getSignedInStatus().equals("success")) {
+							System.err.println("set size again "+width+ " "+height);
 							OTermEnvironment.Instance().getSshConnection()
 									.GetChannelShell()
-									.setPtySize(width, height ,  width*8, height*20);
+									.setPtySize(width, height ,  0, 0);
 						}
 						break;
 					case Actions.CopyFile:

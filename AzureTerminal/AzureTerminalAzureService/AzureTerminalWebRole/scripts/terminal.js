@@ -1,19 +1,7 @@
 var term;
-
-
-
+var termWidth;
+var termHeight;
 function renderTerminal() {
-    var width = $("body").width();
-    var height = $("body").height();
-
-    var test = document.getElementById("TestFontSize");
-    var charHeight = (test.clientHeight);
-    var charWidth = (test.clientWidth);
-    var termWidth = Math.floor(width / charWidth);
-    var termHeight = Math.floor(height / charHeight);
-    if (otermApplet != null) {
-        otermApplet.SetAction("SetSize", termWidth + ":" + termHeight);
-    }
 
     term = new Terminal({
         cols: termWidth,
@@ -24,7 +12,6 @@ function renderTerminal() {
     });
 
     term.open($("#terminal_main_panel")[0]);
-    //terminalResize();
     term.on('data', function (data) {
         otermApplet.SetAction("Input", data);
     });
@@ -34,9 +21,9 @@ function renderTerminal() {
         if (output != null && output != "") {
             term.write(output);
         }
-        //if (term.isMSIE) {
-        //    $(".terminal").focus();
-        //}
+        if (term.isMSIE) {
+            $(".terminal").focus();
+        }
     }, 10);
 
     // bind the actions
@@ -60,12 +47,9 @@ function terminalResize() {
     var test = document.getElementById("TestFontSize");
     var charHeight = (test.clientHeight);
     var charWidth = (test.clientWidth);
-    var termWidth = Math.floor(width / charWidth);
-    var termHeight = Math.floor(height / charHeight);
+    termWidth = Math.floor(width / charWidth)-1;
+    termHeight = Math.floor(height / charHeight)-1;
     if (otermApplet != null) {
         otermApplet.SetAction("SetSize", termWidth + ":" + termHeight);
-    }
-    if(term != null){
-        term.resize(termWidth, termHeight);
     }
 }

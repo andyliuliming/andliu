@@ -32,8 +32,11 @@ public class SSHConnection {
 		if (channel == null) {
 			channel = (ChannelShell) session.openChannel("shell");
 			channel.setPtyType("xterm256");
-			System.err.println("now we are connecting"+OTermEnvironment.Instance().getWidth()+ " "+OTermEnvironment.Instance().getHeight());
-			channel.setPtySize(OTermEnvironment.Instance().getWidth()	, OTermEnvironment.Instance().getHeight(), 8*OTermEnvironment.Instance().getWidth(), 20*OTermEnvironment.Instance().getHeight());
+			System.err.println("now we are connect using  "
+					+ OTermEnvironment.Instance().getWidth() + " "
+					+ OTermEnvironment.Instance().getHeight());
+			channel.setPtySize(OTermEnvironment.Instance().getWidth(),
+					OTermEnvironment.Instance().getHeight(), 0, 0);
 			channel.connect();
 		}
 		return channel;
@@ -46,15 +49,21 @@ public class SSHConnection {
 
 			haveKeyFile = identityInfo.PrivateKey != null
 					&& !identityInfo.PrivateKey.isEmpty();
-			if (haveKeyFile) {		
-				
-				//jsch.addIdentity("C:\\Users\\andliu\\Desktop\\ssh_private_key",identityInfo.Password);
-				System.err.println(OTermEnvironment.Instance().getIdentityInfo().PrivateKey);
-				System.err.println(OTermEnvironment.Instance().getIdentityInfo().PublicKey);
-				ContentIdentity contentIdentity = new ContentIdentity(jsch,
-						"ssh_private_key", OTermEnvironment.Instance().getIdentityInfo().PrivateKey.getBytes("UTF-8"),
-						OTermEnvironment.Instance().getIdentityInfo().PublicKey.getBytes("UTF-8"));
-				jsch.addIdentity(contentIdentity, identityInfo.Password.getBytes("UTF-8"));
+			if (haveKeyFile) {
+
+				// jsch.addIdentity("C:\\Users\\andliu\\Desktop\\ssh_private_key",identityInfo.Password);
+				System.err.println(OTermEnvironment.Instance()
+						.getIdentityInfo().PrivateKey);
+				System.err.println(OTermEnvironment.Instance()
+						.getIdentityInfo().PublicKey);
+				ContentIdentity contentIdentity = new ContentIdentity(
+						jsch,
+						"ssh_private_key",
+						OTermEnvironment.Instance().getIdentityInfo().PrivateKey
+								.getBytes("UTF-8"), OTermEnvironment.Instance()
+								.getIdentityInfo().PublicKey.getBytes("UTF-8"));
+				jsch.addIdentity(contentIdentity,
+						identityInfo.Password.getBytes("UTF-8"));
 			}
 
 			String host = identityInfo.HostName;

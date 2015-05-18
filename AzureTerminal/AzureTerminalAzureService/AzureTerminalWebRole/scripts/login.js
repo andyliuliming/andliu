@@ -53,12 +53,18 @@ function initializeLogin() {
 var waitForSignedInInterval;
 function WaitForSignedIn() {
     if (otermApplet != null) {
-        if (otermApplet.IsSignedIn()) {
+        var signedInStatus = otermApplet.getSignedInStatus()
+        if (signedInStatus == "success") {
             clearInterval(waitForSignedInInterval);
             $("#login_main_panel").css("display", "none");
             $("#terminal_main_panel").css("display", "block");
 
             renderTerminal();
+        }
+        else if (signedInStatus == "failed")
+        {
+            alert("Please check the hostname, username or password or port.");
+            clearInterval(waitForSignedInInterval);
         }
     }
 }
@@ -89,6 +95,7 @@ function loginIn() {
                         otermApplet.SetAction("SetHostName", hostname.val());
                         otermApplet.SetAction("SetPrivateKey", contents);
                         otermApplet.SetAction("SetPublicKey", publicContents);
+                        terminalResize();
                         otermApplet.SetAction("Login", "");
                     }
                 };
@@ -98,11 +105,11 @@ function loginIn() {
         }
     } else {
 
-        //$.cookie("Password", password.val());
         if (otermApplet != null) {
             otermApplet.SetAction("SetUserName", username.val());
             otermApplet.SetAction("SetPassword", password.val());
             otermApplet.SetAction("SetHostName", hostname.val());
+            terminalResize();
             otermApplet.SetAction("Login", "");
         }
     }

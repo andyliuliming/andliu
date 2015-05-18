@@ -6,5 +6,5 @@ public interface WebFacade {
 	
 	public String GetOutput();
 	
-	public String IsSignedIn();
+	public String getSignedInStatus();
 }

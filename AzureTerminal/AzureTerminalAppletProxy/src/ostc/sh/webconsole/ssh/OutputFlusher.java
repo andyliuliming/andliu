@@ -11,7 +11,8 @@ public class OutputFlusher implements Runnable {
 		// TODO Auto-generated method stub
 		while (true) {
 			try {
-				if (OTermEnvironment.Instance().isSignedIn()) {
+				if (OTermEnvironment.Instance().getSignedInStatus()
+						!=null&&OTermEnvironment.Instance().getSignedInStatus().equals("success")) {
 					try {
 						char[] cBuf = new char[10000];
 						int readCount = OTermEnvironment.Instance()

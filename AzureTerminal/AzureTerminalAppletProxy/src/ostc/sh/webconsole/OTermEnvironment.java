@@ -17,12 +17,13 @@ public class OTermEnvironment {
 	static Object object = new Object();
 	static OTermEnvironment environment;
 
-	private boolean signedIn;
+	private String signedInStatus;
 	private IdentityInfo identityInfo;
 	private SSHConnection sshConnection;
 
 	private int width;
 	private int height;
+
 	public static OTermEnvironment Instance() {
 		if (environment == null) {
 			synchronized (object) {
@@ -35,6 +36,8 @@ public class OTermEnvironment {
 	private OTermEnvironment() {
 		identityInfo = new IdentityInfo();
 		sshConnection = new SSHConnection(identityInfo);
+		this.width = 120;
+		this.height = 40;
 	}
 
 	public IdentityInfo getIdentityInfo() {
@@ -90,24 +93,15 @@ public class OTermEnvironment {
 		return isw;
 	}
 
-	public boolean isSignedIn() {
-		return signedIn;
-	}
 
-	public void setSignedIn(boolean signedIn) {
-		this.signedIn = signedIn;
-	}
-
-	
-	
 	private Object outputLock = new Object();
 	public StringBuilder sb = new StringBuilder();
-	
+
 	public String GetOutput() {
 		synchronized (outputLock) {
 			String output = sb.toString();
 			sb = new StringBuilder();
-			
+
 			return output;
 		}
 	}
@@ -115,8 +109,8 @@ public class OTermEnvironment {
 	public void AppendOutput(char[] output, int offset, int length) {
 		synchronized (outputLock) {
 			// StringBuilder sb = new StringBuilder();
-			for(int i=0;i<length;i++){
-				System.err.print(output[i+offset]);
+			for (int i = 0; i < length; i++) {
+				System.err.print(output[i + offset]);
 			}
 			sb.append(output, offset, length);
 		}
@@ -136,6 +130,14 @@ public class OTermEnvironment {
 
 	public void setWidth(int width) {
 		this.width = width;
+	}
+
+	public String getSignedInStatus() {
+		return signedInStatus;
+	}
+
+	public void setSignedInStatus(String signedInStatus) {
+		this.signedInStatus = signedInStatus;
 	}
 
 }
