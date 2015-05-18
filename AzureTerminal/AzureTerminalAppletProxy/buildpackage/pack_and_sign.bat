@@ -1,5 +1,6 @@
 mkdir ostc
 xcopy /Y ..\src\LimingStore .\
+xcopy /Y ..\src\message.properties .\
 xcopy /Y ..\..\OTerm2WebRole\OTerm2Role\scripts .\release
 xcopy /Y C:\Users\andliu\.m2\repository\com\jcraft\jsch\0.1.52\jsch-0.1.52.jar .\release
 robocopy /MIR ..\target\classes\ostc .\ostc

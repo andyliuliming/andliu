@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace OTerm2Role
+namespace AzureTerminalWebConsole
 {
     public class RouteConfig
     {

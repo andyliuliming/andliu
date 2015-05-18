@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace OTerm2Role
+namespace AzureTerminalWebConsole
 {
     public class FilterConfig
     {

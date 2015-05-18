@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using WebApi.OutputCache.V2;
 
-namespace OTerm2Role.Controllers
+namespace AzureTerminalWebConsole.Controllers
 {
     public class FilesController : ApiController
     {

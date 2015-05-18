@@ -4,6 +4,8 @@ if(!$env:Path.Contains("MSBuild"))
 }
 
 
+
+
 msbuild /t:Clean
 
 msbuild .\AzureTerminalAzureService\AzureTerminalWebRole\AzureTerminalAzureService.csproj

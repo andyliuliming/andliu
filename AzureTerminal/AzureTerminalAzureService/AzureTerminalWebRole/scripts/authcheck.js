@@ -26,6 +26,7 @@ function checkAuth() {
             }
         }
     } else {
-        window.location = "https://login.windows.net/common/oauth2/authorize?response_type=id_token&client_id=c421f49c-159b-4b87-b490-8d984f289c32&scope=openid&nonce=7362CAEA-9CA5-4B43-9BA3-34D7C303EBA7&response_mode=query";
+        window.location = "https://login.windows.net/common/oauth2/authorize?response_type=id_token&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&scope=openid&nonce=7362CAEA-9CA5-4B43-9BA3-34D7C303EBA7&response_mode=query";
+        return true;
     }
 }

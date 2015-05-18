@@ -6,7 +6,7 @@ using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using System.Diagnostics;
 
-namespace OTerm2Role
+namespace AzureTerminalWebConsole
 {
     public class WebRole : RoleEntryPoint
     {

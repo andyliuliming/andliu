@@ -10,7 +10,7 @@ using System.Web.Http.OData.Extensions;
 using System.Web.Http.OData.Routing;
 using System.Web.Http.OData.Routing.Conventions;
 
-namespace OTerm2Role
+namespace AzureTerminalWebConsole
 {
     public static class WebApiConfig
     {
