@@ -6,7 +6,7 @@ if(!$env:Path.Contains("MSBuild"))
 
 msbuild /t:Clean
 
-msbuild .\OTerm2WebRole\OTerm2WebRole\OTerm2WebRole.csproj
-msbuild .\OTerm2WebRole\OTerm2.ccproj /t:Publish /p:TargetProfile=Cloud /p:EnableIntelliTrace=true `
-        /p:IntelliTraceConnectionString='"BaseEndpoint=core.windows.net;Protocol=https;AccountName=happyzldiagnostic;AccountKey=/fKR567gb3f+BRLodIBIOHJHdqn74ZyMPmaeHBPlB/VbzPnIT25pKjPXyYHatH4g2N0Jd1lJzekP99teFwZgmA=="'
+msbuild .\AzureTerminalAzureService\AzureTerminalWebRole\AzureTerminalAzureService.csproj
+msbuild .\AzureTerminalAzureService\AzureTerminalAzureService.ccproj /t:Publish /p:TargetProfile=Cloud /p:EnableIntelliTrace=true `
+        /p:IntelliTraceConnectionString='"BaseEndpoint=core.windows.net;Protocol=https;AccountName=azureterminal;AccountKey=rosJO41UigS5Y58cKYAMXjFVeKvRDyql+4Af6rFygOYPHfI+6m5Du6FE7rFVeffE7Nq6dlZsjES9Stt3g0ECVA=="'
 
