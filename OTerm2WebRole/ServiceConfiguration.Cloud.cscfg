@@ -3,7 +3,7 @@
   <Role name="OTerm2Role">
     <Instances count="1" />
     <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=andliu;AccountKey=er2/i8YaqVAVQNomvJBYSEKMpLpID+qF1zErGo/ELTEhBxZ+aGgnU/Nw17D1rr4n2qsrg37Y4vRY/rlGq1GUGg==" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>
