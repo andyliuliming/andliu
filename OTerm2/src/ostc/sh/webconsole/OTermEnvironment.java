@@ -8,6 +8,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import ostc.sh.webconsole.ssh.IdentityInfo;
+import ostc.sh.webconsole.ssh.SSHConnection;
+
 import com.jcraft.jsch.JSchException;
 
 public class OTermEnvironment {
@@ -93,21 +96,26 @@ public class OTermEnvironment {
 		this.signedIn = signedIn;
 	}
 
+	
+	
 	private Object outputLock = new Object();
-
+	public StringBuilder sb = new StringBuilder();
+	
 	public String GetOutput() {
 		synchronized (outputLock) {
 			String output = sb.toString();
 			sb = new StringBuilder();
+			
 			return output;
 		}
 	}
 
-	public StringBuilder sb = new StringBuilder();
-
 	public void AppendOutput(char[] output, int offset, int length) {
 		synchronized (outputLock) {
 			// StringBuilder sb = new StringBuilder();
+			for(int i=0;i<length;i++){
+				System.err.print(output[i+offset]);
+			}
 			sb.append(output, offset, length);
 		}
 	}

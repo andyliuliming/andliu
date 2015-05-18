@@ -2,13 +2,15 @@ package ostc.sh.webconsole;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 import javax.swing.JApplet;
 
-import com.jcraft.jsch.ContentIdentity;
+import ostc.sh.webconsole.command.Actions;
+import ostc.sh.webconsole.command.Command;
+import ostc.sh.webconsole.command.CommandExecuter;
+import ostc.sh.webconsole.ssh.OutputFlusher;
 
 public class OTermApplet extends JApplet implements WebFacade {
 

@@ -8,14 +8,12 @@ import com.jcraft.jsch.KeyPair;
 
 public class ContentIdentity implements Identity {
 
-	private JSch jsch;
 	private KeyPair kpair;
 	private String identity;
 
 	public ContentIdentity(JSch jsch, String name, byte[] prvkey, byte[] pubkey)
 			throws JSchException {
 		this.kpair = KeyPair.load(jsch, prvkey, pubkey);
-		this.jsch = jsch;
 		this.identity = name;
 	}
 
