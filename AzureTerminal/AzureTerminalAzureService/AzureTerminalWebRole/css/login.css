@@ -29,14 +29,31 @@ body {
     display: none;
 }
 
+.auth_button {
+    font-family: 'Segoe UI';
+    border-color: rgb(117, 117, 117);
+    height: 22px;
+    font-size: 12px;
+    color: rgb(117, 117, 117);
+    background: white;
+}
+
 .auth_button1 {
     float: left;
     margin: 0;
     border-right-width: 0px;
+    border-left-width: 1px;
+    border-bottom-width: 1px;
+    border-top-width: 1px;
+    border-right: 1px;
 }
 
 .auth_button2 {
     border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-right-width: 1px;
 }
 
 #loginbutton {
@@ -49,16 +66,6 @@ body {
     border-color: rgb(117, 117, 117);
     font-size: 12px;
     font-weight: bold;
-    color: rgb(117, 117, 117);
-    background: white;
-}
-
-.auth_button {
-    font-family: 'Segoe UI';
-    border-width: 1px;
-    border-color: rgb(117, 117, 117);
-    height: 22px;
-    font-size: 12px;
     color: rgb(117, 117, 117);
     background: white;
 }
