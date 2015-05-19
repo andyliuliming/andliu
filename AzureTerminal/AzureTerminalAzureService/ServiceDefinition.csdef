@@ -14,5 +14,7 @@
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />
     </Endpoints>
+    <Certificates>
+    </Certificates>
   </WebRole>
 </ServiceDefinition>

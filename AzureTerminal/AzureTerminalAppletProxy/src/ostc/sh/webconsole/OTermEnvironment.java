@@ -109,9 +109,9 @@ public class OTermEnvironment {
 	public void AppendOutput(char[] output, int offset, int length) {
 		synchronized (outputLock) {
 			// StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < length; i++) {
+			/*for (int i = 0; i < length; i++) {
 				System.err.print(output[i + offset]);
-			}
+			}*/
 			sb.append(output, offset, length);
 		}
 	}
