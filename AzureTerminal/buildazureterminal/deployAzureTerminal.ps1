@@ -19,7 +19,7 @@ $azureWebTerminalServiceRoleName="AzureTerminalWebRole"
 $deploymentAndDiagnosticStorageAccountName="azureterminal"
 
 
-$Stage="Production"
+$Stage="Staging"
 $currentFolder = pwd
 
 function MakeSureStorageAccountExists
@@ -75,7 +75,7 @@ function NewOrUpgradeDeployment
     $Slot,
     $DiagnosticConfigPath
     )
-    $azureDeployment = Get-AzureDeployment -ServiceName $ServiceName
+    $azureDeployment = Get-AzureDeployment -ServiceName $ServiceName -Slot $Slot
     if($azureDeployment -eq $null)
     {
         Write-Host "no azure deployment exists, so create directly..."

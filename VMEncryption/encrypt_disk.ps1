@@ -31,7 +31,7 @@ function Encrypt-Disk
     $privateConfig='
     {
 		"command":"existdisk",
-		"query":{"scsi_number":"[5:0:0:'+$lun+']"},
+		"query":{"scsi_number":"[5:0:0:' + $lun + ']"},
 		"passphrase":"MicrosoftLoveLinuxBecauseWeHaveCCIC@123",
 		"existQuery":{"scsi_number":"[5:0:0:0]"}
 	}
