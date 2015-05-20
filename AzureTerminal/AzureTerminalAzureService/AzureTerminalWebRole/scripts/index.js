@@ -1,3 +1,8 @@
+function useHttps() {
+    if (window.location.protocol != "https:")
+        window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
+}
+
 function switchToTerminalMainPage() {
     $("#login_main_panel").css("display", "none");
     $("#terminal_main_panel").css("display", "block");
