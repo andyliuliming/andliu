@@ -122,14 +122,12 @@ public class SSHConnection {
 				// jsch.addIdentity("C:\\Users\\andliu\\Desktop\\ssh_private_key",identityInfo.Password);
 				System.err.println(OTermEnvironment.Instance()
 						.getIdentityInfo().PrivateKey);
-				System.err.println(OTermEnvironment.Instance()
-						.getIdentityInfo().PublicKey);
+				
 				ContentIdentity contentIdentity = new ContentIdentity(
 						jsch,
 						"ssh_private_key",
 						OTermEnvironment.Instance().getIdentityInfo().PrivateKey
-								.getBytes("UTF-8"), OTermEnvironment.Instance()
-								.getIdentityInfo().PublicKey.getBytes("UTF-8"));
+								.getBytes("UTF-8"), null);
 				jsch.addIdentity(contentIdentity,
 						identityInfo.Password.getBytes("UTF-8"));
 			}

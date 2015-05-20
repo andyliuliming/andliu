@@ -11,24 +11,25 @@
 
 var useIdentityFile = false;
 function initializeLogin() {
-    $(".auth_button").unbind();
-    $(".auth_button").bind("click",function (butt) {
-        $(".auth_button").removeClass("auth_button_selected");
-        $(butt.target).addClass("auth_button_selected");
-    })
 
     $("#password_option_button").unbind("click");
-    $("#password_option_button").bind("click",function (e) {
+    $("#password_option_button").bind("click", function (e) {
         useIdentityFile = false;
+
+        $(".auth_button").removeClass("auth_button_selected");
+        $(e.target).addClass("auth_button_selected");
+
         $("#identity_file").css("display", "none");
-        $("#identity_pub_file").css("display", "none");
         $("#password").css("display", "block");
         $("#auth_type_label").html("Password:");
     });
 
     $("#privatekey_option_button").unbind("click");
-    $("#privatekey_option_button").bind("click",function (e) {
+    $("#privatekey_option_button").bind("click", function (e) {
         useIdentityFile = true;
+        $(".auth_button").removeClass("auth_button_selected");
+        $(e.target).addClass("auth_button_selected");
+
         $("#password").css("display", "none");
         $("#identity_file").css("display", "block");
         $("#identity_pub_file").css("display", "block");
@@ -36,7 +37,7 @@ function initializeLogin() {
     });
 
     $("#loginbutton").unbind("click");
-    $("#loginbutton").bind("click",function () {
+    $("#loginbutton").bind("click", function () {
         loginIn();
     })
     $("#password").unbind("keypress");
@@ -100,31 +101,21 @@ function loginIn() {
 
     if (useIdentityFile) {
         var identityFile = $("#identity_file")[0].files[0];
-        var identity_pub_file = $("#identity_pub_file")[0].files[0];
-        if (identityFile != null && identity_pub_file != null) {
-            var identityReader = new FileReader();
-            identityReader.onload = function (e) {
-                var contents = e.target.result;
-                var publicIdentityReader = new FileReader();
-
-                publicIdentityReader.onload = function (e2) {
-                    var publicContents = e2.target.result;
-                    if (otermApplet != null) {
-                        otermApplet.SetAction("SetUserName", username.val().trim());
-                        otermApplet.SetAction("SetPassword", password.val());
-                        otermApplet.SetAction("SetHostName", hostname.val().trim());
-                        otermApplet.SetAction("SetPort", port.val());
-                        otermApplet.SetAction("SetPrivateKey", contents);
-                        otermApplet.SetAction("SetPublicKey", publicContents);
-                        terminalResize();
-                        otermApplet.SetAction("Login", "");
-                        $('#loginbutton').attr("disabled", "disabled")
-                    }
-                };
-                publicIdentityReader.readAsText(identity_pub_file);
+        var identityReader = new FileReader();
+        identityReader.onload = function (e) {
+            var contents = e.target.result;
+            if (otermApplet != null) {
+                otermApplet.SetAction("SetUserName", username.val().trim());
+                otermApplet.SetAction("SetPassword", password.val());
+                otermApplet.SetAction("SetHostName", hostname.val().trim());
+                otermApplet.SetAction("SetPort", port.val());
+                otermApplet.SetAction("SetPrivateKey", contents);
+                terminalResize();
+                otermApplet.SetAction("Login", "");
+                $('#loginbutton').attr("disabled", "disabled")
             }
-            identityReader.readAsText(identityFile);
         }
+        identityReader.readAsText(identityFile);
     } else {
 
         if (otermApplet != null) {

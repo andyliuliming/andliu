@@ -17,14 +17,11 @@ public class IdentityInfo {
 	public String Port;
 	public String HostName;
 	public String PrivateKey;
-	public String PublicKey;
 	public String UserName;
 	public String Password;
 
 	public void CleanUp() {
 		this.Password = "";
 		this.PrivateKey = "";
-		this.PublicKey = "";
-
 	}
 }

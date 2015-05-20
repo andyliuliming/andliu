@@ -94,8 +94,8 @@ function NewOrUpgradeDeployment
     Write-Host "DiagnosticStorageAccountName is $deploymentAndDiagnosticStorageAccountName "
     $storageContext = New-AzureStorageContext -StorageAccountName $deploymentAndDiagnosticStorageAccountName -StorageAccountKey $diagnosticStorageKey
  
-    $DiagnosticConfig = New-AzureServiceDiagnosticsExtensionConfig -StorageContext $storageContext -DiagnosticsConfigurationPath $DiagnosticConfigPath -Role $RoleName
-    New-AzureDeployment -ServiceName $ServiceName -Package $Package -Configuration $Configuration -Slot $Slot -ExtensionConfiguration @($DiagnosticConfig)
+    #$DiagnosticConfig = New-AzureServiceDiagnosticsExtensionConfig -StorageContext $storageContext -DiagnosticsConfigurationPath $DiagnosticConfigPath -Role $RoleName
+    New-AzureDeployment -ServiceName $ServiceName -Package $Package -Configuration $Configuration -Slot $Slot #-ExtensionConfiguration @($DiagnosticConfig)
     $azureDeployment = $null
 }
 

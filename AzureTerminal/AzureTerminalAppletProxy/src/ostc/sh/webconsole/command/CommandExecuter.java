@@ -72,10 +72,6 @@ public class CommandExecuter implements Runnable {
 							e.printStackTrace();
 						}
 						break;
-					case Actions.SetPublicKey:
-						OTermEnvironment.Instance().getIdentityInfo().PublicKey = current
-								.getParameter();
-						break;
 					case Actions.SetPrivateKey:
 						OTermEnvironment.Instance().getIdentityInfo().PrivateKey = current
 								.getParameter();

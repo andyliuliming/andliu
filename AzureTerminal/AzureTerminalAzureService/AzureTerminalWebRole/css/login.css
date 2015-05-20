@@ -29,6 +29,8 @@ body {
     display: none;
 }
 
+
+
 .auth_button {
     font-family: 'Segoe UI';
     border-color: rgb(117, 117, 117);
@@ -39,23 +41,28 @@ body {
     cursor: pointer;
 }
 
-    .auth_button:nth-child(1) {
-        float: left;
-        margin: 0;
-        border-right-width: 0px;
-        border-left-width: 1px;
-        border-bottom-width: 1px;
-        border-top-width: 1px;
-        border-right: 1px;
-    }
+.auth_button_selected {
+    background: rgb(0, 188, 242);
+    color: white;
+}
 
-    .auth_button:nth-child(2) {
-        border-left-width: 1px;
-        border-right-width: 1px;
-        border-top-width: 1px;
-        border-bottom-width: 1px;
-        border-right-width: 1px;
-    }
+.auth_button:nth-child(1) {
+    float: left;
+    margin: 0;
+    border-right-width: 0px;
+    border-left-width: 1px;
+    border-bottom-width: 1px;
+    border-top-width: 1px;
+    border-right: 1px;
+}
+
+.auth_button:nth-child(2) {
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-right-width: 1px;
+}
 
 #loginbutton {
     color: white;
@@ -75,10 +82,6 @@ body {
         background-color: lightgrey;
     }
 
-.auth_button_selected {
-    background: rgb(0, 188, 242);
-    color: white;
-}
 
 .input_label_li {
     font-weight: normal;
@@ -92,6 +95,11 @@ body {
     color: rgb(13, 24, 33);
     font-size: 12px;
     font-family: 'Segoe UI';
+}
+
+#login_warning_label {
+    display: none;
+    color: yellow;
 }
 
 #login_main_panel {
