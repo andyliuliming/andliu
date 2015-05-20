@@ -34,15 +34,22 @@ public class CommandExecuter implements Runnable {
 				if (current != null) {
 					switch (current.getAction()) {
 					case Actions.Login:
-						try{
-							OTermEnvironment.Instance().setSignedInStatus("ongoing");
-						OTermEnvironment.Instance().getSshConnection()
-								.Connect();
-						OTermEnvironment.Instance().setSignedInStatus("success");
-						}catch(Exception e){
+						try {
+							OTermEnvironment.Instance().setSignedInStatus(
+									"ongoing");
+							OTermEnvironment.Instance().getSshConnection()
+									.Connect();
+							OTermEnvironment.Instance().setSignedInStatus(
+									"success");
+						} catch (Exception e) {
 
-							OTermEnvironment.Instance().setSignedInStatus("failed");
+							OTermEnvironment.Instance().setSignedInStatus(
+									"failed");
 						}
+						break;
+					case Actions.SetPort:
+						OTermEnvironment.Instance().getIdentityInfo().Port = current
+								.getParameter();
 						break;
 					case Actions.SetUserName:
 						OTermEnvironment.Instance().getIdentityInfo().UserName = current
@@ -68,23 +75,28 @@ public class CommandExecuter implements Runnable {
 						}
 						break;
 					case Actions.SetPublicKey:
-						OTermEnvironment.Instance().getIdentityInfo().PublicKey = current.getParameter();
+						OTermEnvironment.Instance().getIdentityInfo().PublicKey = current
+								.getParameter();
 						break;
 					case Actions.SetPrivateKey:
-						OTermEnvironment.Instance().getIdentityInfo().PrivateKey = current.getParameter();
+						OTermEnvironment.Instance().getIdentityInfo().PrivateKey = current
+								.getParameter();
 						break;
 					case Actions.SetSize:
-						String[] widthAndHeight = current.getParameter().split(":");
+						String[] widthAndHeight = current.getParameter().split(
+								":");
 						int width = Integer.valueOf(widthAndHeight[0]);
 						int height = Integer.valueOf(widthAndHeight[1]);
 						OTermEnvironment.Instance().setWidth(width);
 						OTermEnvironment.Instance().setHeight(height);
-						if (OTermEnvironment.Instance().getSignedInStatus()
-								!=null&&OTermEnvironment.Instance().getSignedInStatus().equals("success")) {
-							System.err.println("set size again "+width+ " "+height);
+						if (OTermEnvironment.Instance().getSignedInStatus() != null
+								&& OTermEnvironment.Instance()
+										.getSignedInStatus().equals("success")) {
+							System.err.println("set size again " + width + " "
+									+ height);
 							OTermEnvironment.Instance().getSshConnection()
 									.GetChannelShell()
-									.setPtySize(width, height ,  0, 0);
+									.setPtySize(width, height, 0, 0);
 						}
 						break;
 					case Actions.CopyFile:

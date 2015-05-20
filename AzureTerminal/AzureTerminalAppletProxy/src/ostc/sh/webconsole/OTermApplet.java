@@ -44,4 +44,9 @@ public class OTermApplet extends JApplet implements WebFacade {
 		return OTermEnvironment.Instance().getSignedInStatus();
 	}
 
+	@Override
+	public boolean IsConnected() {
+		return OTermEnvironment.Instance().getSshConnection().getSession().isConnected();
+	}
+
 }

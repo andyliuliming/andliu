@@ -7,4 +7,6 @@ public interface WebFacade {
 	public String GetOutput();
 	
 	public String getSignedInStatus();
+	
+	public boolean IsConnected();
 }

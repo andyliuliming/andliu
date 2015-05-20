@@ -68,7 +68,8 @@ public class SSHConnection {
 
 			String host = identityInfo.HostName;
 			String user = identityInfo.UserName;
-			session = jsch.getSession(user, host, 22);
+			String port = identityInfo.Port;
+			session = jsch.getSession(user, host, Integer.valueOf(port));
 
 			if (!haveKeyFile) {
 				String passwd = identityInfo.Password;

@@ -19,7 +19,7 @@ $azureWebTerminalServiceRoleName="AzureTerminalWebRole"
 $deploymentAndDiagnosticStorageAccountName="azureterminal"
 
 
-$Stage="Staging"
+$Stage="Production"
 $currentFolder = pwd
 
 function MakeSureStorageAccountExists

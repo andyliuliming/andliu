@@ -44,10 +44,13 @@ function initializeLogin() {
     });
 
     var hostName = getUrlVars()["host"];
-    if (hostName != null) {
+    if (hostName != null && hostName != "") {
         $("#hostname").val(hostName);
     }
 
+    $("#hostname").val($.cookie("HostName"));
+    $("#port").val($.cookie("Port"));
+    $("#username").val($.cookie("UserName"));
 }
 
 var waitForSignedInInterval;
@@ -60,9 +63,10 @@ function WaitForSignedIn() {
             $("#terminal_main_panel").css("display", "block");
 
             renderTerminal();
+            $('#loginbutton').removeAttr("disabled", "disabled")
         }
-        else if (signedInStatus == "failed")
-        {
+        else if (signedInStatus == "failed") {
+            $('#loginbutton').removeAttr("disabled", "disabled")
             alert("Please check the hostname, username or password or port.");
             clearInterval(waitForSignedInInterval);
         }
@@ -90,13 +94,15 @@ function loginIn() {
                 publicIdentityReader.onload = function (e2) {
                     var publicContents = e2.target.result;
                     if (otermApplet != null) {
-                        otermApplet.SetAction("SetUserName", username.val());
+                        otermApplet.SetAction("SetUserName", username.val().trim());
                         otermApplet.SetAction("SetPassword", password.val());
-                        otermApplet.SetAction("SetHostName", hostname.val());
+                        otermApplet.SetAction("SetHostName", hostname.val().trim());
+                        otermApplet.SetAction("SetPort", port.val());
                         otermApplet.SetAction("SetPrivateKey", contents);
                         otermApplet.SetAction("SetPublicKey", publicContents);
                         terminalResize();
                         otermApplet.SetAction("Login", "");
+                        $('#loginbutton').attr("disabled", "disabled")
                     }
                 };
                 publicIdentityReader.readAsText(identity_pub_file);
@@ -106,15 +112,16 @@ function loginIn() {
     } else {
 
         if (otermApplet != null) {
-            otermApplet.SetAction("SetUserName", username.val());
+            otermApplet.SetAction("SetUserName", username.val().trim());
             otermApplet.SetAction("SetPassword", password.val());
-            otermApplet.SetAction("SetHostName", hostname.val());
+            otermApplet.SetAction("SetHostName", hostname.val().trim());
+            otermApplet.SetAction("SetPort", port.val().trim());
             terminalResize();
             otermApplet.SetAction("Login", "");
+            $('#loginbutton').attr("disabled", "disabled")
         }
     }
 
-    waitForSignedInInterval=setInterval(WaitForSignedIn, 500);
-    //wait for the success, then swith the panel
+    waitForSignedInInterval = setInterval(WaitForSignedIn, 500);
 
 }
