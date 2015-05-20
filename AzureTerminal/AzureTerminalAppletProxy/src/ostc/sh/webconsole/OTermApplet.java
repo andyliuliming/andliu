@@ -1,6 +1,10 @@
 package ostc.sh.webconsole;
 
 import javax.swing.JApplet;
+
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+
 import ostc.sh.webconsole.command.Command;
 import ostc.sh.webconsole.command.CommandExecuter;
 import ostc.sh.webconsole.ssh.OutputFlusher;
@@ -24,8 +28,7 @@ public class OTermApplet extends JApplet implements WebFacade {
 		Thread outputFlusherThread = new Thread(outputFlusher);
 		outputFlusherThread.start();
 	}
-	
-	
+
 	public StringBuilder sb;
 	private CommandExecuter commandExecuter;
 
@@ -40,13 +43,24 @@ public class OTermApplet extends JApplet implements WebFacade {
 	}
 
 	@Override
-	public String getSignedInStatus(){
+	public String getSignedInStatus() {
 		return OTermEnvironment.Instance().getSignedInStatus();
 	}
 
 	@Override
 	public boolean IsConnected() {
-		return OTermEnvironment.Instance().getSshConnection().getSession().isConnected();
+		Session session = OTermEnvironment.Instance().getSshConnection()
+				.getSession();
+		if (session != null) {
+			try {
+				return OTermEnvironment.Instance().getSshConnection()
+						.GetChannelShell().isConnected();
+			} catch (JSchException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		return false;
 	}
 
 }

@@ -2,6 +2,7 @@ var term;
 var termWidth;
 var termHeight;
 var showSettings = false;
+var appletGetOutputInterval;
 function renderTerminal() {
     $("#terminal_actions_panel").css("display", "block");
     $("#terminal_actions_panel").click(function (e) {
@@ -12,6 +13,7 @@ function renderTerminal() {
         }
         showSettings = !showSettings;
     });
+    $("#terminal_main_panel").html("");
     term = new Terminal({
         cols: termWidth,
         rows: termHeight,
@@ -25,7 +27,7 @@ function renderTerminal() {
         otermApplet.SetAction("Input", data);
     });
 
-    setInterval(function () {
+    appletGetOutputInterval = setInterval(function () {
         var output = otermApplet.GetOutput();
         if (output != null && output != "") {
             term.write(output);
@@ -41,9 +43,6 @@ function renderTerminal() {
         otermApplet.SetAction("CertPair", "");
     });
 
-    //$("#terminal_action_settings").click(function (e) {
-    //    $("#setting_dialog").css("display", "block");
-    //})
 }
 
 function terminalResize() {

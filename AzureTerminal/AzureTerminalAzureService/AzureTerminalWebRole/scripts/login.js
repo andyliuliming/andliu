@@ -45,12 +45,14 @@ function initializeLogin() {
 
     var hostName = getUrlVars()["host"];
     if (hostName != null && hostName != "") {
-        $("#hostname").val(hostName);
+        $("#hostname_input").val(hostName);
     }
 
-    $("#hostname").val($.cookie("HostName"));
-    $("#port").val($.cookie("Port"));
-    $("#username").val($.cookie("UserName"));
+    $("#hostname_input").val($.cookie("HostName"));
+    if ($.cookie("Port") != null && ($.cookie("Port") != "")) {
+        $("#port").val($.cookie("Port"));
+    }
+    $("#username_input").val($.cookie("UserName"));
 }
 
 var waitForSignedInInterval;
@@ -59,9 +61,8 @@ function WaitForSignedIn() {
         var signedInStatus = otermApplet.getSignedInStatus()
         if (signedInStatus == "success") {
             clearInterval(waitForSignedInInterval);
-            $("#login_main_panel").css("display", "none");
-            $("#terminal_main_panel").css("display", "block");
-
+            switchToTerminalMainPage();
+            checkLogoutInterval = setInterval(CheckLogout, 1000);
             renderTerminal();
             $('#loginbutton').removeAttr("disabled", "disabled")
         }
@@ -72,9 +73,20 @@ function WaitForSignedIn() {
         }
     }
 }
+
+var checkLogoutInterval;
+function CheckLogout() {
+    var isConnected = otermApplet.IsConnected();
+    if (!isConnected) {
+        clearInterval(checkLogoutInterval);
+        clearInterval(appletGetOutputInterval);
+        switchToLoginPage();
+    }
+}
+
 function loginIn() {
-    var hostname = $("#hostname");
-    var username = $("#username");
+    var hostname = $("#hostname_input");
+    var username = $("#username_input");
     var port = $("#port");
     var password = $("#password");
 

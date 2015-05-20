@@ -201,6 +201,7 @@
     <Content Include="images\File.png" />
     <Content Include="images\heroillustration.png" />
     <Content Include="index.html" />
+    <Content Include="scripts\index.js" />
     <Content Include="scripts\jquery-1.11.1.js" />
     <Content Include="scripts\jquery.cookie.js" />
     <Content Include="images\keypair.png" />

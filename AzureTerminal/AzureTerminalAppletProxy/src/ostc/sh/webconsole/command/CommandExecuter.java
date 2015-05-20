@@ -1,7 +1,5 @@
 package ostc.sh.webconsole.command;
 
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.URL;
@@ -13,21 +11,19 @@ import javax.swing.WindowConstants;
 
 import ostc.sh.webconsole.OTermEnvironment;
 import ostc.sh.webconsole.filecopy.SCPDialog;
-import ostc.sh.webconsole.keypair.KeyGenerator;
+import ostc.sh.webconsole.keypair.KeyDialogWindowLisener;
 import ostc.sh.webconsole.keypair.KeyPairDialog;
 
 public class CommandExecuter implements Runnable {
 
-	private ArrayBlockingQueue<Command> commandQueue;
+	private ArrayBlockingQueue<Command> commandQueue = null;
 
 	public CommandExecuter() {
-
 		setCommandQueue(new ArrayBlockingQueue<Command>(1000));
 	}
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		while (true) {
 			try {
 				Command current = commandQueue.take();
@@ -42,7 +38,6 @@ public class CommandExecuter implements Runnable {
 							OTermEnvironment.Instance().setSignedInStatus(
 									"success");
 						} catch (Exception e) {
-
 							OTermEnvironment.Instance().setSignedInStatus(
 									"failed");
 						}
@@ -66,11 +61,10 @@ public class CommandExecuter implements Runnable {
 					case Actions.Input:
 						try {
 							BufferedWriter writer = OTermEnvironment.Instance()
-									.getShellOutputStream();
+									.getSshConnection().getShellOutputStream();
 							writer.write(current.getParameter());
 							writer.flush();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						break;
@@ -116,63 +110,11 @@ public class CommandExecuter implements Runnable {
 						keyPairDialog.setSize(500, 300);
 						keyPairDialog.setLocationRelativeTo(null);
 						keyPairDialog.setVisible(true);
-						keyPairDialog.addWindowListener(new WindowListener() {
-
-							@Override
-							public void windowOpened(WindowEvent e) {
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void windowClosing(WindowEvent e) {
-								// TODO Auto-generated method stub
-								char[] passphrase = keyPairDialog
-										.getPassphrase();
-								byte[] passphraseByteArray = new String(
-										passphrase).getBytes();
-								KeyGenerator generator = new KeyGenerator();
-								generator.Generator(
-										keyPairDialog.getPrivateKeyFile(),
-										keyPairDialog.getPublicKeyFile(),
-										passphraseByteArray);
-							}
-
-							@Override
-							public void windowClosed(WindowEvent e) {
-								// TODO Auto-generated method stub
-							}
-
-							@Override
-							public void windowIconified(WindowEvent e) {
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void windowDeiconified(WindowEvent e) {
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void windowActivated(WindowEvent e) {
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void windowDeactivated(WindowEvent e) {
-								// TODO Auto-generated method stub
-
-							}
-
-						});
+						keyPairDialog.addWindowListener(new KeyDialogWindowLisener(keyPairDialog));
 						break;
 					}
 				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

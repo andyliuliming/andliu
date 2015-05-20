@@ -1,5 +1,13 @@
 package ostc.sh.webconsole.ssh;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+
 import ostc.sh.webconsole.OTermEnvironment;
 
 import com.jcraft.jsch.ChannelShell;
@@ -32,6 +40,7 @@ public class SSHConnection {
 		if (channel == null) {
 			channel = (ChannelShell) session.openChannel("shell");
 			channel.setPtyType("xterm");
+
 			System.err.println("now we are connect using  "
 					+ OTermEnvironment.Instance().getWidth() + " "
 					+ OTermEnvironment.Instance().getHeight());
@@ -42,15 +51,75 @@ public class SSHConnection {
 		return channel;
 	}
 
+	private BufferedWriter isw = null;
+
+	public BufferedWriter getShellOutputStream() {
+		if (isw == null) {
+			try {
+				int fileSize = 1024 * 1024;
+				OutputStream inputStream = GetChannelShell().getOutputStream();
+				isw = new BufferedWriter(new OutputStreamWriter(inputStream,
+						"UTF-8"), fileSize);
+			} catch (IOException | JSchException e) {
+				e.printStackTrace();
+			}
+		}
+		return isw;
+	}
+
+	private BufferedReader isr = null;
+
+	public BufferedReader getShellInputStream() {
+		if (isr == null) {
+			try {
+				int fileSize = 1024 * 1024;
+				InputStream inputStream = OTermEnvironment.Instance()
+						.getSshConnection().GetChannelShell().getInputStream();
+
+				isr = new BufferedReader(new InputStreamReader(inputStream,
+						"UTF-8"), fileSize);
+			} catch (IOException | JSchException e) {
+				e.printStackTrace();
+			}
+		}
+		return isr;
+	}
+
+	public void ClearUp() {
+
+		System.err.println("clear up...");
+		this.isr = null;
+		this.isw = null;
+		if (this.channel != null) {
+			try {
+				this.channel.disconnect();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			this.channel = null;
+		}
+		if (session != null) {
+
+			try {
+				session.disconnect();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			session = null;
+		}
+
+	}
+
 	public void Connect() throws Exception {
 		try {
+			ClearUp();
+			
 			JSch jsch = new JSch();
 			Boolean haveKeyFile = false;
 
 			haveKeyFile = identityInfo.PrivateKey != null
 					&& !identityInfo.PrivateKey.isEmpty();
 			if (haveKeyFile) {
-
 				// jsch.addIdentity("C:\\Users\\andliu\\Desktop\\ssh_private_key",identityInfo.Password);
 				System.err.println(OTermEnvironment.Instance()
 						.getIdentityInfo().PrivateKey);

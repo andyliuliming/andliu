@@ -10,6 +10,7 @@
     <script src="./scripts/terminal.js"></script>
     <script src="./scripts/term.js"></script>
     <script src="./scripts/authcheck.js"></script>
+    <script src="./scripts/index.js"></script>
     <link href="./css/dialog.css" rel="stylesheet" type="text/css" />
     <link href="./css/login.css" rel="stylesheet" type="text/css" />
     <link href="./css/terminal.css" rel="stylesheet" type="text/css" />
@@ -30,49 +31,47 @@
             //    }
             //});
             if (checkAuth()) {
-            //$(window).resize(function () {
-            //    terminalResize();
-            //});
+                //$(window).resize(function () {
+                //    terminalResize();
+                //});
 
-            initializeLogin();
+                initializeLogin();
 
-            $("#hostname").focus();
-            function docWriteWrapper(jq, func) {
-                var oldwrite = document.write, content = '';
-                document.write = function (text) {
-                    content += text;
+                $("#hostname_input").focus();
+                function docWriteWrapper(jq, func) {
+                    var oldwrite = document.write, content = '';
+                    document.write = function (text) {
+                        content += text;
+                    }
+                    func();
+                    document.write = oldwrite;
+                    jq.html(content);
                 }
-                func();
-                document.write = oldwrite;
-                jq.html(content);
-            }
 
-            docWriteWrapper($('#terminal_embedded_applet'), function () {
-                initializeApplet();
-                $("#hostname").focus();
-            });
+                docWriteWrapper($('#terminal_embedded_applet'), function () {
+                    initializeApplet();
+                    $("#hostname_input").focus();
+                });
             }
             else {
                 $("body").html("You are not authorized to access this web site");
             }
 
-            $("#hostname").focus();
+            $("#hostname_input").focus();
         });
     </script>
     <div id="terminal_embedded_applet"></div>
     <div id="login_main_panel">
-        <div class="mg-login">
+        <div class="login_blade">
             <div class="login_header">
                 <label class="login_header_label">Login</label>
             </div>
-            <ul class="mg-login-ul">
-                <li class="input_label_li"><label>Host Name:</label></li>
-                <li><input class="login_input" id="hostname" type="text" /></li>
-                <li class="input_label_li"><label>Username:</label></li>
-
-                <li><input class="login_input" id="username" type="text" /></li>
-                <li class="input_label_li"><label>Port:</label></li>
-
+            <ul class="login_blade-ul">
+                <li class="input_label_li"><label for="hostname_input">Host Name:</label></li>
+                <li><input class="login_input" id="hostname_input" type="text" /></li>
+                <li class="input_label_li"><label for="username_input">Username:</label></li>
+                <li><input class="login_input" id="username_input" type="text" /></li>
+                <li class="input_label_li"><label for="port">Port:</label></li>
                 <li>
                     <input class="login_input" id="port" type="text" value="22" />
                 </li>
@@ -80,7 +79,7 @@
                     <button id="password_option_button" class="auth_button1 auth_button">Password</button>
                     <button id="privatekey_option_button" class="auth_button2 auth_button">SSH Private Key</button>
                 </li>
-                <li class="input_label_li"><label id="auth_type_label">Password:</label></li>
+                <li class="input_label_li"><label id="auth_type_label" for="password">Password:</label></li>
                 <li>
                     <input class="login_input" id="password" type="password" />
                     <input type="file" id="identity_file" />
