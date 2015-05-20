@@ -64,17 +64,34 @@ var waitForSignedInInterval;
 function WaitForSignedIn() {
     if (otermApplet != null) {
         var signedInStatus = otermApplet.getSignedInStatus()
-        if (signedInStatus == "success") {
-            clearInterval(waitForSignedInInterval);
-            switchToTerminalMainPage();
-            checkLogoutInterval = setInterval(CheckLogout, 1000);
-            renderTerminal();
-            $('#loginbutton').removeAttr("disabled", "disabled")
-        }
-        else if (signedInStatus == "failed") {
-            $('#loginbutton').removeAttr("disabled", "disabled")
-            alert("Please check the hostname, username or password or port.");
-            clearInterval(waitForSignedInInterval);
+
+        switch (signedInStatus) {
+            case "success":
+                clearInterval(waitForSignedInInterval);
+                switchToTerminalMainPage();
+                checkLogoutInterval = setInterval(CheckLogout, 1000);
+                renderTerminal();
+                $('#loginbutton').removeAttr("disabled", "disabled")
+                break;
+            case "unknownhost":
+                $('#loginbutton').removeAttr("disabled", "disabled")
+                alert("Please check the hostname.");
+                clearInterval(waitForSignedInInterval);
+                break;
+            case "connectfailed":
+                $('#loginbutton').removeAttr("disabled", "disabled")
+                alert("Please check the port.");
+                clearInterval(waitForSignedInInterval);
+                break;
+            case "wrongusername":
+                $('#loginbutton').removeAttr("disabled", "disabled")
+                alert("Please check the username or password.");
+                clearInterval(waitForSignedInInterval);
+                break;
+            case "ongoing":
+                break;
+            default:
+
         }
     }
 }

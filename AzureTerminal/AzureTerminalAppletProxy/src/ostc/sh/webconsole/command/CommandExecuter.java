@@ -2,12 +2,16 @@ package ostc.sh.webconsole.command;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.ImageIcon;
 import javax.swing.WindowConstants;
+
+import com.jcraft.jsch.JSchException;
 
 import ostc.sh.webconsole.OTermEnvironment;
 import ostc.sh.webconsole.filecopy.SCPDialog;
@@ -37,9 +41,18 @@ public class CommandExecuter implements Runnable {
 									.Connect();
 							OTermEnvironment.Instance().setSignedInStatus(
 									"success");
-						} catch (Exception e) {
-							OTermEnvironment.Instance().setSignedInStatus(
-									"failed");
+						} 
+						catch(JSchException e){
+							if (e.getCause() instanceof UnknownHostException)
+								OTermEnvironment.Instance().setSignedInStatus(
+										"unknownhost");
+							else if (e.getCause() instanceof ConnectException) {
+								OTermEnvironment.Instance().setSignedInStatus(
+										"connectfailed");
+							} else {
+								OTermEnvironment.Instance().setSignedInStatus(
+										"wrongusername");
+							}
 						}
 						break;
 					case Actions.SignOut:
