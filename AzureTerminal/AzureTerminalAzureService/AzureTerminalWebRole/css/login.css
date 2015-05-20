@@ -39,23 +39,23 @@ body {
     cursor: pointer;
 }
 
-.auth_button1 {
-    float: left;
-    margin: 0;
-    border-right-width: 0px;
-    border-left-width: 1px;
-    border-bottom-width: 1px;
-    border-top-width: 1px;
-    border-right: 1px;
-}
+    .auth_button:nth-child(1) {
+        float: left;
+        margin: 0;
+        border-right-width: 0px;
+        border-left-width: 1px;
+        border-bottom-width: 1px;
+        border-top-width: 1px;
+        border-right: 1px;
+    }
 
-.auth_button2 {
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-    border-right-width: 1px;
-}
+    .auth_button:nth-child(2) {
+        border-left-width: 1px;
+        border-right-width: 1px;
+        border-top-width: 1px;
+        border-bottom-width: 1px;
+        border-right-width: 1px;
+    }
 
 #loginbutton {
     color: white;

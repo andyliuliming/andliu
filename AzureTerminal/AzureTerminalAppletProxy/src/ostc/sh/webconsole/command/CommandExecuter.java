@@ -42,6 +42,10 @@ public class CommandExecuter implements Runnable {
 									"failed");
 						}
 						break;
+					case Actions.SignOut:
+						OTermEnvironment.Instance().getSshConnection().ClearUp();
+						OTermEnvironment.Instance().getIdentityInfo().CleanUp();
+						break;
 					case Actions.SetPort:
 						OTermEnvironment.Instance().getIdentityInfo().Port = current
 								.getParameter();

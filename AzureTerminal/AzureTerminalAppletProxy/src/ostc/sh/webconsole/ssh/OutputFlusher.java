@@ -13,6 +13,11 @@ public class OutputFlusher implements Runnable {
 				if (OTermEnvironment.Instance().getSignedInStatus() != null && OTermEnvironment.Instance().getSignedInStatus().equals("success")) {
 					try {
 						char[] cBuf = new char[10000];
+						if(OTermEnvironment.Instance().getSshConnection()==null||OTermEnvironment.Instance().getSshConnection().getSession()==null){
+							Thread.sleep(50);
+							continue;
+						}
+						
 						int readCount = OTermEnvironment.Instance().getSshConnection().getShellInputStream().read(cBuf);
 						
 						if(readCount==-1){

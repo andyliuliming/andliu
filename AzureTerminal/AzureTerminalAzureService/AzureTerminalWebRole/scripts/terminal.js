@@ -4,7 +4,6 @@ var termHeight;
 var showSettings = false;
 var appletGetOutputInterval;
 function renderTerminal() {
-    $("#terminal_actions_panel").css("display", "block");
     $("#terminal_actions_panel").click(function (e) {
         if (!showSettings) {
             $("#terminal_actions_list").css("display", "block");
@@ -35,14 +34,19 @@ function renderTerminal() {
     }, 10);
 
     // bind the actions
-    $("#terminal_action_file").click(function (e) {
+    $("#terminal_action_file").unbind("click");
+    $("#terminal_action_file").bind("click", function (e) {
         otermApplet.SetAction("CopyFile", "");
     });
 
-    $("#terminal_action_generate_key").click(function (e) {
+    $("#terminal_action_generate_key").unbind("click");
+    $("#terminal_action_generate_key").bind("click", function (e) {
         otermApplet.SetAction("CertPair", "");
     });
-
+    $("#terminal_action_signout").unbind("click");
+    $("#terminal_action_signout").bind("click", function (e) {
+        otermApplet.SetAction("SignOut", "");
+    });
 }
 
 function terminalResize() {

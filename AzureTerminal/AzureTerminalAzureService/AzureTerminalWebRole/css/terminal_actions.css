@@ -39,33 +39,16 @@
         cursor: pointer;
     }
 
-
-
-#terminal_action_file {
-    /*background-image: url(../images/File.png);*/
-    border-width: 1px;
-    border-color: white;
-    /* border-right-width: 10px; */
-    /* border-left-width: 10px; */
-    border-style: solid;
-    cursor: pointer;
+.terminal_actions_item:first-child {
+    border-top-width: 1px;
 }
 
-#terminal_action_settings {
-    /*background-image: url(../images/settings.png);*/
-    border-width: 1px;
+.terminal_actions_item {
+    border-right-width: 1px;
+    border-left-width: 1px;
+    border-bottom-width: 1px;
+    border-top-width: 0px;
     border-color: white;
-    /* border-right-width: 10px; */
-    /* border-left-width: 10px; */
-    border-style: solid;
-    cursor: pointer;
-}
-
-#terminal_action_generate_key {
-    /*background-image: url(../images/Action.png);*/
-    border-width: 1px;
-    border-color: white;
-    border-top: 0px;
     /* border-right-width: 10px; */
     /* border-left-width: 10px; */
     border-style: solid;

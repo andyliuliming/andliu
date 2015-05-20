@@ -107,7 +107,6 @@ public class SSHConnection {
 			}
 			session = null;
 		}
-
 	}
 
 	public void Connect() throws Exception {

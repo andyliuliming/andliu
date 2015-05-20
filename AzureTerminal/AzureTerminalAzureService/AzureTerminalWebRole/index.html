@@ -20,20 +20,7 @@
 <body>
     <script>
         $(document).ready(function () {
-            $(".auth_button1").addClass("auth_button_selected");
-
-            //$(".terminal").bind('mousewheel', function (e) {
-            //    if (e.originalEvent.wheelDelta / 120 > 0) {
-            //        term.scrollDisp(1);
-            //    }
-            //    else {
-            //        term.scrollDisp(-1);
-            //    }
-            //});
             if (checkAuth()) {
-                //$(window).resize(function () {
-                //    terminalResize();
-                //});
 
                 initializeLogin();
 
@@ -76,8 +63,8 @@
                     <input class="login_input" id="port" type="text" value="22" />
                 </li>
                 <li class="input_label_li">
-                    <button id="password_option_button" class="auth_button1 auth_button">Password</button>
-                    <button id="privatekey_option_button" class="auth_button2 auth_button">SSH Private Key</button>
+                    <button id="password_option_button" class="auth_button auth_button_selected">Password</button>
+                    <button id="privatekey_option_button" class="auth_button">SSH Private Key</button>
                 </li>
                 <li class="input_label_li"><label id="auth_type_label" for="password">Password:</label></li>
                 <li>
@@ -101,9 +88,10 @@
     </div>
 
     <div id="terminal_actions_list">
-        <div id="terminal_action_file">Copy Files</div>
+        <div id="terminal_action_file" class="terminal_actions_item">Copy Files</div>
         <!--<div id="terminal_action_settings">Settings</div>-->
-        <div id="terminal_action_generate_key">Generate Key Pair</div>
+        <div id="terminal_action_generate_key" class="terminal_actions_item">Generate Key Pair</div>
+        <div id="terminal_action_signout" class="terminal_actions_item">Signout</div>
     </div>
 </body>
 </html>

@@ -11,12 +11,14 @@
 
 var useIdentityFile = false;
 function initializeLogin() {
-    $(".auth_button").click(function (butt) {
+    $(".auth_button").unbind();
+    $(".auth_button").bind("click",function (butt) {
         $(".auth_button").removeClass("auth_button_selected");
         $(butt.target).addClass("auth_button_selected");
     })
 
-    $("#password_option_button").click(function (e) {
+    $("#password_option_button").unbind("click");
+    $("#password_option_button").bind("click",function (e) {
         useIdentityFile = false;
         $("#identity_file").css("display", "none");
         $("#identity_pub_file").css("display", "none");
@@ -24,7 +26,8 @@ function initializeLogin() {
         $("#auth_type_label").html("Password:");
     });
 
-    $("#privatekey_option_button").click(function (e) {
+    $("#privatekey_option_button").unbind("click");
+    $("#privatekey_option_button").bind("click",function (e) {
         useIdentityFile = true;
         $("#password").css("display", "none");
         $("#identity_file").css("display", "block");
@@ -32,10 +35,11 @@ function initializeLogin() {
         $("#auth_type_label").html("Private Key:");
     });
 
-    $("#loginbutton").click(function () {
+    $("#loginbutton").unbind("click");
+    $("#loginbutton").bind("click",function () {
         loginIn();
     })
-
+    $("#password").unbind("keypress");
     $("#password").keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
