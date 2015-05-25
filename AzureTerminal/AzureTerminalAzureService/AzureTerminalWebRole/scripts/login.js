@@ -111,7 +111,6 @@ function loginIn() {
     var username = $("#username_input");
     var port = $("#port");
     var password = $("#password");
-
     $.cookie("HostName", hostname.val());
     $.cookie("Port", port.val());
     $.cookie("UserName", username.val());
@@ -129,6 +128,8 @@ function loginIn() {
                 otermApplet.SetAction("SetPrivateKey", contents);
                 terminalResize();
                 otermApplet.SetAction("Login", "");
+
+                $("#password").val("");
                 $('#loginbutton').attr("disabled", "disabled")
             }
         }
@@ -142,6 +143,8 @@ function loginIn() {
             otermApplet.SetAction("SetPort", port.val().trim());
             terminalResize();
             otermApplet.SetAction("Login", "");
+
+            $("#password").val("");
             $('#loginbutton').attr("disabled", "disabled")
         }
     }
