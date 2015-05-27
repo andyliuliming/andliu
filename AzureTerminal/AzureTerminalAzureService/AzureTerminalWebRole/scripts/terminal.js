@@ -3,21 +3,36 @@ var termWidth;
 var termHeight;
 var showSettings = false;
 var appletGetOutputInterval;
-function renderTerminal() {
-    $("#terminal_actions_panel").click(function (e) {
-        if (!showSettings) {
-            $("#terminal_actions_list").css("display", "block");
-        } else {
-            $("#terminal_actions_list").css("display", "none");
-        }
+function toggleSettings(forceStatus) {
+    if (forceStatus == undefined) {
         showSettings = !showSettings;
+    } else {
+        showSettings = forceStatus;
+    }
+    if (showSettings) {
+        $("#terminal_actions_list").css("display", "block");
+    } else {
+        $("#terminal_actions_list").css("display", "none");
+    }
+}
+
+function renderTerminal() {
+    $("#terminal_actions_icon").click(function (e) {
+        toggleSettings();
+        e.stopPropagation();
     });
+
+    $(document).mouseup(function (ev) {
+        toggleSettings(false);
+    });
+
     $("#terminal_main_panel").html("");
     term = new Terminal({
         cols: termWidth,
         rows: termHeight,
+        useMouse:true,
         useStyle: true,
-        screenKeys: true,
+        screenKeys: false,
         cursorBlink: false
     });
 

@@ -185,7 +185,9 @@
     <Folder Include="Views\Home\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="css\dialog.css" />
+    <Content Include="..\..\..\..\term.js\src\term.js">
+      <Link>term.js</Link>
+    </Content>
     <Content Include="css\terminal_actions.css" />
     <Content Include="css\TestFontSize.css" />
     <Content Include="Global.asax" />
@@ -208,7 +210,7 @@
     <Content Include="css\login.css" />
     <Content Include="scripts\login.js" />
     <Content Include="images\settings.png" />
-    <Content Include="scripts\term.js" />
+    <Content Include="scripts\term_downloaded.js" />
     <Content Include="css\terminal.css" />
     <Content Include="scripts\terminal.js" />
     <Content Include="images\warning.png" />
@@ -244,6 +246,8 @@
           <DevelopmentServerPort>63807</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:63807/</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://localhost:63807/index.html?id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ik1uQ19WWmNBVGZNNXBPWWlKSE1iYTlnb0VLWSIsImtpZCI6Ik1uQ19WWmNBVGZNNXBPWWlKSE1iYTlnb0VLWSJ9.eyJhdWQiOiIwYzQ2ZTI4Yy1lOGNiLTQ5MGQtYmQ0Zi0yMTYyNmI2NjAxZjYiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNDMyMTEwNDUwLCJuYmYiOjE0MzIxMTA0NTAsImV4cCI6MTQzMjExNDM1MCwidmVyIjoiMS4wIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3Iiwib2lkIjoiYjZiZWQ0ZjAtMDQ0Zi00ZTNhLWFlZWQtZjU0NGIyYjk1YWUyIiwidXBuIjoiYW5kbGl1QG1pY3Jvc29mdC5jb20iLCJzdWIiOiJvT3Voc2hBVzJ2aF9qR3NnR0FYR1QzNXRxYkMySmp4c0JRaWxiNkRaWUFFIiwiZ2l2ZW5fbmFtZSI6IkFuZHkiLCJmYW1pbHlfbmFtZSI6IkxpdSIsIm5hbWUiOiJBbmR5IExpdSIsImFtciI6WyJwd2QiXSwidW5pcXVlX25hbWUiOiJhbmRsaXVAbWljcm9zb2Z0LmNvbSIsIm5vbmNlIjoiNzM2MkNBRUEtOUNBNS00QjQzLTlCQTMtMzREN0MzMDNFQkE3IiwicHdkX2V4cCI6IjMxMDI2NjQ3In0.qHnIEM8PGqBcdLQIp2iDazUZakopBJQn6FXaujWSLxRhe7hnCzsTdHWGu9DMAhacyBBkokdfDXyKyOdhjzfYvynJ2f-uKL-Qa_P_E6TU3wJ_AVd4TnCIXbqRVFjIEw887pO9hJ9FRdEjjI8usRtVW2euhzbohCbLQIoUJPI6byRG1TAVEv8r2b3PHYpduxIi6on0EWJyOo5kXlmpNjylgdYEGDA_MLH4zGu92Sn4wDZ6gAQ5qs4L4a7tT2_LoZpDlamYW3CNAYR2Fq7g43HqG14IMlgotIePIKWHSK4YBuOzO_THxqZb1nRmF9W1nzVpF7BNY0ZPJI5zT0rX_AKHZQ&amp;session_state=3e7a729d-1b99-4566-aca0-934a76541181</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

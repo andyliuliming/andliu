@@ -141,6 +141,10 @@ body {
 .decoration_panel {
     background-repeat: no-repeat;
     background-position: center;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
     background-color: rgb(46,127,170);
     background-image: url("../images/heroillustration.png");
     width: 64%;
