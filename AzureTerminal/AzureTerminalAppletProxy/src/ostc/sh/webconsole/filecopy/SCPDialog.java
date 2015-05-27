@@ -35,6 +35,7 @@ import com.jcraft.jsch.JSchException;
 import java.awt.Toolkit;
 
 import javax.swing.border.LineBorder;
+import javax.swing.JLabel;
 
 /**
  * 
@@ -81,7 +82,7 @@ public class SCPDialog extends JDialog {
 		localFileComboBox.setForeground(Color.GRAY);
 		localFileComboBox.setBackground(Color.WHITE);
 		localFileComboBox.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-		localFileComboBox.setBounds(31, 41, 286, 30);
+		localFileComboBox.setBounds(31, 60, 286, 30);
 		contentPanel.add(localFileComboBox);
 		
 		util = new FileCopyUtil();		
@@ -91,21 +92,21 @@ public class SCPDialog extends JDialog {
 		remoteFileComboBox.setForeground(Color.GRAY);
 		remoteFileComboBox.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		remoteFileComboBox.setBorder(new CompoundBorder(new LineBorder(new Color(192, 192, 192)), null));
-		remoteFileComboBox.setBounds(445, 41, 275, 30);
+		remoteFileComboBox.setBounds(445, 60, 275, 30);
 		contentPanel.add(remoteFileComboBox);
 		
 		sendToRemoteButton = new AutoScaleImage(new ImageIcon(SCPDialog.class.getResource("/ostc/sh/webconsole/images/Arrow_right.png")).getImage());
 		sendToRemoteButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		sendToRemoteButton.setForeground(Color.WHITE);
 		sendToRemoteButton.setBackground(new Color(0, 153, 255));	
-		sendToRemoteButton.setBounds(360, 105, 36, 36);
+		sendToRemoteButton.setBounds(361, 138, 36, 36);
 		contentPanel.add(sendToRemoteButton);
 
 		sendToLocalButton = new AutoScaleImage(new ImageIcon(SCPDialog.class.getResource("/ostc/sh/webconsole/images/Arrow_left.png")).getImage());
 		sendToLocalButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		sendToLocalButton.setForeground(Color.WHITE);
 		sendToLocalButton.setBackground(new Color(0, 153, 255));	
-		sendToLocalButton.setBounds(360, 197, 36, 36);
+		sendToLocalButton.setBounds(361, 230, 36, 36);
 		contentPanel.add(sendToLocalButton);
 
 		localFileList = new JList<String>();
@@ -113,7 +114,7 @@ public class SCPDialog extends JDialog {
 		DefaultListModel<String> localFileModel = new DefaultListModel<String>();
 		localFileList.setModel(localFileModel);
 		localFileList.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-		localFileList.setBounds(31, 88, 286, 183);	
+		localFileList.setBounds(31, 107, 286, 279);	
 		contentPanel.add(localFileList);
 
 		remoteFileList = new JList<String>();
@@ -121,20 +122,20 @@ public class SCPDialog extends JDialog {
 		DefaultListModel<String> remoteFileModel = new DefaultListModel<String>();
 		remoteFileList.setModel(remoteFileModel);
 		remoteFileList.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-		remoteFileList.setBounds(445, 88, 275, 183);
+		remoteFileList.setBounds(445, 107, 275, 279);
 		
 		contentPanel.add(remoteFileList);
 
 		localChDirButton = new JButton(OTermResource.Instance().GetString("ChDir"));
 		localChDirButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));			
-		localChDirButton.setBounds(31, 305, 89, 23);
+		localChDirButton.setBounds(31, 414, 89, 23);
 		localChDirButton.setForeground(Color.WHITE);
 		localChDirButton.setBackground(new Color(0, 153, 255));	
 		contentPanel.add(localChDirButton);
 
 		localMkDirButton = new JButton(OTermResource.Instance().GetString("MkDir"));
 		localMkDirButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));		
-		localMkDirButton.setBounds(129, 305, 89, 23);
+		localMkDirButton.setBounds(129, 414, 89, 23);
 		localMkDirButton.setForeground(Color.WHITE);
 		localMkDirButton.setBackground(new Color(0, 153, 255));	
 		contentPanel.add(localMkDirButton);
@@ -143,57 +144,67 @@ public class SCPDialog extends JDialog {
 		localRenameButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		localRenameButton.setForeground(Color.WHITE);
 		localRenameButton.setBackground(new Color(0, 153, 255));	
-		localRenameButton.setBounds(228, 305, 89, 23);
+		localRenameButton.setBounds(228, 414, 89, 23);
 		contentPanel.add(localRenameButton);
 
 		localDeleteButton = new JButton(OTermResource.Instance().GetString("Delete"));
 		localDeleteButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		localDeleteButton.setForeground(Color.WHITE);
 		localDeleteButton.setBackground(new Color(0, 153, 255));	
-		localDeleteButton.setBounds(31, 339, 89, 23);
+		localDeleteButton.setBounds(31, 448, 89, 23);
 		contentPanel.add(localDeleteButton);
 
 		localRefreshButton = new JButton(OTermResource.Instance().GetString("Refresh"));
 		localRefreshButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		localRefreshButton.setForeground(Color.WHITE);
 		localRefreshButton.setBackground(new Color(0, 153, 255));	
-		localRefreshButton.setBounds(129, 339, 89, 23);
+		localRefreshButton.setBounds(129, 448, 89, 23);
 		contentPanel.add(localRefreshButton);
 
 		remoteChDirButton = new JButton(OTermResource.Instance().GetString("ChDir"));
 		remoteChDirButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		remoteChDirButton.setForeground(Color.WHITE);
 		remoteChDirButton.setBackground(new Color(0, 153, 255));	
-		remoteChDirButton.setBounds(445, 305, 89, 23);
+		remoteChDirButton.setBounds(445, 414, 89, 23);
 		contentPanel.add(remoteChDirButton);
 
 		remoteMkDirButton = new JButton(OTermResource.Instance().GetString("MkDir"));
 		remoteMkDirButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		remoteMkDirButton.setForeground(Color.WHITE);
 		remoteMkDirButton.setBackground(new Color(0, 153, 255));	
-		remoteMkDirButton.setBounds(543, 305, 89, 23);
+		remoteMkDirButton.setBounds(543, 414, 89, 23);
 		contentPanel.add(remoteMkDirButton);
 
 		remoteRenameButton = new JButton(OTermResource.Instance().GetString("Rename"));
 		remoteRenameButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		remoteRenameButton.setForeground(Color.WHITE);
 		remoteRenameButton.setBackground(new Color(0, 153, 255));	
-		remoteRenameButton.setBounds(642, 305, 89, 23);
+		remoteRenameButton.setBounds(642, 414, 89, 23);
 		contentPanel.add(remoteRenameButton);
 
 		remoteRefreshButton = new JButton(OTermResource.Instance().GetString("Refresh"));
 		remoteRefreshButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		remoteRefreshButton.setForeground(Color.WHITE);
 		remoteRefreshButton.setBackground(new Color(0, 153, 255));
-		remoteRefreshButton.setBounds(543, 339, 89, 23);
+		remoteRefreshButton.setBounds(543, 448, 89, 23);
 		contentPanel.add(remoteRefreshButton);
 
 		remoteDeleteButton = new JButton(OTermResource.Instance().GetString("Delete"));
 		remoteDeleteButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		remoteDeleteButton.setForeground(Color.WHITE);
 		remoteDeleteButton.setBackground(new Color(0, 153, 255));
-		remoteDeleteButton.setBounds(445, 339, 89, 23);
+		remoteDeleteButton.setBounds(445, 448, 89, 23);
 		contentPanel.add(remoteDeleteButton);
+		
+		JLabel lblNewLabel = new JLabel("Local File:");
+		lblNewLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblNewLabel.setBounds(31, 22, 286, 30);
+		contentPanel.add(lblNewLabel);
+		
+		JLabel lblRemoteFile = new JLabel("Remote File:");
+		lblRemoteFile.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblRemoteFile.setBounds(445, 22, 286, 30);
+		contentPanel.add(lblRemoteFile);
 		
 		Configure();
 	}

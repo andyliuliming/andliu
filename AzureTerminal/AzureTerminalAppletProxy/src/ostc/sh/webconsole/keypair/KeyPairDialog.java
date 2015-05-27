@@ -24,16 +24,17 @@ import java.nio.file.Paths;
 import java.awt.Font;
 
 public class KeyPairDialog extends JDialog {
-	
+
 	private String privateKeyFile;
-	private String publicKeyFile;	
+	private String publicKeyFile;
 	private char[] passphrase;
 	private static final long serialVersionUID = 1L;
 	private JPasswordField passPhraseField;
 	private JTextField privateKeyTextField;
 	private JTextField publicKeyTextField;
-	
+
 	public KeyPairDialog() {
+		setTitle(OTermResource.Instance().GetString("KeyPairDialogTitle"));
 		setBackground(Color.WHITE);
 		setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		this.setOpacity(1);
@@ -44,61 +45,70 @@ public class KeyPairDialog extends JDialog {
 			}
 		});
 		getContentPane().setLayout(null);
-		
-		JButton browseButton = new JButton(OTermResource.Instance().GetString("Browse"));
+
+		JButton browseButton = new JButton(OTermResource.Instance().GetString(
+				"Browse"));
 		browseButton.setForeground(Palette.ButtonSelectedForColor);
 		browseButton.setBackground(Palette.ButtonSelectedBackground);
 		browseButton.setFocusPainted(false);
 		browseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Frame frame = null;
-				FileDialog fd = new java.awt.FileDialog(frame,OTermResource.Instance().GetString("GenerateRSAKeyPair"),(int)FileDialog.SAVE);
+				FileDialog fd = new java.awt.FileDialog(frame, OTermResource
+						.Instance().GetString("GenerateRSAKeyPair"),
+						(int) FileDialog.SAVE);
 				fd.setVisible(true);
-				Path filePath = Paths.get(fd.getDirectory(), fd.getFile());			
-				
+				Path filePath = Paths.get(fd.getDirectory(), fd.getFile());
+
 				privateKeyFile = filePath.toString();
 				publicKeyFile = filePath.toString() + ".pub";
-				
+
 				publicKeyTextField.setText(publicKeyFile);
 				privateKeyTextField.setText(privateKeyFile);
 			}
 		});
-		
-		browseButton.setBounds(288, 171, 122, 23);
+
+		browseButton.setBounds(288, 150, 122, 23);
 		getContentPane().add(browseButton);
-		
-		JLabel passPhraseLabel = new JLabel(OTermResource.Instance().GetString("PassphraseLabel"));
+
+		JLabel passPhraseLabel = new JLabel(OTermResource.Instance().GetString(
+				"PassphraseLabel"));
 		passPhraseLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		passPhraseLabel.setBounds(23, 32, 71, 23);
+		passPhraseLabel.setBounds(22, 116, 71, 23);
 		getContentPane().add(passPhraseLabel);
-		
+
 		passPhraseField = new JPasswordField();
 		passPhraseField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		passPhraseField.setBorder(new CompoundBorder(new LineBorder(new Color(192, 192, 192)), new EmptyBorder(3, 8, 4, 8)));
-		passPhraseField.setBounds(113, 32, 297, 23);
+		passPhraseField.setBorder(new CompoundBorder(new LineBorder(new Color(
+				192, 192, 192)), new EmptyBorder(3, 8, 4, 8)));
+		passPhraseField.setBounds(154, 116, 256, 23);
 		getContentPane().add(passPhraseField);
-		
-		JLabel privateKeyLabel = new JLabel(OTermResource.Instance().GetString("PrivateKeyLocationLabel"));
+
+		JLabel privateKeyLabel = new JLabel(OTermResource.Instance().GetString(
+				"PrivateKeyLocationLabel"));
 		privateKeyLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		privateKeyLabel.setBounds(22, 76, 71, 35);
+		privateKeyLabel.setBounds(22, 24, 122, 35);
 		getContentPane().add(privateKeyLabel);
-		
-		JLabel publicKeyLabel = new JLabel(OTermResource.Instance().GetString("PublicKeyLocationLabel"));
+
+		JLabel publicKeyLabel = new JLabel(OTermResource.Instance().GetString(
+				"PublicKeyLocationLabel"));
 		publicKeyLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		publicKeyLabel.setBounds(23, 122, 81, 35);
+		publicKeyLabel.setBounds(22, 70, 107, 35);
 		getContentPane().add(publicKeyLabel);
-		
+
 		privateKeyTextField = new JTextField();
 		privateKeyTextField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		privateKeyTextField.setBorder(new CompoundBorder(new LineBorder(new Color(192, 192, 192)), new EmptyBorder(3, 8, 4, 8)));
-		privateKeyTextField.setBounds(113, 83, 297, 20);
+		privateKeyTextField.setBorder(new CompoundBorder(new LineBorder(
+				new Color(192, 192, 192)), new EmptyBorder(3, 8, 4, 8)));
+		privateKeyTextField.setBounds(154, 31, 256, 20);
 		getContentPane().add(privateKeyTextField);
 		privateKeyTextField.setColumns(10);
-		
+
 		publicKeyTextField = new JTextField();
 		publicKeyTextField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		publicKeyTextField.setBorder(new CompoundBorder(new LineBorder(new Color(192, 192, 192)), new EmptyBorder(3, 8, 4, 8)));
-		publicKeyTextField.setBounds(113, 129, 297, 20);
+		publicKeyTextField.setBorder(new CompoundBorder(new LineBorder(
+				new Color(192, 192, 192)), new EmptyBorder(3, 8, 4, 8)));
+		publicKeyTextField.setBounds(153, 77, 256, 20);
 		getContentPane().add(publicKeyTextField);
 		publicKeyTextField.setColumns(10);
 	}

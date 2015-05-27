@@ -17,9 +17,9 @@ function toggleSettings(forceStatus) {
 }
 
 function renderTerminal() {
-    $("#terminal_actions_icon").click(function (e) {
+    $("#terminal_actions_icon").mouseup(function (ev) {
         toggleSettings();
-        e.stopPropagation();
+        ev.stopPropagation();
     });
 
     $(document).mouseup(function (ev) {
