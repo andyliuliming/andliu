@@ -24,7 +24,6 @@
 
                 initializeLogin();
 
-                $("#hostname_input").focus();
                 function docWriteWrapper(jq, func) {
                     var oldwrite = document.write, content = '';
                     document.write = function (text) {
@@ -37,14 +36,12 @@
 
                 docWriteWrapper($('#terminal_embedded_applet'), function () {
                     initializeApplet();
-                    $("#hostname_input").focus();
+                    $("#hostname_input").focus()
                 });
             }
             else {
                 $("body").html("You are not authorized to access this web site");
             }
-
-            $("#hostname_input").focus();
         });
     </script>
     <div id="terminal_embedded_applet"></div>
