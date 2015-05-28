@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import ostc.sh.webconsole.OTermEnvironment;
+import ostc.sh.webconsole.util.Logger;
 
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.ContentIdentity;
@@ -41,7 +42,7 @@ public class SSHConnection {
 			channel = (ChannelShell) session.openChannel("shell");
 			channel.setPtyType("xterm");
 
-			System.err.println("now we are connect using  "
+			Logger.Log("now we are connect using  "
 					+ OTermEnvironment.Instance().getWidth() + " "
 					+ OTermEnvironment.Instance().getHeight());
 			channel.setPtySize(OTermEnvironment.Instance().getWidth(),
@@ -87,7 +88,7 @@ public class SSHConnection {
 
 	public void ClearUp() {
 
-		System.err.println("clear up...");
+		Logger.Log("clear up...");
 		this.isr = null;
 		this.isw = null;
 		if (this.channel != null) {
@@ -120,7 +121,7 @@ public class SSHConnection {
 					&& !identityInfo.PrivateKey.isEmpty();
 			if (haveKeyFile) {
 				// jsch.addIdentity("C:\\Users\\andliu\\Desktop\\ssh_private_key",identityInfo.Password);
-				System.err.println(OTermEnvironment.Instance()
+				Logger.Log(OTermEnvironment.Instance()
 						.getIdentityInfo().PrivateKey);
 				
 				ContentIdentity contentIdentity = new ContentIdentity(

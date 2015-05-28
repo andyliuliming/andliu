@@ -3,6 +3,7 @@ package ostc.sh.webconsole.filecopy;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -18,12 +19,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
+import javax.swing.border.LineBorder;
 
 import ostc.sh.webconsole.OTermEnvironment;
 import ostc.sh.webconsole.controllers.AutoScaleImage;
@@ -31,11 +33,6 @@ import ostc.sh.webconsole.locresource.OTermResource;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSchException;
-
-import java.awt.Toolkit;
-
-import javax.swing.border.LineBorder;
-import javax.swing.JLabel;
 
 /**
  * 
@@ -66,6 +63,9 @@ public class SCPDialog extends JDialog {
 	private JButton localRefreshButton = null;
 	private JButton localRenameButton = null;
 	private JButton localMkDirButton = null;
+	private JLabel lblNewLabel;
+	private JLabel lblRemoteFile;
+	private JLabel statusLabel;
 	/**
 	 * Create the dialog.
 	 */
@@ -109,22 +109,27 @@ public class SCPDialog extends JDialog {
 		sendToLocalButton.setBounds(361, 230, 36, 36);
 		contentPanel.add(sendToLocalButton);
 
+		JScrollPane localScrollPane1 = new JScrollPane();
+		
 		localFileList = new JList<String>();
 		localFileList.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		DefaultListModel<String> localFileModel = new DefaultListModel<String>();
 		localFileList.setModel(localFileModel);
 		localFileList.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-		localFileList.setBounds(31, 107, 286, 279);	
-		contentPanel.add(localFileList);
+		localScrollPane1.setBounds(31, 107, 286, 279);	
+		localScrollPane1.setViewportView(localFileList);
+		contentPanel.add(localScrollPane1);
+		
+		JScrollPane remoteScrollPane1 = new JScrollPane();
 
 		remoteFileList = new JList<String>();
 		remoteFileList.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		DefaultListModel<String> remoteFileModel = new DefaultListModel<String>();
 		remoteFileList.setModel(remoteFileModel);
 		remoteFileList.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-		remoteFileList.setBounds(445, 107, 275, 279);
-		
-		contentPanel.add(remoteFileList);
+		remoteScrollPane1.setBounds(445, 107, 275, 279);		
+		remoteScrollPane1.setViewportView(remoteFileList);		
+		contentPanel.add(remoteScrollPane1);
 
 		localChDirButton = new JButton(OTermResource.Instance().GetString("ChDir"));
 		localChDirButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));			
@@ -196,17 +201,52 @@ public class SCPDialog extends JDialog {
 		remoteDeleteButton.setBounds(445, 448, 89, 23);
 		contentPanel.add(remoteDeleteButton);
 		
-		JLabel lblNewLabel = new JLabel("Local File:");
+		lblNewLabel = new JLabel(OTermResource.Instance()
+				.GetString("LocalFile"));
 		lblNewLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblNewLabel.setBounds(31, 22, 286, 30);
 		contentPanel.add(lblNewLabel);
-		
-		JLabel lblRemoteFile = new JLabel("Remote File:");
+
+		lblRemoteFile = new JLabel(OTermResource.Instance().GetString(
+				"RemoteFile"));
 		lblRemoteFile.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblRemoteFile.setBounds(445, 22, 286, 30);
 		contentPanel.add(lblRemoteFile);
+
+		statusLabel = new JLabel("");
+		statusLabel.setBounds(320, 385, 122, 23);
+		contentPanel.add(statusLabel);
 		
 		Configure();
+		Initialize();
+	}
+	
+	private void RefreshLocalComboBox(){
+		List<String> toFill = util.ListLocalFolder("");		
+		if (localCurrentFolder != ""
+				&& !toFill.contains(localCurrentFolder)) {
+			toFill.add(localCurrentFolder);
+		}
+		
+		RefillLocalComboBox(toFill);
+	}
+	
+	public void RefreshRemoteComboBox(){
+		ChannelExec exec = null;
+		try {
+			exec = (ChannelExec) OTermEnvironment.Instance().getSshConnection().getSession().openChannel("exec");					
+			List<String> children = util.ListRemoteFolder(exec, remoteCurrentFolder);
+			
+			children.add(0, "/");
+			RefillRemoteComboBox(children);
+		} catch (JSchException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	private void Initialize(){
+		RefreshLocalComboBox();
+		RefreshRemoteComboBox();
 	}
 	
 	private void Configure(){
@@ -215,10 +255,14 @@ public class SCPDialog extends JDialog {
 			public void mouseClicked(MouseEvent e){
 				// copy the selected files in local to the remote
 				List<String> selectedItems = localFileList.getSelectedValuesList();
-				for(String selectedItem : selectedItems){
-					String filePath = localCurrentFolder + selectedItem;
-					String remoteFile = remoteCurrentFolder + "/"+selectedItem;
+				for(String selectedItem : selectedItems){					
+					String filePath = new File(localCurrentFolder, selectedItem)
+							.getAbsolutePath();
+					String remoteFile = remoteCurrentFolder + "/"
+							+ selectedItem;
+					statusLabel.setText(OTermResource.Instance().GetString("Copying"));
 					util.CopyTo(OTermEnvironment.Instance().getSshConnection().getSession(), filePath, remoteFile);
+					statusLabel.setText(OTermResource.Instance().GetString("Copied"));
 				}			
 			}
 		});
@@ -229,29 +273,15 @@ public class SCPDialog extends JDialog {
 				// copy the selected files in remote to the local
 				List<String> selectedItems = remoteFileList.getSelectedValuesList();
 				for(String selectedItem : selectedItems){
-					String filePath=new File(localCurrentFolder,selectedItem).getAbsolutePath();
+					String filePath = new File(localCurrentFolder, selectedItem)
+							.getAbsolutePath();
 					String remoteFile = remoteCurrentFolder + "/"+selectedItem;
+					statusLabel.setText(OTermResource.Instance().GetString("Copying"));
 					util.CopyFrom(OTermEnvironment.Instance().getSshConnection().getSession(), remoteFile, filePath);
+					statusLabel.setText(OTermResource.Instance().GetString("Copied"));
 				}	
 			}
 		});
-		
-		localChDirButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		localMkDirButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		localRenameButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		localDeleteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});			
 		
 		
 		localFileComboBox.addItemListener(new ItemListener() {
@@ -262,45 +292,22 @@ public class SCPDialog extends JDialog {
 					System.err.println("itemStateChanged " + selected);
 					// refresh the local items.
 					List<String> toFill = util.ListLocalFolder(selected);
-					localCurrentFolder  = selected;
+					localCurrentFolder  = selected;				
+					
 					// add the .. into the list.
 					toFill.add(0, UpItemConstString);
+					
 					RefillLocalList(toFill);
 				}
 			}
 		});
 
-		localFileComboBox.addPopupMenuListener(new PopupMenuListener() {
-			@Override
-			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-				System.err.println("popupMenuWillBecomeVisible " + localCurrentFolder);
-				
-				List<String> toFill = util.ListLocalFolder("");		
-				if (localCurrentFolder != ""
-						&& !toFill.contains(localCurrentFolder)) {
-					toFill.add(localCurrentFolder);
-				}
-				
-				RefillLocalComboBox(toFill);
-			}
-
-			@Override
-			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-			}
-
-			@Override
-			public void popupMenuCanceled(PopupMenuEvent e) {
-			}
-		});		
-
 		localFileList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
 				@SuppressWarnings("unchecked")
 				JList<String> list = (JList<String>) (evt.getSource());
-				if (evt.getClickCount() == 2) {
-					
+				if (evt.getClickCount() == 2) {					
 					// if the selected is ".." go up to the current folder.					
-					
 					int index 			= list.locationToIndex(evt.getPoint());
 					String localFolder  = localFileList.getModel().getElementAt(index);
 					
@@ -328,9 +335,7 @@ public class SCPDialog extends JDialog {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					String selected = (String) e.getItem();
-					
-					// if the selected is ".." go up to the current folder.
-					
+					// if the selected is ".." go up to the current folder.					
 					// refresh the local items.
 					ChannelExec exec = null;
 					try {
@@ -344,37 +349,13 @@ public class SCPDialog extends JDialog {
 						System.err.println("set remoteCurrentFolder to "+remoteCurrentFolder);
 						exec = (ChannelExec) OTermEnvironment.Instance().getSshConnection().getSession().openChannel("exec");					
 						List<String> children = util.ListRemoteFolder(exec, remoteCurrentFolder);
+						exec.disconnect();
 						children.add(0, UpItemConstString);
 						RefillRemoteList(children);
 					} catch (JSchException e1) {
 						e1.printStackTrace();
 					}
 				}
-			}
-		});
-
-		remoteFileComboBox.addPopupMenuListener(new PopupMenuListener() {
-			@Override
-			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-				ChannelExec exec = null;
-				try {
-					exec = (ChannelExec) OTermEnvironment.Instance().getSshConnection().getSession().openChannel("exec");					
-					List<String> children = util.ListRemoteFolder(exec, remoteCurrentFolder);
-					children.add(0, "/");
-					RefillRemoteComboBox(children);
-				} catch (JSchException e1) {
-					e1.printStackTrace();
-				}
-			}
-
-			@Override
-			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-				//System.err.println(e);
-			}
-
-			@Override
-			public void popupMenuCanceled(PopupMenuEvent e) {
-				//System.err.println(e);
 			}
 		});
 
@@ -410,6 +391,23 @@ public class SCPDialog extends JDialog {
 			}
 		});
 		
+		
+		localChDirButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		localMkDirButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		localRenameButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		localDeleteButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});	
 		
 		localRefreshButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

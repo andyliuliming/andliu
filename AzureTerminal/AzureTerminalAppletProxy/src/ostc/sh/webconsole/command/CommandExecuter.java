@@ -11,12 +11,11 @@ import java.util.concurrent.ArrayBlockingQueue;
 import javax.swing.ImageIcon;
 import javax.swing.WindowConstants;
 
-import com.jcraft.jsch.JSchException;
-
 import ostc.sh.webconsole.OTermEnvironment;
 import ostc.sh.webconsole.filecopy.SCPDialog;
-import ostc.sh.webconsole.keypair.KeyDialogWindowLisener;
 import ostc.sh.webconsole.keypair.KeyPairDialog;
+
+import com.jcraft.jsch.JSchException;
 
 public class CommandExecuter implements Runnable {
 
@@ -120,10 +119,10 @@ public class CommandExecuter implements Runnable {
 						keyPairDialog
 								.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 						keyPairDialog.setIconImage(img.getImage());
-						keyPairDialog.setSize(500, 300);
+						keyPairDialog.setSize(500, 255);
 						keyPairDialog.setLocationRelativeTo(null);
 						keyPairDialog.setVisible(true);
-						keyPairDialog.addWindowListener(new KeyDialogWindowLisener(keyPairDialog));
+						
 						break;
 					}
 				}

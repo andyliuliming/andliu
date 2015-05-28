@@ -11,6 +11,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import ostc.sh.webconsole.util.Logger;
+
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSchException;
@@ -31,7 +33,7 @@ public class FileCopyUtil {
 				result.add(f.getPath());
 			}
 		} else {
-			System.err.println("ListLocalFolder "+currentFolder);
+			Logger.Log("ListLocalFolder "+currentFolder);
 			File folderSelected = new File(currentFolder);
 			File[] children = folderSelected.listFiles();
 			if(children!=null){
@@ -57,7 +59,7 @@ public class FileCopyUtil {
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String line = null;
 			while ((line = br.readLine()) != null) {
-				//System.err.println(line);
+				//Logger.Log(line);
 				result.add(line);
 			}
 		} catch (IOException e) {
@@ -131,7 +133,7 @@ public class FileCopyUtil {
 					}
 				}
 
-				// System.out.println("filesize="+filesize+", file="+file);
+				// Logger.Log("filesize="+filesize+", file="+file);
 
 				// send '\0'
 				buf[0] = 0;
@@ -161,7 +163,7 @@ public class FileCopyUtil {
 				fos = null;
 
 				if (checkAck(in) != 0) {
-					System.err.println("checkAck failed.");
+					Logger.Log("checkAck failed.");
 				}
 
 				// send '\0'
@@ -172,7 +174,6 @@ public class FileCopyUtil {
 			out.close();
 			 
 			channel.disconnect();
-			//session.disconnect();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (JSchException e) {
@@ -184,7 +185,7 @@ public class FileCopyUtil {
 	public void CopyTo(Session session, String filePath, String remoteFile) {
 		boolean ptimestamp = true;
 		String command = "scp " + (ptimestamp ? "-p" : "") + " -t " + remoteFile;
-		Channel channel;
+		Channel channel = null;
 		try {
 			channel = session.openChannel("exec");
 			((ChannelExec) channel).setCommand(command);
@@ -209,7 +210,7 @@ public class FileCopyUtil {
 				out.write(command.getBytes());
 				out.flush();
 				if (checkAck(in) != 0) {
-					System.err.println("checkAck failed.");
+					Logger.Log("checkAck failed.");
 				}
 			}
 
@@ -223,10 +224,12 @@ public class FileCopyUtil {
 				command += filePath;
 			}
 			command += "\n";
+			
+			Logger.Log("command to execute:" + command);
 			out.write(command.getBytes());
 			out.flush();
 			if (checkAck(in) != 0) {
-				System.err.println("checkAck failed.");
+				Logger.Log("checkAck failed.");
 			}
 			
 			// send a content of lfile
@@ -245,7 +248,7 @@ public class FileCopyUtil {
 			out.write(buf, 0, 1);
 			out.flush();
 			if (checkAck(in) != 0) {
-				System.err.println("checkAck failed.");
+				Logger.Log("checkAck failed.");
 				//System.exit(0);
 			}
 			out.close();
