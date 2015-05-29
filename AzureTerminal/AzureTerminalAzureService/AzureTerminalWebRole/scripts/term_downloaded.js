@@ -461,8 +461,6 @@ Terminal.prototype.initGlobal = function() {
   }
   Terminal._boundDocs.push(document);
 
-  this.bindKeys();
-
   if (this.isMobile) {
     this.fixMobile(document);
   }
@@ -476,7 +474,8 @@ Terminal.prototype.initGlobal = function() {
  * Global Events for key handling
  */
 
-Terminal.prototype.bindKeys = function() {
+Terminal.prototype.bindKeys = function () {
+    console.dir("bindKeys");
   // We should only need to check `target === body` below,
     // but we can check everything for good measure.
     var el = this.element;
@@ -653,7 +652,7 @@ Terminal.prototype.open = function(parent) {
     // need to be taken on the document.
     this.initGlobal();
   }
-
+  this.bindKeys();
   if (!('useFocus' in this.options) || this.options.useFocus) {
     // Ensure there is a Terminal.focus.
     this.focus();

@@ -1,4 +1,4 @@
-var term;
+var term = null;
 var termWidth;
 var termHeight;
 var showSettings = false;
@@ -15,22 +15,27 @@ function toggleSettings(forceStatus) {
     }
 }
 
-
 function renderTerminal() {
-    $("#terminal_actions_icon").mouseup(function (ev) {
+    console.dir("renderTerminal");
+    $("#terminal_actions_icon").unbind("mouseup");
+    $("#terminal_actions_icon").bind("mouseup", function (ev) {
         toggleSettings();
         ev.stopPropagation();
     });
 
-    $(document).mouseup(function (ev) {
+    $(document).unbind("mouseup");
+    $(document).bind("mouseup", function (ev) {
         toggleSettings(false);
     });
 
     $("#terminal_main_panel").html("");
+    if (term != null) {
+        term.destroy();
+    }
     term = new Terminal({
         cols: termWidth,
         rows: termHeight,
-        useMouse:true,
+        useMouse: true,
         useStyle: true,
         screenKeys: false,
         cursorBlink: false
