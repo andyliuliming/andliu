@@ -16,15 +16,15 @@ import ostc.sh.webconsole.util.Logger;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.ContentIdentity;
 import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 
 public class SSHConnection {
 
-	IdentityInfo identityInfo;
+	private IdentityInfo identityInfo;
 	private Session session;
-	private boolean isConnected=false;
+	private boolean isConnected = false;
+
 	public Session getSession() {
 		return session;
 	}
@@ -33,28 +33,18 @@ public class SSHConnection {
 		this.session = session;
 	}
 
-	public boolean isConnected(){
+	public boolean isConnected() {
 		return isConnected;
 	}
-	
-	private ChannelShell channel;
+
+	private ChannelShell channel = null;
 
 	public SSHConnection(IdentityInfo identityInfo) {
 		this.identityInfo = identityInfo;
 	}
 
-	public ChannelShell GetChannelShell() throws JSchException {
-		if (channel == null) {
-			channel = (ChannelShell) session.openChannel("shell");
-			channel.setPtyType("xterm");
+	public ChannelShell GetChannelShell() {
 
-			Logger.Log("now we are connect using  "
-					+ OTermEnvironment.Instance().getWidth() + " "
-					+ OTermEnvironment.Instance().getHeight());
-			channel.setPtySize(OTermEnvironment.Instance().getWidth(),
-					OTermEnvironment.Instance().getHeight(), 0, 0);
-			channel.connect();
-		}
 		return channel;
 	}
 
@@ -64,10 +54,11 @@ public class SSHConnection {
 		if (isw == null) {
 			try {
 				int fileSize = 1024 * 1024;
-				OutputStream inputStream = GetChannelShell().getOutputStream();
+				OutputStream inputStream = this.GetChannelShell()
+						.getOutputStream();
 				isw = new BufferedWriter(new OutputStreamWriter(inputStream,
 						"UTF-8"), fileSize);
-			} catch (IOException | JSchException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -85,7 +76,7 @@ public class SSHConnection {
 
 				isr = new BufferedReader(new InputStreamReader(inputStream,
 						"UTF-8"), fileSize);
-			} catch (IOException | JSchException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -94,80 +85,101 @@ public class SSHConnection {
 
 	public void DisConnect() {
 		Logger.Log("clear up...");
-		isConnected=false;
-		this.isr = null;
-		this.isw = null;
-		if (this.channel != null) {
-			try {
-				this.channel.disconnect();
-			} catch (Exception e) {
-				e.printStackTrace();
+		if (isConnected) {
+			isConnected = false;
+			Command command = new Command("", "", "");
+			command.setAction("Disconnected");
+			OTermEnvironment.Instance().getCommandPusher().getCommandQueue()
+					.add(command);
+			this.isr = null;
+			this.isw = null;
+			if (this.channel != null) {
+				try {
+					this.channel.disconnect();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				this.channel = null;
 			}
-			this.channel = null;
-		}
-		if (session != null) {
+			if (session != null) {
 
-			try {
-				session.disconnect();
-			} catch (Exception e) {
-				e.printStackTrace();
+				try {
+					session.disconnect();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				session = null;
 			}
-			session = null;
 		}
 	}
 
 	public void Connect() throws Exception {
 		try {
-			DisConnect();
-			
-			JSch jsch = new JSch();
-			Boolean haveKeyFile = false;
+			if (!isConnected) {
 
-			haveKeyFile = identityInfo.PrivateKey != null
-					&& !identityInfo.PrivateKey.isEmpty();
-			if (haveKeyFile) {
-				Logger.Log(OTermEnvironment.Instance()
-						.getIdentityInfo().PrivateKey);
-				
-				ContentIdentity contentIdentity = new ContentIdentity(
-						jsch,
-						"ssh_private_key",
-						OTermEnvironment.Instance().getIdentityInfo().PrivateKey
-								.getBytes("UTF-8"), null);
-				jsch.addIdentity(contentIdentity,
-						identityInfo.Password.getBytes("UTF-8"));
-			}
+				JSch jsch = new JSch();
+				Boolean haveKeyFile = false;
 
-			String host = identityInfo.HostName;
-			String user = identityInfo.UserName;
-			String port = identityInfo.Port;
-			session = jsch.getSession(user, host, Integer.valueOf(port));
+				haveKeyFile = identityInfo.PrivateKey != null
+						&& !identityInfo.PrivateKey.isEmpty();
+				if (haveKeyFile) {
+					Logger.Log(OTermEnvironment.Instance().getIdentityInfo().PrivateKey);
 
-			if (!haveKeyFile) {
-				String passwd = identityInfo.Password;
-				session.setPassword(passwd);
-			}
-
-			UserInfo ui = new MyUserInfo() {
-				public void showMessage(String message) {
-					UUID promptId = UUID.randomUUID();
-					Command command = new Command(promptId.toString(), "Prompt", message);
-					OTermEnvironment.Instance().getCommandPusher().getCommandQueue().add(command);
+					ContentIdentity contentIdentity = new ContentIdentity(
+							jsch,
+							"ssh_private_key",
+							OTermEnvironment.Instance().getIdentityInfo().PrivateKey
+									.getBytes("UTF-8"), null);
+					jsch.addIdentity(contentIdentity,
+							identityInfo.Password.getBytes("UTF-8"));
 				}
 
-				public boolean promptYesNo(String message) {
-					UUID promptId = UUID.randomUUID();
-					Command command = new Command(promptId.toString(), "Prompt", message);
-					OTermEnvironment.Instance().getCommandPusher().getCommandQueue().add(command);
-					return true;
+				String host = identityInfo.HostName;
+				String user = identityInfo.UserName;
+				String port = identityInfo.Port;
+				session = jsch.getSession(user, host, Integer.valueOf(port));
+
+				if (!haveKeyFile) {
+					String passwd = identityInfo.Password;
+					session.setPassword(passwd);
 				}
-			};
 
-			session.setUserInfo(ui);
+				UserInfo ui = new MyUserInfo() {
+					public void showMessage(String message) {
+						UUID promptId = UUID.randomUUID();
+						Command command = new Command(promptId.toString(),
+								"Prompt", message);
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandQueue().add(command);
+					}
 
-			session.connect(30000); // making a connection with timeout.
-			session.setServerAliveInterval(60000);
-			isConnected=true;
+					public boolean promptYesNo(String message) {
+						UUID promptId = UUID.randomUUID();
+						Command command = new Command(promptId.toString(),
+								"Prompt", message);
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandQueue().add(command);
+						return true;
+					}
+				};
+
+				session.setUserInfo(ui);
+				session.connect(30000); // making a connection with timeout.
+				session.setServerAliveInterval(60000);
+
+				// open the channel shell.
+				channel = (ChannelShell) session.openChannel("shell");
+				channel.setPtyType("xterm");
+
+				Logger.Log("now we are connect using  "
+						+ OTermEnvironment.Instance().getWidth() + " "
+						+ OTermEnvironment.Instance().getHeight());
+				channel.setPtySize(OTermEnvironment.Instance().getWidth(),
+						OTermEnvironment.Instance().getHeight(), 0, 0);
+				channel.connect();
+
+				isConnected = true;
+			}
 		} catch (Exception e) {
 			throw e;
 		}

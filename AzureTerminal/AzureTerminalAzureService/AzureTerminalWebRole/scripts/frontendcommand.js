@@ -2,7 +2,7 @@
 function WaitForFrontCommand() {
     if (otermApplet != null) {
         var commandForFront = otermApplet.TakeFrontCommand()
-        
+
         if (commandForFront != null && commandForFront != "") {
 
             var result = commandForFront.split(":");
@@ -61,7 +61,7 @@ function LoginStatusChange(status) {
 
 var pollingFrontCommand;
 function StartPollingFrontCommand() {
-    pollingFrontCommand=setInterval(WaitForFrontCommand, 10);
+    pollingFrontCommand = setInterval(WaitForFrontCommand, 10);
 }
 function StopPollingFrontCommand() {
     clearInterval(pollingFrontCommand);

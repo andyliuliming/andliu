@@ -36,7 +36,6 @@ public class OutputFlusher implements Runnable {
 					OTermEnvironment.Instance()
 							.AppendOutput(cBuf, 0, readCount);
 				} catch (IOException e) {
-
 					Command command = new Command("", "");
 					command.setAction("Disconnected");
 					OTermEnvironment.Instance().getCommandPusher()

@@ -59,7 +59,6 @@ public class OTermApplet extends JApplet implements WebFacade {
 
 	@Override
 	public String TakeOutput() {
-		// TODO Auto-generated method stub
 		return OTermEnvironment.Instance().GetOutput();
 	}
 

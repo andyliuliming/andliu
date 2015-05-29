@@ -1,6 +1,5 @@
 package ostc.sh.webconsole;
 
-import ostc.sh.webconsole.command.Command;
 import ostc.sh.webconsole.command.FrontCommandPusher;
 import ostc.sh.webconsole.ssh.IdentityInfo;
 import ostc.sh.webconsole.ssh.SSHConnection;
