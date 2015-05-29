@@ -13,6 +13,7 @@ function WaitForFrontCommand() {
                 LoginStatusChange(result[2]);
             }
             if (result[1] == "Disconnected") {
+                StopPollingFrontCommand();
                 switchToLoginPage();
             }
         }
@@ -31,6 +32,7 @@ function LoginStatusChange(status) {
             case "success":
                 switchToTerminalMainPage();
                 renderTerminal();
+                StartPollingFrontCommand();
                 $('#loginbutton').removeAttr("disabled", "disabled")
                 break;
             case "unknownhost":
@@ -57,7 +59,10 @@ function LoginStatusChange(status) {
     }
 }
 
-
+var pollingFrontCommand;
 function StartPollingFrontCommand() {
-    setInterval(WaitForFrontCommand, 10);
+    pollingFrontCommand=setInterval(WaitForFrontCommand, 10);
+}
+function StopPollingFrontCommand() {
+    clearInterval(pollingFrontCommand);
 }
