@@ -1,13 +1,13 @@
 ﻿var waitForFrontCommand;
+var startToTakeOutput = false;
 function WaitForFrontCommand() {
     if (otermApplet != null) {
         var commandForFront = otermApplet.TakeFrontCommand()
 
         if (commandForFront != null && commandForFront != "") {
-
             var result = commandForFront.split(":");
             if (result[1] == "Prompt") {
-                alert(result[2]);
+                alert(commandForFront.trimLeft(result[0]).trimLeft(result[1]));
             }
             if (result[1] == "LoginStatusChange") {
                 LoginStatusChange(result[2]);
@@ -17,10 +17,11 @@ function WaitForFrontCommand() {
                 switchToLoginPage();
             }
         }
-
-        var output = otermApplet.TakeOutput();
-        if (output != null && output != "") {
-            term.write(output);
+        if (startToTakeOutput) {
+            var output = otermApplet.TakeOutput();
+            if (output != null && output != "") {
+                term.write(output);
+            }
         }
     }
 }
@@ -31,6 +32,7 @@ function LoginStatusChange(status) {
             case "success":
                 switchToTerminalMainPage();
                 renderTerminal();
+                startToTakeOutput = true;
                 $('#loginbutton').removeAttr("disabled", "disabled")
                 break;
             case "unknownhost":
@@ -50,6 +52,7 @@ function LoginStatusChange(status) {
                 // prompt a dialog then set action.
                 break;
             case "signedout":
+                startToTakeOutput = false;
                 switchToLoginPage();
                 break;
             default:
