@@ -7,8 +7,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.UUID;
 
 import ostc.sh.webconsole.OTermEnvironment;
+import ostc.sh.webconsole.command.Command;
 import ostc.sh.webconsole.util.Logger;
 
 import com.jcraft.jsch.ChannelShell;
@@ -22,7 +24,7 @@ public class SSHConnection {
 
 	IdentityInfo identityInfo;
 	private Session session;
-
+	private boolean isConnected=false;
 	public Session getSession() {
 		return session;
 	}
@@ -31,6 +33,10 @@ public class SSHConnection {
 		this.session = session;
 	}
 
+	public boolean isConnected(){
+		return isConnected;
+	}
+	
 	private ChannelShell channel;
 
 	public SSHConnection(IdentityInfo identityInfo) {
@@ -86,9 +92,9 @@ public class SSHConnection {
 		return isr;
 	}
 
-	public void ClearUp() {
-
+	public void DisConnect() {
 		Logger.Log("clear up...");
+		isConnected=false;
 		this.isr = null;
 		this.isw = null;
 		if (this.channel != null) {
@@ -112,7 +118,7 @@ public class SSHConnection {
 
 	public void Connect() throws Exception {
 		try {
-			ClearUp();
+			DisConnect();
 			
 			JSch jsch = new JSch();
 			Boolean haveKeyFile = false;
@@ -120,7 +126,6 @@ public class SSHConnection {
 			haveKeyFile = identityInfo.PrivateKey != null
 					&& !identityInfo.PrivateKey.isEmpty();
 			if (haveKeyFile) {
-				// jsch.addIdentity("C:\\Users\\andliu\\Desktop\\ssh_private_key",identityInfo.Password);
 				Logger.Log(OTermEnvironment.Instance()
 						.getIdentityInfo().PrivateKey);
 				
@@ -145,17 +150,16 @@ public class SSHConnection {
 
 			UserInfo ui = new MyUserInfo() {
 				public void showMessage(String message) {
-					// JOptionPane.showMessageDialog(null, message);
+					UUID promptId = UUID.randomUUID();
+					Command command = new Command(promptId.toString(), "Prompt", message);
+					OTermEnvironment.Instance().getCommandPusher().getCommandQueue().add(command);
 				}
 
 				public boolean promptYesNo(String message) {
+					UUID promptId = UUID.randomUUID();
+					Command command = new Command(promptId.toString(), "Prompt", message);
+					OTermEnvironment.Instance().getCommandPusher().getCommandQueue().add(command);
 					return true;
-					/*
-					 * Object[] options = { "yes", "no" }; int foo =
-					 * JOptionPane.showOptionDialog(null, message, "Warning",
-					 * JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-					 * null, options, options[0]); return foo == 0;
-					 */
 				}
 			};
 
@@ -163,7 +167,7 @@ public class SSHConnection {
 
 			session.connect(30000); // making a connection with timeout.
 			session.setServerAliveInterval(60000);
-
+			isConnected=true;
 		} catch (Exception e) {
 			throw e;
 		}

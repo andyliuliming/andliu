@@ -14,6 +14,7 @@ import javax.swing.WindowConstants;
 import ostc.sh.webconsole.OTermEnvironment;
 import ostc.sh.webconsole.filecopy.SCPDialog;
 import ostc.sh.webconsole.keypair.KeyPairDialog;
+import ostc.sh.webconsole.util.Logger;
 
 import com.jcraft.jsch.JSchException;
 
@@ -22,7 +23,7 @@ public class CommandExecuter implements Runnable {
 	private ArrayBlockingQueue<Command> commandQueue = null;
 
 	public CommandExecuter() {
-		setCommandQueue(new ArrayBlockingQueue<Command>(1000));
+		commandQueue = new ArrayBlockingQueue<Command>(1000);
 	}
 
 	@Override
@@ -34,28 +35,35 @@ public class CommandExecuter implements Runnable {
 					switch (current.getAction()) {
 					case Actions.Login:
 						try {
-							OTermEnvironment.Instance().setSignedInStatus(
+							Command command = new Command("LoginStatusChange",
 									"ongoing");
+							OTermEnvironment.Instance().getCommandPusher()
+									.getCommandQueue().add(command);
+							Logger.Log("trying to connect");
 							OTermEnvironment.Instance().getSshConnection()
 									.Connect();
-							OTermEnvironment.Instance().setSignedInStatus(
+
+							Command command2 = new Command("LoginStatusChange",
 									"success");
-						} 
-						catch(JSchException e){
+							OTermEnvironment.Instance().getCommandPusher()
+									.getCommandQueue().add(command2);
+						} catch (JSchException e) {
+							Command command = new Command("LoginStatusChange",
+									"");
 							if (e.getCause() instanceof UnknownHostException)
-								OTermEnvironment.Instance().setSignedInStatus(
-										"unknownhost");
+								command.setParameter("unknownhost");
 							else if (e.getCause() instanceof ConnectException) {
-								OTermEnvironment.Instance().setSignedInStatus(
-										"connectfailed");
+								command.setParameter("connectfailed");
 							} else {
-								OTermEnvironment.Instance().setSignedInStatus(
-										"wrongusername");
+								command.setParameter("wrongusername");
 							}
+							OTermEnvironment.Instance().getCommandPusher()
+									.getCommandQueue().add(command);
 						}
 						break;
 					case Actions.SignOut:
-						OTermEnvironment.Instance().getSshConnection().ClearUp();
+						OTermEnvironment.Instance().getSshConnection()
+								.DisConnect();
 						OTermEnvironment.Instance().getIdentityInfo().CleanUp();
 						break;
 					case Actions.SetPort:
@@ -95,11 +103,10 @@ public class CommandExecuter implements Runnable {
 						int height = Integer.valueOf(widthAndHeight[1]);
 						OTermEnvironment.Instance().setWidth(width);
 						OTermEnvironment.Instance().setHeight(height);
-						if (OTermEnvironment.Instance().getSignedInStatus() != null
-								&& OTermEnvironment.Instance()
-										.getSignedInStatus().equals("success")) {
-							System.err.println("set size again " + width + " "
-									+ height);
+
+						Logger.Log("set size again " + width + " " + height);
+						if (OTermEnvironment.Instance().getSshConnection()
+								.isConnected()) {
 							OTermEnvironment.Instance().getSshConnection()
 									.GetChannelShell()
 									.setPtySize(width, height, 0, 0);
@@ -122,7 +129,7 @@ public class CommandExecuter implements Runnable {
 						keyPairDialog.setSize(500, 255);
 						keyPairDialog.setLocationRelativeTo(null);
 						keyPairDialog.setVisible(true);
-						
+
 						break;
 					}
 				}
@@ -134,10 +141,6 @@ public class CommandExecuter implements Runnable {
 
 	public Queue<Command> getCommandQueue() {
 		return commandQueue;
-	}
-
-	public void setCommandQueue(ArrayBlockingQueue<Command> commandQueue) {
-		this.commandQueue = commandQueue;
 	}
 
 }

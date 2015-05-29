@@ -11,6 +11,7 @@
     <script src="./scripts/term_downloaded.js"></script>
     <script src="./scripts/authcheck.js"></script>
     <script src="./scripts/index.js"></script>
+    <script src="./scripts/frontendcommand.js"></script>
     <link href="./css/login.css" rel="stylesheet" type="text/css" />
     <link href="./css/terminal.css" rel="stylesheet" type="text/css" />
     <link href="./css/TestFontSize.css" rel="stylesheet" type="text/css" />
@@ -38,6 +39,7 @@
                     initializeApplet();
                     $("#hostname_input").focus()
                 });
+                StartPollingFrontCommand();
             }
             else {
                 $("body").html("You are not authorized to access this web site");

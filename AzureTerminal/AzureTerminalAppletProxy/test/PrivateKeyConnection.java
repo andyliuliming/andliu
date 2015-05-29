@@ -34,7 +34,7 @@ public class PrivateKeyConnection {
 			String privateKey = sb.toString();
 
 			fis = new FileInputStream(
-					"C:\\Users\\andliu\\Desktop\\ssh_private_key.pub");
+					"C:\\Users\\andliu\\Desktop\\a.htm");
 			isr = new InputStreamReader(fis);
 			// int defaultCharBufferSize = 1024*8;
 			// BufferedReader br = new
@@ -60,7 +60,7 @@ public class PrivateKeyConnection {
 			commandExecuter.getCommandQueue().add(
 					new Command(Actions.SetPassword, ""));
 			commandExecuter.getCommandQueue().add(
-					new Command(Actions.SetPort, "23"));
+					new Command(Actions.SetPort, "22"));
 			commandExecuter.getCommandQueue().add(
 					new Command(Actions.SetPrivateKey, privateKey));
 			// this.SetAction(Actions.SetPublicKey, publicKey);

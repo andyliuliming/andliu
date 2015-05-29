@@ -60,52 +60,6 @@ function initializeLogin() {
     $("#username_input").val($.cookie("UserName"));
 }
 
-var waitForSignedInInterval;
-function WaitForSignedIn() {
-    if (otermApplet != null) {
-        var signedInStatus = otermApplet.getSignedInStatus()
-
-        switch (signedInStatus) {
-            case "success":
-                clearInterval(waitForSignedInInterval);
-                switchToTerminalMainPage();
-                checkLogoutInterval = setInterval(CheckLogout, 1000);
-                renderTerminal();
-                $('#loginbutton').removeAttr("disabled", "disabled")
-                break;
-            case "unknownhost":
-                $('#loginbutton').removeAttr("disabled", "disabled")
-                alert("Please check the hostname.");
-                clearInterval(waitForSignedInInterval);
-                break;
-            case "connectfailed":
-                $('#loginbutton').removeAttr("disabled", "disabled")
-                alert("Please check the port.");
-                clearInterval(waitForSignedInInterval);
-                break;
-            case "wrongusername":
-                $('#loginbutton').removeAttr("disabled", "disabled")
-                alert("Please check the username or password.");
-                clearInterval(waitForSignedInInterval);
-                break;
-            case "ongoing":
-                break;
-            default:
-
-        }
-    }
-}
-
-var checkLogoutInterval;
-function CheckLogout() {
-    var isConnected = otermApplet.IsConnected();
-    if (!isConnected) {
-        clearInterval(checkLogoutInterval);
-        clearInterval(appletGetOutputInterval);
-        switchToLoginPage();
-    }
-}
-
 function loginIn() {
     var hostname = $("#hostname_input");
     var username = $("#username_input");
@@ -148,7 +102,5 @@ function loginIn() {
             $('#loginbutton').attr("disabled", "disabled")
         }
     }
-
-    waitForSignedInInterval = setInterval(WaitForSignedIn, 500);
 
 }

@@ -2,7 +2,6 @@ var term;
 var termWidth;
 var termHeight;
 var showSettings = false;
-var appletGetOutputInterval;
 function toggleSettings(forceStatus) {
     if (forceStatus == undefined) {
         showSettings = !showSettings;
@@ -16,7 +15,9 @@ function toggleSettings(forceStatus) {
     }
 }
 
+
 function renderTerminal() {
+    
     $("#terminal_actions_icon").mouseup(function (ev) {
         toggleSettings();
         ev.stopPropagation();
@@ -41,12 +42,6 @@ function renderTerminal() {
         otermApplet.SetAction("Input", data);
     });
 
-    appletGetOutputInterval = setInterval(function () {
-        var output = otermApplet.GetOutput();
-        if (output != null && output != "") {
-            term.write(output);
-        }
-    }, 10);
 
     // bind the actions
     $("#terminal_action_file").unbind("click");

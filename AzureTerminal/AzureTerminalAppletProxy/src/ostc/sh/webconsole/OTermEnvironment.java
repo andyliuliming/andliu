@@ -1,5 +1,7 @@
 package ostc.sh.webconsole;
 
+import ostc.sh.webconsole.command.Command;
+import ostc.sh.webconsole.command.FrontCommandPusher;
 import ostc.sh.webconsole.ssh.IdentityInfo;
 import ostc.sh.webconsole.ssh.SSHConnection;
 
@@ -7,9 +9,9 @@ public class OTermEnvironment {
 	static Object object = new Object();
 	static OTermEnvironment environment = null;
 
-	private String signedInStatus = null;
 	private IdentityInfo identityInfo = null;
 	private SSHConnection sshConnection = null;
+	private FrontCommandPusher commandPusher;
 
 	private int width;
 	private int height;
@@ -26,6 +28,7 @@ public class OTermEnvironment {
 	private OTermEnvironment() {
 		identityInfo = new IdentityInfo();
 		sshConnection = new SSHConnection(identityInfo);
+		commandPusher = new FrontCommandPusher();
 		this.width = 120;
 		this.height = 40;
 	}
@@ -42,21 +45,8 @@ public class OTermEnvironment {
 		return sshConnection;
 	}
 
-	public void setSshConnection(SSHConnection sshConnection) {
-		this.sshConnection = sshConnection;
-	}	
-
 	private Object outputLock = new Object();
 	public StringBuilder sb = new StringBuilder();
-
-	public String GetOutput() {
-		synchronized (outputLock) {
-			String output = sb.toString();
-			sb = new StringBuilder();
-
-			return output;
-		}
-	}
 
 	public void AppendOutput(char[] output, int offset, int length) {
 		synchronized (outputLock) {
@@ -66,6 +56,15 @@ public class OTermEnvironment {
 			 * offset]); }
 			 */
 			sb.append(output, offset, length);
+		}
+	}
+
+	public String GetOutput() {
+		synchronized (outputLock) {
+			String output = sb.toString();
+			sb = new StringBuilder();
+
+			return output;
 		}
 	}
 
@@ -85,12 +84,8 @@ public class OTermEnvironment {
 		this.width = width;
 	}
 
-	public String getSignedInStatus() {
-		return signedInStatus;
-	}
-
-	public void setSignedInStatus(String signedInStatus) {
-		this.signedInStatus = signedInStatus;
+	public FrontCommandPusher getCommandPusher() {
+		return commandPusher;
 	}
 
 }
