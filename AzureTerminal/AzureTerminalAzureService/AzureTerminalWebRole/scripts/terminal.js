@@ -17,7 +17,6 @@ function toggleSettings(forceStatus) {
 
 
 function renderTerminal() {
-    
     $("#terminal_actions_icon").mouseup(function (ev) {
         toggleSettings();
         ev.stopPropagation();

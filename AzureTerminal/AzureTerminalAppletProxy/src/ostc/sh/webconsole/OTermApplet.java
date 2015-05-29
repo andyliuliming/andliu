@@ -23,10 +23,6 @@ public class OTermApplet extends JApplet implements WebFacade {
 		commandExecuter = new CommandExecuter();
 		Thread commandExecuterThread = new Thread(commandExecuter);
 		commandExecuterThread.start();
-
-		OutputFlusher outputFlusher = new OutputFlusher();
-		Thread outputFlusherThread = new Thread(outputFlusher);
-		outputFlusherThread.start();
 	}
 
 	@Override

@@ -22,9 +22,13 @@ public class OutputFlusher implements Runnable {
 						Thread.sleep(50);
 						continue;
 					}
-					Logger.Log("session connect status:"
-							+ OTermEnvironment.Instance().getSshConnection()
-									.getSession().isConnected());
+					if(OTermEnvironment.Instance().getSshConnection().GetChannelShell().isClosed())
+					{
+						Logger.Log("channel shell is closed, so disconnect the session.");
+						// do the disconnect
+						OTermEnvironment.Instance().getSshConnection().DisConnect();
+						break;
+					}
 					int readCount = OTermEnvironment.Instance()
 							.getSshConnection().getShellInputStream()
 							.read(cBuf);

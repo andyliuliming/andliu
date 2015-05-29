@@ -11,7 +11,6 @@
 
 var useIdentityFile = false;
 function initializeLogin() {
-
     $("#password_option_button").unbind("click");
     $("#password_option_button").bind("click", function (e) {
         useIdentityFile = false;
@@ -103,4 +102,5 @@ function loginIn() {
         }
     }
 
+    StartPollingFrontCommand();
 }

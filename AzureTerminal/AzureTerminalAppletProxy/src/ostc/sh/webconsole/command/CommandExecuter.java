@@ -14,6 +14,7 @@ import javax.swing.WindowConstants;
 import ostc.sh.webconsole.OTermEnvironment;
 import ostc.sh.webconsole.filecopy.SCPDialog;
 import ostc.sh.webconsole.keypair.KeyPairDialog;
+import ostc.sh.webconsole.ssh.OutputFlusher;
 import ostc.sh.webconsole.util.Logger;
 
 import com.jcraft.jsch.JSchException;
@@ -42,7 +43,11 @@ public class CommandExecuter implements Runnable {
 							Logger.Log("trying to connect");
 							OTermEnvironment.Instance().getSshConnection()
 									.Connect();
-
+							
+							OutputFlusher outputFlusher = new OutputFlusher();
+							Thread outputFlusherThread = new Thread(outputFlusher);
+							outputFlusherThread.start();
+							
 							Command command2 = new Command("LoginStatusChange",
 									"success");
 							OTermEnvironment.Instance().getCommandPusher()

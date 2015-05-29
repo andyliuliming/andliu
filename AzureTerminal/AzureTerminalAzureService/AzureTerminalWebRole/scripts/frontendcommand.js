@@ -25,14 +25,12 @@ function WaitForFrontCommand() {
     }
 }
 
-
 function LoginStatusChange(status) {
     if (otermApplet != null) {
         switch (status) {
             case "success":
                 switchToTerminalMainPage();
                 renderTerminal();
-                StartPollingFrontCommand();
                 $('#loginbutton').removeAttr("disabled", "disabled")
                 break;
             case "unknownhost":
