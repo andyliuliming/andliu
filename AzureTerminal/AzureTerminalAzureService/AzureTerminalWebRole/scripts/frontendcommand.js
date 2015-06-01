@@ -7,7 +7,7 @@ function WaitForFrontCommand() {
         if (commandForFront != null && commandForFront != "") {
             var result = commandForFront.split(":");
             if (result[1] == "Prompt") {
-                alert(commandForFront.trimLeft(result[0]).trimLeft(result[1]));
+                //alert(commandForFront.trimLeft(result[0]).trimLeft(result[1]));
             }
             if (result[1] == "LoginStatusChange") {
                 LoginStatusChange(result[2]);

@@ -9,7 +9,6 @@
   <resources>
     <j2se version="1.7+"/>
     <jar href="OTerm.jar" main="true"/>
-    <jar href="jsch-0.1.52.jar" />
   </resources>
   <security>
       <all-permissions/>
