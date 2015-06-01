@@ -1,0 +1,5 @@
+Permissions: all-permissions
+Trusted-Library: true
+Caller-Allowable-Codebase: *
+Application-Library-Allowable-Codebase: *
+Codebase: *
