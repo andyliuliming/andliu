@@ -41,7 +41,7 @@ from mounter import Mounter
 from devmanager import DevManager
 from environmentmanager import EnvironmentManager
 from rebootmanager import RebootManager
-from diskcopy import DiskCopy
+from diskutil import *
 #Main function is the only entrence to this extension handler
 def main():
     global hutil
@@ -142,34 +142,43 @@ def enable():
             # {"command":"existingdisk","query":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdb"},"force":"true","existQuery":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdc"}
             # "devmapper":"sdb_encrypt","passphrase":"User@123"
             # }
+
+            # the prepare function would construct the dev_mapper_origin_path
+            # it's
+            # something like /dev/devmapper/sdb_encrypt
+            # and exist_devpath
             exist_encryption_parameters = environment_manager.prepare_existingdisk_encryption_parameters(extension_parameter)
             # devpath would be come /dev/disk/
             environment_validation_result = environment_manager.validate_environment_for_existingdisk(exist_encryption_parameters)
             if(environment_validation_result != CommonVariables.success):
                 hutil.do_exit(0, 'Enable', 'error', str(environment_validation_result), 'error when validating the environment')
             else:
-
                 # check whether the new attached disk is bigger than the
                 # existing one.
 
                 encryption = Encryption(hutil)
 
-                reboot_manager = RebootManager(hutil)
-                mounter = Mounter(hutil)
+                # reboot_manager = RebootManager(hutil)
+                # mounter = Mounter(hutil)
                 disk_copy = DiskCopy(hutil)
-                encryption_result = encryption.encrypt_disk(exist_encryption_parameters)
-                
-                #freeze_return_code = subprocess.call(['fsfreeze', '-f', exist_encryption_parameters.exist_devpath])
-                disk_copy = DiskCopy(hutil)
-                disk_copy.copy(exist_encryption_parameters.exist_devpath, exist_encryption_parameters.dev_mapper_path)
-                #unfreeze_return_code = subprocess.call(['fsfreeze', '-u', exist_encryption_parameters.exist_devpath])
-                # copy the old content in the old partition to the new
-                #encryption_parameters.devpath
-                # partitions
 
-                # add the mount information back
-                # encryption_parameters =
-                # reboot_manager.configure_reboot(exist_encryption_parameters)
+                disk_info_parser = DiskInfoParser(hutil)
+                
+                ## structure of the disk_partition is
+                # devpath devname size
+                disk_partitions = disk_info_parser.get_disk_partitions(exist_encryption_parameters.exist_devpath)
+                disk_partitioner = DiskPartitioner(hutil)
+                disk_copy = DiskCopy(hutil)
+                disk_partitioner.partit(disk_partitions)
+                for disk_partition in disk_partitions:
+                    exist_encryption_parameters.devpath = disk_partition.devpath
+                    exist_encryption_parameters.dev_mapper_name = disk_partition.devname
+                    encryption_result = encryption.encrypt_disk(exist_encryption_parameters)
+                    if(encryption_result == CommonVariables.success):
+                        disk_copy.copy(exist_encryption_parameters.exist_devpath, exist_encryption_parameters.dev_mapper_origin_path)
+                    else:
+                        hutil.log("encrypt disk result: " + str(encryption_result))
+                    pass
                 mounter.mount_all()
             pass
 

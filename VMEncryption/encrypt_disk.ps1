@@ -2,11 +2,11 @@
 
 function Encrypt-Disk
 {
-	param
-	(
-		[string]$cloudServiceName,
-		[string]$virtualMachineName
-	)
+    param
+    (
+        [string]$cloudServiceName,
+        [string]$virtualMachineName
+    )
     $vm = (Get-AzureVM -ServiceName $cloudServiceName -Name $virtualMachineName)
 
     $osDisk = $vm | Get-AzureOSDisk 
@@ -25,16 +25,16 @@ function Encrypt-Disk
         }
     }
     $lun+=1
-    Write-Output "the lun of your newly attached disk is "+$lun
-    Add-AzureDataDisk -CreateNew -DiskSizeInGB 1 -DiskLabel "disklabel$lun" -VM $vm -LUN $lun -MediaLocation $destinationKeyDiskPath| update-azurevm
+    #Write-Output "the lun of your newly attached disk is "+$lun
+    #Add-AzureDataDisk -CreateNew -DiskSizeInGB 1 -DiskLabel "disklabel$lun" -VM $vm -LUN $lun -MediaLocation $destinationKeyDiskPath| update-azurevm
 
     $privateConfig='
     {
-		"command":"existdisk",
-		"query":{"scsi_number":"[5:0:0:' + $lun + ']"},
-		"passphrase":"MicrosoftLoveLinuxBecauseWeHaveCCIC@123",
-		"existQuery":{"scsi_number":"[5:0:0:0]"}
-	}
+        "command":"existdisk",
+        "query":{"scsi_number":"[5:0:0:' + $lun + ']"},
+        "passphrase":"MicrosoftLoveLinuxBecauseWeHaveCCIC@123",
+        "existQuery":{"scsi_number":"[5:0:0:0]"}
+    }
     '
 
     $tempAzurevm = (Get-AzureVM -ServiceName $cloudServiceName -Name $virtualMachineName)
@@ -45,4 +45,4 @@ function Encrypt-Disk
 
 Add-AzureAccount
 Select-AzureSubscription "OSTC Shanghai Dev"
-Encrypt-Disk -cloudServiceName "fareast-andliu" -virtualMachineName "fareast-andliu"
+Encrypt-Disk -cloudServiceName "andliu-ubuntu" -virtualMachineName "andliu-ubuntu"

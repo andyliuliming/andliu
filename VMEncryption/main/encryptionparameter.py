@@ -15,7 +15,7 @@ class EncryptionParameter(object):
 class ExistEncryptionParameter(object):
     def __init__(self):
          self.devpath = None
-         self.dev_mapper_path = None
+         self.dev_mapper_origin_path = None
          self.dev_mapper_name = None
          self.exist_devpath = None
          self.force = False

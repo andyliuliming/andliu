@@ -42,4 +42,39 @@ class DiskCopy(object):
             self.hutil.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
         return error
 
+class DiskPartition(object):
+    def __init__(self):
+        self.devname = ""
+        self.devpath=""
+        self.start = 0
+        self.end=0
+
+class DiskInfoParser(object):
+    def __init__(self,hutil):
+        self.hutil = hutil
+    def get_disk_partitions(self,devpath):
+        disk_partitions = []
+        space_reserved = 8 * 1024
+        space_index = 0
+        diskPartition1 = DiskPartition()
+        diskPartition1.devname = "sdc1"
+        diskPartition1.devpath = "/dev/sdc1"
+        diskPartition1.start = 2048 + space_reserved * space_index
+        diskPartition1.end = 1000000 + space_reserved * space_index
+        disk_partitions.append(diskPartition1)
+        space_index += 1
+        diskPartition2 = DiskPartition()
+        diskPartition2.devname = "sdc2"
+        diskPartition2.devpath = "/dev/sdc2"
+        diskPartition2.start = 1000001 + space_reserved * space_index
+        diskPartition2.end = 20971519 + space_reserved * space_index
+        disk_partitions.append(diskPartition2)
+        return None
+
+class DiskPartitioner(object):
+    def __init__(self,hutil):
+        self.hutil = hutil
+    def partit(self,disk_partitions):
+        pass
+
 

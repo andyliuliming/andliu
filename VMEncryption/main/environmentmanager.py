@@ -141,8 +141,12 @@ class EnvironmentManager(object):
     
     def validate_environment_for_existingdisk(self,encryption_parameters):
         #TODO implement this
+        # TODO check the target disk have enough space
         return CommonVariables.success
 
+    """
+    the 
+    """
     def prepare_existingdisk_encryption_parameters(self, extension_parameter):
         exist_encryption_parameters = ExistEncryptionParameter()
 
@@ -152,7 +156,7 @@ class EnvironmentManager(object):
             exist_encryption_parameters.dev_mapper_name = extension_parameter.dev_mapper_name
 
         exist_encryption_parameters.passphrase = extension_parameter.passphrase
-        exist_encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_root, exist_encryption_parameters.dev_mapper_name)
+        exist_encryption_parameters.dev_mapper_origin_path = os.path.join(CommonVariables.dev_mapper_root, exist_encryption_parameters.dev_mapper_name)
         dev_manager = DevManager(self.hutil)
 
         if(extension_parameter.query.has_key("devpath")):
@@ -166,7 +170,7 @@ class EnvironmentManager(object):
                 raise Exception("the scsi number is not found")
         
         if(extension_parameter.exist_query.has_key("devpath")):
-            exist_encryption_parameters.e = extension_parameter.exist_query["devpath"]
+            exist_encryption_parameters.exist_devpath = extension_parameter.exist_query["devpath"]
         else:
             # scsi_host,channel,target_number,LUN
             # find the scsi using the filter

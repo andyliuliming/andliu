@@ -38,7 +38,7 @@
     <Compile Include="main\devmanager.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="main\diskcopy.py">
+    <Compile Include="main\diskutil.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="main\encryption.py" />
