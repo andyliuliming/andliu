@@ -101,6 +101,9 @@ def enable():
         #construct the encryption parameters ends
 
         ########### the new disk scenario starts ###################
+        
+        dev_manager = DevManager(hutil)
+
         if(extension_parameter.command == CommonVariables.newdisk_command):
         #    self.hutil = hutil
         #self.command = protected_settings.get('command')
@@ -152,7 +155,6 @@ def enable():
             else:
                 # scsi_host,channel,target_number,LUN
                 # find the scsi using the filter
-                dev_manager = DevManager(self.hutil)
                 target_partition.devpath = dev_manager.query_dev_uuid_path(extension_parameter.query["scsi_number"])
                 if(target_partition.devpath == None):
                     raise Exception("the scsi number is not found")
@@ -174,7 +176,7 @@ def enable():
             encryption = Encryption(hutil)
             #construct the encryption disk format
             
-            mapper_name = uuid.uuid5()
+            mapper_name = uuid.uuid4()
             encryption_result = encryption.encrypt_disk(target_partition.devpath,extension_parameter.passphrase,mapper_name)
             if(encryption_result.errorcode != CommonVariables.success):
                 hutil.do_exit(0, 'Enable', encryption_result.state, str(encryption_result.code), encryption_result.info)
@@ -184,10 +186,10 @@ def enable():
             # prepare the mount point
             mountpoint = encryption_parameters.mountpoint
             if(not os.path.exists(mountpoint)):
-                self.hutil.log("the mountpoint does not exist, create it" + encryption_parameters.mountpoint)
+                hutil.log("the mountpoint does not exist, create it" + encryption_parameters.mountpoint)
                 os.mkdir(mountpoint)
             # prepare the mount path for the encrypted disk
-            mount_name = uuid.uuid5()
+            mount_name = uuid.uuid4()
 
 
             keydisk_mount_point = os.path.join(mountpoint, CommonVariables.key_disk_mountname)
@@ -196,19 +198,19 @@ def enable():
                 i+=1
                 keydisk_mount_point = os.path.join(encryption_parameters.mountpoint, CommonVariables.key_disk_mountname + str(i))
 
-            self.hutil.log("creating the keydisk_mount_point " + keydisk_mount_point)
+            hutil.log("creating the keydisk_mount_point " + keydisk_mount_point)
             os.mkdir(keydisk_mount_point)
 
 
             keydisk_mount_item = CommonVariables.key_disk_label_path + +" " + str(keydisk_mount_point) + " vfat defaults\n"
-            self.hutil.log("keydisk_mount_item is " + str(keydisk_mount_item))
+            hutil.log("keydisk_mount_item is " + str(keydisk_mount_item))
             
             encrypted_disk_mount_item = str(os.path.join(CommonVariables.dev_mapper_root,mapper_name)) + " " + str(os.path.join(mountpoint,mount_name)) + encryption_parameters.filesystem + " defaults\n"
             #"/dev/mapper/sdd1 /mnt/xxxencreypted ext4 defaults\n"
-            self.hutil.log("encrypted_disk_mount_item is " + str(encrypted_disk_mount_item))
+            hutil.log("encrypted_disk_mount_item is " + str(encrypted_disk_mount_item))
 
             attached_encrypted_disk_item = str(mapper_name) + " " + str(target_partition.devpath) + " " + os.path.join(keydisk_mount_point,CommonVariables.passphrase_file_name) + " luks\n"
-            self.hutil.log("attached_encrypted_disk_item is " + str(attached_encrypted_disk_item))
+            hutil.log("attached_encrypted_disk_item is " + str(attached_encrypted_disk_item))
             #"sdc1 /dev/sdd1 /mnt/keydisk/keyfile luks\n"
     #keydisk_mount_item ,encrypted_disk_mount_item,attached_encrypted_disk_item
     
@@ -229,7 +231,7 @@ def enable():
             # {"command":"existingdisk","query":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdb"},"force":"true","existQuery":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdc"}
             # "passphrase":"User@123"
             # }
-
+            disk_util = DiskUtil(hutil)
             # the prepare function would construct the dev_mapper_origin_path
             # it's
             # something like /dev/devmapper/sdb_encrypt
@@ -242,15 +244,15 @@ def enable():
             else:
                 # scsi_host,channel,target_number,LUN
                 # find the scsi using the filter
-                self.hutil.log("scsi_number to query is " + extension_parameter.exist_query["scsi_number"])
+                hutil.log("scsi_number to query is " + extension_parameter.exist_query["scsi_number"])
                 exist_disk_path = dev_manager.query_dev_uuid_path(extension_parameter.exist_query["scsi_number"])
                 if(exist_disk_path == None):
                     raise Exception("the scsi number is not found")
 
 
-            disk_info_parser = DiskInfoParser(self.hutil)
+            #disk_info_parser = DiskInfoParser(self.hutil)
             # get the partitions info of the origin device
-            origin_disk_partitions = disk_info_parser.get_disk_partitions(exist_disk_path)
+            origin_disk_partitions = disk_util.get_disk_partitions(exist_disk_path)
             #exist_encryption_parameters.origin_disk_partitions =
             #origin_disk_partitions
 
@@ -262,7 +264,7 @@ def enable():
             else:
                 # scsi_host,channel,target_number,LUN
                 # find the scsi using the filter
-                self.hutil.log("scsi_number to query is " + extension_parameter.query["scsi_number"])
+                hutil.log("scsi_number to query is " + extension_parameter.query["scsi_number"])
                 encryption_dev_root_path = dev_manager.query_dev_uuid_path(extension_parameter.query["scsi_number"])
                 if(encryption_dev_root_path == None):
                     raise Exception("the scsi number is not found")
@@ -288,7 +290,6 @@ def enable():
             # /dev/sdc1 sdc1 100202
             #disk_partitions =
             #disk_info_parser.get_disk_partitions(exist_encryption_parameters.exist_devpath)
-            disk_util = DiskUtil(hutil)
             target_disk_partitions = disk_util.partit(encryption_dev_root_path,origin_disk_partitions)
 
 
@@ -297,7 +298,7 @@ def enable():
             # reboot_manager = RebootManager(hutil)
             #disk_copy = DiskCopy(hutil)
 
-            for partition_index in origin_disk_partitions.length():
+            for partition_index in range(len(origin_disk_partitions)):
 
             #for disk_partition in target_disk_partitions:
                 origin_disk_partition = origin_disk_partitions[partition_index]
@@ -305,8 +306,8 @@ def enable():
                 #disk_partition.devpath
                 #exist_encryption_parameters.dev_mapper_name =
                 #disk_partition.devname
-                mapper_name = uuid.uuid5()
-                encryption_result = encryption.encrypt_disk(origin_disk_partition.devpath,extension_parameter.passphrase,str(mapper_name))
+                mapper_name = uuid.uuid4()
+                encryption_result = encryption.encrypt_disk(origin_disk_partition.dev_path,extension_parameter.passphrase,str(mapper_name))
 
                 #for partition_index in origin_disk_partitions.length():
 

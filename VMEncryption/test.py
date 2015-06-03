@@ -24,6 +24,7 @@ import base64
 import os
 import os.path
 import re
+import uuid
 import string
 import subprocess
 import sys
@@ -36,6 +37,7 @@ import httplib
 
 #Main function is the only entrence to this extension handler
 def main():
+    uuid.uuid4()
     #p = subprocess.Popen(['lsscsi','[*:0:0:' + str(para_parser.lun) + ']'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     #identity, err = p.communicate()
     identity="[5:0:0:2]    disk    Msft     Virtual Disk     1.0   /dev/sde"

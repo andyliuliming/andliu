@@ -26,9 +26,9 @@ from common import CommonVariables
 
 class DiskPartition(object):
     def __init__(self):
-        self.devpath=""
+        self.dev_path = ""
         self.start = 0
-        self.end=0
+        self.end = 0
 
 class DiskUtil(object):
     def __init__(self,hutil):
@@ -53,13 +53,13 @@ class DiskUtil(object):
         space_reserved = 8 * 1024
         space_index = 0
         diskPartition1 = DiskPartition()
-        diskPartition1.devpath = "/dev/sdc1"
+        diskPartition1.dev_path = "/dev/sdc1"
         diskPartition1.start = 2048 
         diskPartition1.end = 1000000 
         disk_partitions.append(diskPartition1)
         space_index += 1
         diskPartition2 = DiskPartition()
-        diskPartition2.devpath = "/dev/sdc2"
+        diskPartition2.dev_path = "/dev/sdc2"
         diskPartition2.start = 1000001
         diskPartition2.end = 20971519 
         disk_partitions.append(diskPartition2)
@@ -70,13 +70,13 @@ class DiskUtil(object):
         space_reserved = 8 * 1024
         space_index = 0
         diskPartition1 = DiskPartition()
-        diskPartition1.devpath = "/dev/sdd1"
+        diskPartition1.dev_path = "/dev/sdd1"
         diskPartition1.start = 2048 + space_reserved * space_index
         diskPartition1.end = 1000000 + space_reserved * space_index
         target_disk_partitions.append(diskPartition1)
         space_index += 1
         diskPartition2 = DiskPartition()
-        diskPartition2.devpath = "/dev/sdd2"
+        diskPartition2.dev_path = "/dev/sdd2"
         diskPartition2.start = 1000001 + space_reserved * space_index
         diskPartition2.end = 20971519 + space_reserved * space_index
         target_disk_partitions.append(diskPartition2)
