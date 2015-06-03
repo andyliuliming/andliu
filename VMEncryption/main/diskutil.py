@@ -45,7 +45,7 @@ class DiskUtil(object):
         if(returnCode != 0):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_open_error
-            error.info = "devpath is " + str(encryption_parameters.devpath) + " dev_mapper_name is " + str(encryption_parameters.dev_mapper_name)
+            error.info = "from_device is " + str(from_device) + " to_device is " + str(to_device)
             self.hutil.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
         return error
     def get_disk_partitions(self,devpath):

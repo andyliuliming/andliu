@@ -32,7 +32,7 @@ class EncryptionError(object):
         self.code = CommonVariables.success
         self.info = None
     def __str__(self):
-        return "errorcode: " + str(self.errorcode) + " state:" + str(self.state) + " code:" + (self.code) + " info:" + (self.info)
+        return "errorcode: " + str(self.errorcode) + " state:" + str(self.state) + " code:" + str(self.code) + " info:" + str(self.info)
 
 class EncryptionDeviceParameter(object):
     def __init__(self):

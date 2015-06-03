@@ -314,7 +314,7 @@ def enable():
                 # code is our definition.
                 if(encryption_result.code == CommonVariables.success):
                     #target_disk_partition
-                    disk_util.copy(origin_disk_partition.dev_path, "/dev/mapper" + str(mapper_name))
+                    disk_util.copy(origin_disk_partition.dev_path, os.path.join("/dev/mapper", str(mapper_name)))
                 else:
                     hutil.log("encrypt disk result: " + str(encryption_result))
             
