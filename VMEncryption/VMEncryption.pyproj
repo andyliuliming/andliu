@@ -42,9 +42,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="main\encryption.py" />
-    <Compile Include="main\encryptionparameter.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="main\environmentmanager.py" />
     <Compile Include="main\handle.py" />
     <Compile Include="main\mounter.py">

@@ -28,6 +28,7 @@ import string
 import subprocess
 import sys
 import imp
+import uuid
 import shlex
 import traceback
 import urllib2
@@ -41,7 +42,7 @@ from mounter import Mounter
 from devmanager import DevManager
 from environmentmanager import EnvironmentManager
 from rebootmanager import RebootManager
-from diskutil import *
+from diskutil import DiskUtil
 #Main function is the only entrence to this extension handler
 def main():
     global hutil
@@ -86,7 +87,6 @@ def enable():
         if(para_validate_result != 0):
             hutil.do_exit(0, 'Enable', 'error', str(para_validate_result), "parameter not right")
 
-
         # install the required softwares.
         MyPatching = GetMyPatching()
         if MyPatching == None:
@@ -95,43 +95,130 @@ def enable():
             MyPatching.install_extras(extension_parameter)
 
         #construct the encryption parameters starts
-        
-        environment_manager = EnvironmentManager(hutil)
+
+        #environment_manager = EnvironmentManager(hutil)
 
         #construct the encryption parameters ends
 
         ########### the new disk scenario starts ###################
-
         if(extension_parameter.command == CommonVariables.newdisk_command):
-            encryption_parameters = environment_manager.prepare_newdisk_encryption_parameters(extension_parameter)
+        #    self.hutil = hutil
+        #self.command = protected_settings.get('command')
+        #self.force = protected_settings.get('force')
+        #self.devpath = None
+        #self.query = protected_settings.get('query')
+        #self.exist_query = protected_settings.get('existQuery')
+        #self.filesystem = protected_settings.get('filesystem')
+        #self.mountpoint = protected_settings.get('mountpoint')
+        #self.passphrase = protected_settings.get('passphrase')
+            #vm_encryption_attach_new_para =
+            #environment_manager.prepare_newdisk_encryption_parameters(extension_parameter)
+            #vm_encryption_attach_new_para = VMEncryptionAttachNewParameter()
 
-            environment_validation_result = environment_manager.validate_environment_for_newdisk(encryption_parameters)
+            #if(extension_parameter.mountname is None or
+            #extension_parameter.mountname == ""):
+            #    encryption_parameters.mountname =
+            #    CommonVariables.default_mount_name
+            #else:
+            #    encryption_parameters.mountname =
+            #    extension_parameter.mountname
 
-            if(environment_validation_result != CommonVariables.success):
-                hutil.do_exit(0, 'Enable', 'error', str(environment_validation_result), 'error when validating the environment')
+            #if(extension_parameter.filesystem is None or
+            #extension_parameter.filesystem == ""):
+            #    vm_encryption_attach_new_para.filesystem =
+            #    CommonVariables.default_file_system
+            #else:
+            #    vm_encryption_attach_new_para.filesystem =
+            #    extension_parameter.filesystem
+
+            ##if(extension_parameter.dev_mapper_name is None or
+            ##extension_parameter.dev_mapper_name == ""):
+            ##    encryption_parameters.dev_mapper_name =
+            ##    CommonVariables.default_mapper_name
+            ##else:
+            ##    encryption_parameters.dev_mapper_name =
+            ##    extension_parameter.dev_mapper_name
+
+            #vm_encryption_attach_new_para.passphrase =
+            #extension_parameter.passphrase
+        
+            #vm_encryption_attach_new_para.mountpoint =
+            #extension_parameter.mountpoint
+
+            # build up the target partitions
+            target_partition = DiskPartition()
+            if(extension_parameter.query.has_key("devpath")):
+                target_partition.devpath = extension_parameter.query["devpath"]
             else:
+                # scsi_host,channel,target_number,LUN
+                # find the scsi using the filter
+                dev_manager = DevManager(self.hutil)
+                target_partition.devpath = dev_manager.query_dev_uuid_path(extension_parameter.query["scsi_number"])
+                if(target_partition.devpath == None):
+                    raise Exception("the scsi number is not found")
+
+            #encryption_parameters.target_disk_partitions.append(target_partition)
+            #environment_validation_result =
+            #environment_manager.validate_environment_for_newdisk(vm_encryption_attach_new_para)
+
+            #if(environment_validation_result != CommonVariables.success):
+            #    hutil.do_exit(0, 'Enable', 'error',
+            #    str(environment_validation_result), 'error when validating the
+            #    environment')
+            #else:
                 # the config_reboot is a decorator, it will modify the
                 # encryption_parameters .
                 # TODO: make the return parameter a error code.
                 # we should encrypt the disk first, then configure_reboot
 
-                encryption = Encryption(hutil)
-                reboot_manager = RebootManager(hutil)
-                mounter = Mounter(hutil)
-
-                encryption_result = encryption.encrypt_disk(encryption_parameters)
-                if(encryption_result.errorcode != CommonVariables.success):
-                    hutil.do_exit(0, 'Enable', encryption_result.state, str(encryption_result.code), encryption_result.info)
-                encryption_result = encryption.format_disk(encryption_parameters)
-                encryption_parameters = reboot_manager.configure_reboot(encryption_parameters)
-                mounter.mount_all()
-                
+            encryption = Encryption(hutil)
+            #construct the encryption disk format
+            
+            mapper_name = uuid.uuid5()
+            encryption_result = encryption.encrypt_disk(target_partition.devpath,extension_parameter.passphrase,mapper_name)
+            if(encryption_result.errorcode != CommonVariables.success):
                 hutil.do_exit(0, 'Enable', encryption_result.state, str(encryption_result.code), encryption_result.info)
-                # execute the mount -a
-                # then check the volume is mounted successfully
-                #mounter.mount(encryption_parameters)
-                # mount the disk..
 
+            encryption_result = encryption.format_disk(vm_encryption_attach_new_para.filesystem,device_parameter, os.path.join(CommonVariables.dev_mapper_root, mapper_name))
+
+            # prepare the mount point
+            mountpoint = encryption_parameters.mountpoint
+            if(not os.path.exists(mountpoint)):
+                self.hutil.log("the mountpoint does not exist, create it" + encryption_parameters.mountpoint)
+                os.mkdir(mountpoint)
+            # prepare the mount path for the encrypted disk
+            mount_name = uuid.uuid5()
+
+
+            keydisk_mount_point = os.path.join(mountpoint, CommonVariables.key_disk_mountname)
+            i = 0
+            while(os.path.exists(keydisk_mount_point)):
+                i+=1
+                keydisk_mount_point = os.path.join(encryption_parameters.mountpoint, CommonVariables.key_disk_mountname + str(i))
+
+            self.hutil.log("creating the keydisk_mount_point " + keydisk_mount_point)
+            os.mkdir(keydisk_mount_point)
+
+
+            keydisk_mount_item = CommonVariables.key_disk_label_path + +" " + str(keydisk_mount_point) + " vfat defaults\n"
+            self.hutil.log("keydisk_mount_item is " + str(keydisk_mount_item))
+            
+            encrypted_disk_mount_item = str(os.path.join(CommonVariables.dev_mapper_root,mapper_name)) + " " + str(os.path.join(mountpoint,mount_name)) + encryption_parameters.filesystem + " defaults\n"
+            #"/dev/mapper/sdd1 /mnt/xxxencreypted ext4 defaults\n"
+            self.hutil.log("encrypted_disk_mount_item is " + str(encrypted_disk_mount_item))
+
+            attached_encrypted_disk_item = str(mapper_name) + " " + str(target_partition.devpath) + " " + os.path.join(keydisk_mount_point,CommonVariables.passphrase_file_name) + " luks\n"
+            self.hutil.log("attached_encrypted_disk_item is " + str(attached_encrypted_disk_item))
+            #"sdc1 /dev/sdd1 /mnt/keydisk/keyfile luks\n"
+    #keydisk_mount_item ,encrypted_disk_mount_item,attached_encrypted_disk_item
+    
+            reboot_manager = RebootManager(hutil)
+            vm_encryption_attach_new_para = reboot_manager.configure_reboot(keydisk_mount_item,encrypted_disk_mount_item,attached_encrypted_disk_item)
+            
+            mounter = Mounter(hutil)
+            mounter.mount_all()
+
+            hutil.do_exit(0, 'Enable', encryption_result.state, str(encryption_result.code), encryption_result.info)
         ########### the new disk scenario ends ###################
 
 
@@ -140,47 +227,98 @@ def enable():
         ########### the existing scenario starts ###################
         elif(extension_parameter.command == CommonVariables.existdisk_command):
             # {"command":"existingdisk","query":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdb"},"force":"true","existQuery":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdc"}
-            # "devmapper":"sdb_encrypt","passphrase":"User@123"
+            # "passphrase":"User@123"
             # }
 
             # the prepare function would construct the dev_mapper_origin_path
             # it's
             # something like /dev/devmapper/sdb_encrypt
             # and exist_devpath
-            exist_encryption_parameters = environment_manager.prepare_existingdisk_encryption_parameters(extension_parameter)
-            # devpath would be come /dev/disk/
-            environment_validation_result = environment_manager.validate_environment_for_existingdisk(exist_encryption_parameters)
-            if(environment_validation_result != CommonVariables.success):
-                hutil.do_exit(0, 'Enable', 'error', str(environment_validation_result), 'error when validating the environment')
+            # the exist_encryption_parameters should contains the partitions
+            # info
+            exist_disk_path = ""
+            if(extension_parameter.exist_query.has_key("devpath")):
+                exist_disk_path = extension_parameter.exist_query["devpath"]
             else:
-                # check whether the new attached disk is bigger than the
-                # existing one.
+                # scsi_host,channel,target_number,LUN
+                # find the scsi using the filter
+                self.hutil.log("scsi_number to query is " + extension_parameter.exist_query["scsi_number"])
+                exist_disk_path = dev_manager.query_dev_uuid_path(extension_parameter.exist_query["scsi_number"])
+                if(exist_disk_path == None):
+                    raise Exception("the scsi number is not found")
 
-                encryption = Encryption(hutil)
 
-                # reboot_manager = RebootManager(hutil)
-                # mounter = Mounter(hutil)
-                disk_copy = DiskCopy(hutil)
+            disk_info_parser = DiskInfoParser(self.hutil)
+            # get the partitions info of the origin device
+            origin_disk_partitions = disk_info_parser.get_disk_partitions(exist_disk_path)
+            #exist_encryption_parameters.origin_disk_partitions =
+            #origin_disk_partitions
 
-                disk_info_parser = DiskInfoParser(hutil)
+
+
+
+            if(extension_parameter.query.has_key("devpath")):
+                encryption_dev_root_path = extension_parameter.query["devpath"]
+            else:
+                # scsi_host,channel,target_number,LUN
+                # find the scsi using the filter
+                self.hutil.log("scsi_number to query is " + extension_parameter.query["scsi_number"])
+                encryption_dev_root_path = dev_manager.query_dev_uuid_path(extension_parameter.query["scsi_number"])
+                if(encryption_dev_root_path == None):
+                    raise Exception("the scsi number is not found")
+
+
+            #exist_encryption_parameters =
+            #environment_manager.prepare_existingdisk_encryption_parameters(extension_parameter)
+            # devpath would be come /dev/disk/
+            #environment_validation_result =
+            #environment_manager.validate_environment_for_existingdisk(exist_encryption_parameters)
+            #if(environment_validation_result != CommonVariables.success):
+            #    hutil.do_exit(0, 'Enable', 'error',
+            #    str(environment_validation_result), 'error when validating the
+            #    environment')
+            #else:
+            # check whether the new attached disk is bigger than the
+            # existing one.
+
+            #disk_info_parser = DiskInfoParser(hutil)
                 
-                ## structure of the disk_partition is
-                # devpath devname size
-                disk_partitions = disk_info_parser.get_disk_partitions(exist_encryption_parameters.exist_devpath)
-                disk_partitioner = DiskPartitioner(hutil)
-                disk_copy = DiskCopy(hutil)
-                disk_partitioner.partit(disk_partitions)
-                for disk_partition in disk_partitions:
-                    exist_encryption_parameters.devpath = disk_partition.devpath
-                    exist_encryption_parameters.dev_mapper_name = disk_partition.devname
-                    encryption_result = encryption.encrypt_disk(exist_encryption_parameters)
-                    if(encryption_result == CommonVariables.success):
-                        disk_copy.copy(exist_encryption_parameters.exist_devpath, exist_encryption_parameters.dev_mapper_origin_path)
-                    else:
-                        hutil.log("encrypt disk result: " + str(encryption_result))
-                    pass
-                mounter.mount_all()
-            pass
+            ## structure of the disk_partition is
+            # devpath devname size
+            # /dev/sdc1 sdc1 100202
+            #disk_partitions =
+            #disk_info_parser.get_disk_partitions(exist_encryption_parameters.exist_devpath)
+            disk_util = DiskUtil(hutil)
+            target_disk_partitions = disk_util.partit(encryption_dev_root_path,origin_disk_partitions)
+
+
+            encryption = Encryption(hutil)
+
+            # reboot_manager = RebootManager(hutil)
+            #disk_copy = DiskCopy(hutil)
+
+            for partition_index in origin_disk_partitions.length():
+
+            #for disk_partition in target_disk_partitions:
+                origin_disk_partition = origin_disk_partitions[partition_index]
+                #exist_encryption_parameters.encryption_dev_root_path =
+                #disk_partition.devpath
+                #exist_encryption_parameters.dev_mapper_name =
+                #disk_partition.devname
+                mapper_name = uuid.uuid5()
+                encryption_result = encryption.encrypt_disk(origin_disk_partition.devpath,extension_parameter.passphrase,str(mapper_name))
+
+                #for partition_index in origin_disk_partitions.length():
+
+                # code is our definition.
+                if(encryption_result.code == CommonVariables.success):
+                    #target_disk_partition
+                    disk_util.copy(origin_disk_partition.dev_path, "/dev/mapper" + str(mapper_name))
+                else:
+                    hutil.log("encrypt disk result: " + str(encryption_result))
+            
+            mounter = Mounter(hutil)
+            mounter.mount_all()
 
     except Exception, e:
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))

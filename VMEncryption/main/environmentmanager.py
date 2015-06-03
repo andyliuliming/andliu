@@ -21,81 +21,93 @@
 import os
 import os.path
 import subprocess
-from encryptionparameter import EncryptionParameter
-from encryptionparameter import ExistEncryptionParameter
+from encryption import *
 from common import CommonVariables
 from devmanager import DevManager
-
+from diskutil import *
 
 class EnvironmentManager(object):
     def __init__(self, hutil):
         self.hutil = hutil
         pass
 
+     #self.command = protected_settings.get('command')
+        #self.force = protected_settings.get('force')
+        #self.devpath = None
+        #self.query = protected_settings.get('query')
+        #self.exist_query = protected_settings.get('existQuery')
+        #self.filesystem = protected_settings.get('filesystem')
+        #self.mountname = protected_settings.get('mountname')
+        #self.mountpoint = protected_settings.get('mountpoint')
+        #self.passphrase = protected_settings.get('passphrase')
     def prepare_newdisk_encryption_parameters(self, extension_parameter):
-        encryption_parameters = EncryptionParameter()
-        if(extension_parameter.mountname is None or extension_parameter.mountname == ""):
-            encryption_parameters.mountname = CommonVariables.default_mount_name
-        else:
-            encryption_parameters.mountname = extension_parameter.mountname
+        encryption_parameters = VMEncryptionAttachNewParameter()
+        #if(extension_parameter.mountname is None or extension_parameter.mountname == ""):
+        #    encryption_parameters.mountname = CommonVariables.default_mount_name
+        #else:
+        #    encryption_parameters.mountname = extension_parameter.mountname
 
         if(extension_parameter.filesystem is None or extension_parameter.filesystem == ""):
             encryption_parameters.filesystem = CommonVariables.default_file_system
         else:
             encryption_parameters.filesystem = extension_parameter.filesystem
 
-        if(extension_parameter.dev_mapper_name is None or extension_parameter.dev_mapper_name == ""):
-            encryption_parameters.dev_mapper_name = CommonVariables.default_mapper_name
-        else:
-            encryption_parameters.dev_mapper_name = extension_parameter.dev_mapper_name
+        #if(extension_parameter.dev_mapper_name is None or extension_parameter.dev_mapper_name == ""):
+        #    encryption_parameters.dev_mapper_name = CommonVariables.default_mapper_name
+        #else:
+        #    encryption_parameters.dev_mapper_name = extension_parameter.dev_mapper_name
 
         encryption_parameters.passphrase = extension_parameter.passphrase
+        
+        encryption_parameters.mountpoint = extension_parameter.mountpoint
 
+        # build up the target partitions
+        target_partition = DiskPartition()
         if(extension_parameter.query.has_key("devpath")):
-            encryption_parameters.devpath = extension_parameter.query["devpath"]
+            target_partition.devpath = extension_parameter.query["devpath"]
         else:
             # scsi_host,channel,target_number,LUN
             # find the scsi using the filter
             dev_manager = DevManager(self.hutil)
-            encryption_parameters.devpath = dev_manager.query_dev_uuid_path(extension_parameter.query["scsi_number"])
-            if(encryption_parameters.devpath == None):
+            target_partition.devpath = dev_manager.query_dev_uuid_path(extension_parameter.query["scsi_number"])
+            if(target_partition.devpath == None):
                 raise Exception("the scsi number is not found")
-        encryption_parameters.mountpoint = extension_parameter.mountpoint
+        encryption_parameters.target_disk_partitions.append(target_partition)
 
-        if(not os.path.exists(encryption_parameters.mountpoint)):
-        # create it
-            self.hutil.log("the mountpoint does not exist, create it" + encryption_parameters.mountpoint)
-            os.mkdir(encryption_parameters.mountpoint)
+        ## prepare the mount point
+        #if(not os.path.exists(encryption_parameters.mountpoint)):
+        #    self.hutil.log("the mountpoint does not exist, create it" + encryption_parameters.mountpoint)
+        #    os.mkdir(encryption_parameters.mountpoint)
 
-        encryption_parameters.keydisk_mount_point = os.path.join(encryption_parameters.mountpoint, CommonVariables.key_disk_mountname)
-        i = 0
-        while(os.path.exists(encryption_parameters.keydisk_mount_point)):
-            i+=1
-            encryption_parameters.keydisk_mount_point = os.path.join(encryption_parameters.mountpoint, CommonVariables.key_disk_mountname + str(i))
-        
-        self.hutil.log("creating the keydisk_mount_point " + encryption_parameters.keydisk_mount_point)
-        os.mkdir(encryption_parameters.keydisk_mount_point)
+        #encryption_parameters.keydisk_mount_point = os.path.join(encryption_parameters.mountpoint, CommonVariables.key_disk_mountname)
+        #i = 0
+        #while(os.path.exists(encryption_parameters.keydisk_mount_point)):
+        #    i+=1
+        #    encryption_parameters.keydisk_mount_point = os.path.join(encryption_parameters.mountpoint, CommonVariables.key_disk_mountname + str(i))
 
-        keydisk_mount_item = "/dev/disk/by-label/" + CommonVariables.key_disk_label + " " + encryption_parameters.keydisk_mount_point + " " + CommonVariables.key_disk_fs_type + " defaults\n"
+        #self.hutil.log("creating the keydisk_mount_point " + encryption_parameters.keydisk_mount_point)
+        #os.mkdir(encryption_parameters.keydisk_mount_point)
 
-        encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_root, encryption_parameters.dev_mapper_name)
-        i = 0
-        encryption_parameters.dev_mapper_name = encryption_parameters.dev_mapper_name
-        while(os.path.exists(encryption_parameters.dev_mapper_path)):
-            i+=1
-            encryption_parameters.dev_mapper_name = encryption_parameters.dev_mapper_name + str(i)
-            encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_root, encryption_parameters.dev_mapper_name + str(i))
+        #keydisk_mount_item = "/dev/disk/by-label/" + CommonVariables.key_disk_label + " " + encryption_parameters.keydisk_mount_point + " " + CommonVariables.key_disk_fs_type + " defaults\n"
+
+        #encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_root, encryption_parameters.dev_mapper_name)
+        #i = 0
+        #encryption_parameters.dev_mapper_name = encryption_parameters.dev_mapper_name
+        #while(os.path.exists(encryption_parameters.dev_mapper_path)):
+        #    i+=1
+        #    encryption_parameters.dev_mapper_name = encryption_parameters.dev_mapper_name + str(i)
+        #    encryption_parameters.dev_mapper_path = os.path.join(CommonVariables.dev_mapper_root, encryption_parameters.dev_mapper_name + str(i))
 
 
-        encryption_parameters.encrypted_disk_mount_point = os.path.join(encryption_parameters.mountpoint,encryption_parameters.mountname)
-        i = 0
-        encryption_parameters.mount_name = encryption_parameters.mountname
-        while(os.path.exists(encryption_parameters.encrypted_disk_mount_point)):
-            i += 1
-            encryption_parameters.mount_name = encryption_parameters.mountname + str(i)
-            encryption_parameters.encrypted_disk_mount_point = os.path.join(encryption_parameters.mountpoint, encryption_parameters.mountname + str(i))
-        self.hutil.log("creating the encrypted_disk_mount_point " + encryption_parameters.encrypted_disk_mount_point)
-        os.mkdir(encryption_parameters.encrypted_disk_mount_point)
+        #encryption_parameters.encrypted_device_mount_point = os.path.join(encryption_parameters.mountpoint,encryption_parameters.mountname)
+        #i = 0
+        #encryption_parameters.mount_name = encryption_parameters.mountname
+        #while(os.path.exists(encryption_parameters.encrypted_device_mount_point)):
+        #    i += 1
+        #    encryption_parameters.mount_name = encryption_parameters.mountname + str(i)
+        #    encryption_parameters.encrypted_device_mount_point = os.path.join(encryption_parameters.mountpoint, encryption_parameters.mountname + str(i))
+        #self.hutil.log("creating the encrypted_disk_mount_point " + encryption_parameters.encrypted_device_mount_point)
+        #os.mkdir(encryption_parameters.encrypted_device_mount_point)
 
         return encryption_parameters
 
@@ -148,7 +160,7 @@ class EnvironmentManager(object):
     the 
     """
     def prepare_existingdisk_encryption_parameters(self, extension_parameter):
-        exist_encryption_parameters = ExistEncryptionParameter()
+        exist_encryption_parameters = VMEncryptionExistDiskParameter()
 
         if(extension_parameter.dev_mapper_name is None or extension_parameter.dev_mapper_name == ""):
             exist_encryption_parameters.dev_mapper_name = CommonVariables.default_mapper_name
@@ -160,13 +172,13 @@ class EnvironmentManager(object):
         dev_manager = DevManager(self.hutil)
 
         if(extension_parameter.query.has_key("devpath")):
-            exist_encryption_parameters.devpath = extension_parameter.query["devpath"]
+            exist_encryption_parameters.encryption_dev_root_path = extension_parameter.query["devpath"]
         else:
             # scsi_host,channel,target_number,LUN
             # find the scsi using the filter
             self.hutil.log("scsi_number to query is " + extension_parameter.query["scsi_number"])
-            exist_encryption_parameters.devpath = dev_manager.query_dev_uuid_path(extension_parameter.query["scsi_number"])
-            if(exist_encryption_parameters.devpath == None):
+            exist_encryption_parameters.encryption_dev_root_path = dev_manager.query_dev_uuid_path(extension_parameter.query["scsi_number"])
+            if(exist_encryption_parameters.encryption_dev_root_path == None):
                 raise Exception("the scsi number is not found")
         
         if(extension_parameter.exist_query.has_key("devpath")):
@@ -178,4 +190,9 @@ class EnvironmentManager(object):
             exist_encryption_parameters.exist_devpath = dev_manager.query_dev_uuid_path(extension_parameter.exist_query["scsi_number"])
             if(exist_encryption_parameters.exist_devpath == None):
                 raise Exception("the scsi number is not found")
+
+        disk_info_parser = DiskInfoParser(self.hutil)
+        # get the partitions info of the origin device
+        origin_disk_partitions = disk_info_parser.get_disk_partitions(exist_encryption_parameters.exist_devpath)
+        exist_encryption_parameters.origin_disk_partitions=origin_disk_partitions
         return exist_encryption_parameters

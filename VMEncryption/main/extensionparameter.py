@@ -25,11 +25,11 @@ from common import CommonVariables
 
 # parameter format should be like this:
 # {"command":"newdisk","query":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdb"},"force":"true"
-# "filesystem":"ext4","devmapper":"sdb_encrypt","mountname":"mountname","mountpoint":"/mnt/","password":"password1","passphrase":"User@123"
+# "filesystem":"ext4","mountpoint":"/mnt/","password":"password1","passphrase":"User@123"
 # }
 
 # {"command":"existingdisk","query":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdb"},"force":"true","existQuery":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdc"}
-# "devmapper":"sdb_encrypt","passphrase":"User@123"
+# "passphrase":"User@123"
 # }
 
 # {"command":"folder","path":"/home/andy/Private","password":"password1"}
@@ -46,10 +46,9 @@ class ExtensionParameter(object):
         self.query = protected_settings.get('query')
         self.exist_query = protected_settings.get('existQuery')
         self.filesystem = protected_settings.get('filesystem')
-        self.mountname = protected_settings.get('mountname')
+        #self.mountname = protected_settings.get('mountname')
         self.mountpoint = protected_settings.get('mountpoint')
         self.passphrase = protected_settings.get('passphrase')
-        self.dev_mapper_name = protected_settings.get('devmapper')
 
     def validate_parameter_format(self):
         if(self.query is None):

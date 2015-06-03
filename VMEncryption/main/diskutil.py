@@ -23,10 +23,17 @@ import sys
 from subprocess import *  
 from encryption import EncryptionError
 from common import CommonVariables
-class DiskCopy(object):
+
+class DiskPartition(object):
+    def __init__(self):
+        self.devpath=""
+        self.start = 0
+        self.end=0
+
+class DiskUtil(object):
     def __init__(self,hutil):
         self.hutil = hutil
-
+        pass
     def copy(self,from_device,to_device):
         #dd if=/dev/sda of=/dev/mapper/sda-crypt bs=512
         error = EncryptionError()
@@ -41,40 +48,61 @@ class DiskCopy(object):
             error.info = "devpath is " + str(encryption_parameters.devpath) + " dev_mapper_name is " + str(encryption_parameters.dev_mapper_name)
             self.hutil.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
         return error
-
-class DiskPartition(object):
-    def __init__(self):
-        self.devname = ""
-        self.devpath=""
-        self.start = 0
-        self.end=0
-
-class DiskInfoParser(object):
-    def __init__(self,hutil):
-        self.hutil = hutil
     def get_disk_partitions(self,devpath):
         disk_partitions = []
         space_reserved = 8 * 1024
         space_index = 0
         diskPartition1 = DiskPartition()
-        diskPartition1.devname = "sdc1"
         diskPartition1.devpath = "/dev/sdc1"
-        diskPartition1.start = 2048 + space_reserved * space_index
-        diskPartition1.end = 1000000 + space_reserved * space_index
+        diskPartition1.start = 2048 
+        diskPartition1.end = 1000000 
         disk_partitions.append(diskPartition1)
         space_index += 1
         diskPartition2 = DiskPartition()
-        diskPartition2.devname = "sdc2"
         diskPartition2.devpath = "/dev/sdc2"
+        diskPartition2.start = 1000001
+        diskPartition2.end = 20971519 
+        disk_partitions.append(diskPartition2)
+        return disk_partitions
+
+    def partit(self,target_dev,origin_disk_partitions):
+        target_disk_partitions = []
+        space_reserved = 8 * 1024
+        space_index = 0
+        diskPartition1 = DiskPartition()
+        diskPartition1.devpath = "/dev/sdd1"
+        diskPartition1.start = 2048 + space_reserved * space_index
+        diskPartition1.end = 1000000 + space_reserved * space_index
+        target_disk_partitions.append(diskPartition1)
+        space_index += 1
+        diskPartition2 = DiskPartition()
+        diskPartition2.devpath = "/dev/sdd2"
         diskPartition2.start = 1000001 + space_reserved * space_index
         diskPartition2.end = 20971519 + space_reserved * space_index
-        disk_partitions.append(diskPartition2)
-        return None
+        target_disk_partitions.append(diskPartition2)
+        return target_disk_partitions
 
-class DiskPartitioner(object):
-    def __init__(self,hutil):
-        self.hutil = hutil
-    def partit(self,disk_partitions):
-        pass
+    def format_disk(self, dev_path):
+        error = EncryptionError()
+        mkfs_command = ""
+        if(encryption_parameters.filesystem == "ext4"):
+            mkfs_command = "mkfs.ext4"
+        elif(encryption_parameters.filesystem == "ext3"):
+            mkfs_command = "mkfs.ext3"
+        elif(encryption_parameters.filesystem == "xfs"):
+            mkfs_command = "mkfs.xfs"
+        elif(encryption_parameters.filesystem == "btrfs"):
+            mkfs_command = "mkfs.btrfs"
+        #' <<< ' + encryption_parameters.mount_name +
+        commandToExecute = '/bin/bash -c "' + mkfs_command + ' ' + dev_path +  ' 2> /dev/null"'
+        self.hutil.log("command to execute :" + commandToExecute)
+        proc = Popen(commandToExecute, shell=True)
+        returnCode = proc.wait()
+        if(returnCode != 0):
+            error.errorcode = returnCode
+            error.code = CommonVariables.mkfs_error
+            error.info = "command to execute is " + commandToExecute
+            self.hutil.log('mkfs_command returnCode is ' + str(returnCode))
+        return error
 
 

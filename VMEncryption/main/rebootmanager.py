@@ -27,7 +27,7 @@ class RebootManager(object):
         self.hutil = hutil
         pass
 
-    def configure_reboot(self, encryption_parameters):
+    def configure_reboot(self, keydisk_mount_item ,encrypted_disk_mount_item,attached_encrypted_disk_item):
         error = EncryptionError()
         # append an item in the /etc/fstab
         # first we should try to mount the key disk
@@ -35,11 +35,17 @@ class RebootManager(object):
         # /dev/mapper/sdc_encrypted /mnt/sdc_encrypted ext4 defaults
 
         # the string line would be add in the /etc/fstab
-        encrypted_disk_mount_item = encryption_parameters.dev_mapper_path + " " + encryption_parameters.encrypted_disk_mount_point + " " + encryption_parameters.filesystem + " defaults\n"
+        #encrypted_disk_mount_item = encryption_parameters.dev_mapper_path + "
+        #" + encryption_parameters.encrypted_device_mount_point + " " +
+        #encryption_parameters.filesystem + " defaults\n"
 
         # the string added in to the /etc/crypttab
-        passphrase_file_path = os.path.join(encryption_parameters.keydisk_mount_point, CommonVariables.passphrase_file_name)
-        attached_encrypted_disk_item = encryption_parameters.dev_mapper_name + " " + encryption_parameters.devpath + " " + passphrase_file_path + " luks\n"
+        # passphrase_file_path =
+        # os.path.join(encryption_parameters.keydisk_mount_point,
+        # CommonVariables.passphrase_file_name)
+        #attached_encrypted_disk_item = encryption_parameters.dev_mapper_name +
+        #" " + encryption_parameters.devpath + " " + passphrase_file_path + "
+        #luks\n"
 
        
         fstab_file_handler = open("/etc/fstab","r+")

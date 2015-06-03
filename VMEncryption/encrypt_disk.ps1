@@ -24,14 +24,14 @@ function Encrypt-Disk
             $lun=$disk.lun
         }
     }
-    $lun+=1
+    #$lun+=1
     #Write-Output "the lun of your newly attached disk is "+$lun
     #Add-AzureDataDisk -CreateNew -DiskSizeInGB 1 -DiskLabel "disklabel$lun" -VM $vm -LUN $lun -MediaLocation $destinationKeyDiskPath| update-azurevm
 
     $privateConfig='
     {
         "command":"existdisk",
-        "query":{"scsi_number":"[5:0:0:' + $lun + ']"},
+        "query":{"scsi_number":"[5:0:0:1]"},
         "passphrase":"MicrosoftLoveLinuxBecauseWeHaveCCIC@123",
         "existQuery":{"scsi_number":"[5:0:0:0]"}
     }

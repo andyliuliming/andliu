@@ -40,19 +40,19 @@ class DevManager(object):
         # identity sample: [5:0:0:0] disk Msft Virtual Disk 1.0 /dev/sdc
         self.hutil.log("lsscsi output is: \n" + identity)
         vals = identity.split()
-        if(vals == None or len(vals)==0):
+        if(vals == None or len(vals) == 0):
             return None
         sdx_path = vals[len(vals) - 1]
         return sdx_path
 
     def query_dev_uuid_path(self,scsi_number):
         # find the scsi using the filter
-        sdx_path=self.query_dev_sdx_path(scsi_number)
+        sdx_path = self.query_dev_sdx_path(scsi_number)
         # blkid /dev/sdc
         p = Popen(['blkid',sdx_path],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         identity,err = p.communicate()
         identity = identity.lower()
-        self.hutil.log("blkid output is: \n"+identity)
+        self.hutil.log("blkid output is: \n" + identity)
         uuid_pattern = 'uuid="'
         index_of_uuid = identity.find(uuid_pattern)
         identity = identity[index_of_uuid + len(uuid_pattern):]
