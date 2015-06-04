@@ -177,12 +177,12 @@ def enable():
             encryption = Encryption(hutil)
             #construct the encryption disk format
             
-            mapper_name = uuid.uuid4()
+            mapper_name = str(uuid.uuid4())
             encryption_result = encryption.encrypt_disk(target_partition.devpath,extension_parameter.passphrase,mapper_name)
             if(encryption_result.errorcode != CommonVariables.success):
                 hutil.do_exit(0, 'Enable', encryption_result.state, str(encryption_result.code), encryption_result.info)
 
-            encryption_result = encryption.format_disk(vm_encryption_attach_new_para.filesystem,device_parameter, os.path.join(CommonVariables.dev_mapper_root, mapper_name))
+            encryption_result = encryption.format_disk(extension_parameter.filesystem, os.path.join(CommonVariables.dev_mapper_root, mapper_name))
 
             # prepare the mount point
             mountpoint = encryption_parameters.mountpoint

@@ -76,7 +76,7 @@ class Encryption(object):
     #validate whether the paras are ok, check if the block device is indeed an
     #empty disk.
 
-    def format_disk(self, filesystem,devpath):
+    def format_disk(self, filesystem, devpath):
         error = EncryptionError()
         mkfs_command = ""
         if(filesystem == "ext4"):
