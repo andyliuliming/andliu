@@ -43,6 +43,7 @@ from devmanager import DevManager
 from environmentmanager import EnvironmentManager
 from rebootmanager import RebootManager
 from diskutil import DiskUtil
+from diskutil import DiskPartition
 #Main function is the only entrence to this extension handler
 def main():
     global hutil
@@ -314,7 +315,7 @@ def enable():
                 # code is our definition.
                 if(encryption_result.code == CommonVariables.success):
                     #target_disk_partition
-                    disk_util.copy(origin_disk_partition.dev_path, os.path.join("/dev/mapper", str(mapper_name)))
+                    disk_util.copy(origin_disk_partition.dev_path, os.path.join(CommonVariables.dev_mapper_root,str(mapper_name)))
                 else:
                     hutil.log("encrypt disk result: " + str(encryption_result))
             
