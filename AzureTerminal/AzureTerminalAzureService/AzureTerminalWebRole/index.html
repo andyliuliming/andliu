@@ -12,19 +12,20 @@
     <script src="./scripts/authcheck.js"></script>
     <script src="./scripts/index.js"></script>
     <script src="./scripts/frontendcommand.js"></script>
+    <script src="./scripts/private_key.js"></script>
+    <script src="./scripts/file_copy.js"></script>
     <link href="./css/login.css" rel="stylesheet" type="text/css" />
     <link href="./css/terminal.css" rel="stylesheet" type="text/css" />
     <link href="./css/TestFontSize.css" rel="stylesheet" type="text/css" />
     <link href="./css/terminal_actions.css" rel="stylesheet" type="text/css" />
+    <link href="./css/private_key.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <script>
         $(document).ready(function () {
             useHttps();
             if (checkAuth()) {
-
                 initializeLogin();
-
                 function docWriteWrapper(jq, func) {
                     var oldwrite = document.write, content = '';
                     document.write = function (text) {
@@ -39,6 +40,9 @@
                     initializeApplet();
                     $("#hostname_input").focus()
                 });
+
+                InitializePrivateKey();
+                InitializeFileCopy();
             }
             else {
                 $("body").html("You are not authorized to access this web site");
@@ -92,6 +96,73 @@
         <!--<div id="terminal_action_settings">Settings</div>-->
         <div id="terminal_action_generate_key" class="terminal_actions_item">Generate Key Pair</div>
         <div id="terminal_action_signout" class="terminal_actions_item">Signout</div>
+    </div>
+
+    <div id="private_key_wizard">
+        <div id="private_key_wizard_backspace"></div>
+        <div id="private_key_first_page">
+            <ul>
+                <li>
+                    <div class="private_key_location_line">
+                        <label for="private_key_location">Enter a location to store your keys:</label>
+                    </div>
+                </li>
+                <li>
+                    <div id="private_key_location_second_line" class="private_key_location_line">
+                        <input id="private_key_location" class="private_key_textfield" type="text" />
+                        <input type="button" id="browse_private_key_location" class="prvaite_key_button" value="Browse" />
+                    </div>
+                </li>
+                <li>
+                    <div id="private_key_location_third_line" class="private_key_location_line">
+                        <p>Enter a passphrase for your private key or you can leave it blank and we'll generate one for you automatically:</p>
+                    </div>
+                </li>
+                <li>
+                    <div id="private_key_location_fourth_line" class="private_key_location_line">
+                        <input id="private_key_passphrase" class="private_key_textfield" type="password" />
+                    </div>
+                </li>
+                <li>
+                    <div id="private_key_location_fiveth_line" class="private_key_location_line">
+                        <input type="button" class="prvaite_key_button" id="create_keys_button" value="Create Keys" />
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div id="private_key_success_page">
+            <ul>
+                <li>
+                    <label>And we're done! Your keys were successfully created. Your public key has been copied to your clipboard for your convenience.</label>
+                </li>
+                <li>
+                    <label>Public Key:</label>
+                </li>
+                <li>
+                    <input type="text" id="public_key_result_location" class="private_key_textfield" />
+                </li>
+                <li>
+                    <label>Private Key:</label>
+                </li>
+                <li>
+                    <input type="text" id="private_key_result_location" class="private_key_textfield" />
+                </li>
+                <li><input type="button" id="private_key_close" class="prvaite_key_button" value="Close" /></li>
+            </ul>
+        </div>
+        <div id="private_key_failure_page">
+            <ul>
+                <li>
+                    <label id="oops_label">:(</label>
+                </li>
+                <li>
+                    <label>Oops, there was an error creating your keys. Try again, but if the problem persistes, close your browser and start over.</label>
+                </li>
+                <li>
+                    <input type="button" class="prvaite_key_button" id="private_keyf_failure_button" value="OK" />
+                </li>
+            </ul>
+        </div>
     </div>
 </body>
 </html>

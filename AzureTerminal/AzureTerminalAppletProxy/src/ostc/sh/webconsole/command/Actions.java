@@ -13,4 +13,5 @@ public class Actions {
 	public static final String SetPublicKey = "SetPublicKey";
 	public static final String SetSize = "SetSize";
 	public static final String SignOut = "SignOut";
+	public static final String GeneratePrivateKey = "GeneratePrivateKey";
 }

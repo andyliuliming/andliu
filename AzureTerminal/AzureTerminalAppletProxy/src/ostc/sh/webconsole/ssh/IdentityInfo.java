@@ -24,4 +24,8 @@ public class IdentityInfo {
 		this.Password = "";
 		this.PrivateKey = "";
 	}
+
+	public String toString() {
+		return HostName + ":" + Port + " " + UserName + " " + Password;
+	}
 }

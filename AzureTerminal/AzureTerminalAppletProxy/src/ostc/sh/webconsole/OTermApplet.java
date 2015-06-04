@@ -1,10 +1,12 @@
 package ostc.sh.webconsole;
 
+import java.util.UUID;
+
 import javax.swing.JApplet;
 
 import ostc.sh.webconsole.command.Command;
 import ostc.sh.webconsole.command.CommandExecuter;
-import ostc.sh.webconsole.ssh.OutputFlusher;
+import ostc.sh.webconsole.command.CommandResult;
 
 public class OTermApplet extends JApplet implements WebFacade {
 
@@ -26,36 +28,29 @@ public class OTermApplet extends JApplet implements WebFacade {
 	}
 
 	@Override
-	public void SetAction(String action, String parameter) {
-		commandExecuter.getCommandQueue().add(new Command(action, parameter));
+	public String SetAction(String action, String[] parameters) {
+		String id = UUID.randomUUID().toString();
+		commandExecuter.getCommandQueue().add(
+				new Command(id, action, parameters));
+		return id;
 	}
 
 	@Override
-	public String TakeFrontCommand() {
+	public Command TakeFrontCommand() {
 		Command commandForFront = OTermEnvironment.Instance()
 				.getCommandPusher().getCommandQueue().poll();
-		if (commandForFront != null) {
-			return commandForFront.getId() + ":" + commandForFront.getAction()
-					+ ":" + commandForFront.getParameter();
-		}
-		return null;
+		return commandForFront;
 	}
 
 	@Override
-	public void SetFrontCommandResult(String id, String result) {
-		if (!OTermEnvironment.Instance().getCommandPusher()
-				.getFrontExecutionResult().containsKey(id)) {
-			OTermEnvironment.Instance().getCommandPusher()
-					.getFrontExecutionResult().put(id, result);
-		} else {
-			OTermEnvironment.Instance().getCommandPusher()
-					.getFrontExecutionResult().replace(id, result);
-		}
+	public CommandResult TakeCommandResult() {
+		CommandResult commandForFront = OTermEnvironment.Instance()
+				.getCommandPusher().getCommandResultQueue().poll();
+		return commandForFront;
 	}
 
 	@Override
 	public String TakeOutput() {
 		return OTermEnvironment.Instance().GetOutput();
 	}
-
 }

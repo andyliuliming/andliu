@@ -1,24 +1,24 @@
 package ostc.sh.webconsole.command;
 
-import java.util.HashMap;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class FrontCommandPusher {
 	private ArrayBlockingQueue<Command> commandQueue = null;
 
-	private HashMap<String, String> frontExecutionResult = null;
+	private ArrayBlockingQueue<CommandResult> commandResultQueue = null;
 
 	public FrontCommandPusher() {
 		commandQueue = new ArrayBlockingQueue<Command>(1000);
-		frontExecutionResult = new HashMap<String, String>();
+		commandResultQueue = new ArrayBlockingQueue<CommandResult>(1000);
 	}
 
 	public Queue<Command> getCommandQueue() {
 		return commandQueue;
 	}
 
-	public HashMap<String, String> getFrontExecutionResult() {
-		return frontExecutionResult;
+	public ArrayBlockingQueue<CommandResult> getCommandResultQueue() {
+		return commandResultQueue;
 	}
+
 }

@@ -1,18 +1,12 @@
 package ostc.sh.webconsole.command;
 
-public class Command {
+public class CommandResult {
 	private String id;
 	private String action;
 	private String[] parameters;
 
-	public Command(String id, String action, String[] parameter) {
+	public CommandResult(String id, String action, String[] parameter) {
 		this.id = id;
-		this.action = action;
-		parameters = parameter;
-	}
-
-	public Command(String action, String[] parameter) {
-		this.id = "";
 		this.action = action;
 		parameters = parameter;
 	}

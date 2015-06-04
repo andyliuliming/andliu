@@ -188,6 +188,7 @@
     <Content Include="..\..\..\..\term.js\src\term.js">
       <Link>term.js</Link>
     </Content>
+    <Content Include="css\private_key.css" />
     <Content Include="css\terminal_actions.css" />
     <Content Include="css\TestFontSize.css" />
     <Content Include="Global.asax" />
@@ -202,6 +203,7 @@
     <Content Include="images\File.png" />
     <Content Include="images\heroillustration.png" />
     <Content Include="index.html" />
+    <Content Include="scripts\file_copy.js" />
     <Content Include="scripts\frontendcommand.js" />
     <Content Include="scripts\index.js" />
     <Content Include="scripts\jquery-1.11.1.js" />
@@ -210,6 +212,7 @@
     <Content Include="css\login.css" />
     <Content Include="scripts\login.js" />
     <Content Include="images\settings.png" />
+    <Content Include="scripts\private_key.js" />
     <Content Include="scripts\term_downloaded.js" />
     <Content Include="css\terminal.css" />
     <Content Include="scripts\terminal.js" />

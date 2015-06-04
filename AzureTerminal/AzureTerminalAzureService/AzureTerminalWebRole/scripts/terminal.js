@@ -43,23 +43,22 @@ function renderTerminal() {
 
     term.open($("#terminal_main_panel")[0]);
     term.on('data', function (data) {
-        otermApplet.SetAction("Input", data);
+        otermApplet.SetAction("Input", [data]);
     });
-
 
     // bind the actions
     $("#terminal_action_file").unbind("click");
     $("#terminal_action_file").bind("click", function (e) {
-        otermApplet.SetAction("CopyFile", "");
+        otermApplet.SetAction("CopyFile", [""]);
     });
 
     $("#terminal_action_generate_key").unbind("click");
     $("#terminal_action_generate_key").bind("click", function (e) {
-        otermApplet.SetAction("CertPair", "");
+        otermApplet.SetAction("CertPair", [""]);
     });
     $("#terminal_action_signout").unbind("click");
     $("#terminal_action_signout").bind("click", function (e) {
-        otermApplet.SetAction("SignOut", "");
+        otermApplet.SetAction("SignOut", [""]);
     });
 }
 
@@ -73,6 +72,6 @@ function terminalResize() {
     termWidth = Math.floor(width / charWidth) - 1;
     termHeight = Math.floor(height / charHeight) - 1;
     if (otermApplet != null) {
-        otermApplet.SetAction("SetSize", termWidth + ":" + termHeight);
+        otermApplet.SetAction("SetSize", [termWidth + ":" + termHeight]);
     }
 }

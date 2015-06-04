@@ -87,7 +87,7 @@ public class SSHConnection {
 		Logger.Log("clear up...");
 		if (isConnected) {
 			isConnected = false;
-			Command command = new Command("", "", "");
+			Command command = new Command("", "", new String[]{""});
 			command.setAction("Disconnected");
 			OTermEnvironment.Instance().getCommandPusher().getCommandQueue()
 					.add(command);
@@ -148,7 +148,7 @@ public class SSHConnection {
 					public void showMessage(String message) {
 						UUID promptId = UUID.randomUUID();
 						Command command = new Command(promptId.toString(),
-								"Prompt", message);
+								"Prompt", new String[]{message});
 						OTermEnvironment.Instance().getCommandPusher()
 								.getCommandQueue().add(command);
 					}
@@ -156,7 +156,7 @@ public class SSHConnection {
 					public boolean promptYesNo(String message) {
 						UUID promptId = UUID.randomUUID();
 						Command command = new Command(promptId.toString(),
-								"Prompt", message);
+								"Prompt",new String[]{ message});
 						OTermEnvironment.Instance().getCommandPusher()
 								.getCommandQueue().add(command);
 						return true;

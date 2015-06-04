@@ -2,19 +2,41 @@
 var startToTakeOutput = false;
 function WaitForFrontCommand() {
     if (otermApplet != null) {
-        var commandForFront = otermApplet.TakeFrontCommand()
+        var commandForFront = otermApplet.TakeFrontCommand();
 
-        if (commandForFront != null && commandForFront != "") {
-            var result = commandForFront.split(":");
-            if (result[1] == "Prompt") {
-                //alert(commandForFront.trimLeft(result[0]).trimLeft(result[1]));
+        if (commandForFront != null) {
+            console.dir("commandForFront");
+            console.dir(commandForFront);
+            var action = commandForFront.getAction();
+            switch (action) {
+                case "Prompt":
+                    //alert(commandForFront.trimLeft(result[0]).trimLeft(result[1]));
+                    break;
+                case "LoginStatusChange":
+                    var resultParameters = commandForFront.getParameters();
+                    LoginStatusChange(resultParameters[0]);
+                    break;
+                case "Disconnected":
+                    StopPollingFrontCommand();
+                    switchToLoginPage();
+                    break;
             }
-            if (result[1] == "LoginStatusChange") {
-                LoginStatusChange(result[2]);
-            }
-            if (result[1] == "Disconnected") {
-                StopPollingFrontCommand();
-                switchToLoginPage();
+        }
+
+        var commandResultForFront = otermApplet.TakeCommandResult();
+        if (commandResultForFront != null) {
+            console.dir("commandResultForFront");
+            console.dir(commandResultForFront);
+            var action = commandResultForFront.getAction();
+            switch (action) {
+                case "GeneratePrivateKey":
+                    var resultParameters = commandResultForFront.getParameters();
+                    if (resultParameters[0] == "success") {
+                        private_key_succeed();
+                    } else {
+                        private_key_failed();
+                    }
+                    break;
             }
         }
         if (startToTakeOutput) {

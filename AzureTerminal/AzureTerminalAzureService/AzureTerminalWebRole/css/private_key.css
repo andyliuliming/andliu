@@ -1,0 +1,133 @@
+﻿#private_key_wizard {
+    display:none;
+    position: absolute;
+    width: 625px;
+    padding: 0px;
+    color: rgb(117, 117, 117);
+    background-color: white;
+    font-family: 'Segoe UI';
+    font-size: 18px;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+    height: 400px;
+}
+
+#private_key_wizard_backspace {
+}
+
+#private_key_first_page {
+}
+
+#private_key_location {
+    width: 367px;
+}
+
+#browse_private_key_location {
+    width: 125px;
+}
+
+#private_key_passphrase {
+    width: 510px;
+}
+
+#private_key_result_location {
+    width: 510px;
+}
+
+#public_key_result_location {
+    width: 510px;
+}
+
+.private_key_textfield {
+    color: rgb(13, 24, 33);
+    font-size: inherit;
+    font-family: 'Segoe UI';
+}
+
+.prvaite_key_button {
+    color: white;
+    background: rgb(0, 188, 242);
+    font-family: 'Segoe UI';
+    border-width: 0px;
+    height: 35px;
+    border-color: rgb(117, 117, 117);
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.private_key_location_line {
+    width: 100%;
+}
+
+#private_key_location_second_line {
+    margin-top: 5px;
+}
+
+#private_key_location_third_line {
+    margin-top: 15px;
+    width: 510px;
+}
+
+#private_key_location_fourth_line {
+    margin-top: 5px;
+}
+
+#private_key_location_fiveth_line {
+    margin-top: 30px;
+}
+
+#create_keys_button {
+    margin-left: 400px;
+    width: 122px;
+}
+
+#private_key_close {
+    margin-left: 400px;
+    width: 122px;
+}
+
+#oops_label {
+    font-size: 35px;
+}
+
+#private_keyf_failure_button {
+    margin-left: 400px;
+    width: 122px;
+}
+
+#private_key_first_page {
+    /*display: none;*/
+}
+
+#private_key_success_page {
+    /*display: none;*/
+}
+
+#private_key_failure_page {
+    /*display: none;*/
+}
+/*<div id="private_key_wizard">
+        <div id="private_key_wizard_backspace"></div>
+        <div id="private_key_first_page">
+            <label for="private_key_location">Enter a location to store your keys:</label>
+            <input id="private_key_location" />
+            <input type="button" id="browse_private_key_location" />
+            <label for="private_key_passphrase">Enter a passphrase for your private key or you can leave it blank and we'll generate one for you automatically:</label>
+            <input id="private_key_passphrase" type="password" />
+            <input type="button" id="create_keys_button" />
+        </div>
+        <div id="private_key_success_page">
+
+        </div>
+        <div id="private_key_failure_page">
+            <label>:(</label>
+            <label>Oops, there was an error creating your keys. Try again, but if the problem persistes, close your browser and start over.</label>
+            <input type="button" id="private_keyf_failure_button" />
+        </div>
+    </div>*/
