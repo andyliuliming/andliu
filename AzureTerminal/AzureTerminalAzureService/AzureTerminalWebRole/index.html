@@ -19,6 +19,7 @@
     <link href="./css/TestFontSize.css" rel="stylesheet" type="text/css" />
     <link href="./css/terminal_actions.css" rel="stylesheet" type="text/css" />
     <link href="./css/private_key.css" rel="stylesheet" type="text/css" />
+    <link href="./css/global.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <script>
@@ -77,7 +78,7 @@
                     <label id="login_warning_label"></label>
                 </li>
                 <li class="input_label_li">
-                    <button class="connect_button" name="login" id="loginbutton">Connect</button>
+                    <button class="connect_button azure_terminal_button" name="login" id="loginbutton">Connect</button>
                 </li>
             </ul>
         </div>
@@ -110,7 +111,7 @@
                 <li>
                     <div id="private_key_location_second_line" class="private_key_location_line">
                         <input id="private_key_location" class="private_key_textfield" type="text" />
-                        <input type="button" id="browse_private_key_location" class="prvaite_key_button" value="Browse" />
+                        <input type="button" id="browse_private_key_location" class="prvaite_key_button azure_terminal_button" value="Browse" />
                     </div>
                 </li>
                 <li>
@@ -125,7 +126,7 @@
                 </li>
                 <li>
                     <div id="private_key_location_fiveth_line" class="private_key_location_line">
-                        <input type="button" class="prvaite_key_button" id="create_keys_button" value="Create Keys" />
+                        <input type="button" class="prvaite_key_button azure_terminal_button" id="create_keys_button" value="Create Keys" />
                     </div>
                 </li>
             </ul>
@@ -139,15 +140,15 @@
                     <label>Public Key:</label>
                 </li>
                 <li>
-                    <input type="text" id="public_key_result_location" class="private_key_textfield" />
+                    <input type="text" id="public_key_result_location" class="private_key_textfield" readonly />
                 </li>
                 <li>
                     <label>Private Key:</label>
                 </li>
                 <li>
-                    <input type="text" id="private_key_result_location" class="private_key_textfield" />
+                    <input type="text" id="private_key_result_location" class="private_key_textfield" readonly />
                 </li>
-                <li><input type="button" id="private_key_close" class="prvaite_key_button" value="Close" /></li>
+                <li><input type="button" id="private_key_close" class="prvaite_key_button azure_terminal_button" value="Close" /></li>
             </ul>
         </div>
         <div id="private_key_failure_page">
@@ -159,7 +160,7 @@
                     <label>Oops, there was an error creating your keys. Try again, but if the problem persistes, close your browser and start over.</label>
                 </li>
                 <li>
-                    <input type="button" class="prvaite_key_button" id="private_keyf_failure_button" value="OK" />
+                    <input type="button" class="prvaite_key_button azure_terminal_button" id="private_keyf_failure_button" value="OK" />
                 </li>
             </ul>
         </div>

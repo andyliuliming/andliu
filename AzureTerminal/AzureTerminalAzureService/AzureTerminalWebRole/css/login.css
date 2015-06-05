@@ -65,16 +65,10 @@ body {
 }
 
 #loginbutton {
-    color: white;
-    background: rgb(0, 188, 242);
-    font-family: 'Segoe UI';
-    border-width: 0px;
     height: 35px;
     width: 90px;
-    border-color: rgb(117, 117, 117);
     font-size: 12px;
     font-weight: bold;
-    cursor: pointer;
 }
 
     #loginbutton:disabled {

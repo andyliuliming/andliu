@@ -1,0 +1,118 @@
+﻿#copy_file_dialog {
+    position: absolute;
+    width: 900px;
+    height: 500px;
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: red;
+    padding: 0px;
+}
+
+#copy_file_dialog_local {
+    margin: 0px;
+    width: 400px;
+    padding: 0px;
+    position: relative;
+    float: left;
+    background-color: yellow;
+}
+
+#copy_file_dialog_local_drop_box {
+}
+
+#copy_file_dialog_local_list_view {
+    overflow: scroll;
+    height: 300px;
+}
+
+    #copy_file_dialog_local_list_view ul {
+        margin: 0px;
+        padding: 0px;
+    }
+
+        #copy_file_dialog_local_list_view ul li {
+            margin: 0px;
+            padding: 0px;
+        }
+
+#copy_file_dialog_local_actions {
+}
+
+#copy_file_dialog_local_actions_refresh {
+    cursor: pointer;
+}
+
+#copy_file_dialog_arrows {
+    margin: 0px;
+    padding: 0px;
+    background-color: brown;
+    width: 100px;
+    position: relative;
+    float: left;
+}
+
+#copy_file_right_arrow {
+    width: 30px;
+    height: 30px;
+    background: url(../images/Arrow_right.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
+    cursor: pointer;
+}
+
+#copy_file_left_arrow {
+    width: 30px;
+    height: 30px;
+    background: url(../images/Arrow_right.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
+    cursor: pointer;
+}
+
+#copy_file_dialog_remote {
+    padding: 0px;
+    margin: 0px;
+    background-color: pink;
+    width: 400px;
+    position: relative;
+    float: left;
+}
+
+#copy_file_dialog_remote_header {
+}
+
+#copy_file_dialog_remote_drop_box {
+}
+
+#copy_file_dialog_remote_list_view {
+    overflow: scroll;
+    height: 300px;
+}
+
+    #copy_file_dialog_remote_list_view ul {
+        margin: 0px;
+        padding: 0px;
+    }
+
+        #copy_file_dialog_remote_list_view ul li {
+            margin: 0px;
+            padding: 0px;
+        }
+
+#copy_file_dialog_remote_actions {
+}
+
+#copy_file_dialog_remote_actions_refresh {
+    cursor: pointer;
+}

@@ -32,10 +32,14 @@ function WaitForFrontCommand() {
                 case "GeneratePrivateKey":
                     var resultParameters = commandResultForFront.getParameters();
                     if (resultParameters[0] == "success") {
-                        private_key_succeed();
+                        private_key_succeed(resultParameters[1], resultParameters[2]);
                     } else {
                         private_key_failed();
                     }
+                    break;
+                case "SelectFolder":
+                    var resultParameters = commandResultForFront.getParameters();
+                    $("#private_key_location").val(resultParameters[0]);
                     break;
             }
         }

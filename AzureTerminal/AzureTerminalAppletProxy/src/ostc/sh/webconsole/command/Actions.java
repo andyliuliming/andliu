@@ -8,7 +8,9 @@ public class Actions {
 	public static final String SetPort = "SetPort";
 	public static final String Input = "Input";
 	public static final String CopyFile = "CopyFile";
+	//TODO remove this.(CertPair)
 	public static final String CertPair = "CertPair";
+	public static final String SelectFolder="SelectFolder";
 	public static final String SetPrivateKey = "SetPrivateKey";
 	public static final String SetPublicKey = "SetPublicKey";
 	public static final String SetSize = "SetSize";

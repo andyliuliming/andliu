@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Azure Terminal</title>
+    <script src="./scripts/jquery-1.11.1.js"></script>
+    <script src="./scripts/jquery.cookie.js"></script>
+    <script src="./java/deployJava.js"></script>
+    <script src="./scripts/applet.js"></script>
+    <script src="./scripts/login.js"></script>
+    <script src="./scripts/terminal.js"></script>
+    <script src="./scripts/term_downloaded.js"></script>
+    <script src="./scripts/authcheck.js"></script>
+    <script src="./scripts/index.js"></script>
+    <script src="./scripts/frontendcommand.js"></script>
+    <script src="./scripts/private_key.js"></script>
+    <script src="./scripts/file_copy.js"></script>
+    <link href="./css/login.css" rel="stylesheet" type="text/css" />
+    <link href="./css/terminal.css" rel="stylesheet" type="text/css" />
+    <link href="./css/TestFontSize.css" rel="stylesheet" type="text/css" />
+    <link href="./css/terminal_actions.css" rel="stylesheet" type="text/css" />
+    <link href="./css/private_key.css" rel="stylesheet" type="text/css" />
+    <link href="./css/copyfile.css" rel="stylesheet" type="text/css" />
+    <link href="./css/global.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <script>
+        $(document).ready(function () {
+            //useHttps();
+            //if (checkAuth()) {
+            //    initializeLogin();
+            //    function docWriteWrapper(jq, func) {
+            //        var oldwrite = document.write, content = '';
+            //        document.write = function (text) {
+            //            content += text;
+            //        }
+            //        func();
+            //        document.write = oldwrite;
+            //        jq.html(content);
+            //    }
+
+            //    docWriteWrapper($('#terminal_embedded_applet'), function () {
+            //        initializeApplet();
+            //        $("#hostname_input").focus()
+            //    });
+
+            //    InitializePrivateKey();
+            //    InitializeFileCopy();
+            //}
+            //else {
+            //    $("body").html("You are not authorized to access this web site");
+            //}
+        });
+    </script>
+    <div id="copy_file_dialog">
+        <ul id="copy_file_dialog_local">
+            <li>
+                <div id="copy_file_dialog_local_header">
+                    <p>Local File:</p>
+                </div>
+            </li>
+            <li>
+                <div id="copy_file_dialog_local_drop_box">
+                    <input list="copy_file_dialog_local_selections" >
+                    <datalist id="copy_file_dialog_local_selections">
+                        <option value="Internet Explorer">
+                        <option value="Firefox">
+                        <option value="Chrome">
+                        <option value="Opera">
+                        <option value="Safari">
+                    </datalist>
+                </div>
+            </li>
+            <li>
+                <div id="copy_file_dialog_local_list_view">
+                    <ul>
+                        <li>..</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div id="copy_file_dialog_local_actions">
+                    <input type="button" id="copy_file_dialog_local_actions_refresh" value="Refresh" />
+                </div>
+            </li>
+        </ul>
+        <div id="copy_file_dialog_arrows">
+            <div id="copy_file_right_arrow"></div>
+            <div id="copy_file_left_arrow"></div>
+        </div>
+        <ul id="copy_file_dialog_remote">
+            <li>
+                <div id="copy_file_dialog_remote_header">
+                    <p>Remote File:</p>
+                </div>
+            </li>
+            <li>
+                <div id="copy_file_dialog_remote_drop_box">
+                    <input list="copy_file_dialog_remote_selections">
+                    <datalist id="copy_file_dialog_remote_selections">
+                        <option value="Internet Explorer">
+                        <option value="Firefox">
+                        <option value="Chrome">
+                        <option value="Opera">
+                        <option value="Safari">
+                    </datalist>
+                </div>
+            </li>
+            <li>
+                <div id="copy_file_dialog_remote_list_view">
+                    <ul>
+                        <li>..</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div id="copy_file_dialog_remote_actions">
+                    <input type="button" id="copy_file_dialog_remote_actions_refresh" value="Refresh" />
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

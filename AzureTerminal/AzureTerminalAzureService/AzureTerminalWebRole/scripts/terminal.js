@@ -54,7 +54,8 @@ function renderTerminal() {
 
     $("#terminal_action_generate_key").unbind("click");
     $("#terminal_action_generate_key").bind("click", function (e) {
-        otermApplet.SetAction("CertPair", [""]);
+        open_gen_privatekey_dialog();
+        //otermApplet.SetAction("CertPair", [""]);
     });
     $("#terminal_action_signout").unbind("click");
     $("#terminal_action_signout").bind("click", function (e) {
