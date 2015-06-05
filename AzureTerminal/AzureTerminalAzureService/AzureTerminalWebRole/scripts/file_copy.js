@@ -1,17 +1,31 @@
 ﻿var currentLocalFolder = "";
 var currentRemoteFolder = "";
-
+var goUpItem = "..";
 function InitializeFileCopy() {
     $("#copy_file_dialog_local_list_view ul li").unbind("dblclick");
     $("#copy_file_dialog_local_list_view ul li").bind("dblclick", function (ev) {
         var clicked_item = ev.target.innerText;
-        console.dir("you dbl clicked local list" + ev.target.innerText);
+        if (clicked_item != goUpItem) {
+            console.dir("you dbl clicked local list" + ev.target.innerText);
+            console.dir("now we jump to " + currentRemoteFolder + "\\" + clicked_item);
+            currentRemoteFolder = currentRemoteFolder + "\\" + clicked_item;
+        }
+        else {
+            console.dir("now we jump to up")
+        }
     });
 
     $("#copy_file_dialog_remote_list_view ul li").unbind("dblclick");
     $("#copy_file_dialog_remote_list_view ul li").bind("dblclick", function (ev) {
         var clicked_item = ev.target.innerText;
-        console.dir("you dbl clicked remote list" + ev.target.innerText);
+        if (clicked_item != goUpItem) {
+            console.dir("you dbl clicked remote list" + ev.target.innerText);
+            console.dir("now we jumpt to " + currentLocalFolder + "\\" + clicked_item);
+            currentLocalFolder = currentLocalFolder + "\\" + clicked_item;
+        }
+        else {
+            console.dir("now we jump to up")
+        }
     });
 
     $("#copy_file_dialog_local_actions_refresh").unbind("click");
@@ -75,7 +89,7 @@ function RefreshLocalDropBox(items) {
 function RefreshLocalList(fileItems) {
     $("#copy_file_dialog_local_list_view >ul").empty();
 
-    var opt = $("<li></li>").html("..");
+    var opt = $("<li></li>").html(goUpItem);
     $("#copy_file_dialog_local_list_view >ul").append(opt);
 
     for (var i = 0; i < fileItems.length; i++) {
@@ -95,17 +109,10 @@ function RefreshRemoteDropBox(items) {
 }
 function RefreshRemoteList(fileItems) {
     $("#copy_file_dialog_remote_list_view >ul").empty();
-    var opt = $("<li></li>").html("..");
+    var opt = $("<li></li>").html(goUpItem);
     $("#copy_file_dialog_remote_list_view >ul").append(opt);
     for (var i = 0; i < fileItems.length; i++) {
         var opt = $("<li></li>").html(fileItems[i]);
         $("#copy_file_dialog_remote_list_view>ul").append(opt);
     }
-}
-
-
-function test_refresh_local_list() {
-    var fileItems = ['..', 'Program Files'];
-    RefreshLocalList(fileItems);
-    RefreshLocalDropBox(fileItems);
 }
