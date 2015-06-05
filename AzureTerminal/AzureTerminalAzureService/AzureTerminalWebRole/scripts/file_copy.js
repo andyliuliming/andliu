@@ -17,6 +17,15 @@ function InitializeFileCopy() {
         $("#copy_file_dialog").css("display", "none");
     });
 
+    $("#copy_file_dialog_local_selections").unbind("change");
+    $("#copy_file_dialog_local_selections").bind("change", function () {
+        console.dir("local selection changed");
+    });
+
+    $("#copy_file_dialog_remote_selections").unbind("change");
+    $("#copy_file_dialog_remote_selections").bind("change", function () {
+        console.dir("remote selection changed");
+    });
 }
 
 function open_copy_file_dialog() {
@@ -32,6 +41,7 @@ function RefreshLocalDropBox(items) {
     $("#copy_file_dialog_local_selections").empty();
     for (var i = 0; i < items.length; i++) {
         var opt = $("<option></option>").attr("value", items[i]);
+        opt.html(items[i]);
         $("#copy_file_dialog_local_selections").append(opt);
     }
 }
@@ -48,6 +58,7 @@ function RefreshRemoteDropBox(items) {
     $("#copy_file_dialog_remote_selections").empty();
     for (var i = 0; i < items.length; i++) {
         var opt = $("<option></option>").attr("value", items[i]);
+        opt.html(items[i]);
         $("#copy_file_dialog_remote_selections").append(opt);
     }
 } function RefreshRemoteList(fileItems) {
