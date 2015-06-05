@@ -4,13 +4,14 @@ var currentRemoteFolder = "";
 function InitializeFileCopy() {
     $("#copy_file_dialog_local_list_view ul li").unbind("dblclick");
     $("#copy_file_dialog_local_list_view ul li").bind("dblclick", function (ev) {
-        console("you dbl clicked local list");
+        var clicked_item = ev.target.innerText;
+        console.dir("you dbl clicked local list" + ev.target.innerText);
     });
 
     $("#copy_file_dialog_remote_list_view ul li").unbind("dblclick");
     $("#copy_file_dialog_remote_list_view ul li").bind("dblclick", function (ev) {
-        console("you dbl clicked remote list");
-
+        var clicked_item = ev.target.innerText;
+        console.dir("you dbl clicked remote list" + ev.target.innerText);
     });
 
     $("#copy_file_dialog_local_actions_refresh").unbind("click");
@@ -52,8 +53,6 @@ function InitializeFileCopy() {
             otermApplet.SetAction(ListCurrentRemoteFolder, remote_location);
         }
     });
-
-
 }
 
 function open_copy_file_dialog() {
@@ -75,6 +74,10 @@ function RefreshLocalDropBox(items) {
 }
 function RefreshLocalList(fileItems) {
     $("#copy_file_dialog_local_list_view >ul").empty();
+
+    var opt = $("<li></li>").html("..");
+    $("#copy_file_dialog_local_list_view >ul").append(opt);
+
     for (var i = 0; i < fileItems.length; i++) {
         var opt = $("<li></li>").html(fileItems[i]);
         $("#copy_file_dialog_local_list_view>ul").append(opt);
@@ -92,6 +95,8 @@ function RefreshRemoteDropBox(items) {
 }
 function RefreshRemoteList(fileItems) {
     $("#copy_file_dialog_remote_list_view >ul").empty();
+    var opt = $("<li></li>").html("..");
+    $("#copy_file_dialog_remote_list_view >ul").append(opt);
     for (var i = 0; i < fileItems.length; i++) {
         var opt = $("<li></li>").html(fileItems[i]);
         $("#copy_file_dialog_remote_list_view>ul").append(opt);
