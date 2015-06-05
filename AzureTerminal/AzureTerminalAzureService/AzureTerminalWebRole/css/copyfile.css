@@ -25,7 +25,16 @@
     background-color: yellow;
 }
 
-#copy_file_dialog_local_drop_box {
+#copy_file_dialog_local_header {
+    margin: 0px;
+    padding: 0px;
+    height: 50px;
+}
+
+#copy_file_dialog_local_selections {
+    margin: 0px;
+    padding: 0px;
+    height: 30px;
     width: 400px;
 }
 
@@ -33,6 +42,12 @@
 #copy_file_dialog_local_list_view {
     overflow: scroll;
     height: 300px;
+    margin: 0px;
+    padding: 0px;
+    border-width: 1px;
+    border-color: rgb(117,117,117);
+    display: block;
+    border-style: solid;
 }
 
     #copy_file_dialog_local_list_view ul {
@@ -41,11 +56,13 @@
     }
 
         #copy_file_dialog_local_list_view ul li {
+            cursor: pointer;
             margin: 0px;
             padding: 0px;
         }
 
 #copy_file_dialog_local_actions {
+    height: 100px;
 }
 
 #copy_file_dialog_local_actions_refresh {
@@ -110,15 +127,27 @@
 }
 
 #copy_file_dialog_remote_header {
+    margin: 0px;
+    padding: 0px;
+    height: 50px;
 }
 
-#copy_file_dialog_remote_drop_box {
+#copy_file_dialog_remote_selections {
+    margin: 0px;
+    padding: 0px;
     width: 400px;
+    height: 30px;
 }
 
 #copy_file_dialog_remote_list_view {
     overflow: scroll;
     height: 300px;
+    margin: 0px;
+    padding: 0px;
+    border-width: 1px;
+    border-color: rgb(117,117,117);
+    display: block;
+    border-style: solid;
 }
 
     #copy_file_dialog_remote_list_view ul {
@@ -127,14 +156,21 @@
     }
 
         #copy_file_dialog_remote_list_view ul li {
+            border-width: 2px;
+            cursor: pointer;
             margin: 0px;
             padding: 0px;
         }
 
 #copy_file_dialog_remote_actions {
+    height: 100px;
 }
 
 #copy_file_dialog_remote_actions_refresh {
     float: right;
     cursor: pointer;
+}
+
+#copy_file_dialog_close {
+    float: right;
 }

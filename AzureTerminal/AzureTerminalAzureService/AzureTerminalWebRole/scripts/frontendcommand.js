@@ -50,8 +50,12 @@ function WaitForFrontCommand() {
                     RefreshRemoteDropBox(resultParameters);
                     break;
                 case ListCurrentLocalFolder:
+                    var resultParameters = commandResultForFront.getParameters();
+                    RefreshLocalList(resultParameters);
                     break;
                 case ListCurrentRemoteFolder:
+                    var resultParameters = commandResultForFront.getParameters();
+                    RefreshRemoteList(resultParameters);
                     break;
             }
         }
