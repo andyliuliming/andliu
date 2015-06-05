@@ -1,14 +1,19 @@
 ﻿#copy_file_dialog {
+    display: none;
     position: absolute;
+    font-family: 'Segoe UI';
     width: 900px;
     height: 500px;
-    margin: auto;
+    background-color: red;
+    padding: 0px;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
-    background-color: red;
-    padding: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 #copy_file_dialog_local {
@@ -21,7 +26,9 @@
 }
 
 #copy_file_dialog_local_drop_box {
+    width: 400px;
 }
+
 
 #copy_file_dialog_local_list_view {
     overflow: scroll;
@@ -42,14 +49,17 @@
 }
 
 #copy_file_dialog_local_actions_refresh {
+    float: right;
     cursor: pointer;
 }
 
 #copy_file_dialog_arrows {
+    border-width: 1px;
     margin: 0px;
     padding: 0px;
     background-color: brown;
     width: 100px;
+    height: 500px;
     position: relative;
     float: left;
 }
@@ -65,12 +75,19 @@
     -o-background-size: contain;
     background-size: contain;
     cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    top: 0;
+    bottom: 0;
 }
 
 #copy_file_left_arrow {
+    top: 0;
+    bottom: 0;
     width: 30px;
     height: 30px;
-    background: url(../images/Arrow_right.png);
+    background: url(../images/Arrow_left.png);
     background-repeat: no-repeat;
     background-position: center;
     -webkit-background-size: contain;
@@ -78,6 +95,9 @@
     -o-background-size: contain;
     background-size: contain;
     cursor: pointer;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #copy_file_dialog_remote {
@@ -93,6 +113,7 @@
 }
 
 #copy_file_dialog_remote_drop_box {
+    width: 400px;
 }
 
 #copy_file_dialog_remote_list_view {
@@ -114,5 +135,6 @@
 }
 
 #copy_file_dialog_remote_actions_refresh {
+    float: right;
     cursor: pointer;
 }

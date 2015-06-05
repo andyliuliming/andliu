@@ -49,7 +49,8 @@ function renderTerminal() {
     // bind the actions
     $("#terminal_action_file").unbind("click");
     $("#terminal_action_file").bind("click", function (e) {
-        otermApplet.SetAction("CopyFile", [""]);
+        open_copy_file_dialog();
+        //otermApplet.SetAction("CopyFile", [""]);
     });
 
     $("#terminal_action_generate_key").unbind("click");

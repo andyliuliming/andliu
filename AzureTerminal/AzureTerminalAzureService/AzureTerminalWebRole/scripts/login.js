@@ -74,8 +74,8 @@ function loginIn() {
         identityReader.onload = function (e) {
             var contents = e.target.result;
             if (otermApplet != null) {
-                otermApplet.SetAction("SetUserName", [username.val().trim()]);
-                otermApplet.SetAction("SetPassword", [password.val()]);
+                otermApplet.SetAction(SetUserName, [username.val().trim()]);
+                otermApplet.SetAction(SetPassword, [password.val()]);
                 otermApplet.SetAction("SetHostName", [hostname.val().trim()]);
                 otermApplet.SetAction("SetPort", [port.val()]);
                 otermApplet.SetAction("SetPrivateKey", [contents]);

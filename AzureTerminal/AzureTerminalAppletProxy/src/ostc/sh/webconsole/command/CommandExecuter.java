@@ -7,13 +7,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.JFileChooser;
 
 import ostc.sh.webconsole.OTermEnvironment;
-import ostc.sh.webconsole.filecopy.SCPDialog;
+import ostc.sh.webconsole.filecopy.FileCopyUtil;
 import ostc.sh.webconsole.keypair.KeyGenerator;
 import ostc.sh.webconsole.ssh.OutputFlusher;
 import ostc.sh.webconsole.util.ClipBoardUtil;
@@ -35,6 +36,7 @@ public class CommandExecuter implements Runnable {
 		while (true) {
 			try {
 				Command current = commandQueue.take();
+				CommandResult commandResult;
 				if (current != null) {
 					switch (current.getAction()) {
 					case Actions.Login:
@@ -125,10 +127,59 @@ public class CommandExecuter implements Runnable {
 									.setPtySize(width, height, 0, 0);
 						}
 						break;
-					case Actions.CopyFile:
-						SCPDialog dialog = new SCPDialog();
-						dialog.setLocationRelativeTo(null);
-						dialog.setVisible(true);
+					case Actions.ListCurrentLocalFolder:
+						String currentLocalFolder = current.getParameters()[0];
+						List<String> localFolders = FileCopyUtil
+								.ListLocalFolder(currentLocalFolder);
+						Logger.Log("the local folders size is "
+								+ localFolders.size());
+						String[] currentLocalFolderArray = new String[localFolders
+								.size()];
+						localFolders.toArray(currentLocalFolderArray);
+						commandResult = new CommandResult(current.getId(),
+								current.getAction(), currentLocalFolderArray);
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
+						break;
+					case Actions.ListCurrentRemoteFolder:
+						String currentRemoteFolder = "";
+						List<String> remoteFolders = FileCopyUtil
+								.ListLocalFolder(currentRemoteFolder);
+						String[] remoteFolderArray = new String[remoteFolders
+								.size()];
+						commandResult = new CommandResult(current.getId(),
+								current.getAction(), remoteFolderArray);
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
+						break;
+					case Actions.ListLocalRootFolder:
+						List<String> localRootFolders = FileCopyUtil
+								.ListLocalFolder("");
+						Logger.Log("the local folders size is "
+								+ localRootFolders.size());
+						String[] localRootFolderArray = new String[localRootFolders
+								.size()];
+						localRootFolders.toArray(localRootFolderArray);
+						commandResult = new CommandResult(current.getId(),
+								current.getAction(), localRootFolderArray);
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
+						break;
+					case Actions.ListRemoteRootFolder:
+
+						List<String> remoteRootFolders = FileCopyUtil
+								.ListRemoteFolder("");
+						
+						Logger.Log("the remote folders size is "
+								+ remoteRootFolders.size());
+						String[] remoteRootFolderArray = new String[remoteRootFolders
+								.size()];
+
+						remoteRootFolders.toArray(remoteRootFolderArray);
+						commandResult = new CommandResult(current.getId(),
+								current.getAction(), remoteRootFolderArray);
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
 						break;
 					case Actions.SelectFolder:
 						Frame frame = null;
@@ -138,7 +189,7 @@ public class CommandExecuter implements Runnable {
 						Integer opt = j.showSaveDialog(frame);
 						if (opt == JFileChooser.APPROVE_OPTION) {
 							File yourFolder = j.getSelectedFile();
-							CommandResult commandResult = new CommandResult(
+							commandResult = new CommandResult(
 									current.getId(),
 									current.getAction(),
 									new String[] { yourFolder.getAbsolutePath() });
@@ -152,11 +203,11 @@ public class CommandExecuter implements Runnable {
 						break;
 					case Actions.GeneratePrivateKey:
 						try {
-							String privateKeyFolder= current.getParameters()[0];
-							String privateKeyFilename="prvkey";
-							String publicKeyFileName="pubkey";
-							String publicKeyExtension=".pub";
-							
+							String privateKeyFolder = current.getParameters()[0];
+							String privateKeyFilename = "prvkey";
+							String publicKeyFileName = "pubkey";
+							String publicKeyExtension = ".pub";
+
 							File privateKeyFile = new File(privateKeyFolder,
 									privateKeyFilename);
 							File publicKeyFile = new File(privateKeyFolder,
@@ -169,15 +220,15 @@ public class CommandExecuter implements Runnable {
 								publicKeyFile = new File(privateKeyFolder,
 										publicKeyFileName + "(" + (++i) + ")"
 												+ publicKeyExtension);
-							}						
-							
-							
+							}
+
 							String passphrase = current.getParameters()[1];
-							
+
 							byte[] passphraseByteArray = passphrase.getBytes();
 							KeyGenerator generator = new KeyGenerator();
 							KeyPair keyPairGenerated = generator.Generator(
-									privateKeyFile.getAbsolutePath(), publicKeyFile.getAbsolutePath(),
+									privateKeyFile.getAbsolutePath(),
+									publicKeyFile.getAbsolutePath(),
 									passphraseByteArray);
 							OutputStream output = new OutputStream() {
 								private StringBuilder string = new StringBuilder();
@@ -198,15 +249,17 @@ public class CommandExecuter implements Runnable {
 									output.toString());
 							ClipBoardUtil.setClipboardContents(publicKeyResult);
 
-							CommandResult commandResult = new CommandResult(
-									current.getId(), current.getAction(),
-									new String[] { "success",privateKeyFile.getAbsolutePath(),publicKeyFile.getAbsolutePath() });
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(), new String[] {
+											"success",
+											privateKeyFile.getAbsolutePath(),
+											publicKeyFile.getAbsolutePath() });
 
 							OTermEnvironment.Instance().getCommandPusher()
 									.getCommandResultQueue().add(commandResult);
 						} catch (Exception e) {
-							CommandResult commandResult = new CommandResult(
-									current.getId(), current.getAction(),
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(),
 									new String[] { "failed" });
 							OTermEnvironment.Instance().getCommandPusher()
 									.getCommandResultQueue().add(commandResult);

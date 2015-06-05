@@ -41,6 +41,18 @@ function WaitForFrontCommand() {
                     var resultParameters = commandResultForFront.getParameters();
                     $("#private_key_location").val(resultParameters[0]);
                     break;
+                case ListLocalRootFolder:
+                    var resultParameters = commandResultForFront.getParameters();
+                    RefreshLocalDropBox(resultParameters);
+                    break;
+                case ListRemoteRootFolder:
+                    var resultParameters = commandResultForFront.getParameters();
+                    RefreshRemoteDropBox(resultParameters);
+                    break;
+                case ListCurrentLocalFolder:
+                    break;
+                case ListCurrentRemoteFolder:
+                    break;
             }
         }
         if (startToTakeOutput) {

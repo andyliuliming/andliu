@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import ostc.sh.webconsole.OTermEnvironment;
 import ostc.sh.webconsole.util.Logger;
 
 import com.jcraft.jsch.Channel;
@@ -24,42 +25,44 @@ import com.jcraft.jsch.Session;
  *
  */
 public class FileCopyUtil {
-	
-	public List<String> ListLocalFolder(String currentFolder){
+
+	public static List<String> ListLocalFolder(String currentFolder) {
 		ArrayList<String> result = new ArrayList<String>();
-		if (currentFolder == null || currentFolder == "") {
+		if (currentFolder == null || currentFolder.isEmpty()) {
 			File[] children = File.listRoots();
 			for (File f : children) {
 				result.add(f.getPath());
 			}
 		} else {
-			Logger.Log("ListLocalFolder "+currentFolder);
+			Logger.Log("current folder not empty ");
 			File folderSelected = new File(currentFolder);
 			File[] children = folderSelected.listFiles();
-			if(children!=null){
-			for (File f : children) {
-				result.add(f.getName());
-			}}
+			if (children != null) {
+				for (File f : children) {
+					result.add(f.getName());
+				}
+			}
 		}
 		return result;
 	}
-	
-	
-	public List<String> ListRemoteFolder(ChannelExec channel, String currentFolder) {
-		ArrayList<String> result = new ArrayList<String>();
-		try {			
-			//result.add(currentFolder);
 
-			String command = "ls "+currentFolder;
+	public static List<String> ListRemoteFolder(String currentFolder) {
+		ArrayList<String> result = new ArrayList<String>();
+		ChannelExec channel = null;
+		try {
+			channel = (ChannelExec) OTermEnvironment.Instance()
+					.getSshConnection().getSession().openChannel("exec");
+
+			String command = "ls " + currentFolder;
 			channel.setInputStream(null);
-			
+
 			channel.setCommand(command);
 			InputStream in = channel.getInputStream();
 			channel.connect();
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String line = null;
 			while ((line = br.readLine()) != null) {
-				//Logger.Log(line);
+				// Logger.Log(line);
 				result.add(line);
 			}
 		} catch (IOException e) {
@@ -78,7 +81,8 @@ public class FileCopyUtil {
 	 * @param remoteFile
 	 * @param filePath
 	 */
-	public void CopyFrom(Session session, String remoteFile, String filePath) {
+	public static void CopyFrom(Session session, String remoteFile,
+			String filePath) {
 		String prefix = null;
 		FileOutputStream fos = null;
 		try {
@@ -172,7 +176,7 @@ public class FileCopyUtil {
 				out.flush();
 			}
 			out.close();
-			 
+
 			channel.disconnect();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -182,9 +186,11 @@ public class FileCopyUtil {
 		}
 	}
 
-	public void CopyTo(Session session, String filePath, String remoteFile) {
+	public static void CopyTo(Session session, String filePath,
+			String remoteFile) {
 		boolean ptimestamp = true;
-		String command = "scp " + (ptimestamp ? "-p" : "") + " -t " + remoteFile;
+		String command = "scp " + (ptimestamp ? "-p" : "") + " -t "
+				+ remoteFile;
 		Channel channel = null;
 		try {
 			channel = session.openChannel("exec");
@@ -224,14 +230,14 @@ public class FileCopyUtil {
 				command += filePath;
 			}
 			command += "\n";
-			
+
 			Logger.Log("command to execute:" + command);
 			out.write(command.getBytes());
 			out.flush();
 			if (checkAck(in) != 0) {
 				Logger.Log("checkAck failed.");
 			}
-			
+
 			// send a content of lfile
 			FileInputStream fis = new FileInputStream(_lfile);
 			byte[] buf = new byte[1024];
@@ -249,12 +255,12 @@ public class FileCopyUtil {
 			out.flush();
 			if (checkAck(in) != 0) {
 				Logger.Log("checkAck failed.");
-				//System.exit(0);
+				// System.exit(0);
 			}
 			out.close();
-		 
+
 			channel.disconnect();
-			//session.disconnect();
+			// session.disconnect();
 
 		} catch (JSchException e) {
 			// TODO Auto-generated catch block

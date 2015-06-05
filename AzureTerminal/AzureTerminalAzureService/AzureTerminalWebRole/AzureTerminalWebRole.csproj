@@ -197,6 +197,7 @@
     <Content Include="Global.asax" />
     <Content Include="images\Action.png" />
     <Content Include="java\OTerm.jar" />
+    <Content Include="scripts\actions.js" />
     <Content Include="scripts\applet.js" />
     <Content Include="images\Arrow_left.png" />
     <Content Include="images\Arrow_right.png" />

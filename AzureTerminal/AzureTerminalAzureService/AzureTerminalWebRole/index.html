@@ -14,12 +14,14 @@
     <script src="./scripts/frontendcommand.js"></script>
     <script src="./scripts/private_key.js"></script>
     <script src="./scripts/file_copy.js"></script>
+    <script src="./scripts/actions.js"></script>
     <link href="./css/login.css" rel="stylesheet" type="text/css" />
     <link href="./css/terminal.css" rel="stylesheet" type="text/css" />
     <link href="./css/TestFontSize.css" rel="stylesheet" type="text/css" />
     <link href="./css/terminal_actions.css" rel="stylesheet" type="text/css" />
     <link href="./css/private_key.css" rel="stylesheet" type="text/css" />
     <link href="./css/global.css" rel="stylesheet" type="text/css" />
+    <link href="./css/copyfile.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <script>
@@ -164,6 +166,100 @@
                 </li>
             </ul>
         </div>
+    </div>
+
+
+
+    <div id="copy_file_dialog">
+        <ul id="copy_file_dialog_local">
+            <li>
+                <div id="copy_file_dialog_local_header">
+                    <p>Local File:</p>
+                </div>
+            </li>
+            <li>
+                <input id="copy_file_dialog_local_drop_box" list="copy_file_dialog_local_selections" />
+                <datalist id="copy_file_dialog_local_selections">
+                    <option value="Internet Explorer" />
+                    <option value="Firefox" />
+                    <option value="Chrome" />
+                    <option value="Opera" />
+                    <option value="Safari" />
+                </datalist>
+            </li>
+            <li>
+                <div id="copy_file_dialog_local_list_view">
+                    <ul>
+                        <li>..</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div id="copy_file_dialog_local_actions">
+                    <input type="button" class="azure_terminal_button" id="copy_file_dialog_local_actions_refresh" value="Refresh" />
+                </div>
+            </li>
+        </ul>
+        <div id="copy_file_dialog_arrows">
+            <div id="copy_file_right_arrow"></div>
+            <div id="copy_file_left_arrow"></div>
+        </div>
+        <ul id="copy_file_dialog_remote">
+            <li>
+                <div id="copy_file_dialog_remote_header">
+                    <p>Remote File:</p>
+                </div>
+            </li>
+            <li>
+                <input id="copy_file_dialog_remote_drop_box" list="copy_file_dialog_remote_selections" />
+                <datalist id="copy_file_dialog_remote_selections">
+                    <option value="Internet Explorer" />
+                    <option value="Firefox" />
+                    <option value="Chrome" />
+                    <option value="Opera" />
+                    <option value="Safari" />
+                </datalist>
+            </li>
+            <li>
+                <div id="copy_file_dialog_remote_list_view">
+                    <ul>
+                        <li>..</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                        <li>Program Files</li>
+                        <li>Application Data</li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div id="copy_file_dialog_remote_actions">
+                    <input type="button" class="azure_terminal_button" id="copy_file_dialog_remote_actions_refresh" value="Refresh" />
+                </div>
+            </li>
+        </ul>
+        <input type="button" class="azure_terminal_button" id="copy_file_dialog_close" value="Close" />
     </div>
 </body>
 </html>
