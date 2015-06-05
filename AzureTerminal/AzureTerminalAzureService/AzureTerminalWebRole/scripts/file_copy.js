@@ -7,12 +7,13 @@ function InitializeFileCopy() {
         var clicked_item = ev.target.innerText;
         if (clicked_item != goUpItem) {
             console.dir("you dbl clicked local list" + ev.target.innerText);
-            console.dir("now we jump to " + currentRemoteFolder + "\\" + clicked_item);
-            currentRemoteFolder = currentRemoteFolder + "\\" + clicked_item;
+            console.dir("now we jump to " + currentLocalFolder + "\\" + clicked_item);
+            currentLocalolder = currentLocalFolder + "\\" + clicked_item;
         }
         else {
             console.dir("now we jump to up")
         }
+        // update the current local folder     of the selections combobox.
     });
 
     $("#copy_file_dialog_remote_list_view ul li").unbind("dblclick");
@@ -21,11 +22,13 @@ function InitializeFileCopy() {
         if (clicked_item != goUpItem) {
             console.dir("you dbl clicked remote list" + ev.target.innerText);
             console.dir("now we jumpt to " + currentLocalFolder + "\\" + clicked_item);
-            currentLocalFolder = currentLocalFolder + "\\" + clicked_item;
+            currentRemoteFolder = currentRemoteFolder + "\\" + clicked_item;
         }
         else {
             console.dir("now we jump to up")
         }
+        // update the current remote folder    of the selections  combobox.
+
     });
 
     $("#copy_file_dialog_local_actions_refresh").unbind("click");
