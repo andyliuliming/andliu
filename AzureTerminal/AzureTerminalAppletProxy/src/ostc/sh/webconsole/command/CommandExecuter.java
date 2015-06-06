@@ -168,7 +168,7 @@ public class CommandExecuter implements Runnable {
 					case Actions.ListRemoteRootFolder:
 
 						List<String> remoteRootFolders = FileCopyUtil
-								.ListRemoteFolder("");
+								.ListRemoteFolder("/");
 						
 						Logger.Log("the remote folders size is "
 								+ remoteRootFolders.size());
