@@ -45,8 +45,12 @@ function JumpToLocalFolder(localFolder) {
 }
 function JumpToRemoteFolder(remoteFolder) {
     if (otermApplet != null) {
-        otermApplet.SetAction(ListCurrentRemoteFolder, [remoteFolder]);
-        currentRemoteFolder = remoteFolder;
+        if (remoteFolder != "/") {
+            otermApplet.SetAction(ListCurrentRemoteFolder, [remoteFolder]);
+            currentRemoteFolder = remoteFolder;
+        } else {
+            otermApplet.SetAction(ListRemoteRootFolder, [""]);
+        }
     }
 }
 
@@ -128,10 +132,10 @@ function RefreshRemoteDropBox(items) {
         opt.html(items[i]);
         $("#copy_file_dialog_remote_selections").append(opt);
     }
-    if (currentRemoteFolder != "") {
+    if (currentRemoteFolder != "/") {
         var opt = $("<option></option>").attr("value", currentRemoteFolder);
         opt.html(currentRemoteFolder);
-        $("#copy_file_dialog_local_selections").append(opt);
+        $("#copy_file_dialog_remote_selections").append(opt);
     }
 }
 

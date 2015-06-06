@@ -166,6 +166,21 @@ public class CommandExecuter implements Runnable {
 						OTermEnvironment.Instance().getCommandPusher()
 								.getCommandResultQueue().add(commandResult);
 						break;
+					case Actions.ListRemoteRootFolder:						
+						List<String> remoteRootFolders = FileCopyUtil
+								.ListRemoteFolder("/");
+						String[] remoteRootFolderArray = new String[remoteRootFolders
+								.size()];
+						remoteRootFolders.toArray(remoteRootFolderArray);
+						
+						for(int i=0;i<remoteRootFolderArray.length;i++){
+							remoteRootFolderArray[i]="/"+remoteRootFolderArray[i];
+						}
+						commandResult = new CommandResult(current.getId(),
+								current.getAction(), remoteRootFolderArray);
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
+						break;
 					case Actions.SelectFolder:
 						Frame frame = null;
 						JFileChooser j = new JFileChooser();
