@@ -29,7 +29,7 @@ function WaitForFrontCommand() {
             console.dir(commandResultForFront);
             var action = commandResultForFront.getAction();
             switch (action) {
-                case "GeneratePrivateKey":
+                case GeneratePrivateKey:
                     var resultParameters = commandResultForFront.getParameters();
                     if (resultParameters[0] == "success") {
                         private_key_succeed(resultParameters[1], resultParameters[2]);
@@ -37,7 +37,7 @@ function WaitForFrontCommand() {
                         private_key_failed();
                     }
                     break;
-                case "SelectFolder":
+                case SelectFolder:
                     var resultParameters = commandResultForFront.getParameters();
                     $("#private_key_location").val(resultParameters[0]);
                     break;

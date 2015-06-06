@@ -142,11 +142,12 @@ public class CommandExecuter implements Runnable {
 								.getCommandResultQueue().add(commandResult);
 						break;
 					case Actions.ListCurrentRemoteFolder:
-						String currentRemoteFolder = "";
+						String currentRemoteFolder = current.getParameters()[0];
 						List<String> remoteFolders = FileCopyUtil
-								.ListLocalFolder(currentRemoteFolder);
+								.ListRemoteFolder(currentRemoteFolder);
 						String[] remoteFolderArray = new String[remoteFolders
 								.size()];
+						remoteFolders.toArray(remoteFolderArray);
 						commandResult = new CommandResult(current.getId(),
 								current.getAction(), remoteFolderArray);
 						OTermEnvironment.Instance().getCommandPusher()
@@ -165,25 +166,8 @@ public class CommandExecuter implements Runnable {
 						OTermEnvironment.Instance().getCommandPusher()
 								.getCommandResultQueue().add(commandResult);
 						break;
-					case Actions.ListRemoteRootFolder:
-
-						List<String> remoteRootFolders = FileCopyUtil
-								.ListRemoteFolder("/");
-						
-						Logger.Log("the remote folders size is "
-								+ remoteRootFolders.size());
-						String[] remoteRootFolderArray = new String[remoteRootFolders
-								.size()];
-
-						remoteRootFolders.toArray(remoteRootFolderArray);
-						commandResult = new CommandResult(current.getId(),
-								current.getAction(), remoteRootFolderArray);
-						OTermEnvironment.Instance().getCommandPusher()
-								.getCommandResultQueue().add(commandResult);
-						break;
 					case Actions.SelectFolder:
 						Frame frame = null;
-
 						JFileChooser j = new JFileChooser();
 						j.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 						Integer opt = j.showSaveDialog(frame);
