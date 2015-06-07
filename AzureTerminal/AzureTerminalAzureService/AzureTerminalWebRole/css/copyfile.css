@@ -3,7 +3,7 @@
     position: absolute;
     font-family: 'Segoe UI';
     width: 900px;
-    height: 500px;
+    height: 480px;
     background-color: white;
     left: 0;
     right: 0;
@@ -27,7 +27,7 @@
 #copy_file_dialog_local_header {
     margin: 0px;
     padding: 0px;
-    height: 50px;
+    height: 30px;
 }
 
 #copy_file_dialog_local_selections {
@@ -42,6 +42,7 @@
     overflow: scroll;
     height: 300px;
     margin: 0px;
+    margin-top: 5px;
     padding: 0px;
     border-width: 1px;
     border-color: rgb(117,117,117);
@@ -65,6 +66,7 @@
                 margin: 0px;
                 padding: 0px;
                 color: white;
+                background-color: blue;
             }
 
 #copy_file_dialog_local_actions {
@@ -79,7 +81,7 @@
 
 #copy_file_dialog_local_actions_refresh {
     float: right;
-    margin-top:10px;
+    margin-top: 10px;
     cursor: pointer;
 }
 
@@ -162,7 +164,7 @@
 #copy_file_dialog_remote_header {
     margin: 0px;
     padding: 0px;
-    height: 50px;
+    height: 30px;
 }
 
 #copy_file_dialog_remote_selections {
@@ -176,6 +178,7 @@
     overflow: scroll;
     height: 300px;
     margin: 0px;
+    margin-top: 5px;
     padding: 0px;
     border-width: 1px;
     border-color: rgb(117,117,117);
@@ -199,6 +202,7 @@
                 cursor: pointer;
                 margin: 0px;
                 padding: 0px;
+                background-color: blue;
                 color: white;
             }
 
@@ -208,13 +212,13 @@
 
 #copy_file_dialog_remote_actions_refresh {
     float: right;
-    margin-top:10px;
+    margin-top: 10px;
     cursor: pointer;
 }
 
 #copy_file_dialog_close {
     float: right;
-    margin-top:20px;
+    margin-top: 20px;
 }
 
 

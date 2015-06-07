@@ -195,6 +195,7 @@ function RefreshLocalDropBox(items) {
     if (currentLocalFolder != "" && !containsCurrentLocalFolder) {
         append_local_drop_box_item(currentLocalFolder);
     }
+    JumpToLocalFolder($("#copy_file_dialog_local_selections").val());
 }
 
 // the fileItems is the file name, not the the full path.
@@ -236,6 +237,9 @@ function RefreshRemoteDropBox(items) {
     if (currentRemoteFolder != "/" && !containsCurrentRemoteFolder) {
         append_remote_drop_box_item(currentRemoteFolder);
     }
+    // jump to the first folder
+
+    JumpToRemoteFolder($("#copy_file_dialog_remote_selections").val());
 }
 
 // the fileItems is the file name, not the the full path.

@@ -8,6 +8,10 @@
         }
     });
 
+    $("#private_key_cancel").unbind("click");
+    $("#private_key_cancel").bind("click", function (ev) {
+        close_key_pair_generation_dialog();
+    });
     $("#private_key_close").unbind("click");
     $("#private_key_close").bind("click", function (ev) {
         close_key_pair_generation_dialog();

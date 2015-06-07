@@ -1,8 +1,8 @@
 ﻿#private_key_wizard {
     display: none;
     position: absolute;
-    width: 625px;  
-    height: 400px;
+    width: 600px;
+    height: 300px;
     padding: 0px;
     color: rgb(117, 117, 117);
     background-color: white;
@@ -11,7 +11,7 @@
     left: 0;
     right: 0;
     top: 0;
-    bottom: 0;  
+    bottom: 0;
     margin-left: auto;
     margin-right: auto;
     margin-top: auto;
@@ -25,7 +25,7 @@
 }
 
 #private_key_location {
-    width: 367px;
+    width: 388px;
 }
 
 #browse_private_key_location {
@@ -33,15 +33,15 @@
 }
 
 #private_key_passphrase {
-    width: 510px;
+    width: 517px;
 }
 
 #private_key_result_location {
-    width: 510px;
+    width: 517px;
 }
 
 #public_key_result_location {
-    width: 510px;
+    width: 517px;
 }
 
 .private_key_textfield {
@@ -51,7 +51,7 @@
 }
 
 .prvaite_key_button {
-    height: 35px;
+    height: 30px;
     font-size: 18px;
 }
 
@@ -77,8 +77,15 @@
 }
 
 #create_keys_button {
-    margin-left: 400px;
+    margin-right: 10px;
     width: 122px;
+    float: right;
+}
+
+#private_key_cancel {
+    margin-right: 40px;
+    width: 122px;
+    float: right;
 }
 
 #private_key_close {
@@ -86,8 +93,24 @@
     width: 122px;
 }
 
+#private_key_success_first_line p {
+    width: 530px;
+}
+
+#private_key_success_forth_line {
+    margin-top: 10px;
+}
+
+#private_key_success_sixth_line {
+    margin-top: 20px;
+}
+
 #oops_label {
     font-size: 35px;
+}
+
+#private_key_failure_oops_paragraph {
+    width: 530px;
 }
 
 #private_keyf_failure_button {
