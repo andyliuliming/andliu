@@ -5,8 +5,6 @@ function WaitForFrontCommand() {
         var commandForFront = otermApplet.TakeFrontCommand();
 
         if (commandForFront != null) {
-            console.dir("commandForFront");
-            console.dir(commandForFront);
             var action = commandForFront.getAction();
             switch (action) {
                 case "Prompt":
@@ -25,8 +23,6 @@ function WaitForFrontCommand() {
 
         var commandResultForFront = otermApplet.TakeCommandResult();
         if (commandResultForFront != null) {
-            console.dir("commandResultForFront");
-            console.dir(commandResultForFront);
             var action = commandResultForFront.getAction();
             switch (action) {
                 case GeneratePrivateKey:
@@ -60,12 +56,12 @@ function WaitForFrontCommand() {
                 case CopyToRemote:
                     var resultParameters = commandResultForFront.getParameters();
                     // enable the copy buttons
-                    ToggleCopyButton();
+                    ToggleDisableCopyFileDialog();
                     break;
                 case CopyToLocal:
                     var resultParameters = commandResultForFront.getParameters();
                     // enable the copy buttons  
-                    ToggleCopyButton();
+                    ToggleDisableCopyFileDialog();
                     break;
             }
         }
@@ -106,6 +102,8 @@ function LoginStatusChange(status) {
             case "signedout":
                 startToTakeOutput = false;
                 switchToLoginPage();
+                close_file_copy_dialog();
+                close_key_pair_generation_dialog();
                 break;
             default:
         }

@@ -188,7 +188,7 @@ public class CommandExecuter implements Runnable {
 								+ current.getParameters()[1]);
 						try {
 							FileCopyUtil.CopyFrom(current.getParameters()[0],
-									current.getParameters()[1]);
+									current.getParameters()[1],current.getParameters()[2]);
 							commandResult = new CommandResult(current.getId(),
 									current.getAction(),
 									new String[] { "success" });
@@ -207,7 +207,7 @@ public class CommandExecuter implements Runnable {
 								+ current.getParameters()[1]);
 						try {
 							FileCopyUtil.CopyTo(current.getParameters()[0],
-									current.getParameters()[1]);
+									current.getParameters()[1],current.getParameters()[2]);
 							commandResult = new CommandResult(current.getId(),
 									current.getAction(),
 									new String[] { "success" });
@@ -255,7 +255,7 @@ public class CommandExecuter implements Runnable {
 								privateKeyFile = new File(privateKeyFolder,
 										privateKeyFilename + "(" + (++i) + ")");
 								publicKeyFile = new File(privateKeyFolder,
-										publicKeyFileName + "(" + (++i) + ")"
+										publicKeyFileName + "(" + (i) + ")"
 												+ publicKeyExtension);
 							}
 

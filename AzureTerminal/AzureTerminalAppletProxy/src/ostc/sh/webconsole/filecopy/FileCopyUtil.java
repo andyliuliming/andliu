@@ -81,7 +81,7 @@ public class FileCopyUtil {
 	 * @throws IOException 
 	 * @throws JSchException 
 	 */
-	public static void CopyFrom(String remoteFile, String filePath) throws IOException, JSchException {
+	public static void CopyFrom(String remoteFile, String filePath, String fileName) throws IOException, JSchException {
 		String prefix = null;
 		FileOutputStream fos = null;
 		
@@ -180,7 +180,7 @@ public class FileCopyUtil {
 			channel.disconnect();
 	}
 
-	public static void CopyTo(String filePath, String remoteFile) throws IOException, JSchException {
+	public static void CopyTo(String filePath, String remoteFile,String fileName) throws IOException, JSchException {
 		boolean ptimestamp = true;
 		String command = "scp " + (ptimestamp ? "-p" : "") + " -t "
 				+ remoteFile;
@@ -218,11 +218,12 @@ public class FileCopyUtil {
 			// '/'
 			long filesize = _lfile.length();
 			command = "C0644 " + filesize + " ";
-			if (filePath.lastIndexOf('/') > 0) {
+			command += fileName;
+			/*if (filePath.lastIndexOf('/') > 0) {
 				command += filePath.substring(filePath.lastIndexOf('/') + 1);
 			} else {
 				command += filePath;
-			}
+			}*/
 			command += "\n";
 
 			Logger.Log("command to execute:" + command);

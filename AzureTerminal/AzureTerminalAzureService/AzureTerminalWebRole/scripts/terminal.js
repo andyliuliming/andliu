@@ -16,7 +16,7 @@ function toggleSettings(forceStatus) {
 }
 
 function renderTerminal() {
-    console.dir("renderTerminal");
+    //console.dir("renderTerminal");
     $("#terminal_actions_icon").unbind("mouseup");
     $("#terminal_actions_icon").bind("mouseup", function (ev) {
         toggleSettings();

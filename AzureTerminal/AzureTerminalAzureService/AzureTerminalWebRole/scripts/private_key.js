@@ -10,11 +10,11 @@
 
     $("#private_key_close").unbind("click");
     $("#private_key_close").bind("click", function (ev) {
-        $("#private_key_wizard").css("display", "none");
+        close_key_pair_generation_dialog();
     });
     $("#private_keyf_failure_button").unbind("click");
     $("#private_keyf_failure_button").bind("click", function (ev) {
-
+        close_key_pair_generation_dialog();
     });
 
     $("#browse_private_key_location").unbind("click");
@@ -23,6 +23,9 @@
             otermApplet.SetAction("SelectFolder", [""]);
         }
     });
+}
+function close_key_pair_generation_dialog() {
+    $("#private_key_wizard").css("display", "none");
 }
 
 function open_gen_privatekey_dialog() {

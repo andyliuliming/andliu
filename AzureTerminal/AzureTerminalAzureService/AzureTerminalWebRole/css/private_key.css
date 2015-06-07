@@ -8,7 +8,6 @@
     background-color: white;
     font-family: 'Segoe UI';
     font-size: 18px;
-    
     left: 0;
     right: 0;
     top: 0;
@@ -107,22 +106,3 @@
 #private_key_failure_page {
     /*display: none;*/
 }
-/*<div id="private_key_wizard">
-        <div id="private_key_wizard_backspace"></div>
-        <div id="private_key_first_page">
-            <label for="private_key_location">Enter a location to store your keys:</label>
-            <input id="private_key_location" />
-            <input type="button" id="browse_private_key_location" />
-            <label for="private_key_passphrase">Enter a passphrase for your private key or you can leave it blank and we'll generate one for you automatically:</label>
-            <input id="private_key_passphrase" type="password" />
-            <input type="button" id="create_keys_button" />
-        </div>
-        <div id="private_key_success_page">
-
-        </div>
-        <div id="private_key_failure_page">
-            <label>:(</label>
-            <label>Oops, there was an error creating your keys. Try again, but if the problem persistes, close your browser and start over.</label>
-            <input type="button" id="private_keyf_failure_button" />
-        </div>
-    </div>*/

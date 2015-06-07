@@ -189,14 +189,14 @@
             </li>
             <li>
                 <div id="copy_file_dialog_local_actions">
-                    <input type="button" class="azure_terminal_button" id="copy_file_dialog_local_actions_refresh" value="Refresh" />
+                    <input type="button" class="copy_file_dialog_button azure_terminal_button" id="copy_file_dialog_local_actions_refresh" value="Refresh" />
                 </div>
             </li>
         </ul>
         <div id="copy_file_dialog_arrows">
             <button id="copy_file_to_remote_button"></button>
             <button id="copy_file_to_local_button"></button>
-            <div id="copy_file_status">Copying</div>
+            <div id="copy_file_status"></div>
         </div>
         <ul id="copy_file_dialog_remote">
             <li>
@@ -216,11 +216,12 @@
             </li>
             <li>
                 <div id="copy_file_dialog_remote_actions">
-                    <input type="button" class="azure_terminal_button" id="copy_file_dialog_remote_actions_refresh" value="Refresh" />
+                    <input type="button" class="copy_file_dialog_button azure_terminal_button" id="copy_file_dialog_remote_actions_refresh" value="Refresh" />
                 </div>
             </li>
         </ul>
-        <input type="button" id="copy_file_dialog_close" class="azure_terminal_button" value="Close" />
+        <input type="button" id="copy_file_dialog_close" class="copy_file_dialog_button azure_terminal_button" value="Close" />
+        <div id="copy_file_disable_cover"></div>
     </div>
 </body>
 </html>
