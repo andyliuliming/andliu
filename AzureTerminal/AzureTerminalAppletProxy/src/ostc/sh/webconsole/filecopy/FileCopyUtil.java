@@ -78,11 +78,13 @@ public class FileCopyUtil {
 	 * @param session
 	 * @param remoteFile
 	 * @param filePath
+	 * @throws IOException 
+	 * @throws JSchException 
 	 */
-	public static void CopyFrom(String remoteFile, String filePath) {
+	public static void CopyFrom(String remoteFile, String filePath) throws IOException, JSchException {
 		String prefix = null;
 		FileOutputStream fos = null;
-		try {
+		
 			if (new File(filePath).isDirectory()) {
 				prefix = filePath + File.separator;
 			}
@@ -176,20 +178,14 @@ public class FileCopyUtil {
 			out.close();
 
 			channel.disconnect();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSchException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
-	public static void CopyTo(String filePath, String remoteFile) {
+	public static void CopyTo(String filePath, String remoteFile) throws IOException, JSchException {
 		boolean ptimestamp = true;
 		String command = "scp " + (ptimestamp ? "-p" : "") + " -t "
 				+ remoteFile;
 		ChannelExec channel = null;
-		try {
+		
 			channel = (ChannelExec) OTermEnvironment.Instance()
 					.getSshConnection().getSession().openChannel("exec");
 			channel.setCommand(command);
@@ -259,14 +255,6 @@ public class FileCopyUtil {
 
 			channel.disconnect();
 			// session.disconnect();
-
-		} catch (JSchException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
 

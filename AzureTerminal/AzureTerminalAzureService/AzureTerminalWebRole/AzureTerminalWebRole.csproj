@@ -196,6 +196,7 @@
     <Content Include="css\TestFontSize.css" />
     <Content Include="Global.asax" />
     <Content Include="images\Action.png" />
+    <Content Include="images\copybuttons.png" />
     <Content Include="java\OTerm.jar" />
     <Content Include="scripts\actions.js" />
     <Content Include="scripts\applet.js" />
@@ -248,7 +249,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>63807</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

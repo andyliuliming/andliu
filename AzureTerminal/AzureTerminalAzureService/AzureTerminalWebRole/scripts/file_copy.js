@@ -5,6 +5,19 @@ var localFolderSeperator = "\\";
 var goUpItem = "..";
 
 function BindFileCopyDoubleClick() {
+    $("#copy_file_dialog_local_list_view ul li").unbind("click");
+    $("#copy_file_dialog_local_list_view ul li").bind("click", function (ev) {
+        $("#copy_file_dialog_local_list_view ul li").removeClass("selected");
+        $(ev.target).addClass("selected");
+    });
+
+
+    $("#copy_file_dialog_remote_list_view ul li").unbind("click");
+    $("#copy_file_dialog_remote_list_view ul li").bind("click", function (ev) {
+        $("#copy_file_dialog_remote_list_view ul li").removeClass("selected");
+        $(ev.target).addClass("selected");
+    });
+
     $("#copy_file_dialog_local_list_view ul li").unbind("dblclick");
     $("#copy_file_dialog_local_list_view ul li").bind("dblclick", function (ev) {
         var clicked_item = ev.target.innerText;
@@ -16,7 +29,6 @@ function BindFileCopyDoubleClick() {
             } else {
                 currentLocalFolder = currentLocalFolder + "\\" + clicked_item;
             }
-
             console.dir("now we jump to " + currentLocalFolder);
             JumpToLocalFolder(currentLocalFolder);
         }
@@ -45,8 +57,6 @@ function BindFileCopyDoubleClick() {
             } else {
                 currentRemoteFolder = currentRemoteFolder + "/" + clicked_item;
             }
-
-            currentRemoteFolder = currentRemoteFolder + "/" + clicked_item;
             console.dir("now we jumpt to " + currentRemoteFolder);
             JumpToRemoteFolder(currentRemoteFolder);
         }
@@ -63,7 +73,9 @@ function BindFileCopyDoubleClick() {
         // update the current remote folder    of the selections  combobox.
     });
 }
+function ToggleCopyButton() {
 
+}
 function JumpToLocalFolder(localFolder) {
     if (otermApplet != null) {
         if (localFolder != "") {
@@ -92,15 +104,22 @@ function InitializeFileCopy() {
     BindFileCopyDoubleClick();
     $("#copy_file_to_remote_button").unbind("click");
     $("#copy_file_to_remote_button").bind("click", function (ev) {
-
+        var selectedFileName = $("#copy_file_dialog_local_list_view ul li.selected")[0].innerText;
+        var selectLocalFileItem = currentLocalFolder + "\\" + selectedFileName;
+        if (otermApplet != null) {
+            otermApplet.SetAction(CopyToRemote, [selectLocalFileItem, currentRemoteFolder]);
+        }
     });
 
-
-    $("#copy_file_to_local_arrow").unbind("click");
-    $("#copy_file_to_local_arrow").bind("click", function (ev) {
-
+    $("#copy_file_to_local_button").unbind("click");
+    $("#copy_file_to_local_button").bind("click", function (ev) {
+        $("#copy_file_dialog_local_list_view ul li.selected")
+        var selectedFileName = $("#copy_file_dialog_remote_list_view ul li.selected")[0].innerText;
+        var selectRemoteFileItem = currentRemoteFolder + "/" + selectedFileName;
+        if (otermApplet != null) {
+            otermApplet.SetAction(CopyToLocal, [selectRemoteFileItem, currentLocalFolder + "\\" + selectedFileName]);
+        }
     });
-
 
     $("#copy_file_dialog_local_actions_refresh").unbind("click");
     $("#copy_file_dialog_local_actions_refresh").bind("click", function (ev) {
@@ -113,7 +132,6 @@ function InitializeFileCopy() {
         var remote_selection = $("#copy_file_dialog_remote_selections").val();
         JumpToRemoteFolder(remote_selection);
     });
-
 
     $("#copy_file_dialog_close").unbind("click");
     $("#copy_file_dialog_close").bind("click", function (ev) {

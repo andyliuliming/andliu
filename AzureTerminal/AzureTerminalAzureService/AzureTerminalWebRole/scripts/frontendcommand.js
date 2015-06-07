@@ -57,6 +57,14 @@ function WaitForFrontCommand() {
                     var resultParameters = commandResultForFront.getParameters();
                     RefreshRemoteList(resultParameters);
                     break;
+                case CopyToRemote:
+                    var resultParameters = commandResultForFront.getParameters();
+                    // enable the copy buttons
+                    break;
+                case CopyToLocal:
+                    var resultParameters = commandResultForFront.getParameters();
+                    // enable the copy buttons
+                    break;
             }
         }
         if (startToTakeOutput) {

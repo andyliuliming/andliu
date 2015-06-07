@@ -36,7 +36,7 @@ public class CommandExecuter implements Runnable {
 		while (true) {
 			try {
 				Command current = commandQueue.take();
-				CommandResult commandResult;
+				CommandResult commandResult = null;
 				if (current != null) {
 					switch (current.getAction()) {
 					case Actions.Login:
@@ -183,15 +183,41 @@ public class CommandExecuter implements Runnable {
 								.getCommandResultQueue().add(commandResult);
 						break;
 					case Actions.CopyToLocal:
-						Logger.Log("copy to local");
-						FileCopyUtil.CopyFrom(current.getParameters()[0],
-								current.getParameters()[1]);
-						// FileCopyUtil.co
+						Logger.Log("copy to local "
+								+ current.getParameters()[0] + " "
+								+ current.getParameters()[1]);
+						try {
+							FileCopyUtil.CopyFrom(current.getParameters()[0],
+									current.getParameters()[1]);
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(),
+									new String[] { "success" });
+						} catch (Exception e) {
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(),
+									new String[] { "failed" });
+						}
+
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
 						break;
 					case Actions.CopyToRemote:
-						Logger.Log("copy to remote");
-						FileCopyUtil.CopyTo(current.getParameters()[0],
-								current.getParameters()[1]);
+						Logger.Log("copy to remote "
+								+ current.getParameters()[0] + " "
+								+ current.getParameters()[1]);
+						try {
+							FileCopyUtil.CopyTo(current.getParameters()[0],
+									current.getParameters()[1]);
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(),
+									new String[] { "success" });
+						} catch (Exception e) {
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(),
+									new String[] { "failed" });
+						}
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
 						break;
 					case Actions.SelectFolder:
 						Frame frame = null;
