@@ -81,7 +81,7 @@
     float: left;
 }
 
-#copy_file_right_arrow {
+#copy_file_to_remote_button {
     width: 30px;
     height: 30px;
     background: url(../images/Arrow_right.png);
@@ -99,7 +99,7 @@
     bottom: 0;
 }
 
-#copy_file_left_arrow {
+#copy_file_to_local_arrow {
     top: 0;
     bottom: 0;
     width: 30px;

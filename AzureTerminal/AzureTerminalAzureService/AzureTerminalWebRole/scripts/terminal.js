@@ -60,7 +60,7 @@ function renderTerminal() {
     });
     $("#terminal_action_signout").unbind("click");
     $("#terminal_action_signout").bind("click", function (e) {
-        otermApplet.SetAction("SignOut", [""]);
+        otermApplet.SetAction(SignOut, [""]);
     });
 }
 
@@ -74,6 +74,6 @@ function terminalResize() {
     termWidth = Math.floor(width / charWidth) - 1;
     termHeight = Math.floor(height / charHeight) - 1;
     if (otermApplet != null) {
-        otermApplet.SetAction("SetSize", [termWidth + ":" + termHeight]);
+        otermApplet.SetAction(SetSize, [termWidth + ":" + termHeight]);
     }
 }

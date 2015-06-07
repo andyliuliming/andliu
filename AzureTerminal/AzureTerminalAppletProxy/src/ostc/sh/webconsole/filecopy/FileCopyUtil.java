@@ -14,10 +14,8 @@ import java.util.List;
 import ostc.sh.webconsole.OTermEnvironment;
 import ostc.sh.webconsole.util.Logger;
 
-import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
 
 /**
  * 
@@ -81,8 +79,7 @@ public class FileCopyUtil {
 	 * @param remoteFile
 	 * @param filePath
 	 */
-	public static void CopyFrom(Session session, String remoteFile,
-			String filePath) {
+	public static void CopyFrom(String remoteFile, String filePath) {
 		String prefix = null;
 		FileOutputStream fos = null;
 		try {
@@ -92,8 +89,9 @@ public class FileCopyUtil {
 
 			// exec 'scp -f rfile' remotely
 			String command = "scp -f " + remoteFile;
-			Channel channel = session.openChannel("exec");
-			((ChannelExec) channel).setCommand(command);
+			ChannelExec channel = (ChannelExec) OTermEnvironment.Instance()
+					.getSshConnection().getSession().openChannel("exec");
+			channel.setCommand(command);
 
 			// get I/O streams for remote scp
 			OutputStream out = channel.getOutputStream();
@@ -186,15 +184,15 @@ public class FileCopyUtil {
 		}
 	}
 
-	public static void CopyTo(Session session, String filePath,
-			String remoteFile) {
+	public static void CopyTo(String filePath, String remoteFile) {
 		boolean ptimestamp = true;
 		String command = "scp " + (ptimestamp ? "-p" : "") + " -t "
 				+ remoteFile;
-		Channel channel = null;
+		ChannelExec channel = null;
 		try {
-			channel = session.openChannel("exec");
-			((ChannelExec) channel).setCommand(command);
+			channel = (ChannelExec) OTermEnvironment.Instance()
+					.getSshConnection().getSession().openChannel("exec");
+			channel.setCommand(command);
 
 			// get I/O streams for remote scp
 			OutputStream out = channel.getOutputStream();

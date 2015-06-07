@@ -76,11 +76,11 @@ function loginIn() {
             if (otermApplet != null) {
                 otermApplet.SetAction(SetUserName, [username.val().trim()]);
                 otermApplet.SetAction(SetPassword, [password.val()]);
-                otermApplet.SetAction("SetHostName", [hostname.val().trim()]);
-                otermApplet.SetAction("SetPort", [port.val()]);
-                otermApplet.SetAction("SetPrivateKey", [contents]);
+                otermApplet.SetAction(SetHostName, [hostname.val().trim()]);
+                otermApplet.SetAction(SetPort, [port.val()]);
+                otermApplet.SetAction(SetPrivateKey, [contents]);
                 terminalResize();
-                otermApplet.SetAction("Login", [""]);
+                otermApplet.SetAction(Login, [""]);
 
                 $("#password").val("");
                 $('#loginbutton').attr("disabled", "disabled")
@@ -90,12 +90,12 @@ function loginIn() {
     } else {
 
         if (otermApplet != null) {
-            otermApplet.SetAction("SetUserName", [username.val().trim()]);
-            otermApplet.SetAction("SetPassword", [password.val()]);
-            otermApplet.SetAction("SetHostName", [hostname.val().trim()]);
-            otermApplet.SetAction("SetPort", [port.val().trim()]);
+            otermApplet.SetAction(SetUserName, [username.val().trim()]);
+            otermApplet.SetAction(SetPassword, [password.val()]);
+            otermApplet.SetAction(SetHostName, [hostname.val().trim()]);
+            otermApplet.SetAction(SetPort, [port.val().trim()]);
             terminalResize();
-            otermApplet.SetAction("Login", [""]);
+            otermApplet.SetAction(Login, [""]);
 
             $("#password").val("");
             $('#loginbutton').attr("disabled", "disabled")

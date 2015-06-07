@@ -166,20 +166,32 @@ public class CommandExecuter implements Runnable {
 						OTermEnvironment.Instance().getCommandPusher()
 								.getCommandResultQueue().add(commandResult);
 						break;
-					case Actions.ListRemoteRootFolder:						
+					case Actions.ListRemoteRootFolder:
 						List<String> remoteRootFolders = FileCopyUtil
 								.ListRemoteFolder("/");
 						String[] remoteRootFolderArray = new String[remoteRootFolders
 								.size()];
 						remoteRootFolders.toArray(remoteRootFolderArray);
-						
-						for(int i=0;i<remoteRootFolderArray.length;i++){
-							remoteRootFolderArray[i]="/"+remoteRootFolderArray[i];
+
+						for (int i = 0; i < remoteRootFolderArray.length; i++) {
+							remoteRootFolderArray[i] = "/"
+									+ remoteRootFolderArray[i];
 						}
 						commandResult = new CommandResult(current.getId(),
 								current.getAction(), remoteRootFolderArray);
 						OTermEnvironment.Instance().getCommandPusher()
 								.getCommandResultQueue().add(commandResult);
+						break;
+					case Actions.CopyToLocal:
+						Logger.Log("copy to local");
+						FileCopyUtil.CopyFrom(current.getParameters()[0],
+								current.getParameters()[1]);
+						// FileCopyUtil.co
+						break;
+					case Actions.CopyToRemote:
+						Logger.Log("copy to remote");
+						FileCopyUtil.CopyTo(current.getParameters()[0],
+								current.getParameters()[1]);
 						break;
 					case Actions.SelectFolder:
 						Frame frame = null;

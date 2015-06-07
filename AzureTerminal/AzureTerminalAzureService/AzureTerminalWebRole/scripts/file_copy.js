@@ -11,7 +11,7 @@ function BindFileCopyDoubleClick() {
         if (clicked_item != goUpItem) {
             console.dir("you dbl clicked local list" + ev.target.innerText);
             var lastSlashIndex = currentLocalFolder.lastIndexOf("\\");
-            if (lastSlashIndex >= 0 && lastSlashIndex == (currentLocalFolder.length-1)) {
+            if (lastSlashIndex >= 0 && lastSlashIndex == (currentLocalFolder.length - 1)) {
                 currentLocalFolder = currentLocalFolder + clicked_item;
             } else {
                 currentLocalFolder = currentLocalFolder + "\\" + clicked_item;
@@ -63,6 +63,7 @@ function BindFileCopyDoubleClick() {
         // update the current remote folder    of the selections  combobox.
     });
 }
+
 function JumpToLocalFolder(localFolder) {
     if (otermApplet != null) {
         if (localFolder != "") {
@@ -74,6 +75,7 @@ function JumpToLocalFolder(localFolder) {
         }
     }
 }
+
 function JumpToRemoteFolder(remoteFolder) {
     if (otermApplet != null) {
         if (remoteFolder != "/") {
@@ -88,6 +90,18 @@ function JumpToRemoteFolder(remoteFolder) {
 
 function InitializeFileCopy() {
     BindFileCopyDoubleClick();
+    $("#copy_file_to_remote_button").unbind("click");
+    $("#copy_file_to_remote_button").bind("click", function (ev) {
+
+    });
+
+
+    $("#copy_file_to_local_arrow").unbind("click");
+    $("#copy_file_to_local_arrow").bind("click", function (ev) {
+
+    });
+
+
     $("#copy_file_dialog_local_actions_refresh").unbind("click");
     $("#copy_file_dialog_local_actions_refresh").bind("click", function (ev) {
         var local_selection = $("#copy_file_dialog_local_selections").val();
