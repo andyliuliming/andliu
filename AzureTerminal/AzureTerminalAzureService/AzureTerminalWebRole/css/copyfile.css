@@ -109,7 +109,7 @@
     border-width: 0px;
     outline: 0;
 }
-      
+
     #copy_file_to_remote_button:disabled{
        background-position: -169px 0px;
     }
@@ -141,6 +141,11 @@
     #copy_file_to_local_button:hover {
         background-position: -265px 0px;
     }
+
+#copy_file_status {
+    font-family: 'Segoe UI';
+    font-size: 18px;
+}
 
 #copy_file_dialog_remote {
     padding: 0px;

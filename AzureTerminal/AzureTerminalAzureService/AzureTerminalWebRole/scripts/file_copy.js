@@ -86,12 +86,12 @@ function ToggleCopyButton() {
         $("#copy_file_to_remote_button").removeAttr("style");
     }
 }
+
 function JumpToLocalFolder(localFolder) {
     if (otermApplet != null) {
         if (localFolder != "") {
             otermApplet.SetAction(ListCurrentLocalFolder, [localFolder]);
             currentLocalFolder = localFolder;
-            append_local_drop_box_item(currentLocalFolder);
         } else {
             otermApplet.SetAction(ListLocalRootFolder, [""]);
         }
@@ -103,7 +103,6 @@ function JumpToRemoteFolder(remoteFolder) {
         if (remoteFolder != "/") {
             otermApplet.SetAction(ListCurrentRemoteFolder, [remoteFolder]);
             currentRemoteFolder = remoteFolder;
-            append_remote_drop_box_item(currentRemoteFolder);
         } else {
             otermApplet.SetAction(ListRemoteRootFolder, [""]);
         }
@@ -176,10 +175,14 @@ function append_local_drop_box_item(item) {
     opt.html(item);
     $("#copy_file_dialog_local_selections").append(opt);
 }
+
 // the data in the items is the full path
 function RefreshLocalDropBox(items) {
     $("#copy_file_dialog_local_selections").empty();
     var containsCurrentLocalFolder = false;
+    if(currentLocalFolder!=""){
+        append_local_drop_box_item(currentLocalFolder);
+    }
     for (var i = 0; i < items.length; i++) {
         if (items[i] == currentLocalFolder) {
             containsCurrentLocalFolder = true;
@@ -210,10 +213,12 @@ function append_remote_drop_box_item(item) {
     opt.html(item);
     $("#copy_file_dialog_remote_selections").append(opt);
 }
+
 // the data in the items is the full path
 function RefreshRemoteDropBox(items) {
     $("#copy_file_dialog_remote_selections").empty();
     var containsCurrentRemoteFolder = false;
+    append_remote_drop_box_item(currentRemoteFolder);
     for (var i = 0; i < items.length; i++) {
         if (items[i] == currentRemoteFolder) {
             containsCurrentRemoteFolder = true;
