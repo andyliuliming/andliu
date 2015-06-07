@@ -60,10 +60,12 @@ function WaitForFrontCommand() {
                 case CopyToRemote:
                     var resultParameters = commandResultForFront.getParameters();
                     // enable the copy buttons
+                    ToggleCopyButton();
                     break;
                 case CopyToLocal:
                     var resultParameters = commandResultForFront.getParameters();
-                    // enable the copy buttons
+                    // enable the copy buttons  
+                    ToggleCopyButton();
                     break;
             }
         }

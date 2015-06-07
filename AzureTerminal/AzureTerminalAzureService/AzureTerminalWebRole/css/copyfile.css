@@ -99,23 +99,24 @@
     cursor: auto;
     display: block;
     height: 30px;
-    line-height: 34px;
     margin-right: auto;
     margin-left: auto;
+    margin-top: 100px;
+    margin-bottom: auto;
     min-width: 0px;
     width: 30px;
     border: none;
-    border-width: 0px; outline:0;
+    border-width: 0px;
+    outline: 0;
 }
-
-    #copy_file_to_remote_button:focus {
-        border: none;
-        border-width: 0px;
+      
+    #copy_file_to_remote_button:disabled{
+       background-position: -169px 0px;
     }
-
     #copy_file_to_remote_button:hover {
         background-position: -201px 0px;
     }
+
 
 #copy_file_to_local_button {
     background-color: rgba(0, 0, 0, 0);
@@ -126,20 +127,16 @@
     cursor: auto;
     display: block;
     height: 30px;
-    line-height: 34px;
     margin-right: auto;
     margin-left: auto;
+    margin-top: 50px;
+    margin-bottom: auto;
     min-width: 0px;
     width: 30px;
     border: none;
     border-width: 0px;
-    outline:0;
+    outline: 0;
 }
-
-    #copy_file_to_local_button:focus {
-        border: none;
-        border-width: 0px;
-    }
 
     #copy_file_to_local_button:hover {
         background-position: -265px 0px;

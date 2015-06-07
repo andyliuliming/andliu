@@ -73,8 +73,18 @@ function BindFileCopyDoubleClick() {
         // update the current remote folder    of the selections  combobox.
     });
 }
-function ToggleCopyButton() {
 
+var copy_buttons_disabled = false;
+function ToggleCopyButton() {
+    if (!copy_buttons_disabled) {
+        copy_buttons_disabled = true;
+        $("#copy_file_to_local_button").css("background-position", "-233px 0px");
+        $("#copy_file_to_remote_button").css("background-position", "-169px 0px");
+    } else {
+        copy_buttons_disabled = false;
+        $("#copy_file_to_local_button").removeAttr("style");
+        $("#copy_file_to_remote_button").removeAttr("style");
+    }
 }
 function JumpToLocalFolder(localFolder) {
     if (otermApplet != null) {
@@ -108,6 +118,7 @@ function InitializeFileCopy() {
         var selectLocalFileItem = currentLocalFolder + "\\" + selectedFileName;
         if (otermApplet != null) {
             otermApplet.SetAction(CopyToRemote, [selectLocalFileItem, currentRemoteFolder]);
+            ToggleCopyButton();
         }
     });
 
@@ -118,6 +129,7 @@ function InitializeFileCopy() {
         var selectRemoteFileItem = currentRemoteFolder + "/" + selectedFileName;
         if (otermApplet != null) {
             otermApplet.SetAction(CopyToLocal, [selectRemoteFileItem, currentLocalFolder + "\\" + selectedFileName]);
+            ToggleCopyButton();
         }
     });
 
