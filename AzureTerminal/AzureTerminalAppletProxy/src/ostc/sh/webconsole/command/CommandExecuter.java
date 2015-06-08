@@ -167,7 +167,19 @@ public class CommandExecuter implements Runnable {
 								.getCommandResultQueue().add(commandResult);
 						break;
 					case Actions.SelectCurrentLocalFolder:
-						
+						List<String> localRootFoldersToSelect = FileCopyUtil
+								.ListLocalFolder("");
+						Logger.Log("the local folders size is "
+								+ localRootFoldersToSelect.size());
+						String[] localRootFolderToSelectArray = new String[localRootFoldersToSelect
+								.size()];
+						localRootFoldersToSelect
+								.toArray(localRootFolderToSelectArray);
+						commandResult = new CommandResult(current.getId(),
+								current.getAction(),
+								localRootFolderToSelectArray);
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
 						break;
 					case Actions.ListRemoteRootFolder:
 						List<String> remoteRootFolders = FileCopyUtil

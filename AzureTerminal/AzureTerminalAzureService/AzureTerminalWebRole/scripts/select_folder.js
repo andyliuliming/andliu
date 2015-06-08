@@ -13,5 +13,9 @@ function open_select_folder_dialog() {
 }
 
 function RefreshLocalSelectFolderDropBox(fileItems) {
-
+    // append the ..
+    for (var i = 0; i < fileItems.length; i++) {
+        var item = BuildListItem(fileItems[i]);
+        $("#select_folder_dialog_list_view>ul").append(item);
+    }
 }
