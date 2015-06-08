@@ -12,7 +12,6 @@ public class Actions {
 	public static final String SignOut = "SignOut";
 	public static final String Input = "Input";
 
-	public static final String SelectFolder = "SelectFolder";
 	public static final String GeneratePrivateKey = "GeneratePrivateKey";
 
 	public static final String ListCurrentLocalFolder = "ListCurrentLocalFolder";

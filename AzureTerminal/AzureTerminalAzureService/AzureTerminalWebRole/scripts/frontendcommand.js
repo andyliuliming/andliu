@@ -33,10 +33,6 @@ function WaitForFrontCommand() {
                         private_key_failed();
                     }
                     break;
-                case SelectFolder:
-                    var resultParameters = commandResultForFront.getParameters();
-                    $("#private_key_location").val(resultParameters[0]);
-                    break;
                 case SelectCurrentLocalFolder:
                     var resultParameters = commandResultForFront.getParameters();
                     RefreshLocalSelectFolderDropBox(resultParameters);

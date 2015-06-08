@@ -243,25 +243,6 @@ public class CommandExecuter implements Runnable {
 						OTermEnvironment.Instance().getCommandPusher()
 								.getCommandResultQueue().add(commandResult);
 						break;
-					case Actions.SelectFolder:
-						Frame frame = null;
-						JFileChooser j = new JFileChooser();
-						j.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-						Integer opt = j.showSaveDialog(frame);
-						if (opt == JFileChooser.APPROVE_OPTION) {
-							File yourFolder = j.getSelectedFile();
-							commandResult = new CommandResult(
-									current.getId(),
-									current.getAction(),
-									new String[] { yourFolder.getAbsolutePath() });
-
-							OTermEnvironment.Instance().getCommandPusher()
-									.getCommandResultQueue().add(commandResult);
-							Logger.Log("command result pushed"
-									+ commandResult.getId());
-						}
-
-						break;
 					case Actions.GeneratePrivateKey:
 						try {
 							String privateKeyFolder = current.getParameters()[0];
