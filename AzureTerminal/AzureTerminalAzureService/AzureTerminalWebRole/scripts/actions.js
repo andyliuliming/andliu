@@ -3,6 +3,7 @@ var ListCurrentRemoteFolder = "ListCurrentRemoteFolder";
 var ListLocalRootFolder = "ListLocalRootFolder";
 var ListRemoteRootFolder = "ListRemoteRootFolder";
 var SelectCurrentLocalFolder = "SelectCurrentLocalFolder";
+var GetHomeFolder = "GetHomeFolder";
 var SetUserName = "SetUserName";
 var SetPassword = "SetPassword";
 var SelectFolder = "SelectFolder";

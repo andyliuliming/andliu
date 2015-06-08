@@ -185,13 +185,11 @@
     <Folder Include="Views\Home\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\..\..\term.js\src\term.js">
-      <Link>term.js</Link>
-    </Content>
     <Content Include="copyfile.html" />
     <Content Include="css\copyfile.css" />
     <Content Include="css\global.css" />
     <Content Include="css\private_key.css" />
+    <Content Include="css\select_folder.css" />
     <Content Include="css\terminal_actions.css" />
     <Content Include="css\TestFontSize.css" />
     <Content Include="Global.asax" />
@@ -218,6 +216,7 @@
     <Content Include="scripts\login.js" />
     <Content Include="images\settings.png" />
     <Content Include="scripts\private_key.js" />
+    <Content Include="scripts\select_folder.js" />
     <Content Include="scripts\term_downloaded.js" />
     <Content Include="css\terminal.css" />
     <Content Include="scripts\terminal.js" />

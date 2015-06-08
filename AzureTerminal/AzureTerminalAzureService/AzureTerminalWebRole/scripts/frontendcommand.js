@@ -39,7 +39,13 @@ function WaitForFrontCommand() {
                     break;
                 case SelectCurrentLocalFolder:
                     var resultParameters = commandResultForFront.getParameters();
-                    RefreshLocalSelectFolderDropBox(resultParameter);
+                    RefreshLocalSelectFolderDropBox(resultParameters);
+                    break;
+                case GetHomeFolder:
+                    var resultParameters = commandResultForFront.getParameters();
+                    //currentSelectFolderLocation =;
+                    JumpToSelectFolder( resultParameters[0]);
+                    // jump to the specified folder
                     break;
                 case ListLocalRootFolder:
                     var resultParameters = commandResultForFront.getParameters();

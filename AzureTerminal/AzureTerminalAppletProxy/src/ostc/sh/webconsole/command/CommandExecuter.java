@@ -127,6 +127,13 @@ public class CommandExecuter implements Runnable {
 									.setPtySize(width, height, 0, 0);
 						}
 						break;
+					case Actions.GetHomeFolder:
+						String userHome = System.getProperty("user.home");
+						commandResult = new CommandResult(current.getId(),
+								current.getAction(), new String[]{userHome});
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
+						break;
 					case Actions.ListCurrentLocalFolder:
 						String currentLocalFolder = current.getParameters()[0];
 						List<String> localFolders = FileCopyUtil
@@ -167,8 +174,9 @@ public class CommandExecuter implements Runnable {
 								.getCommandResultQueue().add(commandResult);
 						break;
 					case Actions.SelectCurrentLocalFolder:
+						String jumpTo=current.getParameters()[0];
 						List<String> localRootFoldersToSelect = FileCopyUtil
-								.ListLocalFolder("");
+								.ListLocalFolder(jumpTo);
 						Logger.Log("the local folders size is "
 								+ localRootFoldersToSelect.size());
 						String[] localRootFolderToSelectArray = new String[localRootFoldersToSelect
