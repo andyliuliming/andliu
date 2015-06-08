@@ -1,1 +1,17 @@
-﻿
+﻿#select_folder_dialog {
+    display: none;
+    position: absolute;
+    font-family: 'Segoe UI';
+    width: 600px;
+    height: 480px;
+    background-color: white;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+}

@@ -37,6 +37,10 @@ function WaitForFrontCommand() {
                     var resultParameters = commandResultForFront.getParameters();
                     $("#private_key_location").val(resultParameters[0]);
                     break;
+                case SelectCurrentLocalFolder:
+                    var resultParameters = commandResultForFront.getParameters();
+                    RefreshLocalSelectFolderDropBox(resultParameter);
+                    break;
                 case ListLocalRootFolder:
                     var resultParameters = commandResultForFront.getParameters();
                     RefreshLocalDropBox(resultParameters);
