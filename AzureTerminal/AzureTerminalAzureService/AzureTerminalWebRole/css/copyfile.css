@@ -48,6 +48,10 @@
     border-color: rgb(117,117,117);
     display: block;
     border-style: solid;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
 }
 
     #copy_file_dialog_local_list_view ul {
@@ -184,6 +188,10 @@
     border-color: rgb(117,117,117);
     display: block;
     border-style: solid;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
 }
 
     #copy_file_dialog_remote_list_view ul {
