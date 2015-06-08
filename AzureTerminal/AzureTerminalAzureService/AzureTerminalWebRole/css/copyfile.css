@@ -85,6 +85,10 @@
     font-size: 18px;
 }
 
+.file {
+    background-color:rgb(230,230,230);
+}
+
 #copy_file_dialog_local_actions_refresh {
     float: right;
     margin-top: 10px;

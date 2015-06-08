@@ -15,6 +15,7 @@
     <script src="./scripts/private_key.js"></script>
     <script src="./scripts/file_copy.js"></script>
     <script src="./scripts/actions.js"></script>
+    <script src="./scripts/select_folder.js"></script>
     <link href="./css/login.css" rel="stylesheet" type="text/css" />
     <link href="./css/terminal.css" rel="stylesheet" type="text/css" />
     <link href="./css/TestFontSize.css" rel="stylesheet" type="text/css" />
@@ -22,6 +23,7 @@
     <link href="./css/private_key.css" rel="stylesheet" type="text/css" />
     <link href="./css/global.css" rel="stylesheet" type="text/css" />
     <link href="./css/copyfile.css" rel="stylesheet" type="text/css" />
+    <link href="./css/select_folder.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <script>
@@ -138,7 +140,7 @@
             <ul>
                 <li>
                     <div id="private_key_success_first_line" class="private_key_location_line">
-                        <p >And we're done! Your keys were successfully created. Your public key has been copied to your clipboard for your convenience.</p>
+                        <p>And we're done! Your keys were successfully created. Your public key has been copied to your clipboard for your convenience.</p>
                     </div>
                 </li>
                 <li>
@@ -234,5 +236,28 @@
         <input type="button" id="copy_file_dialog_close" class="copy_file_dialog_button azure_terminal_button" value="Close" />
         <div id="copy_file_disable_cover"></div>
     </div>
+
+    <!--<div id="select_folder_dialog">
+        <ul id="select_folder_dialog_inner">
+            <li>
+                <div id="select_folder_dialog_local_header">
+                    Local File:
+                </div>
+            </li>
+            <li>
+                <select id="select_folder_dialog_selections"></select>
+            </li>
+            <li>
+                <div id="select_folder_dialog_list_view">
+                    <ul></ul>
+                </div>
+            </li>
+            <li>
+                <div id="select_folder_dialog_actions">
+                    <input type="button" class="copy_file_dialog_button azure_terminal_button" id="copy_file_dialog_local_actions_refresh" value="OK" />
+                </div>
+            </li>
+        </ul>
+    </div>-->
 </body>
 </html>

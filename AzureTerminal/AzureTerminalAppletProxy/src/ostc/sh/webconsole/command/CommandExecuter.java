@@ -166,16 +166,18 @@ public class CommandExecuter implements Runnable {
 						OTermEnvironment.Instance().getCommandPusher()
 								.getCommandResultQueue().add(commandResult);
 						break;
+					case Actions.SelectCurrentLocalFolder:
+						
+						break;
 					case Actions.ListRemoteRootFolder:
 						List<String> remoteRootFolders = FileCopyUtil
 								.ListRemoteFolder("/");
 						String[] remoteRootFolderArray = new String[remoteRootFolders
 								.size()];
 						remoteRootFolders.toArray(remoteRootFolderArray);
-
 						for (int i = 0; i < remoteRootFolderArray.length; i++) {
-							remoteRootFolderArray[i] = "/"
-									+ remoteRootFolderArray[i];
+							remoteRootFolderArray[i] = 'D' + "/"
+									+ remoteRootFolderArray[i].substring(1);
 						}
 						commandResult = new CommandResult(current.getId(),
 								current.getAction(), remoteRootFolderArray);
@@ -188,7 +190,8 @@ public class CommandExecuter implements Runnable {
 								+ current.getParameters()[1]);
 						try {
 							FileCopyUtil.CopyFrom(current.getParameters()[0],
-									current.getParameters()[1],current.getParameters()[2]);
+									current.getParameters()[1],
+									current.getParameters()[2]);
 							commandResult = new CommandResult(current.getId(),
 									current.getAction(),
 									new String[] { "success" });
@@ -207,7 +210,8 @@ public class CommandExecuter implements Runnable {
 								+ current.getParameters()[1]);
 						try {
 							FileCopyUtil.CopyTo(current.getParameters()[0],
-									current.getParameters()[1],current.getParameters()[2]);
+									current.getParameters()[1],
+									current.getParameters()[2]);
 							commandResult = new CommandResult(current.getId(),
 									current.getAction(),
 									new String[] { "success" });
@@ -258,9 +262,11 @@ public class CommandExecuter implements Runnable {
 										publicKeyFileName + "(" + (i) + ")"
 												+ publicKeyExtension);
 							}
-
 							String passphrase = current.getParameters()[1];
 
+							if (passphrase == null) {
+								passphrase = "";
+							}
 							byte[] passphraseByteArray = passphrase.getBytes();
 							KeyGenerator generator = new KeyGenerator();
 							KeyPair keyPairGenerated = generator.Generator(
@@ -295,9 +301,10 @@ public class CommandExecuter implements Runnable {
 							OTermEnvironment.Instance().getCommandPusher()
 									.getCommandResultQueue().add(commandResult);
 						} catch (Exception e) {
+							Logger.Log(e.toString());
 							commandResult = new CommandResult(current.getId(),
-									current.getAction(),
-									new String[] { "failed" });
+									current.getAction(), new String[] {
+											"failed", e.toString() });
 							OTermEnvironment.Instance().getCommandPusher()
 									.getCommandResultQueue().add(commandResult);
 						}
