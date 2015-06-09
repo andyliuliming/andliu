@@ -4,11 +4,14 @@ function open_select_folder_dialog() {
 
     $("#select_folder_dialog_local_actions_ok").unbind("click");
     $("#select_folder_dialog_local_actions_ok").bind("click", function (ev) {
-        var selectedItem = $("#select_folder_dialog_list_view>ul>li.selected")[0].innerText;
-        if (selectedItem != undefined && selectedItem != "") {
-            $("#private_key_location").val(currentSelectFolderLocation + getLocalPathSeperator() + selectedItem);
+        var selectedItem = $("#select_folder_dialog_list_view>ul>li.selected");
+        if (selectedItem != undefined && selectedItem != null) {
+            var selectedItem = selectedItem[0].innerText;
+            if (selectedItem != undefined && selectedItem != "") {
+                $("#private_key_location").val(currentSelectFolderLocation + getLocalPathSeperator() + selectedItem);
+            }
+            close_select_folder_dialog();
         }
-        close_select_folder_dialog();
     });
 
     if (otermApplet != null) {

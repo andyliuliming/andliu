@@ -20,6 +20,7 @@ public class Actions {
 	public static final String ListRemoteRootFolder = "ListRemoteRootFolder";
 	public static final String SelectCurrentLocalFolder = "SelectCurrentLocalFolder";
 	public static final String GetHomeFolder = "GetHomeFolder";
+	public static final String GetRemoteHomeFolder = "GetRemoteHomeFolder";
 
 	public static final String CopyToRemote = "CopyToRemote";
 	public static final String CopyToLocal = "CopyToLocal";

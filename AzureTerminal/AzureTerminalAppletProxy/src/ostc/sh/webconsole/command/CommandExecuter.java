@@ -1,17 +1,17 @@
 package ostc.sh.webconsole.command;
 
-import java.awt.Frame;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
-
-import javax.swing.JFileChooser;
 
 import ostc.sh.webconsole.OTermEnvironment;
 import ostc.sh.webconsole.filecopy.FileCopyUtil;
@@ -20,6 +20,7 @@ import ostc.sh.webconsole.ssh.OutputFlusher;
 import ostc.sh.webconsole.util.ClipBoardUtil;
 import ostc.sh.webconsole.util.Logger;
 
+import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.KeyPair;
 
@@ -127,10 +128,43 @@ public class CommandExecuter implements Runnable {
 									.setPtySize(width, height, 0, 0);
 						}
 						break;
+					case Actions.GetRemoteHomeFolder:
+						ChannelExec channel = null;
+						try {
+							channel = (ChannelExec) OTermEnvironment.Instance()
+									.getSshConnection().getSession()
+									.openChannel("exec");
+
+							String command = "echo ~";
+							Logger.Log(command);
+							channel.setInputStream(null);
+
+							channel.setCommand(command);
+							InputStream in = channel.getInputStream();
+							channel.connect();
+							BufferedReader br = new BufferedReader(
+									new InputStreamReader(in));
+							String line = br.readLine();
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(), new String[] {
+											"success", line });
+							channel.disconnect();
+							OTermEnvironment.Instance().getCommandPusher()
+									.getCommandResultQueue().add(commandResult);
+						} catch (Exception e) {
+
+							Logger.Log(e.toString());
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(),
+									new String[] { "failed" });
+							OTermEnvironment.Instance().getCommandPusher()
+									.getCommandResultQueue().add(commandResult);
+						}
+						break;
 					case Actions.GetHomeFolder:
 						String userHome = System.getProperty("user.home");
 						commandResult = new CommandResult(current.getId(),
-								current.getAction(), new String[]{userHome});
+								current.getAction(), new String[] { userHome });
 						OTermEnvironment.Instance().getCommandPusher()
 								.getCommandResultQueue().add(commandResult);
 						break;
@@ -174,7 +208,7 @@ public class CommandExecuter implements Runnable {
 								.getCommandResultQueue().add(commandResult);
 						break;
 					case Actions.SelectCurrentLocalFolder:
-						String jumpTo=current.getParameters()[0];
+						String jumpTo = current.getParameters()[0];
 						List<String> localRootFoldersToSelect = FileCopyUtil
 								.ListLocalFolder(jumpTo);
 						Logger.Log("the local folders size is "

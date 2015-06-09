@@ -1,4 +1,3 @@
-
 var OSName = "Unknown OS";
 var OSNameGot = false;
 function getOS() {
@@ -22,8 +21,8 @@ function getLocalPathSeperator() {
     }
 }
 function useHttps() {
-    //if (window.location.protocol != "https:")
-    //    window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
+    if (window.location.protocol != "https:")
+        window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
 }
 
 function switchToTerminalMainPage() {

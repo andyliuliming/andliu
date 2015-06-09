@@ -39,9 +39,16 @@ function WaitForFrontCommand() {
                     break;
                 case GetHomeFolder:
                     var resultParameters = commandResultForFront.getParameters();
-                    //currentSelectFolderLocation =;
-                    JumpToSelectFolder( resultParameters[0]);
+                    JumpToSelectFolder(resultParameters[0]);
+                    JumpToLocalFolder(resultParameters[0]);
                     // jump to the specified folder
+                    break;
+                case GetRemoteHomeFolder:
+                    var resultParameters = commandResultForFront.getParameters();
+                    var result = resultParameters[0];
+                    if(result=="success"){
+                        JumpToRemoteFolder(resultParameters[1]);
+                    }
                     break;
                 case ListLocalRootFolder:
                     var resultParameters = commandResultForFront.getParameters();

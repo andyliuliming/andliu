@@ -9,11 +9,13 @@
     right: 0;
     top: 0;
     bottom: 0;
-    padding: 10px;
     margin-left: auto;
     margin-right: auto;
     margin-top: auto;
     margin-bottom: auto;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 #copy_file_dialog_local {
@@ -40,7 +42,7 @@
 
 #copy_file_dialog_local_list_view {
     overflow: scroll;
-    height: 300px;
+    height: 320px;
     margin: 0px;
     margin-top: 5px;
     padding: 0px;
@@ -72,11 +74,11 @@
                 margin: 0px;
                 padding: 0px;
                 color: white;
-                background-color: blue;
+                background-color: rgb(0, 188, 242);
             }
 
 #copy_file_dialog_local_actions {
-    height: 60px;
+    height: 50px;
 }
 
 .copy_file_dialog_button {
@@ -86,7 +88,7 @@
 }
 
 .file {
-    background-color:rgb(230,230,230);
+    background-color: rgb(230,230,230);
 }
 
 #copy_file_dialog_local_actions_refresh {
@@ -186,7 +188,7 @@
 
 #copy_file_dialog_remote_list_view {
     overflow: scroll;
-    height: 300px;
+    height: 320px;
     margin: 0px;
     margin-top: 5px;
     padding: 0px;
@@ -218,12 +220,12 @@
                 cursor: pointer;
                 margin: 0px;
                 padding: 0px;
-                background-color: blue;
+                background-color: rgb(0, 188, 242);
                 color: white;
             }
 
 #copy_file_dialog_remote_actions {
-    height: 60px;
+    height: 50px;
 }
 
 #copy_file_dialog_remote_actions_refresh {
@@ -234,7 +236,7 @@
 
 #copy_file_dialog_close {
     float: right;
-    margin-top: 20px;
+    /*margin-top: 10px;*/
 }
 
 

@@ -4,6 +4,7 @@ var ListLocalRootFolder = "ListLocalRootFolder";
 var ListRemoteRootFolder = "ListRemoteRootFolder";
 var SelectCurrentLocalFolder = "SelectCurrentLocalFolder";
 var GetHomeFolder = "GetHomeFolder";
+var GetRemoteHomeFolder = "GetRemoteHomeFolder";
 var SetUserName = "SetUserName";
 var SetPassword = "SetPassword";
 var SelectFolder = "SelectFolder";
