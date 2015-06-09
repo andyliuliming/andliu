@@ -249,7 +249,32 @@ function BuildListItem(fileItem) {
 // we should also append the current item
 function RefreshLocalList(fileItems) {
     console.dir("now we need to append the local folder in the drop down box." + currentLocalFolder);
+    //$("#copy_file_dialog_local_selections option.notcurrent")
 
+    // if the drop box have the current with the .current
+    var rootItems = $("#copy_file_dialog_local_selections option.notcurrent");
+    var containedInRoot = false;
+    for (var i = 0; i < rootItems.length; i++) {
+        if (rootItems[i].value == currentLocalFolder) {
+            containedInRoot = true;
+        }
+    }
+
+    if (containedInRoot) {
+        $("#copy_file_dialog_local_selections option.current").remove();
+    }
+
+    if (!containedInRoot) {
+        var currentItem = $("#copy_file_dialog_local_selections option.current");
+        if (currentItem.length != 0) {
+            currentItem.val(currentLocalFolder);
+            currentItem.html(currentLocalFolder);
+        } else {
+            currentItem = BuildSelectionOption("D" + currentLocalFolder, true);
+            $("#copy_file_dialog_local_selections:first-child").prepend(currentItem);
+            $("#copy_file_dialog_local_selections").val(currentLocalFolder);
+        }
+    }
     // find the item, if exists, leave it be, if no  just append it
 
     //append_local_drop_box_item(currentLocalFolder);
@@ -268,6 +293,31 @@ function RefreshLocalList(fileItems) {
 // we should also append the current item
 function RefreshRemoteList(fileItems) {
     console.dir("now we need to append the remote folder: " + currentRemoteFolder);
+
+    var rootItems = $("#copy_file_dialog_remote_selections option.notcurrent");
+    var containedInRoot = false;
+    for (var i = 0; i < rootItems.length; i++) {
+        if (rootItems[i].value == currentRemoteFolder) {
+            containedInRoot = true;
+        }
+    }
+
+    if (containedInRoot) {
+        $("#copy_file_dialog_remote_selections option.current").remove();
+    }
+
+    if (!containedInRoot) {
+        var currentItem = $("#copy_file_dialog_remote_selections option.current");
+        if (currentItem.length != 0) {
+            currentItem.val(currentRemoteFolder);
+            currentItem.html(currentRemoteFolder);
+        } else {
+            currentItem = BuildSelectionOption("D" + currentRemoteFolder, true);
+            $("#copy_file_dialog_remote_selections:first-child").prepend(currentItem);
+            $("#copy_file_dialog_remote_selections").val(currentRemoteFolder);
+        }
+    }
+
     //append_remote_drop_box_item(currentRemoteFolder);
     $("#copy_file_dialog_remote_list_view >ul").empty();
     var opt = $("<li class='directory'></li>").html(goUpItem);

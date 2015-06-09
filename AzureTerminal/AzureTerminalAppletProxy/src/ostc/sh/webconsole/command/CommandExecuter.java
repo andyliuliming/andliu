@@ -152,7 +152,6 @@ public class CommandExecuter implements Runnable {
 							OTermEnvironment.Instance().getCommandPusher()
 									.getCommandResultQueue().add(commandResult);
 						} catch (Exception e) {
-
 							Logger.Log(e.toString());
 							commandResult = new CommandResult(current.getId(),
 									current.getAction(),
