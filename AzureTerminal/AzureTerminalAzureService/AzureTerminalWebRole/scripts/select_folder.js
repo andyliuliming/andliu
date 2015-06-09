@@ -13,6 +13,10 @@ function open_select_folder_dialog() {
             close_select_folder_dialog();
         }
     });
+    $("#select_folder_dialog_local_actions_cancel").unbind("click");
+    $("#select_folder_dialog_local_actions_cancel").bind("click", function (ev) {
+        close_select_folder_dialog();
+    });
 
     if (otermApplet != null) {
         otermApplet.SetAction(GetHomeFolder, [""]);
@@ -27,6 +31,7 @@ function JumpToSelectFolder(specifiedFolder) {
     if (otermApplet != null) {
         currentSelectFolderLocation = specifiedFolder;
         otermApplet.SetAction(SelectCurrentLocalFolder, [specifiedFolder]);
+        $("#select_folder_dialog_current_folder_text").val(currentSelectFolderLocation);
     }
 }
 
@@ -67,7 +72,14 @@ function RefreshLocalSelectFolderDropBox(fileItems) {
             if (currentSelectFolderLocation.length <= 3) {
 
             } else {
-                currentSelectFolderLocation = currentSelectFolderLocation.substr(0, currentSelectFolderLocation.lastIndexOf(getLocalPathSeperator()));
+                var lastIndexOfSeperator = currentSelectFolderLocation.lastIndexOf(getLocalPathSeperator());
+                var firstIndexOfSeperator = currentSelectFolderLocation.indexOf(getLocalPathSeperator());
+                if (firstIndexOfSeperator == lastIndexOfSeperator) {
+                    currentSelectFolderLocation = currentSelectFolderLocation.substr(0, lastIndexOfSeperator + 1);
+                } else {
+                    currentSelectFolderLocation = currentSelectFolderLocation.substr(0, lastIndexOfSeperator);
+                }
+                //currentSelectFolderLocation = currentSelectFolderLocation.substr(0, currentSelectFolderLocation.lastIndexOf(getLocalPathSeperator()));
                 JumpToSelectFolder(currentSelectFolderLocation);
             }
         }

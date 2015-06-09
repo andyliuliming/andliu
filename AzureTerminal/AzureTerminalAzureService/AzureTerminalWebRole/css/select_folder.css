@@ -4,7 +4,7 @@
     font-family: 'Segoe UI';
     font-size: 18px;
     width: 600px;
-    height: 403px;
+    height: 413px;
     background-color: white;
     left: 0;
     right: 0;
@@ -30,7 +30,7 @@
     border-width: 1px;
     overflow: scroll;
     border-style: solid;
-    height: 323px;
+    height: 303px;
     border-color: rgb(169,169,169);
     -moz-user-select: none;
     -khtml-user-select: none;
@@ -56,9 +56,31 @@
                 background-color: rgb(0, 188, 242);
             }
 
+#select_folder_dialog_current_folder {
+    margin-top:5px;
+}
+
+#select_folder_dialog_result_label {
+}
+
+#select_folder_dialog_current_folder_text {
+    font-size: 18px;
+    font-family: Segoe UI;
+    width: 465px;
+}
+
 #select_folder_dialog_local_actions_ok {
     height: 35px;
     width: 122px;
     font-size: 18px;
-    float: right;  margin-top: 8px;
+    float: right;
+    margin-top: 8px;
+    margin-right: 5px;
+}
+
+#select_folder_dialog_local_actions_cancel {
+    height: 35px;
+    width: 122px;
+    float: right;
+    margin-top: 8px;
 }
