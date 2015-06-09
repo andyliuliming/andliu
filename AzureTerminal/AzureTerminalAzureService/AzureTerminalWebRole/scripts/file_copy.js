@@ -1,7 +1,6 @@
 ﻿var currentLocalFolder = "";
 var currentRemoteFolder = "/";
 var remoteFolderSeperator = "/";
-var localFolderSeperator = "\\";
 var goUpItem = "..";
 
 function BindFileCopyDoubleClick() {
@@ -26,11 +25,11 @@ function BindFileCopyDoubleClick() {
         var clicked_item = ev.target.innerText;
         if (clicked_item != goUpItem) {
            // console.dir("you dbl clicked local list" + ev.target.innerText);
-            var lastSlashIndex = currentLocalFolder.lastIndexOf("\\");
+            var lastSlashIndex = currentLocalFolder.lastIndexOf(getLocalPathSeperator());
             if (lastSlashIndex >= 0 && lastSlashIndex == (currentLocalFolder.length - 1)) {
                 currentLocalFolder = currentLocalFolder + clicked_item;
             } else {
-                currentLocalFolder = currentLocalFolder + "\\" + clicked_item;
+                currentLocalFolder = currentLocalFolder + getLocalPathSeperator() + clicked_item;
             }
            // console.dir("now we jump to " + currentLocalFolder);
             JumpToLocalFolder(currentLocalFolder);
@@ -39,7 +38,7 @@ function BindFileCopyDoubleClick() {
             if (currentLocalFolder.length <= 3) {
 
             } else {
-                currentLocalFolder = currentLocalFolder.substr(0, currentLocalFolder.lastIndexOf('\\'));
+                currentLocalFolder = currentLocalFolder.substr(0, currentLocalFolder.lastIndexOf(getLocalPathSeperator()));
                 //currentLocalFolder=
                // console.dir("now we jumpt to " + currentLocalFolder);
                 JumpToLocalFolder(currentLocalFolder);
@@ -122,7 +121,7 @@ function InitializeFileCopy() {
     $("#copy_file_to_remote_button").unbind("click");
     $("#copy_file_to_remote_button").bind("click", function (ev) {
         var selectedFileName = $("#copy_file_dialog_local_list_view ul li.selected")[0].innerText;
-        var selectLocalFileItem = currentLocalFolder + "\\" + selectedFileName;
+        var selectLocalFileItem = currentLocalFolder + getLocalPathSeperator() + selectedFileName;
         if (otermApplet != null) {
             otermApplet.SetAction(CopyToRemote, [selectLocalFileItem, currentRemoteFolder, selectedFileName]);
             ToggleDisableCopyFileDialog();
@@ -135,7 +134,7 @@ function InitializeFileCopy() {
         var selectedFileName = $("#copy_file_dialog_remote_list_view ul li.selected")[0].innerText;
         var selectRemoteFileItem = currentRemoteFolder + "/" + selectedFileName;
         if (otermApplet != null) {
-            otermApplet.SetAction(CopyToLocal, [selectRemoteFileItem, currentLocalFolder + "\\" + selectedFileName, selectedFileName]);
+            otermApplet.SetAction(CopyToLocal, [selectRemoteFileItem, currentLocalFolder + getLocalPathSeperator() + selectedFileName, selectedFileName]);
             ToggleDisableCopyFileDialog();
         }
     });

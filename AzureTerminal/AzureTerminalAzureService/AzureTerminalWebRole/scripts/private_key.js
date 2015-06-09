@@ -24,9 +24,6 @@
     $("#browse_private_key_location").unbind("click");
     $("#browse_private_key_location").bind("click", function (ev) {
         open_select_folder_dialog();
-        //if (otermApplet != null) {
-        //    otermApplet.SetAction("SelectFolder", [""]);
-        //}
     });
 }
 
