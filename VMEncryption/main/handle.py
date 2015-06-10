@@ -185,9 +185,9 @@ def enable():
             encryption_result = encryption.format_disk(extension_parameter.filesystem, os.path.join(CommonVariables.dev_mapper_root, mapper_name))
 
             # prepare the mount point
-            mountpoint = encryption_parameters.mountpoint
+            mountpoint = extension_parameter.mountpoint
             if(not os.path.exists(mountpoint)):
-                hutil.log("the mountpoint does not exist, create it" + encryption_parameters.mountpoint)
+                hutil.log("the mountpoint does not exist, create it" + extension_parameter.mountpoint)
                 os.mkdir(mountpoint)
             # prepare the mount path for the encrypted disk
             mount_name = uuid.uuid4()
@@ -197,7 +197,7 @@ def enable():
             i = 0
             while(os.path.exists(keydisk_mount_point)):
                 i+=1
-                keydisk_mount_point = os.path.join(encryption_parameters.mountpoint, CommonVariables.key_disk_mountname + str(i))
+                keydisk_mount_point = os.path.join(extension_parameter.mountpoint, CommonVariables.key_disk_mountname + str(i))
 
             hutil.log("creating the keydisk_mount_point " + keydisk_mount_point)
             os.mkdir(keydisk_mount_point)
@@ -206,7 +206,7 @@ def enable():
             keydisk_mount_item = CommonVariables.key_disk_label_path + +" " + str(keydisk_mount_point) + " vfat defaults\n"
             hutil.log("keydisk_mount_item is " + str(keydisk_mount_item))
             
-            encrypted_disk_mount_item = str(os.path.join(CommonVariables.dev_mapper_root,mapper_name)) + " " + str(os.path.join(mountpoint,mount_name)) + encryption_parameters.filesystem + " defaults\n"
+            encrypted_disk_mount_item = str(os.path.join(CommonVariables.dev_mapper_root,mapper_name)) + " " + str(os.path.join(mountpoint,mount_name)) + extension_parameter.filesystem + " defaults\n"
             #"/dev/mapper/sdd1 /mnt/xxxencreypted ext4 defaults\n"
             hutil.log("encrypted_disk_mount_item is " + str(encrypted_disk_mount_item))
 
