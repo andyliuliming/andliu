@@ -203,7 +203,7 @@ def enable():
             os.mkdir(keydisk_mount_point)
 
 
-            keydisk_mount_item = CommonVariables.key_disk_label_path + +" " + str(keydisk_mount_point) + " vfat defaults\n"
+            keydisk_mount_item = CommonVariables.key_disk_label_path + " " + str(keydisk_mount_point) + " vfat defaults\n"
             hutil.log("keydisk_mount_item is " + str(keydisk_mount_item))
             
             encrypted_disk_mount_item = str(os.path.join(CommonVariables.dev_mapper_root,mapper_name)) + " " + str(os.path.join(mountpoint,mount_name)) + extension_parameter.filesystem + " defaults\n"
