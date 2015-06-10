@@ -190,7 +190,7 @@ def enable():
                 hutil.log("the mountpoint does not exist, create it" + extension_parameter.mountpoint)
                 os.mkdir(mountpoint)
             # prepare the mount path for the encrypted disk
-            mount_name = uuid.uuid4()
+            # mount_name = str(uuid.uuid4())
 
 
             keydisk_mount_point = os.path.join(mountpoint, CommonVariables.key_disk_mountname)
@@ -307,15 +307,15 @@ def enable():
                 #disk_partition.devpath
                 #exist_encryption_parameters.dev_mapper_name =
                 #disk_partition.devname
-                mapper_name = uuid.uuid4()
-                encryption_result = encryption.encrypt_disk(origin_disk_partition.dev_path,extension_parameter.passphrase,str(mapper_name))
+                mapper_name = str(uuid.uuid4())
+                encryption_result = encryption.encrypt_disk(origin_disk_partition.dev_path,extension_parameter.passphrase,mapper_name)
 
                 #for partition_index in origin_disk_partitions.length():
 
                 # code is our definition.
                 if(encryption_result.code == CommonVariables.success):
                     #target_disk_partition
-                    disk_util.copy(origin_disk_partition.dev_path, os.path.join(CommonVariables.dev_mapper_root,str(mapper_name)))
+                    disk_util.copy(origin_disk_partition.dev_path, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
                 else:
                     hutil.log("encrypt disk result: " + str(encryption_result))
             
