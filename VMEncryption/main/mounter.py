@@ -1,6 +1,7 @@
 import subprocess
 from subprocess import *
 from encryption import EncryptionError
+from common import CommonVariables
 class Mounter(object):
     def __init__(self,hutil):
         self.hutil = hutil
@@ -16,7 +17,7 @@ class Mounter(object):
             error.errorcode = returnCode
             error.code = CommonVariables.mount_error
             error.info = "commandToExecute is " + commandToExecute
-            self.hutil.Log('mount returnCode is ' + str(returnCode))
+            self.hutil.log('mount returnCode is ' + str(returnCode))
         return error
 
     def mount(self, encryption_parameters):
@@ -29,7 +30,7 @@ class Mounter(object):
             error.errorcode = returnCode
             error.code = CommonVariables.mount_error
             error.info = "commandToExecute is " + commandToExecute
-            self.hutil.Log('mount returnCode is ' + str(returnCode))
+            self.hutil.log('mount returnCode is ' + str(returnCode))
         return error
 
 

@@ -30,6 +30,7 @@ class CommonVariables:
     key_disk_label_path="/dev/dev/disk/by-label/KEYDISK"
     key_disk_mountname = 'azurekeydisk'
     key_disk_fs_type = 'vfat'
+    encrypted_disk_mountname='azureencrypteddisk'
     folder_command = 'folder'
     newdisk_command = 'newdisk'
     existdisk_command = 'existdisk'

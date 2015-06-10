@@ -183,34 +183,43 @@ def enable():
                 hutil.do_exit(0, 'Enable', encryption_result.state, str(encryption_result.code), encryption_result.info)
 
             encryption_result = encryption.format_disk(extension_parameter.filesystem, os.path.join(CommonVariables.dev_mapper_root, mapper_name))
+            
+            if(encryption_result.errorcode != CommonVariables.success):
+                hutil.do_exit(0,'Enable',encryption_result.state, str(encryption_result.code), encryption_result.info)
 
             # prepare the mount point
             mountpoint = extension_parameter.mountpoint
             if(not os.path.exists(mountpoint)):
-                hutil.log("the mountpoint does not exist, create it" + extension_parameter.mountpoint)
+                hutil.log("the mountpoint does not exist, create it" + mountpoint)
                 os.mkdir(mountpoint)
-            # prepare the mount path for the encrypted disk
-            # mount_name = str(uuid.uuid4())
 
 
             keydisk_mount_point = os.path.join(mountpoint, CommonVariables.key_disk_mountname)
             i = 0
             while(os.path.exists(keydisk_mount_point)):
                 i+=1
-                keydisk_mount_point = os.path.join(extension_parameter.mountpoint, CommonVariables.key_disk_mountname + str(i))
+                keydisk_mount_point = os.path.join(mountpoint, CommonVariables.key_disk_mountname + str(i))
 
             hutil.log("creating the keydisk_mount_point " + keydisk_mount_point)
             os.mkdir(keydisk_mount_point)
-
-
             keydisk_mount_item = CommonVariables.key_disk_label_path + " " + str(keydisk_mount_point) + " vfat defaults\n"
             hutil.log("keydisk_mount_item is " + str(keydisk_mount_item))
+
             
-            encrypted_disk_mount_item = str(os.path.join(CommonVariables.dev_mapper_root,mapper_name)) + " " + str(os.path.join(mountpoint,mount_name)) + extension_parameter.filesystem + " defaults\n"
+            # prepare the mount path for the encrypted disk
+            encrypted_disk_mount_name = CommonVariables.encrypted_disk_mountname
+            encrypted_disk_mount_point = str(os.path.join(mountpoint, encrypted_disk_mount_name))
+            i = 0
+            while(os.path.exists(encrypted_disk_mount_point)):
+                i+=1
+                encrypted_disk_mount_point = os.path.join(mountpoint, encrypted_disk_mount_name + str(i))
+            os.mkdir(encrypted_disk_mount_point)
+
+            encrypted_disk_mount_item = str(os.path.join(CommonVariables.dev_mapper_root,mapper_name)) + " " + encrypted_disk_mount_point + " " + extension_parameter.filesystem + " defaults\n"
             #"/dev/mapper/sdd1 /mnt/xxxencreypted ext4 defaults\n"
             hutil.log("encrypted_disk_mount_item is " + str(encrypted_disk_mount_item))
 
-            attached_encrypted_disk_item = str(mapper_name) + " " + str(target_partition.devpath) + " " + os.path.join(keydisk_mount_point,CommonVariables.passphrase_file_name) + " luks\n"
+            attached_encrypted_disk_item = mapper_name + " " + str(target_partition.devpath) + " " + os.path.join(keydisk_mount_point,CommonVariables.passphrase_file_name) + " luks\n"
             hutil.log("attached_encrypted_disk_item is " + str(attached_encrypted_disk_item))
             #"sdc1 /dev/sdd1 /mnt/keydisk/keyfile luks\n"
     #keydisk_mount_item ,encrypted_disk_mount_item,attached_encrypted_disk_item
@@ -221,7 +230,7 @@ def enable():
             mounter = Mounter(hutil)
             mounter.mount_all()
 
-            hutil.do_exit(0, 'Enable', encryption_result.state, str(encryption_result.code), encryption_result.info)
+            hutil.do_exit(0, 'Enable','success','0', 'succeeded')
         ########### the new disk scenario ends ###################
 
 
