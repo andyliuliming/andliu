@@ -186,7 +186,6 @@
     <Folder Include="Views\Home\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="copyfile.html" />
     <Content Include="css\copyfile.css" />
     <Content Include="css\global.css" />
     <Content Include="css\private_key.css" />
@@ -222,7 +221,6 @@
     <Content Include="css\terminal.css" />
     <Content Include="scripts\terminal.js" />
     <Content Include="images\warning.png" />
-    <Content Include="scripts\whitelist.txt" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web.config" />

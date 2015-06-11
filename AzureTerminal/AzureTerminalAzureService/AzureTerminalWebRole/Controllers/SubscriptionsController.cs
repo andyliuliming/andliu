@@ -28,19 +28,49 @@ namespace AzureTerminalWebConsole.Controllers
     builder.EntitySet<Subscription>("Subscriptions");
     config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
     */
-    public class SubscriptionsController : ODataController
+    public class SubscriptionsController : ApiController
     {
-        private static ODataValidationSettings _validationSettings = new ODataValidationSettings();
+        //     public class FilesController : ApiController
+        //{
+        //    [HttpGet]
+        //    //[CacheOutput(ClientTimeSpan = 100, ServerTimeSpan = 100, NoCache = true)]
+        //    public async Task<HttpResponseMessage> Get([FromUri]string fileName)
+
+        private List<string> subscriptionsInWhiteList = new List<string>() { "141c2865-6055-4232-aa49-41b5eb560a41",
+            "a932c0e6-b5cb-4e68-b23d-5064372c8a3c",
+"411baf9e-7967-4d76-b4ab-46e7ad8b02fc",
+"5b6d2876-ee1b-4c31-ab79-42c186974c78",
+"40f5e541-8e15-41a3-8562-27cdac4fcb1a"};
+
+        public HttpResponseMessage Get()
+        {
+            HttpResponseMessage response2 = new HttpResponseMessage(HttpStatusCode.OK);
+
+            List<Subscription> subscriptions = this.GetSubscriptions();
+            string result = "fail";
+            if (subscriptions != null)
+            {
+                foreach (var sub in subscriptions)
+                {
+                    if (subscriptionsInWhiteList.Contains(sub.SubscriptionId))
+                    {
+                        result = "success";
+                    }
+                }
+            }
+            response2.Content = new StringContent(result);
+            return response2;
+        }
 
         private string RequestFormat = @"grant_type=authorization_code&code={0}&redirect_uri=https://azureterminal.cloudapp.net/index.html&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&resource=https://management.core.windows.net/&client_secret={1}";
 
         // GET: odata/Subscriptions
-        public IHttpActionResult GetSubscriptions(ODataQueryOptions<Subscription> queryOptions)
+        private List<Subscription> GetSubscriptions()
         {
             // get the headers, Code.
             IEnumerable<string> codes = this.ActionContext.Request.Headers.GetValues("Code");
             string accessToken = null;
-            if (codes != null )
+            if (codes != null)
             {
                 string code = codes.FirstOrDefault();
                 if (code != null)
@@ -52,18 +82,11 @@ namespace AzureTerminalWebConsole.Controllers
                         client.BaseAddress = new Uri("https://login.microsoftonline.com");
                         client.DefaultRequestHeaders.Accept.Clear();
                         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                        
-                        //var keyValues = new List<KeyValuePair<string, string>>();
-                        //keyValues.Add(new KeyValuePair<string, string>("site", "http://www.google.com"));
-                        //keyValues.Add(new KeyValuePair<string, string>("content", "This is some content"));
-
-                        //FormUrlEncodedContent content = new FormUrlEncodedContent();
-                        //content.
 
                         StringContent sc = new StringContent(string.Format(RequestFormat, code, AppSettingsProvider.GetSetting("ClientSecret")));
                         //HttpContent content=new 
                         //    HttpContent();
-                        Task<HttpResponseMessage> response =client.PostAsync("/000ff064-9dc3-480a-9517-2b7b8519df17/oauth2/token?api-version=1.0", sc);
+                        Task<HttpResponseMessage> response = client.PostAsync("/000ff064-9dc3-480a-9517-2b7b8519df17/oauth2/token?api-version=1.0", sc);
 
                         if (response.Result.IsSuccessStatusCode)
                         {
@@ -89,7 +112,7 @@ namespace AzureTerminalWebConsole.Controllers
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-                    
+
                     Task<HttpResponseMessage> response = client.GetAsync("/subscriptions");
 
                     if (response.Result.IsSuccessStatusCode)
@@ -102,7 +125,7 @@ namespace AzureTerminalWebConsole.Controllers
                         List<Subscription> subscriptionsToReturn = new List<Subscription>();
                         using (XmlReader reader = XmlReader.Create(new StringReader(subscriptionXml)))
                         {
-                            XmlDocument xmlDoc= new XmlDocument(); // Create an XML document object
+                            XmlDocument xmlDoc = new XmlDocument(); // Create an XML document object
                             xmlDoc.Load(reader);
                             XmlNodeList nodeList = xmlDoc.SelectNodes("/Subscriptions/Subscription/SubscriptionID");
                             foreach (XmlNode node in nodeList)
@@ -113,105 +136,12 @@ namespace AzureTerminalWebConsole.Controllers
                                 subscriptionsToReturn.Add(subscription);
                             }
                         }
-                        return Ok<IEnumerable<Subscription>>(subscriptionsToReturn);
+                        return (subscriptionsToReturn);
                     }
                 }
             }
-            return NotFound();
-            
-            //// validate the query.
-            //try
-            //{
-            //    queryOptions.Validate(_validationSettings);
-            //}
-            //catch (ODataException ex)
-            //{
-            //    return BadRequest(ex.Message);
-            //}
-
-            //// return Ok<IEnumerable<Subscription>>(subscriptions);
-            //return StatusCode(HttpStatusCode.NotImplemented);
+            return null;
         }
-
-        // GET: odata/Subscriptions(5)
-        public IHttpActionResult GetSubscription([FromODataUri] long key, ODataQueryOptions<Subscription> queryOptions)
-        {
-            // validate the query.
-            try
-            {
-                queryOptions.Validate(_validationSettings);
-            }
-            catch (ODataException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-            // return Ok<Subscription>(subscription);
-            return StatusCode(HttpStatusCode.NotImplemented);
-        }
-
-        // PUT: odata/Subscriptions(5)
-        public IHttpActionResult Put([FromODataUri] long key, Delta<Subscription> delta)
-        {
-            Validate(delta.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            // TODO: Get the entity here.
-
-            // delta.Put(subscription);
-
-            // TODO: Save the patched entity.
-
-            // return Updated(subscription);
-            return StatusCode(HttpStatusCode.NotImplemented);
-        }
-
-        // POST: odata/Subscriptions
-        public IHttpActionResult Post(Subscription subscription)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            // TODO: Add create logic here.
-
-            // return Created(subscription);
-            return StatusCode(HttpStatusCode.NotImplemented);
-        }
-
-        // PATCH: odata/Subscriptions(5)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] long key, Delta<Subscription> delta)
-        {
-            Validate(delta.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            // TODO: Get the entity here.
-
-            // delta.Patch(subscription);
-
-            // TODO: Save the patched entity.
-
-            // return Updated(subscription);
-            return StatusCode(HttpStatusCode.NotImplemented);
-        }
-
-        // DELETE: odata/Subscriptions(5)
-        public IHttpActionResult Delete([FromODataUri] long key)
-        {
-            // TODO: Add delete logic here.
-
-            // return StatusCode(HttpStatusCode.NoContent);
-            return StatusCode(HttpStatusCode.NotImplemented);
-        }
+        
     }
 }

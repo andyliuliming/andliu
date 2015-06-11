@@ -24,14 +24,6 @@ namespace AzureTerminalWebConsole
             // Web API routes
             config.MapHttpAttributeRoutes();
 
-            ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
-            
-            //builder.EntitySet<User>("Users");
-           
-            config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
-
-            config.AddODataQueryFilter();
-
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",

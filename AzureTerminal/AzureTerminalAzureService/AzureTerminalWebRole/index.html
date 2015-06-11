@@ -29,7 +29,7 @@
     <script>
         $(document).ready(function () {
             useHttps();
-            if (checkAuth()) {
+            checkAuth(function () {
                 initializeLogin();
                 function docWriteWrapper(jq, func) {
                     var oldwrite = document.write, content = '';
@@ -48,10 +48,9 @@
 
                 InitializePrivateKey();
                 InitializeFileCopy();
-            }
-            else {
+            }, function () {
                 $("body").html("You are not authorized to access this web site");
-            }
+            });
         });
     </script>
     <div id="terminal_embedded_applet"></div>

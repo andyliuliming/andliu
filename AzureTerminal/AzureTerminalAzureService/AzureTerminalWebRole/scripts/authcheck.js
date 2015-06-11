@@ -3,32 +3,70 @@
     return d >= 0 && str.lastIndexOf(match) === d;
 }
 
-function checkAuth() {
-    var idToken = getUrlVars()["id_token"];
-    if (idToken != null) {
-        var decodedString = atob(idToken.split('.')[1]);
-        var id = JSON.parse(decodedString);
-        if (id.unique_name != null) {
-            if (endsWith(id.unique_name, "@microsoft.com")) {
-                return true;
-            }
-            else {
-                return false;
-            }
+function VerifySubscription(code, token, successFunc) {
+    var url = "https://azureterminal.cloudapp.net/Subscriptions";
+    $.ajax({
+        url: url,
+        type: "GET",
+        beforeSend: function (request) {
+            request.setRequestHeader("Code", code);
+            request.setRequestHeader("AccessToken", token);
+        },
+        dataType: "json",
+        //contentType: "application/json",
+        success: function (d) {
+            successFunc(d);
+        },
+        error: function (e) {
+            console.dir(e);
         }
+    });
+}
 
-        if (id.email != null) {
-            if (endsWith(id.email, "@microsoft.com")) {
-                return true;
+function checkAuth(successFunc, errorFunc) {
+    // check the 
+    // if the Code exists in the url 
+
+    var accessToken = $.cookie("AccessToken");
+    var code = getUrlVars()["Code"];
+
+    if (accessToken != null || code != null) {
+        VerifySubscription(code, accessToken, function (result) {
+            if (result == "success") {
+                successFunc();
+            } else {
+                errorFunc();
             }
-            else {
-                return false;
-            }
-        }
+        });
     } else {
-        window.location = "https://login.windows.net/common/oauth2/authorize?response_type=id_token&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&scope=openid&nonce=7362CAEA-9CA5-4B43-9BA3-34D7C303EBA7&response_mode=query";
+        window.location="https://login.windows.net/000ff064-9dc3-480a-9517-2b7b8519df17/oauth2/authorize?response_type=code&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&resource=https://management.core.windows.net/&redirect_uri=https://azureterminal.cloudapp.net/index.html&api-version=1.0"
+}
 
-        //https://login.windows.net/000ff064-9dc3-480a-9517-2b7b8519df17/oauth2/authorize?response_type=code&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&resource=https://management.core.windows.net/&redirect_uri=https://azureterminal.cloudapp.net/index.html&api-version=1.0
-        return true;
-    }
+    //var idToken = getUrlVars()["id_token"];
+    //if (idToken != null) {
+    //    var decodedString = atob(idToken.split('.')[1]);
+    //    var id = JSON.parse(decodedString);
+    //    if (id.unique_name != null) {
+    //        if (endsWith(id.unique_name, "@microsoft.com")) {
+    //            return true;
+    //        }
+    //        else {
+    //            return false;
+    //        }
+    //    }
+
+    //    if (id.email != null) {
+    //        if (endsWith(id.email, "@microsoft.com")) {
+    //            return true;
+    //        }
+    //        else {
+    //            return false;
+    //        }
+    //    }
+    //} else {
+    //    window.location = "https://login.windows.net/common/oauth2/authorize?response_type=id_token&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&scope=openid&nonce=7362CAEA-9CA5-4B43-9BA3-34D7C303EBA7&response_mode=query";
+
+    //    //https://login.windows.net/000ff064-9dc3-480a-9517-2b7b8519df17/oauth2/authorize?response_type=code&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&resource=https://management.core.windows.net/&redirect_uri=https://azureterminal.cloudapp.net/index.html&api-version=1.0
+    //    return true;
+    //}
 }
