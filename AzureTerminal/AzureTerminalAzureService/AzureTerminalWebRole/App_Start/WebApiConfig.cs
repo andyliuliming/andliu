@@ -25,22 +25,8 @@ namespace AzureTerminalWebConsole
             config.MapHttpAttributeRoutes();
 
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
-            //builder.EntitySet<AlipayNotify>("AlipayNotifies");
-            //builder.EntitySet<TaagiImage>("TaagiImages");
-            //builder.EntitySet<TaskMomentImage>("TaskMomentImages");
-            //builder.EntitySet<Token>("Tokens");
-            //builder.EntitySet<Company>("Companies");
-            //builder.EntitySet<UserObserving>("UserObservings");
-            //builder.EntitySet<SystemMessage>("SystemMessages");
-            //builder.EntitySet<Command>("Commands");
-            //builder.EntitySet<TaskObserving>("TaskObservings");
-            //builder.EntitySet<TaskMomentComment>("TaskMomentComments");
-            //builder.EntitySet<TaskMomentLiking>("TaskMomentLikings");
-            //builder.EntitySet<TaskMoment>("TaskMoments");
-            //builder.EntitySet<Task>("Tasks");
+            
             //builder.EntitySet<User>("Users");
-            //builder.EntitySet<TaskMomentShare>("TaskMomentShares");
-            //builder.EntitySet<PerfCounter>("PerfCounters");
            
             config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
 
