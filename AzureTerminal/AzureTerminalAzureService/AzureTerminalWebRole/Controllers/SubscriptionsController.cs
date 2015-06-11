@@ -13,6 +13,8 @@ using AzureTerminalWebConsole.Model;
 using Microsoft.Data.OData;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Xml;
+using System.IO;
 
 namespace AzureTerminalWebConsole.Controllers
 {
@@ -87,9 +89,7 @@ namespace AzureTerminalWebConsole.Controllers
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-                    //StringContent sc = new StringContent(string.Format(RequestFormat, code));
-                    //HttpContent content=new 
-                    //    HttpContent();
+                    
                     Task<HttpResponseMessage> response = client.GetAsync("/subscriptions");
 
                     if (response.Result.IsSuccessStatusCode)
@@ -100,6 +100,19 @@ namespace AzureTerminalWebConsole.Controllers
                         string subscriptionXml = resposneResult.Result;
 
                         List<Subscription> subscriptionsToReturn = new List<Subscription>();
+                        using (XmlReader reader = XmlReader.Create(new StringReader(subscriptionXml)))
+                        {
+                            XmlDocument xmlDoc= new XmlDocument(); // Create an XML document object
+                            xmlDoc.Load(reader);
+                            XmlNodeList nodeList = xmlDoc.SelectNodes("/Subscriptions/Subscription/SubscriptionID");
+                            foreach (XmlNode node in nodeList)
+                            {
+                                Subscription subscription = new Subscription();
+                                subscription.Id = 0;
+                                subscription.SubscriptionId = node.InnerText;
+                                subscriptionsToReturn.Add(subscription);
+                            }
+                        }
                         return Ok<IEnumerable<Subscription>>(subscriptionsToReturn);
                     }
                 }
