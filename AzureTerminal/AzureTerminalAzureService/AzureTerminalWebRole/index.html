@@ -58,7 +58,7 @@
     <div id="login_main_panel">
         <div class="login_blade">
             <div class="login_header">
-                <label class="login_header_label">Login</label>
+                <p class="login_header_label">Login</p>
             </div>
             <ul class="login_blade-ul">
                 <li class="input_label_li"><label for="hostname_input">Host Name:</label></li>
@@ -76,7 +76,15 @@
                 <li class="input_label_li"><label id="auth_type_label" for="password">Password:</label></li>
                 <li>
                     <input class="login_input" id="password" type="password" />
-                    <input type="file" id="identity_file" />
+                    <div id="login_private_key">
+                        <div id="login_private_key_file_name">
+                            <input id="login_private_key_file_name_text" type="text" />
+                        </div>
+                        <div id="login_private_key_button">
+                            <button type="button" class="azure_terminal_button" id="login_private_key_browse">Browse</button>
+                            <input type="file" id="identity_file" />
+                        </div>
+                    </div>
                 </li>
                 <li>
                     <label id="login_warning_label"></label>
@@ -87,7 +95,8 @@
             </ul>
         </div>
         <div class="decoration_panel">
-            <label class="decoration_label">Make Your Connection Easier...</label>
+            <p class="decoration_label">Make Your Connection Easier...</p>
+            <div id="decoration_image"></div>
         </div>
     </div>
     <div id="TestFontSize">@</div>

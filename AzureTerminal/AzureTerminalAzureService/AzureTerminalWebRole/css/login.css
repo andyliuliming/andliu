@@ -21,15 +21,9 @@ body {
     width: 90%;
 }
 
-#identity_file {
-    display: none;
-}
-
 #identity_pub_file {
     display: none;
 }
-
-
 
 .auth_button {
     font-family: 'Segoe UI';
@@ -91,17 +85,60 @@ body {
     font-family: 'Segoe UI';
 }
 
+#login_private_key {
+    width: 100%;
+    position: relative;
+    height: 22px;
+    display: none;
+}
+
+#login_private_key_file_name {
+    float: left;
+    height: 22px;
+    width: 80%;
+}
+
+#login_private_key_file_name_text {
+    width: 98%;
+}
+
+#login_private_key_button {
+    height: 22px;
+    float: left;
+    width: 20%;
+}
+
+#login_private_key_browse {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    height: 22px;
+    font-family: segoe ui;
+    width: 100%;
+}
+
+#identity_file {
+    position: relative;
+    top: -22px;
+    opacity: 0;
+    outline: 0;
+    width: 100%;
+    height: 22px;
+}
+
 #login_warning_label {
     display: none;
     color: yellow;
 }
 
 #login_main_panel {
+    position: absolute;
+    width: 100%;
     height: 100%;
 }
 
 .login_blade-ul {
-    padding-left: 30px;
+    padding-left: 35px;
 }
 
 .login_header {
@@ -111,9 +148,11 @@ body {
 }
 
 .login_header_label {
-    padding-left: 40px;
-    font-family: 'Segoe UI';
+    padding-left: 35px;
+    font-family: 'Segoe UI light','segoe ui';
     font-size: 35px;
+    margin-bottom: 0px;
+    margin-top: 0px;
 }
 
 .login_blade {
@@ -124,23 +163,28 @@ body {
 }
 
 .decoration_label {
-    color: white;
-    font-family: 'Segoe UI';
-    font-weight: bold;
+    color: #b7e2f9;
+    font-family: 'Segoe UI light','Segoe UI';
     font-size: 40px;
-    margin-left: 40px;
-    margin-top: 30px;
+    margin-left: 74px;
+    margin-top: 32px;
+    margin-bottom: 0px;
 }
 
-.decoration_panel {
+#decoration_image {
+    width: 80%;
+    height: 90%;
+    position: relative;
     background-repeat: no-repeat;
-    background-position: center;
     -webkit-background-size: contain;
     -moz-background-size: contain;
     -o-background-size: contain;
     background-size: contain;
-    background-color: rgb(46,127,170);
     background-image: url("../images/heroillustration.png");
+}
+
+.decoration_panel {
+    background-color: rgb(46,127,170);
     width: 64%;
     height: 100%;
     float: left;

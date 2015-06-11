@@ -18,7 +18,7 @@ function initializeLogin() {
         $(".auth_button").removeClass("auth_button_selected");
         $(e.target).addClass("auth_button_selected");
 
-        $("#identity_file").css("display", "none");
+        $("#login_private_key").css("display", "none");
         $("#password").css("display", "block");
         $("#auth_type_label").html("Password:");
     });
@@ -29,10 +29,17 @@ function initializeLogin() {
         $(".auth_button").removeClass("auth_button_selected");
         $(e.target).addClass("auth_button_selected");
 
+        $("#login_private_key").css("display", "block");
         $("#password").css("display", "none");
-        $("#identity_file").css("display", "block");
-        $("#identity_pub_file").css("display", "block");
         $("#auth_type_label").html("Private Key:");
+    });
+
+    $("#identity_file").unbind("change");
+    $("#identity_file").bind("change", function (ev) {
+        var file = $('#identity_file')[0].files[0];
+        if (file != null) {
+            $("#login_private_key_file_name_text").val(file.name);
+        }
     });
 
     $("#loginbutton").unbind("click");
