@@ -30,7 +30,7 @@ namespace AzureTerminalWebConsole.Controllers
     {
         private static ODataValidationSettings _validationSettings = new ODataValidationSettings();
 
-        private string RequestFormat = @"grant_type=authorization_code&code={0}&redirect_uri=https://azureterminal.cloudapp.net/index.html&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&resource=https://management.core.windows.net/&client_secret=NJDdG7kH0jLM9gNup4B/m3E4MaQhzks8ItrakWFL7s0=";
+        private string RequestFormat = @"grant_type=authorization_code&code={0}&redirect_uri=https://azureterminal.cloudapp.net/index.html&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&resource=https://management.core.windows.net/&client_secret={1}";
 
         // GET: odata/Subscriptions
         public IHttpActionResult GetSubscriptions(ODataQueryOptions<Subscription> queryOptions)
@@ -57,7 +57,8 @@ namespace AzureTerminalWebConsole.Controllers
 
                         //FormUrlEncodedContent content = new FormUrlEncodedContent();
                         //content.
-                        StringContent sc = new StringContent(string.Format(RequestFormat,code));
+
+                        StringContent sc = new StringContent(string.Format(RequestFormat, code, AppSettingsProvider.GetSetting("ClientSecret")));
                         //HttpContent content=new 
                         //    HttpContent();
                         Task<HttpResponseMessage> response =client.PostAsync("/000ff064-9dc3-480a-9517-2b7b8519df17/oauth2/token?api-version=1.0", sc);

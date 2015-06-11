@@ -4,6 +4,7 @@
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="ClientSecret" value="NJDdG7kH0jLM9gNup4B/m3E4MaQhzks8ItrakWFL7s0=" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="AzureTerminalCert" thumbprint="05f24d41705ec3e2c7f887e22c0b75a88cc4ffca" thumbprintAlgorithm="sha1" />
