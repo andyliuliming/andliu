@@ -41,6 +41,8 @@ namespace AzureTerminalWebConsole
             //builder.EntitySet<VendorBankInfo>("VendorBankInfoes");
             builder.EntitySet<Token>("Tokens");
             builder.EntitySet<Subscription>("Subscriptions");
+            builder.EntitySet<LinuxVM>("LinuxVMs");
+            builder.EntitySet<TerminalAction>("TerminalActions");
             //// Wrap Ups
             //builder.EntitySet<ProductDetail>("ProductDetails");
 

@@ -1,17 +1,8 @@
-﻿
+﻿using AzureTerminalWebConsole.Model;
+using Microsoft.OData.Core;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Net;
-using AzureTerminalWebConsole.Model;
-using System.Web.Http;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using AzureTerminalWebConsole.Model;
-using Microsoft.OData.Core;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;

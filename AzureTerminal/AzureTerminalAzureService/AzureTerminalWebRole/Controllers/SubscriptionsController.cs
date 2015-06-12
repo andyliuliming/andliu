@@ -1,20 +1,16 @@
-﻿using System;
+﻿using AzureTerminalWebConsole.Model;
+using System;
 using System.Collections.Generic;
-using System.Data;
+using System.IdentityModel.Tokens;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
-using System.Web.Http.ModelBinding;
-using AzureTerminalWebConsole.Model;
-using Microsoft.Data.OData;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Xml;
-using System.IO;
+using System.Web.Http;
 using System.Web.OData;
 using System.Web.OData.Query;
-using System.IdentityModel.Tokens;
+using System.Xml;
 
 namespace AzureTerminalWebConsole.Controllers
 {

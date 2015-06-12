@@ -50,7 +50,8 @@
                 InitializePrivateKey();
                 InitializeFileCopy();
             }, function () {
-                $("body").html("You are not authorized to access this web site");
+                $.removeCookie("AccessToken");
+                $("body").html("You are not authorized to access this web site or your token times out. Cookie is cleared up, please refresh this page to try again.");
             });
         });
     </script>

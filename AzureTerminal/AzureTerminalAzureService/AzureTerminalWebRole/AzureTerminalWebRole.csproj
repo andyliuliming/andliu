@@ -181,12 +181,14 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LinuxVMsController.cs" />
     <Compile Include="Controllers\TerminalActionsController.cs" />
     <Compile Include="Controllers\SubscriptionsController.cs" />
     <Compile Include="Controllers\TokensController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Model\LinuxVM.cs" />
     <Compile Include="Model\TerminalAction.cs" />
     <Compile Include="Model\Subscription.cs" />
     <Compile Include="Model\Token.cs" />
