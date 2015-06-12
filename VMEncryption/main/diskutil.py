@@ -38,7 +38,7 @@ class DiskUtil(object):
         #dd if=/dev/sda of=/dev/mapper/sda-crypt bs=512
         error = EncryptionError()
         self.hutil.log("copying from " + from_device + " to " + to_device)
-        commandToExecute = '/bin/bash -c "' + 'dd if=' + from_device + ' of=' + to_device + ' bs=128K"'
+        commandToExecute = '/bin/bash -c "' + 'dd if=' + from_device + ' of=' + to_device + ' bs=512K"'
 
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
@@ -61,7 +61,7 @@ class DiskUtil(object):
         diskPartition2 = DiskPartition()
         diskPartition2.dev_path = "/dev/sdc2"
         diskPartition2.start = 1000001
-        diskPartition2.end = 20971519 
+        diskPartition2.end = 4194303 
         disk_partitions.append(diskPartition2)
         return disk_partitions
 
@@ -78,7 +78,7 @@ class DiskUtil(object):
         diskPartition2 = DiskPartition()
         diskPartition2.dev_path = "/dev/sdd2"
         diskPartition2.start = 1000001 + space_reserved * space_index
-        diskPartition2.end = 20971519 + space_reserved * space_index
+        diskPartition2.end = 4194303 + space_reserved * space_index
         target_disk_partitions.append(diskPartition2)
         return target_disk_partitions
 

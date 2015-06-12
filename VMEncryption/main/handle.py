@@ -300,7 +300,7 @@ def enable():
             # /dev/sdc1 sdc1 100202
             #disk_partitions =
             #disk_info_parser.get_disk_partitions(exist_encryption_parameters.exist_devpath)
-            target_disk_partitions = disk_util.partit(encryption_dev_root_path,origin_disk_partitions)
+            target_disk_partitions = disk_util.partit(encryption_dev_root_path, origin_disk_partitions)
 
 
             encryption = Encryption(hutil)

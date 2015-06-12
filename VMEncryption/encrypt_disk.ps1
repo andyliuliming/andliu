@@ -43,6 +43,6 @@ function Encrypt-Disk
 }
 
 
-Add-AzureAccount
+#Add-AzureAccount
 Select-AzureSubscription "OSTC Shanghai Dev"
 Encrypt-Disk -cloudServiceName "andliu-ubuntu" -virtualMachineName "andliu-ubuntu"
