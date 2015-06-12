@@ -14,6 +14,7 @@ using System.Xml;
 using System.IO;
 using System.Web.OData;
 using System.Web.OData.Query;
+using System.IdentityModel.Tokens;
 
 namespace AzureTerminalWebConsole.Controllers
 {
@@ -48,6 +49,27 @@ namespace AzureTerminalWebConsole.Controllers
 
         public IHttpActionResult GetSubscriptions(ODataQueryOptions<Subscription> queryOptions)
         {
+            // first check the id_token
+            if (this.ActionContext.Request.Headers.Contains("id_token"))
+            {
+                IEnumerable<string> idTokens = this.ActionContext.Request.Headers.GetValues("id_token");
+                string idToken = idTokens.FirstOrDefault();
+                if (idTokens != null)
+                {
+                    JwtSecurityToken token = new JwtSecurityToken(idToken);
+                    foreach (var claim in token.Claims)
+                    {
+                        if (claim.Type == "unique_name")
+                        {
+                            if (claim.Value.EndsWith("@microsoft.com"))
+                            {
+                                return Content<string>(HttpStatusCode.OK, "");
+                            }
+                        }
+                    }
+
+                }
+            }
             List<Subscription> subscriptions = this.GetSubscriptions();
 
             if (subscriptions != null)
