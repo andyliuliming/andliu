@@ -22,7 +22,7 @@ function BindFileCopyDoubleClick() {
         if (!$(ev.target).hasClass("directory")) {
             return;
         }
-        var clicked_item = ev.target.innerText;
+        var clicked_item = getInnerText(ev.target);
         if (clicked_item != goUpItem) {
             // console.dir("you dbl clicked local list" + ev.target.innerText);
             var lastSlashIndex = currentLocalFolder.lastIndexOf(getLocalPathSeperator());
@@ -57,7 +57,7 @@ function BindFileCopyDoubleClick() {
         if (!$(ev.target).hasClass("directory")) {
             return;
         }
-        var clicked_item = ev.target.innerText;
+        var clicked_item = getInnerText(ev.target);
         if (clicked_item != goUpItem) {
             //console.dir("you dbl clicked remote list" + ev.target.innerText);
 
@@ -129,7 +129,7 @@ function InitializeFileCopy() {
     BindFileCopyDoubleClick();
     $("#copy_file_to_remote_button").unbind("click");
     $("#copy_file_to_remote_button").bind("click", function (ev) {
-        var selectedFileName = $("#copy_file_dialog_local_list_view ul li.selected")[0].innerText;
+        var selectedFileName = getInnerText($("#copy_file_dialog_local_list_view ul li.selected")[0]);
         var selectLocalFileItem = currentLocalFolder + getLocalPathSeperator() + selectedFileName;
         if (otermApplet != null) {
             otermApplet.SetAction(CopyToRemote, [selectLocalFileItem, currentRemoteFolder, selectedFileName]);
@@ -140,7 +140,7 @@ function InitializeFileCopy() {
     $("#copy_file_to_local_button").unbind("click");
     $("#copy_file_to_local_button").bind("click", function (ev) {
         $("#copy_file_dialog_local_list_view ul li.selected")
-        var selectedFileName = $("#copy_file_dialog_remote_list_view ul li.selected")[0].innerText;
+        var selectedFileName = getInnerText($("#copy_file_dialog_remote_list_view ul li.selected")[0]);
         var selectRemoteFileItem = currentRemoteFolder + "/" + selectedFileName;
         if (otermApplet != null) {
             otermApplet.SetAction(CopyToLocal, [selectRemoteFileItem, currentLocalFolder + getLocalPathSeperator() + selectedFileName, selectedFileName]);

@@ -236,6 +236,7 @@
     <Content Include="images\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="scripts\util.js" />
     <Content Include="Web.config" />
     <Content Include="packages.config" />
     <Content Include="java\WebConsole.jnlp" />
