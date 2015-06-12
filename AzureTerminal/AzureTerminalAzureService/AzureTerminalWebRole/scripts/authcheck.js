@@ -3,11 +3,11 @@
     return d >= 0 && str.lastIndexOf(match) === d;
 }
 
-//var accessTokenUrl = "https://azureterminal.cloudapp.net/odata/Tokens";
-//var subscriptionUrl = "https://azureterminal.cloudapp.net/odata/Subscriptions";
-var accessTokenUrl = "http://localhost:63807/odata/Tokens";
-var subscriptionUrl = "http://localhost:63807/odata/Subscriptions";
-function VerifySubscription( token, successFunc, failedFunc) {
+var accessTokenUrl = "https://azureterminal.cloudapp.net/odata/Tokens";
+var subscriptionUrl = "https://azureterminal.cloudapp.net/odata/Subscriptions";
+//var accessTokenUrl = "http://localhost:63807/odata/Tokens";
+//var subscriptionUrl = "http://localhost:63807/odata/Subscriptions";
+function VerifySubscription(token, successFunc, failedFunc) {
     $.ajax({
         url: subscriptionUrl,
         type: "GET",
@@ -46,6 +46,7 @@ function getAccessToken(successFunc, failedFunc) {
                 },
                 success: function (d) {
                     if (successFunc != null) {
+                        $.cookie("AccessToken", d.value[0].access_token);
                         successFunc(d.value[0].access_token);
                     }
                 },

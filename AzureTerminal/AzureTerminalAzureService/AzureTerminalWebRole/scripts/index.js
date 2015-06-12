@@ -37,5 +37,7 @@ function switchToLoginPage() {
     $("#terminal_main_panel").css("display", "none");
     $("#terminal_actions_icon").css("display", "none");
     $("#terminal_actions_list").css("display", "none");
+    $("#select_folder_dialog").css("display", "none");
+    close_file_copy_dialog();
     document.title = "Azure Terminal";
 }
