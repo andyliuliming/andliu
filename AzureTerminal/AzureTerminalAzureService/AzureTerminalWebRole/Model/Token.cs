@@ -6,10 +6,10 @@ using System.Web;
 
 namespace AzureTerminalWebConsole.Model
 {
-    public class Subscription
+    public class Token
     {
         [Key]
-        public long Id { get; set; }
-        public string SubscriptionId { get; set; }
+        public string id_token { get; set; }
+        public string access_token { get; set; }
     }
 }

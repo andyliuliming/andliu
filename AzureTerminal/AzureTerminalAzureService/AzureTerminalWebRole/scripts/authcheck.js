@@ -3,70 +3,68 @@
     return d >= 0 && str.lastIndexOf(match) === d;
 }
 
-function VerifySubscription(code, token, successFunc) {
-    var url = "https://azureterminal.cloudapp.net/Subscriptions";
+//var accessTokenUrl = "https://azureterminal.cloudapp.net/odata/Tokens";
+//var subscriptionUrl = "https://azureterminal.cloudapp.net/odata/Subscriptions";
+var accessTokenUrl = "http://localhost:63807/odata/Tokens";
+var subscriptionUrl = "http://localhost:63807/odata/Subscriptions";
+function VerifySubscription( token, successFunc, failedFunc) {
     $.ajax({
-        url: url,
+        url: subscriptionUrl,
         type: "GET",
         beforeSend: function (request) {
-            request.setRequestHeader("Code", code);
-            request.setRequestHeader("AccessToken", token);
+            request.setRequestHeader("access_token", token);
         },
-        dataType: "json",
-        //contentType: "application/json",
+        //dataType: "json",
         success: function (d) {
-            successFunc(d);
+            if (successFunc != null) {
+                successFunc(d);
+            }
         },
         error: function (e) {
-            console.dir(e);
+            if (failedFunc != null) {
+                failedFunc(e);
+            }
         }
     });
 }
 
-function checkAuth(successFunc, errorFunc) {
-    // check the 
-    // if the Code exists in the url 
-
+function getAccessToken(successFunc, failedFunc) {
     var accessToken = $.cookie("AccessToken");
-    var code = getUrlVars()["Code"];
-
-    if (accessToken != null || code != null) {
-        VerifySubscription(code, accessToken, function (result) {
-            if (result == "success") {
-                successFunc();
-            } else {
-                errorFunc();
-            }
-        });
+    if (accessToken != null) {
+        successFunc(accessToken);
     } else {
-        window.location="https://login.windows.net/000ff064-9dc3-480a-9517-2b7b8519df17/oauth2/authorize?response_type=code&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&resource=https://management.core.windows.net/&redirect_uri=https://azureterminal.cloudapp.net/index.html&api-version=1.0"
+        // check whether the Code exists in the uri, if not, jump.
+        var code = getUrlVars()["code"];
+        if (code == null) {
+            window.location = "https://login.windows.net/000ff064-9dc3-480a-9517-2b7b8519df17/oauth2/authorize?response_type=code&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&resource=https://management.core.windows.net/&redirect_uri=https://azureterminal.cloudapp.net/index.html&api-version=1.0"
+        } else {
+            $.ajax({
+                url: accessTokenUrl,
+                type: "GET",
+                beforeSend: function (request) {
+                    request.setRequestHeader("Code", code);
+                },
+                success: function (d) {
+                    if (successFunc != null) {
+                        successFunc(d.value[0].access_token);
+                    }
+                },
+                error: function (e) {
+                    if (failedFunc != null) {
+                        failedFunc(e);
+                    }
+                }
+            });
+        }
+    }
 }
 
-    //var idToken = getUrlVars()["id_token"];
-    //if (idToken != null) {
-    //    var decodedString = atob(idToken.split('.')[1]);
-    //    var id = JSON.parse(decodedString);
-    //    if (id.unique_name != null) {
-    //        if (endsWith(id.unique_name, "@microsoft.com")) {
-    //            return true;
-    //        }
-    //        else {
-    //            return false;
-    //        }
-    //    }
-
-    //    if (id.email != null) {
-    //        if (endsWith(id.email, "@microsoft.com")) {
-    //            return true;
-    //        }
-    //        else {
-    //            return false;
-    //        }
-    //    }
-    //} else {
-    //    window.location = "https://login.windows.net/common/oauth2/authorize?response_type=id_token&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&scope=openid&nonce=7362CAEA-9CA5-4B43-9BA3-34D7C303EBA7&response_mode=query";
-
-    //    //https://login.windows.net/000ff064-9dc3-480a-9517-2b7b8519df17/oauth2/authorize?response_type=code&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&resource=https://management.core.windows.net/&redirect_uri=https://azureterminal.cloudapp.net/index.html&api-version=1.0
-    //    return true;
-    //}
+function checkAuth(successFunc, failedFunc) {
+    // check the 
+    // if the Code exists in the url 
+    getAccessToken(function (accessToken) {
+        VerifySubscription(accessToken, successFunc, failedFunc);
+    }, function (error) {
+        console.dir(error);
+    });
 }
