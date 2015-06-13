@@ -5,8 +5,6 @@
 
 var accessTokenUrl = "https://azureterminal.cloudapp.net/odata/Tokens";
 var subscriptionUrl = "https://azureterminal.cloudapp.net/odata/Subscriptions";
-//var accessTokenUrl = "http://localhost:63807/odata/Tokens";
-//var subscriptionUrl = "http://localhost:63807/odata/Subscriptions";
 function VerifySubscription(token, successFunc, failedFunc) {
     $.ajax({
         url: subscriptionUrl,
@@ -64,7 +62,8 @@ function checkAuth(successFunc, failedFunc) {
     // check the 
     // if the Code exists in the url 
     getAccessToken(function (accessToken) {
-        VerifySubscription(accessToken, successFunc, failedFunc);
+        successFunc();
+        //VerifySubscription(accessToken, successFunc, failedFunc);
     }, function (error) {
         console.dir(error);
     });
