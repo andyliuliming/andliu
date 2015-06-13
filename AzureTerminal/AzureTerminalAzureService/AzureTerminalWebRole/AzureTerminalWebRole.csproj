@@ -74,6 +74,9 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.WebSockets">
+      <HintPath>..\packages\Microsoft.WebSockets.0.2.3\lib\net45\Microsoft.WebSockets.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.WindowsAzure.Configuration">
       <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.3.1.0\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
     </Reference>
@@ -184,6 +187,7 @@
     <Compile Include="Controllers\LinuxVMsController.cs" />
     <Compile Include="Controllers\TerminalActionsController.cs" />
     <Compile Include="Controllers\SubscriptionsController.cs" />
+    <Compile Include="Controllers\TerminalSessionController.cs" />
     <Compile Include="Controllers\TokensController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -196,10 +200,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="WebRole.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Views\Home\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="css\copyfile.css" />
     <Content Include="css\global.css" />
@@ -250,7 +251,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
+    <ProjectReference Include="..\..\AzureManagementLib\AzureManagementLib.csproj">
+      <Project>{dc167386-5217-4c69-b25c-539d25d6c6db}</Project>
+      <Name>AzureManagementLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Renci.SshNet\Renci.SshNet.csproj">
+      <Project>{2f5f8c90-0bd1-424f-997c-7bc6280919d1}</Project>
+      <Name>Renci.SshNet</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
