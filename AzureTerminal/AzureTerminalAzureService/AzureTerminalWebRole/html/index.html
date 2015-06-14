@@ -116,7 +116,7 @@
                 var password = $("#password");
 
                 ws = new WebSocket("ws://" + productServiceBaseUri + "/api/TerminalSession?hostName=" + hostname.val().trim() + "&userName=" + username.val().trim() + "&passWord=" + password.val()
-     + "&port=" + port.val().trim());
+     + "&port=" + port.val().trim() + "&columns=" + termWidth + "&rows=" + termHeight);
 
                 ws.onmessage = function (result) {
                     //alert(result.data);
@@ -124,6 +124,8 @@
                 };
                 ws.onopen = function () {
                     //alert("Connected!");
+                    $("#login_blade").css("display", "none");
+                    $("#terminal_main_panel").css("display", "block");
                 };
                 ws.onerror = function (error) {
                     alert(error.data);

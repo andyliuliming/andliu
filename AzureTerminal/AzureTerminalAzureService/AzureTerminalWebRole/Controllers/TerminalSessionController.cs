@@ -14,11 +14,11 @@ namespace AzureTerminalWebConsole.Controllers
 {
     public class TerminalSessionController : ApiController
     {
-        public HttpResponseMessage Get(String hostName, String userName, String passWord, String port)
+        public HttpResponseMessage Get(String hostName, String userName, String passWord, String port, String columns, String rows)
         {
             if (HttpContext.Current.IsWebSocketRequest)
             {
-                HttpContext.Current.AcceptWebSocketRequest(new SSHSocketHandler(hostName, userName, passWord, port));
+                HttpContext.Current.AcceptWebSocketRequest(new SSHSocketHandler(hostName, userName, passWord, port, columns, rows));
             }
             return new HttpResponseMessage(HttpStatusCode.SwitchingProtocols);
         }
@@ -27,11 +27,12 @@ namespace AzureTerminalWebConsole.Controllers
         {
             ShellStream stream;
             bool firstTime = true;
-            public SSHSocketHandler(String hostName, String userName, String passWord, String port)
+            public SSHSocketHandler(String hostName, String userName, String passWord, String port,String columns,String rows)
             {
                 var client = new SshClient(hostName, int.Parse(port), userName, passWord);
                 client.Connect();
-                stream = client.CreateShellStream("bash", 80, 24, 800, 600, 1024);
+
+                stream = client.CreateShellStream("bash", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);
                 stream.DataReceived += ChatSocketHandler_DataReceived;
             }
             private object sendLock = new object();
