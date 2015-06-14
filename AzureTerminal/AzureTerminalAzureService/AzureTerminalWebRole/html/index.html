@@ -1,20 +1,73 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Azure Terminal</title>
-    <script src="./scripts/jquery-1.11.1.js"></script>
-    <script src="./scripts/jquery.cookie.js"></script>
-    <script src="./scripts/term_downloaded.js"></script>
+    <script src="./js/jquery-1.11.1.js"></script>
+    <script src="./js/jquery.cookie.js"></script>
+    <script src="./js/term_downloaded.js"></script>
+    <script src="./js/virtualmachines.js"></script>
+    <script src="./js/authcheck.js"></script>
+    <script src="./js/util.js"></script>
+    <link rel="stylesheet" href="./metroStyle/metroStyle.css" type="text/css">
+    <script type="text/javascript" src="./js/jquery.ztree.core-3.5.js"></script>
+    <script type="text/javascript" src="./js/jquery.ztree.excheck-3.5.js"></script>
+    <script type="text/javascript" src="./js/jquery.ztree.exedit-3.5.js"></script>
 </head>
 <body>
     <script>
         $(document).ready(function () {
 
+            var setting = {
+                view: {
+                    selectedMulti: false
+                },
+                check: {
+                    enable: true
+                },
+                data: {
+                    simpleData: {
+                        enable: true
+                    }
+                },
+                edit: {
+                    enable: true
+                }
+            };
+
+            var zNodes = [
+                { id: 1, pId: 0, name: "Windows", open: true },
+                { id: 2, pId: 0, name: "Linux", open: true }
+            ];
+
+            $(document).ready(function () {
+                $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+            });
+
+            getAccessToken(function (token) {
+
+                getAzureVirtualMachines(token, function (virtualMachines) {
+                    console.dir(virtualMachines);
+                });
+            })
         });
     </script>
 
-    <div>
-
+    <div id="virtual_machines_tree">
+        <ul id="treeDemo" class="ztree"></ul>
     </div>
+
+
+    <div id="TestFontSize">@</div>
+    <div id="terminal_main_panel">
+    </div>
+    <div id="terminal_actions_icon">
+    </div>
+
+    <div id="terminal_actions_list">
+        <div id="terminal_action_file" class="terminal_actions_item">Copy Files</div>
+        <div id="terminal_action_generate_key" class="terminal_actions_item">Generate Key Pair</div>
+        <div id="terminal_action_signout" class="terminal_actions_item">Signout</div>
+    </div>
+
 </body>
 </html>

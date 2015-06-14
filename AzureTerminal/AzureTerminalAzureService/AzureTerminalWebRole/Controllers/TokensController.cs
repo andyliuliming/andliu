@@ -71,7 +71,7 @@ namespace AzureTerminalWebConsole.Controllers
                             new KeyValuePair<string,string>("resource","https://management.core.windows.net/"),
                              new KeyValuePair<string,string>("client_secret","NJDdG7kH0jLM9gNup4B/m3E4MaQhzks8ItrakWFL7s0="),
                         });
-                        Task<HttpResponseMessage> response = client.PostAsync("/000ff064-9dc3-480a-9517-2b7b8519df17/oauth2/token", content);
+                        Task<HttpResponseMessage> response = client.PostAsync("/common/oauth2/token", content);
 
                         if (response.Result.IsSuccessStatusCode)
                         {

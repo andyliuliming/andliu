@@ -60,7 +60,6 @@ namespace AzureTerminalWebConsole.Controllers
                     List<AzureVirtualMachine> azureVirtualMachinesTmp = vmUtil.FindAllMachines(sub.SubscriptionId,accessToken);
                     azureVirtualMachines.AddRange(azureVirtualMachinesTmp);
                 }
-                
                 return Ok<IEnumerable<AzureVirtualMachine>>(azureVirtualMachines);
             }
             else
