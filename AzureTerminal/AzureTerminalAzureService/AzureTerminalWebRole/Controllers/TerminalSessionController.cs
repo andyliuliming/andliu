@@ -32,7 +32,7 @@ namespace AzureTerminalWebConsole.Controllers
                 var client = new SshClient(hostName, int.Parse(port), userName, passWord);
                 client.Connect();
 
-                stream = client.CreateShellStream("bash", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);
+                stream = client.CreateShellStream("xterm", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);
                 stream.DataReceived += ChatSocketHandler_DataReceived;
             }
             private object sendLock = new object();
