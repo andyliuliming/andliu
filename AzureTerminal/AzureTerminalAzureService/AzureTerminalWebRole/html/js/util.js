@@ -2,10 +2,10 @@
 var isMSIE = false;
 var isChrome = false;
 
-var productServiceBaseUri = "http://localhost:63807";
+var productServiceBaseUri = "localhost:63807";
 //https://azureterminal.cloudapp.net
-var accessTokenUrl = productServiceBaseUri+"/odata/Tokens";
-var subscriptionUrl = productServiceBaseUri+"/odata/Subscriptions";
+var accessTokenUrl = "http://"+productServiceBaseUri+"/odata/Tokens";
+var subscriptionUrl = "http://" + productServiceBaseUri + "/odata/Subscriptions";
 
 function endsWith(str, match) {
     var d = str.length - match.length;

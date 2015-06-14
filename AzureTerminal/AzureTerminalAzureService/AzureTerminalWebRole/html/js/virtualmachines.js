@@ -1,6 +1,6 @@
 ﻿
 function getAzureVirtualMachines(token, successFunc, errorFunc) {
-    var url = productServiceBaseUri + "/odata/AzureVirtualMachines";
+    var url = "http://"+productServiceBaseUri + "/odata/AzureVirtualMachines";
     $.ajax({
         url: url,
         type: "GET",

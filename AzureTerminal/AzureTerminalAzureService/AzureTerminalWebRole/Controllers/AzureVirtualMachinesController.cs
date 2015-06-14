@@ -57,8 +57,12 @@ namespace AzureTerminalWebConsole.Controllers
                 List<AzureVirtualMachine> azureVirtualMachines = new List<AzureVirtualMachine>();
                 foreach (Subscription sub in subs)
                 {
-                    List<AzureVirtualMachine> azureVirtualMachinesTmp = vmUtil.FindAllMachines(sub.SubscriptionId,accessToken);
+                    List<AzureVirtualMachine> azureVirtualMachinesTmp = vmUtil.FindAllMachines(sub.SubscriptionId, accessToken);
                     azureVirtualMachines.AddRange(azureVirtualMachinesTmp);
+                }
+                for (int i = 0; i < azureVirtualMachines.Count; i++)
+                {
+                    azureVirtualMachines[i].Id = i + 3;
                 }
                 return Ok<IEnumerable<AzureVirtualMachine>>(azureVirtualMachines);
             }
@@ -68,6 +72,6 @@ namespace AzureTerminalWebConsole.Controllers
             }
         }
 
-       
+
     }
 }

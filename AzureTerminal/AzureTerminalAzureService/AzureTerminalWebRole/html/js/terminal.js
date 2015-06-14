@@ -43,25 +43,26 @@ function renderTerminal() {
 
     term.open($("#terminal_main_panel")[0]);
     term.on('data', function (data) {
-        otermApplet.SetAction("Input", [data]);
+        ws.send(data);
+        //otermApplet.SetAction("Input", [data]);
     });
 
-    // bind the actions
-    $("#terminal_action_file").unbind("click");
-    $("#terminal_action_file").bind("click", function (e) {
-        open_copy_file_dialog();
-        //otermApplet.SetAction("CopyFile", [""]);
-    });
+    //// bind the actions
+    //$("#terminal_action_file").unbind("click");
+    //$("#terminal_action_file").bind("click", function (e) {
+    //    open_copy_file_dialog();
+    //    //otermApplet.SetAction("CopyFile", [""]);
+    //});
 
-    $("#terminal_action_generate_key").unbind("click");
-    $("#terminal_action_generate_key").bind("click", function (e) {
-        open_gen_privatekey_dialog();
-        //otermApplet.SetAction("CertPair", [""]);
-    });
-    $("#terminal_action_signout").unbind("click");
-    $("#terminal_action_signout").bind("click", function (e) {
-        otermApplet.SetAction(SignOut, [""]);
-    });
+    //$("#terminal_action_generate_key").unbind("click");
+    //$("#terminal_action_generate_key").bind("click", function (e) {
+    //    open_gen_privatekey_dialog();
+    //    //otermApplet.SetAction("CertPair", [""]);
+    //});
+    //$("#terminal_action_signout").unbind("click");
+    //$("#terminal_action_signout").bind("click", function (e) {
+    //    otermApplet.SetAction(SignOut, [""]);
+    //});
 }
 
 function terminalResize() {
@@ -73,7 +74,5 @@ function terminalResize() {
     var charWidth = (test.clientWidth);
     termWidth = Math.floor(width / charWidth) - 1;
     termHeight = Math.floor(height / charHeight) - 1;
-    if (otermApplet != null) {
-        otermApplet.SetAction(SetSize, [termWidth + ":" + termHeight]);
-    }
+    
 }

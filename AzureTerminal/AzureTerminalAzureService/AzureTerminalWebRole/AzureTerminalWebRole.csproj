@@ -265,6 +265,16 @@
     <Content Include="html\css\terminal.css" />
     <Content Include="html\css\terminal_actions.css" />
     <Content Include="html\css\TestFontSize.css" />
+    <Content Include="html\images\Action.png" />
+    <Content Include="html\images\Arrow_left.png" />
+    <Content Include="html\images\Arrow_right.png" />
+    <Content Include="html\images\copybuttons.png" />
+    <Content Include="html\images\copyfile.png" />
+    <Content Include="html\images\File.png" />
+    <Content Include="html\images\heroillustration.png" />
+    <Content Include="html\images\keypair.png" />
+    <Content Include="html\images\settings.png" />
+    <Content Include="html\images\warning.png" />
     <Content Include="html\index.html" />
     <Content Include="html\js\actions.js" />
     <Content Include="html\js\authcheck.js" />
