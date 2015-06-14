@@ -23,6 +23,7 @@ namespace AzureManagementLib
                     var operatingSystemType = virtualMachineDisk.OperatingSystemType;
                     var logicalSizeInGB = virtualMachineDisk.LogicalSizeInGB;
                 }
+
                 //var hostServicesOperation = client.HostedServices.List();
                 //var hostServcies = hostServicesOperation.HostedServices;
                 //foreach(var hostService in hostServcies ){
