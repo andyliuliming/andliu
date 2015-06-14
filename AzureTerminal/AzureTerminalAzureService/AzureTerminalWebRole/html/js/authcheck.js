@@ -1,7 +1,4 @@
-﻿
-
-
-function VerifySubscription(token, successFunc, failedFunc) {
+﻿function VerifySubscription(token, successFunc, failedFunc) {
     $.ajax({
         url: subscriptionUrl,
         type: "GET",

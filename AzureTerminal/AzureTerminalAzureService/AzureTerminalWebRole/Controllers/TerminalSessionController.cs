@@ -43,7 +43,7 @@ namespace AzureTerminalWebConsole.Controllers
                     if (firstTime)
                     {
                         firstTime = false;
-                        //Thread.Sleep(5000);
+                        Thread.Sleep(5000);
                     }
                     string msgToSend = Encoding.UTF8.GetString(e.Data);
                     Send(msgToSend);

@@ -51,17 +51,9 @@ namespace AzureTerminalWebConsole.Controllers
                     // get the access token.
                     using (var client = new HttpClient())
                     {
-                        //https://login.microsoftonline.com/000ff064-9dc3-480a-9517-2b7b8519df17/oauth2/authorize?resource=https%3A%2F%2Fmanagement.core.windows.net%2F&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&response_type=code&redirect_uri=https%3A%2F%2Fazureterminal.cloudapp.net%2Findex.html
-
-                        //https://login.windows.net/000ff064-9dc3-480a-9517-2b7b8519df17/oauth2/token
-                        //https://login.microsoftonline.com/000ff064-9dc3-480a-9517-2b7b8519df17/oauth2/authorize
-                        //https://login.microsoftonline.com/000ff064-9dc3-480a-9517-2b7b8519df17/oauth2/token?api-version=1.0
                         client.BaseAddress = new Uri("https://login.microsoftonline.com");
                         client.DefaultRequestHeaders.Accept.Clear();
                         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                        //string clientSecret = AppSettingsProvider.GetSetting("ClientSecret");
-                        //StringContent sc = new StringContent(string.Format(RequestFormat, code, clientSecret));
-
                         var content = new FormUrlEncodedContent(new[] 
                         {
                             new KeyValuePair<string, string>("grant_type", "authorization_code"),
