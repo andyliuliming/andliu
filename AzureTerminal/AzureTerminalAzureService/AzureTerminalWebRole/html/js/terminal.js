@@ -9,24 +9,15 @@ function toggleSettings(forceStatus) {
         showSettings = forceStatus;
     }
     if (showSettings) {
-        $("#terminal_actions_list").css("display", "block");
+        $("#virtual_machines_tree").css("display", "block");
     } else {
-        $("#terminal_actions_list").css("display", "none");
+        $("#virtual_machines_tree").css("display", "none");
     }
 }
-
+var term = null;
 function renderTerminal() {
     //console.dir("renderTerminal");
-    $("#terminal_actions_icon").unbind("mouseup");
-    $("#terminal_actions_icon").bind("mouseup", function (ev) {
-        toggleSettings();
-        ev.stopPropagation();
-    });
-
-    $(document).unbind("mouseup");
-    $(document).bind("mouseup", function (ev) {
-        toggleSettings(false);
-    });
+  
 
     $("#terminal_main_panel").html("");
     if (term != null) {

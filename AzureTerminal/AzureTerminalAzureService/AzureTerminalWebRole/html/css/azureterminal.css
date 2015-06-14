@@ -1,5 +1,6 @@
 ﻿#virtual_machines_tree {
-    width:200px;
-    height:100%;
-    background-color:red;
+    display: none;
+    width: 200px;
+    height: 100%;
+    background-color: red;
 }

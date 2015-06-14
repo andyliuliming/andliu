@@ -8,6 +8,7 @@
     <script src="./js/virtualmachines.js"></script>
     <script src="./js/authcheck.js"></script>
     <script src="./js/util.js"></script>
+    <script src="./js/terminal.js"></script>
     <link rel="stylesheet" href="./metroStyle/metroStyle.css" type="text/css">
     <link href="./css/login.css" rel="stylesheet" type="text/css" />
     <link href="./css/terminal.css" rel="stylesheet" type="text/css" />
@@ -95,14 +96,27 @@
                     $.fn.zTree.init($("#treeDemo"), setting, zNodes);
                 });
             })
+            $("#terminal_actions_icon").unbind("mouseup");
+            $("#terminal_actions_icon").bind("mouseup", function (ev) {
+                toggleSettings();
+                ev.stopPropagation();
+            });
 
+            $(document).unbind("mouseup");
+            $(document).bind("mouseup", function (ev) {
+                toggleSettings(false);
+            });
             $("#loginbutton").unbind("click");
             $("#loginbutton").bind("click", function (ev) {
                 terminalResize();
                 renderTerminal();
+                var hostname = $("#hostname_input");
+                var username = $("#username_input");
+                var port = $("#port");
+                var password = $("#password");
 
-                ws = new WebSocket("ws://"+productServiceBaseUri+"/api/TerminalSession?hostName=" + hostName + "&userName=" + userName + "&passWord=" + passWord
-     + "&port=" + port);
+                ws = new WebSocket("ws://" + productServiceBaseUri + "/api/TerminalSession?hostName=" + hostname.val().trim() + "&userName=" + username.val().trim() + "&passWord=" + password.val()
+     + "&port=" + port.val().trim());
 
                 ws.onmessage = function (result) {
                     //alert(result.data);
@@ -169,11 +183,11 @@
     <div id="terminal_actions_icon">
     </div>
 
-    <div id="terminal_actions_list">
+    <!--<div id="terminal_actions_list">
         <div id="terminal_action_file" class="terminal_actions_item">Copy Files</div>
         <div id="terminal_action_generate_key" class="terminal_actions_item">Generate Key Pair</div>
         <div id="terminal_action_signout" class="terminal_actions_item">Signout</div>
-    </div>
+    </div>-->
 
 </body>
 </html>

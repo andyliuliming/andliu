@@ -1,5 +1,4 @@
 ﻿#terminal_actions_icon {
-    display: none;
     position: absolute;
     /* display: none; */
     /*background-color: red;*/
@@ -8,7 +7,8 @@
     /* height: auto; */
     width: 20px;
     top: 3px;
-    right: 20px;
+    left: 0px;
+    /*right: 20px;*/
     cursor: pointer;
     background: url(../images/Action.png);
     background-repeat: no-repeat;
