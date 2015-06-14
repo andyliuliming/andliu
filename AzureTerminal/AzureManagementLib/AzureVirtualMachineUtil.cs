@@ -1,5 +1,6 @@
 ﻿using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Management.Compute;
+using Microsoft.WindowsAzure.Management.Compute.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +9,22 @@ using System.Threading.Tasks;
 
 namespace AzureManagementLib
 {
-    public class VMUtil
+    public class AzureVirtualMachineUtil
     {
-        public List<AzureVirtualMachine> FindAllMachines(string accessToken)
+        public List<AzureVirtualMachine> FindAllMachines(string subscriptionId, string accessToken)
         {
             List<AzureVirtualMachine> azureVirtualMachines = new List<AzureVirtualMachine>();
-            using (var client = new ComputeManagementClient(new TokenCloudCredentials(accessToken)))
+            TokenCloudCredentials credential = new TokenCloudCredentials(subscriptionId, accessToken);
+            using (var client = new ComputeManagementClient(credential))
             {
+                HostedServiceListResponse response = client.HostedServices.List();
+
+                foreach(var hostService in response.HostedServices)
+                {
+
+                }
+                //client.Deployments.GetBySlot()
+               // client.Deployments.get
                 //client.VirtualMachines.list
                 var virtualMachineDisks = client.VirtualMachineDisks.ListDisks();
 
@@ -29,23 +39,8 @@ namespace AzureManagementLib
                     machine.HostServiceName = hostedServiceName;
                     azureVirtualMachines.Add(machine);
                 }
-
-                //var hostServicesOperation = client.HostedServices.List();
-                //var hostServcies = hostServicesOperation.HostedServices;
-                //foreach(var hostService in hostServcies ){
-
-                //    client.Deployments.GetByName(hostService.)
-                //    //hostService.
-                //}
-                ////var xx = client.HostedServices.ListAsync();
-                //xx.Result.
             }
             return azureVirtualMachines;
-            //using (var azure = new SubscriptionClient(new TokenCloudCredentials(accessToken)))
-            //{
-            //    var subResponse = azure.Subscriptions.List();
-            //    var subscriptions = subResponse.Subscriptions;
-            //}
         }
     }
 }

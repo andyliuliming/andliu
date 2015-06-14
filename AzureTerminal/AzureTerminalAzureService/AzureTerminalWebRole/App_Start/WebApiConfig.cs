@@ -7,6 +7,7 @@ using Newtonsoft.Json.Serialization;
 using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
 using AzureTerminalWebConsole.Model;
+using AzureManagementLib;
 namespace AzureTerminalWebConsole
 {
     public static class WebApiConfig
@@ -40,7 +41,8 @@ namespace AzureTerminalWebConsole
             //builder.EntitySet<ProductSaleRegion>("ProductSaleRegions");
             //builder.EntitySet<VendorBankInfo>("VendorBankInfoes");
             builder.EntitySet<Token>("Tokens");
-            builder.EntitySet<Subscription>("Subscriptions");
+            builder.EntitySet<AzureTerminalWebConsole.Model.Subscription>("Subscriptions");
+            builder.EntitySet<AzureVirtualMachine>("AzureVirtualMachines");
             //builder.EntitySet<LinuxVM>("LinuxVMs");
             //builder.EntitySet<TerminalAction>("TerminalActions");
             //// Wrap Ups

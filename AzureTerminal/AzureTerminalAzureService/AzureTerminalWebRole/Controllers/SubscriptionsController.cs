@@ -1,4 +1,5 @@
-﻿using AzureTerminalWebConsole.Model;
+﻿using AzureManagementLib;
+using AzureTerminalWebConsole.Model;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens;
@@ -43,42 +44,18 @@ namespace AzureTerminalWebConsole.Controllers
         };
 
 
-        public IHttpActionResult GetSubscriptions(ODataQueryOptions<Subscription> queryOptions)
+        public IHttpActionResult GetSubscriptions(ODataQueryOptions<AzureTerminalWebConsole.Model.Subscription> queryOptions)
         {
-            // first check the id_token
-            if (this.ActionContext.Request.Headers.Contains("id_token"))
+            IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("access_token");
+            string accessToken = accessTokens.FirstOrDefault();
+            // get the subscriptions from the access token.
+            if (accessToken != null)
             {
-                IEnumerable<string> idTokens = this.ActionContext.Request.Headers.GetValues("id_token");
-                string idToken = idTokens.FirstOrDefault();
-                if (idTokens != null)
-                {
-                    JwtSecurityToken token = new JwtSecurityToken(idToken);
-                    foreach (var claim in token.Claims)
-                    {
-                        if (claim.Type == "unique_name")
-                        {
-                            if (claim.Value.EndsWith("@microsoft.com"))
-                            {
-                                return Content<string>(HttpStatusCode.OK, "");
-                            }
-                        }
-                    }
-
-                }
+                SubscriptionUtil util = new SubscriptionUtil();
+                var azureVirtualMachines = util.GetSubscriptions(accessToken);
+                return Ok<IEnumerable<AzureTerminalWebConsole.Model.Subscription>>(azureVirtualMachines.ToArray());
             }
-            List<Subscription> subscriptions = this.GetSubscriptions();
-
-            if (subscriptions != null)
-            {
-                foreach (var sub in subscriptions)
-                {
-                    if (subscriptionsInWhiteList.Contains(sub.SubscriptionId))
-                    {
-                        return Content<string>(HttpStatusCode.OK, "");
-                    }
-                }
-            }
-            return Unauthorized();
+            return NotFound();
         }
 
         // GET: odata/Subscriptions
