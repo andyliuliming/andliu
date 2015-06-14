@@ -14,7 +14,6 @@ function toggleSettings(forceStatus) {
         $("#virtual_machines_tree").css("display", "none");
     }
 }
-var term = null;
 function renderTerminal() {
     //console.dir("renderTerminal");
   
