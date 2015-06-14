@@ -10,10 +10,12 @@ namespace AzureManagementLib
 {
     public class VMUtil
     {
-        public void FindAllMachines(string accessToken)
+        public List<AzureVirtualMachine> FindAllMachines(string accessToken)
         {
+            List<AzureVirtualMachine> azureVirtualMachines = new List<AzureVirtualMachine>();
             using (var client = new ComputeManagementClient(new TokenCloudCredentials(accessToken)))
             {
+                //client.VirtualMachines.list
                 var virtualMachineDisks = client.VirtualMachineDisks.ListDisks();
 
                 foreach (var virtualMachineDisk in virtualMachineDisks)
@@ -22,6 +24,10 @@ namespace AzureManagementLib
                     var deploymentName = virtualMachineDisk.UsageDetails.DeploymentName;
                     var operatingSystemType = virtualMachineDisk.OperatingSystemType;
                     var logicalSizeInGB = virtualMachineDisk.LogicalSizeInGB;
+
+                    AzureVirtualMachine machine = new AzureVirtualMachine();
+                    machine.HostServiceName = hostedServiceName;
+                    azureVirtualMachines.Add(machine);
                 }
 
                 //var hostServicesOperation = client.HostedServices.List();
@@ -34,6 +40,7 @@ namespace AzureManagementLib
                 ////var xx = client.HostedServices.ListAsync();
                 //xx.Result.
             }
+            return azureVirtualMachines;
             //using (var azure = new SubscriptionClient(new TokenCloudCredentials(accessToken)))
             //{
             //    var subResponse = azure.Subscriptions.List();
