@@ -17,6 +17,7 @@ namespace AzureManagementLib
             TokenCloudCredentials credential = new TokenCloudCredentials(subscriptionId, accessToken);
             using (var client = new ComputeManagementClient(credential))
             {
+                
                 HostedServiceListResponse response = client.HostedServices.List();
 
                 foreach(var hostService in response.HostedServices)
@@ -26,16 +27,29 @@ namespace AzureManagementLib
                         break;
                     }
                     try {
-                        DeploymentGetResponse deploymentGetResponse = client.Deployments.GetBySlot(hostService.ServiceName, DeploymentSlot.Production);//https://management.core.windows.net/<subscription-id>/services/hostedservices/<cloudservice-name>/deployments/<deployment-name>/roleinstances/<roleinstance-name>/ModelFile?FileType=RDP
+                        DeploymentGetResponse deploymentGetResponse = client.Deployments.GetBySlot(hostService.ServiceName, DeploymentSlot.Production);
+                        //https://management.core.windows.net/<subscription-id>/services/hostedservices/<cloudservice-name>/deployments/<deployment-name>/roleinstances/<roleinstance-name>/ModelFile?FileType=RDP
                         var roles = deploymentGetResponse.Roles;
+                        var roleInstances = deploymentGetResponse.RoleInstances;
                         foreach (var role in roles)
                         {
                             if (role.RoleType == "PersistentVMRole")
                             {
+                                // find the role instance related to this role
+                                RoleInstance roleInstanceFound = null;
+                                foreach (var roleInstance in roleInstances)
+                                {
+                                    if (roleInstance.RoleName == role.RoleName)
+                                    {
+                                        roleInstanceFound = roleInstance;
+                                    }
+                                }
                                 AzureVirtualMachine azureVirtualMachine = new AzureVirtualMachine();
                                 azureVirtualMachine.HostServiceName = hostService.ServiceName;
                                 azureVirtualMachine.Url = hostService.Uri.ToString();
-
+                                azureVirtualMachine.DeploymentName = deploymentGetResponse.Name;
+                                azureVirtualMachine.RoleInstanceName = roleInstanceFound == null ? string.Empty : roleInstanceFound.InstanceName;
+                                azureVirtualMachine.SubscriptionId = subscriptionId;
                                 foreach (var configurationSet in role.ConfigurationSets)
                                 {
                                     if (configurationSet.ConfigurationSetType == "NetworkConfiguration")

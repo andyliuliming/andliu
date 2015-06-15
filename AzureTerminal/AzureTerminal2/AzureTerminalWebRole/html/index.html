@@ -44,11 +44,18 @@
                     break;
                 }
             }
+            if(machine.OS=="Linux"){
             // show the login dialog
-            $("#hostname_input").val(machine.HostServiceName + ".cloudapp.net");
-            $("#username_input").val("azureuser");
-            $("#port").val(machine.Port);
-            $("#login_blade").css("display", "block");
+                $("#hostname_input").val(machine.HostServiceName + ".cloudapp.net");
+                $("#username_input").val("azureuser");
+                $("#port").val(machine.Port);
+                $("#login_blade").css("display", "block");
+            }
+            if (machine.OS == "Windows") {
+                //([FromUri]string subscriptionId,[FromUri] string cloudServiceName,[FromUri] string deploymentName,[FromUri]string roleInstanceName)
+                window.open("/api/WindowsRDP?subscriptionId=" + machine.SubscriptionId + "&cloudServiceName=" + machine.HostServiceName + "&deploymentName=" + machine.DeploymentName +
+        "&roleInstanceName=" + machine.RoleInstanceName+"&accessToken="+$.cookie("AccessToken"));
+            }
             //showLog("[ " + getTime() + " onClick ]&nbsp;&nbsp;clickFlag = " + clickFlag + " (" + (clickFlag === 1 ? "single selected" : (clickFlag === 0 ? "<b>cancel selected</b>" : "<b>multi selected</b>")) + ")");
         }
 
@@ -95,6 +102,9 @@
                         }
                     }
                     $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+                }, function (error) {
+                    $.removeCookie("AccessToken");
+                    window.location = "https://login.windows.net/common/oauth2/authorize?response_type=code&client_id=2d0642ea-80ea-4713-9910-5b7eee904dc1&resource=https://management.core.windows.net/&redirect_uri=https://azureterminal.cloudapp.net/html/index.html&api-version=1.0";
                 });
             })
             $("#terminal_actions_icon").unbind("mouseup");

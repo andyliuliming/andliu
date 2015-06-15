@@ -237,6 +237,7 @@
     <Compile Include="Controllers\TerminalSessionController.cs" />
     <Compile Include="Controllers\Token2sController.cs" />
     <Compile Include="Controllers\TokensController.cs" />
+    <Compile Include="Controllers\WindowsRDPController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
