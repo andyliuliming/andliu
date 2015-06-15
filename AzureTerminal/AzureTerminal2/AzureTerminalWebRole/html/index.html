@@ -82,8 +82,8 @@
             };
 
             var zNodes = [
-                { id: 1, pId: 0, name: "Windows", open: true },
-                { id: 2, pId: 0, name: "Linux", open: true }
+                { id: 1, pId: 0, name: "Windows Loading...", open: true },
+                { id: 2, pId: 0, name: "Linux Loading...", open: true }
             ];
 
             var nodeId = 3;
@@ -92,6 +92,8 @@
             getAccessToken(function (token) {
                 getAzureVirtualMachines(token, function (virtualMachines) {
                     virtualMachineFound = virtualMachines.value;
+                    zNodes[0].name = "Windows";
+                    zNodes[1].name = "Linux";
                     for (var i = 0; i < virtualMachines.value.length; i++) {
                         var vm = virtualMachines.value[i];
                         if (vm.OS == "Linux") {
