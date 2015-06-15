@@ -11,7 +11,7 @@ namespace AzureManagementLib
     public class KeyUtil
     {
 
-        public void SetPublicKey(Stream privateKeyFile, Stream publicKeyFile, byte[] passphrase)
+        public void GeneratePublicKey(Stream privateKeyFile, Stream publicKeyFile, byte[] passphrase)
         {
             JSch jsch = new JSch();
             KeyPair kpair = KeyPair.genKeyPair(jsch, KeyPair.RSA);

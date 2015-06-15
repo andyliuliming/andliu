@@ -1,8 +1,10 @@
 ﻿using AzureManagementLib;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Renci.SshNet;
 using Renci.SshNet.Security;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -16,7 +18,22 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            
+            //String stream = null;
+            MemoryStream privateKey = new MemoryStream();
+            MemoryStream publicKey = new MemoryStream();
+            KeyUtil keyUtil = new KeyUtil();
+            keyUtil.GeneratePublicKey(privateKey, publicKey, null);
+            privateKey.Position = 0;
+            PrivateKeyFile pkf = new PrivateKeyFile(privateKey);
+
+            AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();
+            //vmUtil.SetPublicKey(string serviceName,string deploymentName,string virtualMachineName,string subscriptionId,string accessToken)
+            vmUtil.SetPublicKey(publicKey, null,null,null,null,null,null);
+             publicKey.Position = 0;
+    using (StreamReader reader = new StreamReader(publicKey, Encoding.UTF8))
+    {
+        string xx= reader.ReadToEnd();
+    }
 
             string code = "AAABAAAAiL9Kn2Z27UubvWFPbm0gLdIkaK0GTvWEF-13ihPh8ApSZYKShDu3yf4hlIv0tbUprvj3mGcgw40sH2oU_goSQp9s8XIEOQP9kMb7Tu4doaM4uJuiRoKaucHHsv_rgkGI6WbaYtysAIZ4TLvpHCEcCI-MN92cDLjSLg4HqB4phZF0BGEEo7YhpaCAGCq0fVwFoMvthjVSNKxTAB-F0hiGJeI6TWDllQpIAugyD8XI_8m_543K-NFDlf8do6AjaIr6m_Tfo_DJD82xb7kBy9mhAgGrBCLN58FDOi4LRcJAfyLrgueaEXid9AcgotQHDFHfhaQkPsmhBRqv92BhaRYlARztUbuC5Szuk4EIrC4LIOf16u1QZWPHQxpOYcNLosvzYP7Ww5ChL7qA2xkBBg8DzarlgTNnOcvRrk5J3XXaE8BI7WibGN78rzBUfUaAt7FcTf1RqTLQjoKTAJ1mZ9ZFu79WwI_VMgsdurnD-kWLw4iMF01OLD34HoDsK2Q3fC_aS0dEy3aKC7V-iJ0Wl6vJYQDzFDqq8dkvCfbkg3XMSwLP68WjfysgUWRGrDIgaEtLHwiV2zMV_-Gcot4l2L8oIeTzzbn9TJxJuFzjYilBjMop9ipAdljq8yNw8PbnwUT-IAA";
             using (var client = new HttpClient())

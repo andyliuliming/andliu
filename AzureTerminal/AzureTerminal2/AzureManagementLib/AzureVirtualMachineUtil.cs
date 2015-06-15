@@ -84,7 +84,7 @@ namespace AzureManagementLib
         }
 
 
-        public void SetPublicKey(string serviceName,string deploymentName,string virtualMachineName,string subscriptionId,string accessToken)
+        public void SetPublicKey(Stream publicKey, string serviceName, string userName, string deploymentName, string virtualMachineName, string subscriptionId, string accessToken)
         {
             List<AzureVirtualMachine> azureVirtualMachines = new List<AzureVirtualMachine>();
             TokenCloudCredentials credential = new TokenCloudCredentials(subscriptionId, accessToken);
@@ -99,14 +99,15 @@ namespace AzureManagementLib
                 ResourceExtensionParameterValue parameterValue = new ResourceExtensionParameterValue();
                 parameterValue.Key = "VMAccessForLinuxPrivateConfigParameter";
 
-//              we should base 64 encode this:
+                //              we should base 64 encode this:
                 //{
-//    "username":  "azureuser",
-//    "ssh_key":  "I\u0027m a bad key.",
-//    "reset_ssh":  "true",
-//    "timestamp":  635699820973851823
-//}
-                parameterValue.Value = "";
+                //    "username":  "azureuser",
+                //    "ssh_key":  "I\u0027m a bad key.",
+                //    "reset_ssh":  "true",
+                //    "timestamp":  635699820973851823
+                //}
+                string privateParameter = Convert.ToBase64String(null);
+                parameterValue.Value = privateParameter;
                 parameterValue.Type = "Private";
                 reference.ResourceExtensionParameterValues.Add(parameterValue);
                 parameters.ResourceExtensionReferences.Add(reference);
@@ -115,6 +116,6 @@ namespace AzureManagementLib
             }
         }
 
-      
+
     }
 }
