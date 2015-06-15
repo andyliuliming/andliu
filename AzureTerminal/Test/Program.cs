@@ -1,5 +1,6 @@
 ﻿using AzureManagementLib;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Renci.SshNet.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace Test
     {
         static void Main(string[] args)
         {
+            
+
             string code = "AAABAAAAiL9Kn2Z27UubvWFPbm0gLdIkaK0GTvWEF-13ihPh8ApSZYKShDu3yf4hlIv0tbUprvj3mGcgw40sH2oU_goSQp9s8XIEOQP9kMb7Tu4doaM4uJuiRoKaucHHsv_rgkGI6WbaYtysAIZ4TLvpHCEcCI-MN92cDLjSLg4HqB4phZF0BGEEo7YhpaCAGCq0fVwFoMvthjVSNKxTAB-F0hiGJeI6TWDllQpIAugyD8XI_8m_543K-NFDlf8do6AjaIr6m_Tfo_DJD82xb7kBy9mhAgGrBCLN58FDOi4LRcJAfyLrgueaEXid9AcgotQHDFHfhaQkPsmhBRqv92BhaRYlARztUbuC5Szuk4EIrC4LIOf16u1QZWPHQxpOYcNLosvzYP7Ww5ChL7qA2xkBBg8DzarlgTNnOcvRrk5J3XXaE8BI7WibGN78rzBUfUaAt7FcTf1RqTLQjoKTAJ1mZ9ZFu79WwI_VMgsdurnD-kWLw4iMF01OLD34HoDsK2Q3fC_aS0dEy3aKC7V-iJ0Wl6vJYQDzFDqq8dkvCfbkg3XMSwLP68WjfysgUWRGrDIgaEtLHwiV2zMV_-Gcot4l2L8oIeTzzbn9TJxJuFzjYilBjMop9ipAdljq8yNw8PbnwUT-IAA";
             using (var client = new HttpClient())
             {

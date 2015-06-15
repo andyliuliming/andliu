@@ -3,9 +3,11 @@ using Microsoft.WindowsAzure.Management.Compute;
 using Microsoft.WindowsAzure.Management.Compute.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tamir.SharpSsh.jsch;
 
 namespace AzureManagementLib
 {
@@ -17,16 +19,15 @@ namespace AzureManagementLib
             TokenCloudCredentials credential = new TokenCloudCredentials(subscriptionId, accessToken);
             using (var client = new ComputeManagementClient(credential))
             {
-                
                 HostedServiceListResponse response = client.HostedServices.List();
-
-                foreach(var hostService in response.HostedServices)
+                foreach (var hostService in response.HostedServices)
                 {
                     if (azureVirtualMachines.Count > 1)
                     {
                         break;
                     }
-                    try {
+                    try
+                    {
                         DeploymentGetResponse deploymentGetResponse = client.Deployments.GetBySlot(hostService.ServiceName, DeploymentSlot.Production);
                         //https://management.core.windows.net/<subscription-id>/services/hostedservices/<cloudservice-name>/deployments/<deployment-name>/roleinstances/<roleinstance-name>/ModelFile?FileType=RDP
                         var roles = deploymentGetResponse.Roles;
@@ -69,36 +70,57 @@ namespace AzureManagementLib
                                     }
                                 }
                                 azureVirtualMachine.OS = role.OSVirtualHardDisk.OperatingSystem;
-                                
+
                                 azureVirtualMachines.Add(azureVirtualMachine);
                             }
                         }
                     }
                     catch (CloudException)
                     {
-
                     }
-                    
-                    //deploymentGetResponse.RoleInstances
                 }
-                //client.Deployments.GetBySlot()
-               // client.Deployments.get
-                //client.VirtualMachines.list
-                //var virtualMachineDisks = client.VirtualMachineDisks.ListDisks();
-
-                //foreach (var virtualMachineDisk in virtualMachineDisks)
-                //{
-                //    var hostedServiceName = virtualMachineDisk.UsageDetails.HostedServiceName;
-                //    var deploymentName = virtualMachineDisk.UsageDetails.DeploymentName;
-                //    var operatingSystemType = virtualMachineDisk.OperatingSystemType;
-                //    var logicalSizeInGB = virtualMachineDisk.LogicalSizeInGB;
-
-                //    AzureVirtualMachine machine = new AzureVirtualMachine();
-                //    machine.HostServiceName = hostedServiceName;
-                //    azureVirtualMachines.Add(machine);
-                //}
             }
             return azureVirtualMachines;
+        }
+
+
+        public void SetPublicKey(string hostName,string subscriptionId,string accessToken)
+        {
+            List<AzureVirtualMachine> azureVirtualMachines = new List<AzureVirtualMachine>();
+            TokenCloudCredentials credential = new TokenCloudCredentials(subscriptionId, accessToken);
+            using (var client = new ComputeManagementClient(credential))
+            {
+
+
+                VirtualMachineUpdateParameters parameters = new VirtualMachineUpdateParameters();
+                ResourceExtensionReference reference = new ResourceExtensionReference();
+                reference.ReferenceName = "VMAccessForLinux"; 
+                reference.Name = "VMAccessForLinux";
+                reference.Publisher = "Microsoft.OSTCExtensions";
+                reference.Version = "1.2";
+                ResourceExtensionParameterValue parameterValue = new ResourceExtensionParameterValue();
+                parameterValue.Key = "VMAccessForLinuxPrivateConfigParameter";
+                parameterValue.Value = "";
+                parameterValue.Type = "Private";
+                reference.ResourceExtensionParameterValues.Add(parameterValue);
+                parameters.ResourceExtensionReferences.Add(reference);
+
+                client.VirtualMachines.Update("", "", "", new VirtualMachineUpdateParameters());
+            }
+        }
+
+        public void SetPublicKey(Stream privateKeyFile, Stream publicKeyFile, byte[] passphrase)
+        {
+            JSch jsch = new JSch();
+            KeyPair kpair = KeyPair.genKeyPair(jsch, KeyPair.RSA);
+            if (passphrase != null)
+            {
+                kpair.setPassphrase(passphrase);
+            }
+            kpair.writePrivateKey(privateKeyFile);
+            kpair.writePublicKey(publicKeyFile, "");
+            //System.out.println("Finger print: " + kpair.getFingerPrint());
+            kpair.dispose();
         }
     }
 }
