@@ -84,43 +84,37 @@ namespace AzureManagementLib
         }
 
 
-        public void SetPublicKey(string hostName,string subscriptionId,string accessToken)
+        public void SetPublicKey(string serviceName,string deploymentName,string virtualMachineName,string subscriptionId,string accessToken)
         {
             List<AzureVirtualMachine> azureVirtualMachines = new List<AzureVirtualMachine>();
             TokenCloudCredentials credential = new TokenCloudCredentials(subscriptionId, accessToken);
             using (var client = new ComputeManagementClient(credential))
             {
-
-
                 VirtualMachineUpdateParameters parameters = new VirtualMachineUpdateParameters();
                 ResourceExtensionReference reference = new ResourceExtensionReference();
-                reference.ReferenceName = "VMAccessForLinux"; 
+                reference.ReferenceName = "VMAccessForLinux";
                 reference.Name = "VMAccessForLinux";
                 reference.Publisher = "Microsoft.OSTCExtensions";
                 reference.Version = "1.2";
                 ResourceExtensionParameterValue parameterValue = new ResourceExtensionParameterValue();
                 parameterValue.Key = "VMAccessForLinuxPrivateConfigParameter";
+
+//              we should base 64 encode this:
+                //{
+//    "username":  "azureuser",
+//    "ssh_key":  "I\u0027m a bad key.",
+//    "reset_ssh":  "true",
+//    "timestamp":  635699820973851823
+//}
                 parameterValue.Value = "";
                 parameterValue.Type = "Private";
                 reference.ResourceExtensionParameterValues.Add(parameterValue);
                 parameters.ResourceExtensionReferences.Add(reference);
 
-                client.VirtualMachines.Update("", "", "", new VirtualMachineUpdateParameters());
+                client.VirtualMachines.Update(serviceName, deploymentName, virtualMachineName, new VirtualMachineUpdateParameters());
             }
         }
 
-        public void SetPublicKey(Stream privateKeyFile, Stream publicKeyFile, byte[] passphrase)
-        {
-            JSch jsch = new JSch();
-            KeyPair kpair = KeyPair.genKeyPair(jsch, KeyPair.RSA);
-            if (passphrase != null)
-            {
-                kpair.setPassphrase(passphrase);
-            }
-            kpair.writePrivateKey(privateKeyFile);
-            kpair.writePublicKey(publicKeyFile, "");
-            //System.out.println("Finger print: " + kpair.getFingerPrint());
-            kpair.dispose();
-        }
+      
     }
 }
