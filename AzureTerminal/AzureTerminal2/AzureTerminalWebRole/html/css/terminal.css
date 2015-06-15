@@ -22,11 +22,11 @@
 .terminal {
     margin: 0px;
     padding: 0px;
+    position: absolute;
     float: left;
     border: #000 solid 0px;
     font-family: "Courier New", monospace;
     font-size: 13px;
-    z-index: 999;
 }
 
 .terminal-cursor {
