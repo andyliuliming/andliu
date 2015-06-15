@@ -50,6 +50,7 @@
     <PublishProfile Include="Profiles\oterm2Production.azurePubxml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AzureTerminalWebRole\AzureTerminalWebRole.csproj">
       <Name>AzureTerminalWebRole</Name>
       <Project>{1a62cc12-d116-4e2a-a0ab-38f437a8e1f5}</Project>
       <Private>True</Private>
