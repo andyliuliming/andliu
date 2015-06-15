@@ -116,7 +116,7 @@
                 var port = $("#port");
                 var password = $("#password");
                 //azureterminal.cloudapp.net
-                ws = new WebSocket("ws://" + "localhost:63807" + "/api/TerminalSession?hostName=" + hostname.val().trim() + "&userName=" + username.val().trim() + "&passWord=" + password.val()
+                ws = new WebSocket("wss://" + "azureterminal.cloudapp.net" + "/api/TerminalSession?hostName=" + hostname.val().trim() + "&userName=" + username.val().trim() + "&passWord=" + password.val()
      + "&port=" + port.val().trim() + "&columns=" + termWidth + "&rows=" + termHeight);
 
                 ws.onmessage = function (result) {
