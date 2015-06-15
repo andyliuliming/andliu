@@ -4,7 +4,7 @@ var isChrome = false;
 
 var productServiceBaseUri = "localhost:63807";
 //https://azureterminal.cloudapp.net
-var accessTokenUrl = "http://"+productServiceBaseUri+"/odata/Tokens";
+var accessTokenUrl = "http://"+productServiceBaseUri+"/odata/Token2s";
 var subscriptionUrl = "http://" + productServiceBaseUri + "/odata/Subscriptions";
 
 function endsWith(str, match) {
@@ -31,7 +31,7 @@ function getAccessToken(successFunc, failedFunc) {
         // check whether the Code exists in the uri, if not, jump.
         var code = getUrlVars()["code"];
         if (code == null) {
-            window.location = "https://login.windows.net/common/oauth2/authorize?response_type=code&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&resource=https://management.core.windows.net/&redirect_uri=https://azureterminal.cloudapp.net/index.html&api-version=1.0"
+            window.location = "https://login.windows.net/common/oauth2/authorize?response_type=code&client_id=2d0642ea-80ea-4713-9910-5b7eee904dc1&resource=https://management.core.windows.net/&redirect_uri=https://azureterminal.cloudapp.net/html/index.html&api-version=1.0"
         } else {
             $.ajax({
                 url: accessTokenUrl,

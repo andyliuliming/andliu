@@ -238,6 +238,7 @@
     <Compile Include="Controllers\TerminalActionsController.cs" />
     <Compile Include="Controllers\SubscriptionsController.cs" />
     <Compile Include="Controllers\TerminalSessionController.cs" />
+    <Compile Include="Controllers\Token2sController.cs" />
     <Compile Include="Controllers\TokensController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

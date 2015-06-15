@@ -23,12 +23,12 @@ namespace AzureTerminalWebConsole.Controllers
     builder.EntitySet<Token>("Tokens");
     config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
     */
-    public class TokensController : ODataController
+    public class Token2sController : ODataController
     {
         private static ODataValidationSettings _validationSettings = new ODataValidationSettings();
 
         // GET: odata/Tokens
-        public IHttpActionResult GetTokens(ODataQueryOptions<Token> queryOptions)
+        public IHttpActionResult GetToken2s(ODataQueryOptions<Token2> queryOptions)
         {
             // validate the query.
             try
@@ -58,20 +58,20 @@ namespace AzureTerminalWebConsole.Controllers
                         {
                             new KeyValuePair<string, string>("grant_type", "authorization_code"),
                             new KeyValuePair<string, string>("code", code), 
-                            new KeyValuePair<string,string>("redirect_uri","https://azureterminal.cloudapp.net/index.html"),
-                            new KeyValuePair<string,string>("client_id","0c46e28c-e8cb-490d-bd4f-21626b6601f6"),
+                            new KeyValuePair<string,string>("redirect_uri","https://azureterminal.cloudapp.net/html/index.html"),
+                            new KeyValuePair<string,string>("client_id","2d0642ea-80ea-4713-9910-5b7eee904dc1"),
                             new KeyValuePair<string,string>("resource","https://management.core.windows.net/"),
-                            //two is PolKyZpB2SHuYIYLNgOLsKCuVSJXOaQeSl7CjwhVOCc=
-                             new KeyValuePair<string,string>("client_secret","NJDdG7kH0jLM9gNup4B/m3E4MaQhzks8ItrakWFL7s0="),
+                            //two is 
+                             new KeyValuePair<string,string>("client_secret","PolKyZpB2SHuYIYLNgOLsKCuVSJXOaQeSl7CjwhVOCc="),
                         });
                         Task<HttpResponseMessage> response = client.PostAsync("/common/oauth2/token", content);
 
                         if (response.Result.IsSuccessStatusCode)
                         {
                             response.Wait();
-                            Task<Token> resposneResult = response.Result.Content.ReadAsAsync<Token>();
+                            Task<Token2> resposneResult = response.Result.Content.ReadAsAsync<Token2>();
                             resposneResult.Wait();
-                            return Ok<IEnumerable<Token>>(new Token[] { resposneResult.Result });
+                            return Ok<IEnumerable<Token2>>(new Token2[] { resposneResult.Result });
                         }
                         else
                         {

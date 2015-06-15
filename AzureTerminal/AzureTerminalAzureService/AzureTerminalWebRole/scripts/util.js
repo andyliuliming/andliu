@@ -2,7 +2,7 @@
 var isMSIE = false;
 var isChrome = false;
 
-var productServiceBaseUri = "https://azureterminal.cloudapp.net";
+var productServiceBaseUri = "http://azureterminal.cloudapp.net";
 //https://azureterminal.cloudapp.net
 var accessTokenUrl = productServiceBaseUri+"/odata/Tokens";
 var subscriptionUrl = productServiceBaseUri+"/odata/Subscriptions";

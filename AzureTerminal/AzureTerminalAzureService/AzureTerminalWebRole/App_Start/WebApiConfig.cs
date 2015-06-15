@@ -41,6 +41,7 @@ namespace AzureTerminalWebConsole
             //builder.EntitySet<ProductSaleRegion>("ProductSaleRegions");
             //builder.EntitySet<VendorBankInfo>("VendorBankInfoes");
             builder.EntitySet<Token>("Tokens");
+            builder.EntitySet<Token2>("Token2s");
             builder.EntitySet<AzureTerminalWebConsole.Model.Subscription>("Subscriptions");
             builder.EntitySet<AzureVirtualMachine>("AzureVirtualMachines");
             //builder.EntitySet<LinuxVM>("LinuxVMs");
