@@ -76,9 +76,17 @@ function NewOrUpgradeDeployment
     $DiagnosticConfigPath
     )
     $azureDeployment = Get-AzureDeployment -ServiceName $ServiceName -Slot $Slot
+
+    $diagnosticStorageKey = (Get-AzureStorageKey -StorageAccountName $deploymentAndDiagnosticStorageAccountName).Primary
+    Write-Host "DiagnosticStorageAccountName is $deploymentAndDiagnosticStorageAccountName "
+    $storageContext = New-AzureStorageContext -StorageAccountName $deploymentAndDiagnosticStorageAccountName -StorageAccountKey $diagnosticStorageKey
+
     if($azureDeployment -eq $null)
     {
         Write-Host "no azure deployment exists, so create directly..."
+        #$DiagnosticConfig = New-AzureServiceDiagnosticsExtensionConfig -StorageContext $storageContext -DiagnosticsConfigurationPath $DiagnosticConfigPath -Role $RoleName
+        New-AzureDeployment -ServiceName $ServiceName -Package $Package -Configuration $Configuration -Slot $Slot #-ExtensionConfiguration @($DiagnosticConfig)
+        $azureDeployment = $null
     }
     else
     {
@@ -87,16 +95,9 @@ function NewOrUpgradeDeployment
             Write-Output "Deployment exists in $ServiceName. remove it."
             Remove-AzureDeployment -Slot $Slot -ServiceName $ServiceName -Force
         } 
-        
+        Set-AzureDeployment -Upgrade  -ServiceName $ServiceName -Package $Package -Configuration $Configuration -Slot $Slot #-ExtensionConfiguration @($DiagnosticConfig)
+        $azureDeployment = $null
     }
-    
-    $diagnosticStorageKey = (Get-AzureStorageKey -StorageAccountName $deploymentAndDiagnosticStorageAccountName).Primary
-    Write-Host "DiagnosticStorageAccountName is $deploymentAndDiagnosticStorageAccountName "
-    $storageContext = New-AzureStorageContext -StorageAccountName $deploymentAndDiagnosticStorageAccountName -StorageAccountKey $diagnosticStorageKey
- 
-    #$DiagnosticConfig = New-AzureServiceDiagnosticsExtensionConfig -StorageContext $storageContext -DiagnosticsConfigurationPath $DiagnosticConfigPath -Role $RoleName
-    New-AzureDeployment -ServiceName $ServiceName -Package $Package -Configuration $Configuration -Slot $Slot #-ExtensionConfiguration @($DiagnosticConfig)
-    $azureDeployment = $null
 }
 
 

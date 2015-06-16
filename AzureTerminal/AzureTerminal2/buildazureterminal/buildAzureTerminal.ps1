@@ -9,7 +9,7 @@ $destination="$pwd\..\AzureTerminalWebRole\scripts\term_downloaded.js"
 $source ="https://raw.githubusercontent.com/andyliuliming/term.js/master/src/term.js"
 
 Invoke-WebRequest $source -OutFile $destination
-#.\pack_and_sign.bat
+.\pack_and_sign.bat
 #xcopy /Y .\release\*.jar ..\AzureTerminalAzureService\AzureTerminalWebRole\java
 
 msbuild /t:Clean
