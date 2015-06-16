@@ -19,23 +19,23 @@ namespace Test
         static void Main(string[] args)
         {
             //String stream = null;
-            MemoryStream privateKey = new MemoryStream();
-            MemoryStream publicKey = new MemoryStream();
-            KeyUtil keyUtil = new KeyUtil();
-            keyUtil.GeneratePublicKey(privateKey, publicKey, null);
-            privateKey.Position = 0;
-            PrivateKeyFile pkf = new PrivateKeyFile(privateKey);
+            //        MemoryStream privateKey = new MemoryStream();
+            //        MemoryStream publicKey = new MemoryStream();
+            //        KeyUtil keyUtil = new KeyUtil();
+            //        keyUtil.GeneratePublicKey(privateKey, publicKey, null);
+            //        privateKey.Position = 0;
+            //        PrivateKeyFile pkf = new PrivateKeyFile(privateKey);
 
-            AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();
-            //vmUtil.SetPublicKey(string serviceName,string deploymentName,string virtualMachineName,string subscriptionId,string accessToken)
-            vmUtil.SetPublicKey(publicKey, null,null,null,null,null,null);
-             publicKey.Position = 0;
-    using (StreamReader reader = new StreamReader(publicKey, Encoding.UTF8))
-    {
-        string xx= reader.ReadToEnd();
-    }
+            //        AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();
+            //        //vmUtil.SetPublicKey(string serviceName,string deploymentName,string virtualMachineName,string subscriptionId,string accessToken)
+            //        vmUtil.SetPublicKey(publicKey, null,null,null,null,null,null);
+            //         publicKey.Position = 0;
+            //using (StreamReader reader = new StreamReader(publicKey, Encoding.UTF8))
+            //{
+            //    string xx= reader.ReadToEnd();
+            //}
 
-            string code = "AAABAAAAiL9Kn2Z27UubvWFPbm0gLdIkaK0GTvWEF-13ihPh8ApSZYKShDu3yf4hlIv0tbUprvj3mGcgw40sH2oU_goSQp9s8XIEOQP9kMb7Tu4doaM4uJuiRoKaucHHsv_rgkGI6WbaYtysAIZ4TLvpHCEcCI-MN92cDLjSLg4HqB4phZF0BGEEo7YhpaCAGCq0fVwFoMvthjVSNKxTAB-F0hiGJeI6TWDllQpIAugyD8XI_8m_543K-NFDlf8do6AjaIr6m_Tfo_DJD82xb7kBy9mhAgGrBCLN58FDOi4LRcJAfyLrgueaEXid9AcgotQHDFHfhaQkPsmhBRqv92BhaRYlARztUbuC5Szuk4EIrC4LIOf16u1QZWPHQxpOYcNLosvzYP7Ww5ChL7qA2xkBBg8DzarlgTNnOcvRrk5J3XXaE8BI7WibGN78rzBUfUaAt7FcTf1RqTLQjoKTAJ1mZ9ZFu79WwI_VMgsdurnD-kWLw4iMF01OLD34HoDsK2Q3fC_aS0dEy3aKC7V-iJ0Wl6vJYQDzFDqq8dkvCfbkg3XMSwLP68WjfysgUWRGrDIgaEtLHwiV2zMV_-Gcot4l2L8oIeTzzbn9TJxJuFzjYilBjMop9ipAdljq8yNw8PbnwUT-IAA";
+            string code = "AAABAAAAiL9Kn2Z27UubvWFPbm0gLbGa4hECKuSwB4eIHwYflb36TTu2jpnMoNyzYDNH5xCGTVKx7oUSseBFVfhup-CZlsiBBnta7T4HIOlelptjuuN69i0DTDhcqDtOaLxOcbNZVHQMkIdFgs5W9vDoBrxqqUw9-oRWAt8PtqnrG7-Gg-iVkwjLsQqaYlkECtdVtx_YRKAfBaDAbLVZgZPNbpIZFmnB3DIMdQKWSdDgjNxeCrGkn3l1z1pLryUYbtkOYwXPII4Z6pdjEjrcy2W6LSuLj1Mt5Xfxlf6_UTeJWsevQuNaUBY-WCF30Y3hG380WVK4cmhj-7tTijzngW7eQ9sV1RNo9Az0F0GFUuPgnXdXU4wJFxCS9uMvsLZPvjfYxO6mV1edaUCQAUQs0dxCtcag2F1WD98xGKFf7Rt3ZL4A7DBg8UwwRmhpo-7z2Xz8kBLjF2iZFxaAaPvEKJrWTeIkV97q4CoJYEWkHP79tbsyCvCmI-AUbMITLdcMxEobYNQDBcOT-eJXtn48gB58u9LPFOEvZTYg5_tcRhXcccjqJlV3fEaOQigjPxAbSi3CKIpNdtCUevTOoC8Mkq8rwrO7ZPJ_UOlu7RMERlWhXK_0Iw3JM1Gv9zBuE9lyJW-evQ3tIAA";
             using (var client = new HttpClient())
             {
                 //https://login.microsoftonline.com/common/oauth2/authorize?resource=https%3A%2F%2Fmanagement.core.windows.net%2F&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&response_type=code&redirect_uri=https%3A%2F%2Fazureterminal.cloudapp.net%2Findex.html
@@ -50,10 +50,11 @@ namespace Test
                         {
                             new KeyValuePair<string, string>("grant_type", "authorization_code"),
                             new KeyValuePair<string, string>("code", code), 
-                            new KeyValuePair<string,string>("redirect_uri","https://azureterminal.cloudapp.net/index.html"),
-                            new KeyValuePair<string,string>("client_id","0c46e28c-e8cb-490d-bd4f-21626b6601f6"),
+                            new KeyValuePair<string,string>("redirect_uri","https://azureterminal.cloudapp.net/html/index.html"),
+                            new KeyValuePair<string,string>("client_id","2d0642ea-80ea-4713-9910-5b7eee904dc1"),
                             new KeyValuePair<string,string>("resource","https://management.core.windows.net/"),
-                             new KeyValuePair<string,string>("client_secret","NJDdG7kH0jLM9gNup4B/m3E4MaQhzks8ItrakWFL7s0="),
+                            //two is 
+                             new KeyValuePair<string,string>("client_secret","PolKyZpB2SHuYIYLNgOLsKCuVSJXOaQeSl7CjwhVOCc="),
                         });
                 Task<HttpResponseMessage> response = client.PostAsync("/common/oauth2/token", content);
 

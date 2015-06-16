@@ -31,7 +31,7 @@ function getAccessToken(successFunc, failedFunc) {
         // check whether the Code exists in the uri, if not, jump.
         var code = getUrlVars()["code"];
         if (code == null) {
-            window.location = "https://login.windows.net/common/oauth2/authorize?response_type=code&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&resource=https://management.core.windows.net/&redirect_uri=https://azureterminal.cloudapp.net/index.html&api-version=1.0"
+            window.location = "https://login.windows.net/common/oauth2/authorize?response_type=code&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&resource=https://management.core.windows.net/&redirect_uri=https://azureterminal.cloudapp.net/index.html"
         } else {
             $.ajax({
                 url: accessTokenUrl,
