@@ -2,6 +2,7 @@
     display: none;
     position: absolute;
     font-family: 'Segoe UI';
+    font-size: 13px;
     width: 900px;
     height: 440px;
     background-color: white;
@@ -30,6 +31,7 @@
     margin: 0px;
     padding: 0px;
     height: 30px;
+    font-size: 14px;
 }
 
 #copy_file_dialog_local_selections {
@@ -178,6 +180,7 @@
     margin: 0px;
     padding: 0px;
     height: 30px;
+    font-size: 14px;
 }
 
 #copy_file_dialog_remote_selections {
