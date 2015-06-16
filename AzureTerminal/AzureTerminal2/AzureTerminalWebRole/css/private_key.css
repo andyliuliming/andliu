@@ -1,13 +1,13 @@
 ﻿#private_key_wizard {
     display: none;
     position: absolute;
-    width: 600px;
-    height: 300px;
+    width: 530px;
+    height: 250px;
     padding: 0px;
     color: rgb(117, 117, 117);
     background-color: white;
     font-family: 'Segoe UI';
-    font-size: 18px;
+    font-size: 13px;
     left: 0;
     right: 0;
     top: 0;
@@ -25,23 +25,22 @@
 }
 
 #private_key_location {
-    width: 388px;
+    width: 370px;
 }
 
 #browse_private_key_location {
-    width: 125px;
 }
 
 #private_key_passphrase {
-    width: 517px;
+    width: 464px;
 }
 
 #private_key_result_location {
-    width: 517px;
+    width: 470px;
 }
 
 #public_key_result_location {
-    width: 517px;
+    width: 470px;
 }
 
 .private_key_textfield {
@@ -51,8 +50,9 @@
 }
 
 .prvaite_key_button {
-    height: 30px;
-    font-size: 18px;
+    width: 90px;
+    height: 23px;
+    font-size: 13px;
 }
 
 .private_key_location_line {
@@ -60,12 +60,12 @@
 }
 
 #private_key_location_second_line {
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
 #private_key_location_third_line {
-    margin-top: 15px;
-    width: 510px;
+    margin-top: 20px;
+    width: 400px;
 }
 
 #private_key_location_fourth_line {
@@ -73,29 +73,29 @@
 }
 
 #private_key_location_fiveth_line {
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 #create_keys_button {
     margin-right: 10px;
-    width: 122px;
     float: right;
 }
 
 #private_key_cancel {
-    margin-right: 40px;
-    width: 122px;
+    margin-right: 33px;
     float: right;
 }
 
 #private_key_close {
-    margin-left: 400px;
-    width: 122px;
+    margin-left: 384px;
 }
 
-#private_key_success_first_line p {
-    width: 530px;
+#private_key_success_first_line {
+    width: 450px;
 }
+
+    #private_key_success_first_line p {
+    }
 
 #private_key_success_forth_line {
     margin-top: 10px;
@@ -110,23 +110,33 @@
 }
 
 #private_key_failure_oops_paragraph {
-    width: 530px;
+    width: 480px;
 }
 
 #private_keyf_failure_button {
-    margin-left: 400px;
-    width: 122px;
-    margin-top:100px;
+    margin-left: 380px;
+    margin-top: 90px;
 }
 
-#private_key_first_page {
+#private_key_first_page > ul {
     /*display: none;*/
+    padding-left: 30px;
+    margin-top: 25px;
 }
 
 #private_key_success_page {
     /*display: none;*/
+    margin-top: 25px;
 }
+
+    #private_key_success_page ul {
+        padding-left: 30px;
+    }
 
 #private_key_failure_page {
     /*display: none;*/
 }
+
+    #private_key_failure_page ul {
+        padding-left: 30px;
+    }

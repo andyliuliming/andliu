@@ -2,8 +2,8 @@
     display: none;
     position: absolute;
     font-family: 'Segoe UI';
-    font-size: 18px;
-    width: 600px;
+    font-size: 13px;
+    width: 530px;
     height: 413px;
     background-color: white;
     left: 0;
@@ -26,9 +26,15 @@
     margin-bottom: 0px;
 }
 
+#select_folder_dialog_local_header {
+    font-size: 14px;
+    font-family: 'Segoe UI';
+}
+
 #select_folder_dialog_list_view {
     border-width: 1px;
     overflow: scroll;
+    margin-top: 10px;
     border-style: solid;
     height: 303px;
     border-color: rgb(169,169,169);
@@ -41,7 +47,7 @@
 }
 
     #select_folder_dialog_list_view ul {
-        padding-left: 0px;
+        padding-left: 10px;
         margin-left: 0px;
     }
 
@@ -57,33 +63,29 @@
             }
 
 #select_folder_dialog_current_folder {
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
 #select_folder_dialog_result_label {
 }
 
 #select_folder_dialog_current_folder_text {
-    font-size: 18px;
+    font-size: 13px;
     font-family: Segoe UI;
-    width: 463px;
+    width: 432px;
     border-style: solid;
     border-width: 1px;
     border-color: rgb(169,169,169);
 }
 
 #select_folder_dialog_local_actions_ok {
-    height: 35px;
-    width: 122px;
-    font-size: 18px;
+    font-size: 13px;
     float: right;
     margin-top: 8px;
     margin-right: 5px;
 }
 
 #select_folder_dialog_local_actions_cancel {
-    height: 35px;
-    width: 122px;
     float: right;
     margin-top: 8px;
 }
