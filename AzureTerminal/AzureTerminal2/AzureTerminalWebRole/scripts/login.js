@@ -1,6 +1,4 @@
-﻿
-
-var useIdentityFile = false;
+﻿var useIdentityFile = false;
 function initializeLogin() {
     $("#password_option_button").unbind("click");
     $("#password_option_button").bind("click", function (e) {
@@ -86,7 +84,6 @@ function loginIn() {
         }
         identityReader.readAsText(identityFile);
     } else {
-
         if (otermApplet != null) {
             otermApplet.SetAction(SetUserName, [username.val().trim()]);
             otermApplet.SetAction(SetPassword, [password.val()]);

@@ -301,22 +301,19 @@
     <Content Include="html\metroStyle\img\metro.gif" />
     <Content Include="html\metroStyle\img\metro.png" />
     <Content Include="html\metroStyle\metroStyle.css" />
-    <Content Include="images\Action.png" />
     <Content Include="images\copy-01.png" />
     <Content Include="images\copybuttons.png" />
     <Content Include="images\key-01.png" />
-    <Content Include="images\log out-01.png" />
-    <Content Include="images\menu icons.png" />
-    <Content Include="images\updated background image.png" />
+    <Content Include="images\log_out-01.png" />
+    <Content Include="images\menu_icons.png" />
+    <Content Include="images\updated_background_image.png" />
     <Content Include="java\OTerm.jar" />
     <Content Include="scripts\actions.js" />
     <Content Include="scripts\applet.js" />
     <Content Include="images\Arrow_left.png" />
     <Content Include="images\Arrow_right.png" />
     <Content Include="scripts\authcheck.js" />
-    <Content Include="images\copyfile.png" />
     <Content Include="java\deployJava.js" />
-    <Content Include="images\File.png" />
     <Content Include="images\heroillustration.png" />
     <Content Include="index.html" />
     <Content Include="scripts\file_copy.js" />
@@ -324,16 +321,13 @@
     <Content Include="scripts\index.js" />
     <Content Include="scripts\jquery-1.11.1.js" />
     <Content Include="scripts\jquery.cookie.js" />
-    <Content Include="images\keypair.png" />
     <Content Include="css\login.css" />
     <Content Include="scripts\login.js" />
-    <Content Include="images\settings.png" />
     <Content Include="scripts\private_key.js" />
     <Content Include="scripts\select_folder.js" />
     <Content Include="scripts\term_downloaded.js" />
     <Content Include="css\terminal.css" />
     <Content Include="scripts\terminal.js" />
-    <Content Include="images\warning.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="scripts\util.js" />

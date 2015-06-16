@@ -9,9 +9,9 @@ function toggleSettings(forceStatus) {
         showSettings = forceStatus;
     }
     if (showSettings) {
-        $("#terminal_actions_list").css("display", "block");
+        $("#terminal_actions_list").fadeIn(200);
     } else {
-        $("#terminal_actions_list").css("display", "none");
+        $("#terminal_actions_list").fadeOut(200);
     }
 }
 

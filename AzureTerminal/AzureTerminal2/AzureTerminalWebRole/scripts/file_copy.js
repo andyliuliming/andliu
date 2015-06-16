@@ -91,8 +91,8 @@ function BindFileCopyDoubleClick() {
 var copy_buttons_disabled = false;
 function ToggleDisableCopyFileDialog() {
     copy_buttons_disabled = !copy_buttons_disabled;
-    if(copy_buttons_disabled){
-        $("#copy_file_disable_cover").css("display","block");
+    if (copy_buttons_disabled) {
+        $("#copy_file_disable_cover").css("display", "block");
     } else {
         $("#copy_file_disable_cover").css("display", "none");
     }
@@ -179,7 +179,8 @@ function InitializeFileCopy() {
 }
 
 function open_copy_file_dialog() {
-    $("#copy_file_dialog").css("display", "block");
+    $("#copy_file_dialog").fadeIn(200);
+    //$("#copy_file_dialog").css("display", "block");
 
     JumpToLocalFolder("");
     JumpToRemoteFolder("/");
@@ -331,5 +332,6 @@ function RefreshRemoteList(fileItems) {
 
 
 function close_file_copy_dialog() {
-    $("#copy_file_dialog").css("display", "none");
+    $("#copy_file_dialog").fadeOut(200);
+    //$("#copy_file_dialog").css("display", "none");
 }

@@ -28,11 +28,13 @@
 }
 
 function close_key_pair_generation_dialog() {
-    $("#private_key_wizard").css("display", "none");
+    $("#private_key_wizard").fadeOut(200);
+    //$("#private_key_wizard").css("display", "none");
 }
 
 function open_gen_privatekey_dialog() {
-    $("#private_key_wizard").css("display", "block");
+    $("#private_key_wizard").fadeIn(200);
+    //$("#private_key_wizard").css("display", "block");
 
     $("#private_key_first_page").css("display", "block");
     $("#private_key_success_page").css("display", "none");

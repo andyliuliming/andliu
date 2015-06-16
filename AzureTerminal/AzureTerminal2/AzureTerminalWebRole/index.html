@@ -107,9 +107,18 @@
     </div>
 
     <div id="terminal_actions_list">
-        <div id="terminal_action_file" class="terminal_actions_item">Copy Files</div>
-        <div id="terminal_action_generate_key" class="terminal_actions_item">Generate Key Pair</div>
-        <div id="terminal_action_signout" class="terminal_actions_item">Signout</div>
+        <div id="terminal_action_file" class="terminal_actions_item">
+            <div id="terminal_action_file_icon" class="terminal_action_item_icon"></div>
+            <p>Copy File</p>
+        </div>
+        <div id="terminal_action_generate_key" class="terminal_actions_item">
+            <div id="terminal_action_generate_key_icon" class="terminal_action_item_icon"></div>
+            <p>Generate Key</p>
+        </div>
+        <div id="terminal_action_signout" class="terminal_actions_item">
+            <div id="terminal_action_signout_icon" class="terminal_action_item_icon"></div>
+            <p>Signout</p>
+        </div>
     </div>
 
     <div id="private_key_wizard">
@@ -242,7 +251,7 @@
                 </div>
             </li>
         </ul>
-        <input type="button" id="copy_file_dialog_close" class="copy_file_dialog_button azure_terminal_button" value="Close" />
+        <input type="button" id="copy_file_dialog_close"  value="Close" />
         <div id="copy_file_disable_cover"></div>
     </div>
 

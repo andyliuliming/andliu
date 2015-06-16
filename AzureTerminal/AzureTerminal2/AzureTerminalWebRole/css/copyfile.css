@@ -3,7 +3,7 @@
     position: absolute;
     font-family: 'Segoe UI';
     width: 900px;
-    height: 480px;
+    height: 440px;
     background-color: white;
     left: 0;
     right: 0;
@@ -13,7 +13,7 @@
     margin-right: auto;
     margin-top: auto;
     margin-bottom: auto;
-    padding-top: 10px;
+    padding-top: 25px;
     padding-left: 20px;
     padding-right: 20px;
 }
@@ -61,6 +61,7 @@
     #copy_file_dialog_local_list_view ul {
         margin: 0px;
         padding: 0px;
+        padding-left: 10px;
     }
 
         #copy_file_dialog_local_list_view ul li {
@@ -82,9 +83,9 @@
 }
 
 .copy_file_dialog_button {
-    height: 35px;
-    width: 122px;
-    font-size: 18px;
+    height: 23px;
+    width: 90px;
+    font-size: 13px;
 }
 
 .file {
@@ -207,6 +208,7 @@
     #copy_file_dialog_remote_list_view ul {
         margin: 0px;
         padding: 0px;
+        padding-left: 10px;
     }
 
         #copy_file_dialog_remote_list_view ul li {
@@ -236,7 +238,9 @@
 
 #copy_file_dialog_close {
     float: right;
-    /*margin-top: 10px;*/
+    position: absolute;
+    right: 20px;
+    top: 20px;
 }
 
 
