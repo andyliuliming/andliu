@@ -20,6 +20,8 @@ Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "WebConsoleAzureService", "W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebConsoleWebRole", "WebConsoleWebRole\WebConsoleWebRole.csproj", "{1A62CC12-D116-4E2A-A0AB-38F437A8E1F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebConsoleSteppingNode", "WebConsoleSteppingNode\WebConsoleSteppingNode.csproj", "{370647A2-C8C9-4B66-AF1B-FA9B2E52CD67}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{1A62CC12-D116-4E2A-A0AB-38F437A8E1F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A62CC12-D116-4E2A-A0AB-38F437A8E1F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A62CC12-D116-4E2A-A0AB-38F437A8E1F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{370647A2-C8C9-4B66-AF1B-FA9B2E52CD67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{370647A2-C8C9-4B66-AF1B-FA9B2E52CD67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{370647A2-C8C9-4B66-AF1B-FA9B2E52CD67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{370647A2-C8C9-4B66-AF1B-FA9B2E52CD67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

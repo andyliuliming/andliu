@@ -39,9 +39,18 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Profiles" />
+    <Folder Include="WebConsoleSteppingNodeContent\" />
     <Folder Include="WebConsoleWebRoleContent\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WebConsoleSteppingNode\WebConsoleSteppingNode.csproj">
+      <Name>WebConsoleSteppingNode</Name>
+      <Project>{370647a2-c8c9-4b66-af1b-fa9b2e52cd67}</Project>
+      <Private>True</Private>
+      <RoleType>Web</RoleType>
+      <RoleName>WebConsoleSteppingNode</RoleName>
+      <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
+    </ProjectReference>
     <ProjectReference Include="..\WebConsoleWebRole\WebConsoleWebRole.csproj">
       <Name>WebConsoleWebRole</Name>
       <Project>{1a62cc12-d116-4e2a-a0ab-38f437a8e1f5}</Project>
@@ -52,7 +61,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <DiagnosticsConfiguration Include="WebConsoleSteppingNodeContent\diagnostics.wadcfgx" />
     <DiagnosticsConfiguration Include="WebConsoleWebRoleContent\diagnostics.wadcfgx" />
+  </ItemGroup>
+  <ItemGroup>
+    <PublishProfile Include="Profiles\andliu-server2Production.azurePubxml" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>
