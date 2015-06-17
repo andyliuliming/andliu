@@ -1,0 +1,35 @@
+#terminal_embedded_applet {
+    height: 0;
+    width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#deployJavaPlugin {
+    position: absolute;
+}
+
+#terminal_main_panel {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    padding: 0px;
+    margin: 0px;
+    background-color: black;
+}
+
+.terminal {
+    margin: 0px;
+    padding: 0px;
+    position: absolute;
+    float: left;
+    border: #000 solid 0px;
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+}
+
+.terminal-cursor {
+    color: #000;
+    background: #f0f0f0;
+}
