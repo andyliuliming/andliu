@@ -90,14 +90,12 @@ function NewOrUpgradeDeployment
     }
     else
     {
-        if ($azureDeployment.Name -ne $null) 
-        {
-            Write-Output "Deployment exists in $ServiceName. remove it."
-            Remove-AzureDeployment -Slot $Slot -ServiceName $ServiceName -Force
-        } 
+        
         Set-AzureDeployment -Upgrade  -ServiceName $ServiceName -Package $Package -Configuration $Configuration -Slot $Slot #-ExtensionConfiguration @($DiagnosticConfig)
         $azureDeployment = $null
     }
+    
+    
 }
 
 

@@ -63,6 +63,7 @@ public class CommandExecuter implements Runnable {
 							OTermEnvironment.Instance().getCommandPusher()
 									.getCommandQueue().add(command2);
 						} catch (JSchException e) {
+							e.printStackTrace();
 							Command command = new Command("LoginStatusChange",
 									new String[] { "" });
 							if (e.getCause() instanceof UnknownHostException)
@@ -74,6 +75,8 @@ public class CommandExecuter implements Runnable {
 							}
 							OTermEnvironment.Instance().getCommandPusher()
 									.getCommandQueue().add(command);
+						} catch(Exception e){
+							e.printStackTrace();
 						}
 						break;
 					case Actions.SignOut:

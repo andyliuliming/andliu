@@ -11,7 +11,7 @@
     <RootNamespace>OTerm2</RootNamespace>
     <AssemblyName>OTerm2</AssemblyName>
     <StartDevelopmentStorage>True</StartDevelopmentStorage>
-    <Name>AzureTerminalAzureService</Name>
+    <Name>WebConsoleAzureService</Name>
     <PackageEnableRemoteDebugger>False</PackageEnableRemoteDebugger>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -38,26 +38,21 @@
     <ServiceConfiguration Include="ServiceConfiguration.Cloud.cscfg" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="AzureTerminalPureWebContent\" />
-    <Folder Include="AzureTerminalWebRoleContent" />
     <Folder Include="Profiles" />
+    <Folder Include="WebConsoleWebRoleContent\" />
   </ItemGroup>
   <ItemGroup>
-    <DiagnosticsConfiguration Include="AzureTerminalPureWebContent\diagnostics.wadcfgx" />
-    <DiagnosticsConfiguration Include="AzureTerminalWebRoleContent\diagnostics.wadcfgx" />
-  </ItemGroup>
-  <ItemGroup>
-    <PublishProfile Include="Profiles\oterm2Production.azurePubxml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AzureTerminalWebRole\AzureTerminalWebRole.csproj">
-      <Name>AzureTerminalWebRole</Name>
+    <ProjectReference Include="..\WebConsoleWebRole\WebConsoleWebRole.csproj">
+      <Name>WebConsoleWebRole</Name>
       <Project>{1a62cc12-d116-4e2a-a0ab-38f437a8e1f5}</Project>
       <Private>True</Private>
       <RoleType>Web</RoleType>
-      <RoleName>AzureTerminalWebRole</RoleName>
+      <RoleName>WebConsoleWebRole</RoleName>
       <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <DiagnosticsConfiguration Include="WebConsoleWebRoleContent\diagnostics.wadcfgx" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>
