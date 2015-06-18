@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace AzureTerminalWebConsole.Controllers
+namespace AzureWebConsole.Controllers
 {
     public class HomeController : Controller
     {

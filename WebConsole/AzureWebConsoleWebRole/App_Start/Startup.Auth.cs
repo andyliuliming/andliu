@@ -5,7 +5,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
 
-namespace AzureTerminalWebConsole
+namespace AzureWebConsole
 {
     public partial class Startup
     {

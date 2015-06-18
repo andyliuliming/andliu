@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 
-namespace AzureTerminalWebConsole.Controllers
+namespace AzureWebConsole.Controllers
 {
     public class WindowsRDPController : ApiController
     {

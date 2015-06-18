@@ -8,7 +8,7 @@ using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
 using AzureTerminalWebConsole.Model;
 using AzureManagementLib;
-namespace AzureTerminalWebConsole
+namespace AzureWebConsole
 {
     public static class WebApiConfig
     {

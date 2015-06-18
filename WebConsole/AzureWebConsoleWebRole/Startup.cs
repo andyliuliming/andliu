@@ -4,9 +4,9 @@ using System.Linq;
 using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartup(typeof(AzureTerminalWebConsole.Startup))]
+[assembly: OwinStartup(typeof(AzureWebConsole.Startup))]
 
-namespace AzureTerminalWebConsole
+namespace AzureWebConsole
 {
     public partial class Startup
     {

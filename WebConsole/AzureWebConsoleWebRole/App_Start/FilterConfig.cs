@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace AzureTerminalWebConsole
+namespace AzureWebConsole
 {
     public class FilterConfig
     {
