@@ -10,6 +10,10 @@
     </Sites>
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
+      <Setting name="redirect_uri" />
+      <Setting name="client_id" />
+      <Setting name="resource" />
+      <Setting name="client_secret" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />

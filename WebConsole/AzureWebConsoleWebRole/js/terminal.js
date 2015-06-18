@@ -1,4 +1,4 @@
-    var term = null;
+var term = null;
 var termWidth;
 var termHeight;
 var showSettings = false;

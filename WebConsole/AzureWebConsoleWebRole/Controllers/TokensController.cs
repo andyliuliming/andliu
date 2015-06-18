@@ -58,11 +58,11 @@ namespace AzureWebConsole.Controllers
                         {
                             new KeyValuePair<string, string>("grant_type", "authorization_code"),
                             new KeyValuePair<string, string>("code", code), 
-                            new KeyValuePair<string,string>("redirect_uri","http://localhost:63807/index.html"),
-                            new KeyValuePair<string,string>("client_id","bdc9875c-7994-4812-803e-ea2b216efe60"),
-                            new KeyValuePair<string,string>("resource","https://management.core.windows.net/"),
+                            new KeyValuePair<string,string>("redirect_uri", AppSettingsProvider.GetSetting("redirect_uri")),//"http://localhost:63808/index.html"),
+                            new KeyValuePair<string,string>("client_id",AppSettingsProvider.GetSetting("client_id")),//"bdc9875c-7994-4812-803e-ea2b216efe60"),
+                            new KeyValuePair<string,string>("resource",AppSettingsProvider.GetSetting("resource")),//"https://management.core.windows.net/"),
                             //two is 
-                             new KeyValuePair<string,string>("client_secret","dOVtx79Bc9lGkOtyqEXmwAhOnAg5ZBFFPb402hvL1EQ="),
+                             new KeyValuePair<string,string>("client_secret",AppSettingsProvider.GetSetting("client_secret")),//"dOVtx79Bc9lGkOtyqEXmwAhOnAg5ZBFFPb402hvL1EQ="),
                         });
                         Task<HttpResponseMessage> response = client.PostAsync("/common/oauth2/token", content);
 

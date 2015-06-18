@@ -2,18 +2,19 @@
 <html>
 <head>
     <title>Azure Terminal</title>
-    <script src="./js/jquery-1.11.1.js"></script>
-    <script src="./js/jquery.cookie.js"></script>
-    <script src="./js/term_downloaded.js"></script>
-    <script src="./js/virtualmachines.js"></script>
-    <script src="./js/authcheck.js"></script>
-    <script src="./js/util.js"></script>
-    <script src="./js/terminal.js"></script>
-    <script type="text/javascript" src="./js/jquery.ztree.core-3.5.js"></script>
-    <script type="text/javascript" src="./js/jquery.ztree.excheck-3.5.js"></script>
-    <script type="text/javascript" src="./js/jquery.ztree.exedit-3.5.js"></script>
+    <script type="text/javascript" src="./js/lib/jquery-1.11.1.js"></script>
+    <script type="text/javascript" src="./js/lib/jquery.cookie.js"></script>
+    <script type="text/javascript" src="./js/lib/term_downloaded.js"></script>
+    <script type="text/javascript" src="./js/lib/jquery.ztree.core-3.5.js"></script>
+    <script type="text/javascript" src="./js/lib/jquery.ztree.excheck-3.5.js"></script>
+    <script type="text/javascript" src="./js/lib/jquery.ztree.exedit-3.5.js"></script>
+    <script type="text/javascript" src="./js/virtualmachines.js"></script>
+    <script type="text/javascript" src="./js/authcheck.js"></script>
+    <script type="text/javascript" src="./js/util.js"></script>
+    <script type="text/javascript" src="./js/common.js"></script>
+    <script type="text/javascript" src="./js/terminal.js"></script>
 
-    <link rel="stylesheet" href="./metroStyle/metroStyle.css" type="text/css">
+    <link href="./metroStyle/metroStyle.css" rel="stylesheet" type="text/css">
     <link href="./css/login.css" rel="stylesheet" type="text/css" />
     <link href="./css/terminal.css" rel="stylesheet" type="text/css" />
     <link href="./css/TestFontSize.css" rel="stylesheet" type="text/css" />
@@ -44,8 +45,8 @@
                     break;
                 }
             }
-            if(machine.OS=="Linux"){
-            // show the login dialog
+            if (machine.OS == "Linux") {
+                // show the login dialog
                 $("#hostname_input").val(machine.HostServiceName + ".cloudapp.net");
                 $("#username_input").val("azureuser");
                 $("#port").val(machine.Port);
@@ -54,7 +55,7 @@
             if (machine.OS == "Windows") {
                 //([FromUri]string subscriptionId,[FromUri] string cloudServiceName,[FromUri] string deploymentName,[FromUri]string roleInstanceName)
                 window.open("/api/WindowsRDP?subscriptionId=" + machine.SubscriptionId + "&cloudServiceName=" + machine.HostServiceName + "&deploymentName=" + machine.DeploymentName +
-        "&roleInstanceName=" + machine.RoleInstanceName+"&accessToken="+$.cookie("AccessToken"));
+        "&roleInstanceName=" + machine.RoleInstanceName + "&accessToken=" + $.cookie("AccessToken"));
             }
             //showLog("[ " + getTime() + " onClick ]&nbsp;&nbsp;clickFlag = " + clickFlag + " (" + (clickFlag === 1 ? "single selected" : (clickFlag === 0 ? "<b>cancel selected</b>" : "<b>multi selected</b>")) + ")");
         }
@@ -106,7 +107,7 @@
                     $.fn.zTree.init($("#treeDemo"), setting, zNodes);
                 }, function (error) {
                     $.removeCookie("AccessToken");
-                    window.location = "https://login.windows.net/common/oauth2/authorize?response_type=code&client_id=2d0642ea-80ea-4713-9910-5b7eee904dc1&resource=https://management.core.windows.net/&redirect_uri=https://azureterminal.cloudapp.net/html/index.html";
+                    ReSignIn();
                 });
             })
             $("#terminal_actions_icon").unbind("mouseup");
@@ -128,7 +129,7 @@
                 var port = $("#port");
                 var password = $("#password");
                 //azureterminal.cloudapp.net
-                ws = new WebSocket("wss://" + "azureterminal.cloudapp.net" + "/api/TerminalSession?hostName=" + hostname.val().trim() + "&userName=" + username.val().trim() + "&passWord=" + password.val()
+                ws = new WebSocket("wss://" + serviceBaseUri + "/api/TerminalSession?hostName=" + hostname.val().trim() + "&userName=" + username.val().trim() + "&passWord=" + password.val()
      + "&port=" + port.val().trim() + "&columns=" + termWidth + "&rows=" + termHeight);
 
                 ws.onmessage = function (result) {

@@ -4,6 +4,10 @@
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="redirect_uri" value="http://localhost:63808/index.html" />
+      <Setting name="client_id" value="bdc9875c-7994-4812-803e-ea2b216efe60" />
+      <Setting name="resource" value="https://management.core.windows.net/" />
+      <Setting name="client_secret" value="dOVtx79Bc9lGkOtyqEXmwAhOnAg5ZBFFPb402hvL1EQ=" />
     </ConfigurationSettings>
   </Role>
   <Role name="AzureWebConsoleSteppingNode">

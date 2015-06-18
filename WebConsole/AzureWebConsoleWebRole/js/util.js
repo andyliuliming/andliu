@@ -1,15 +1,16 @@
-﻿var isFirefox = false;
-var isMSIE = false;
-var isChrome = false;
-
-var productServiceBaseUri = "http://localhost:63807";
-
-var accessTokenUrl = productServiceBaseUri+"/odata/Token2s";
-var subscriptionUrl = productServiceBaseUri + "/odata/Subscriptions";
-
-function endsWith(str, match) {
+﻿function endsWith(str, match) {
     var d = str.length - match.length;
     return d >= 0 && str.lastIndexOf(match) === d;
+}
+function getOS() {
+    if (!OSNameGot) {
+        if (navigator.appVersion.indexOf("Win") != -1) OSName = "Windows";
+        if (navigator.appVersion.indexOf("Mac") != -1) OSName = "MacOS";
+        if (navigator.appVersion.indexOf("X11") != -1) OSName = "UNIX";
+        if (navigator.appVersion.indexOf("Linux") != -1) OSName = "Linux";
+        OSNameGot = true;
+    }
+    return OSName;
 }
 
 function getUrlVars() {
@@ -23,38 +24,6 @@ function getUrlVars() {
     return vars;
 }
 
-function getAccessToken(successFunc, failedFunc) {
-    var accessToken = $.cookie("AccessToken");
-    if (accessToken != null) {
-        successFunc(accessToken);
-    } else {
-        // check whether the Code exists in the uri, if not, jump.
-        var code = getUrlVars()["code"];
-        if (code == null) {
-            window.location =
-"https://login.windows.net/common/oauth2/authorize?response_type=code&client_id=2d0642ea-80ea-4713-9910-5b7eee904dc1&resource=https://management.core.windows.net/&redirect_uri=https://azureterminal.cloudapp.net/html/index.html"
-        } else {
-            $.ajax({
-                url: accessTokenUrl,
-                type: "GET",
-                beforeSend: function (request) {
-                    request.setRequestHeader("Code", code);
-                },
-                success: function (d) {
-                    if (successFunc != null) {
-                        $.cookie("AccessToken", d.value[0].access_token);
-                        successFunc(d.value[0].access_token);
-                    }
-                },
-                error: function (e) {
-                    if (failedFunc != null) {
-                        failedFunc(e);
-                    }
-                }
-            });
-        }
-    }
-}
 
 function getInnerText(element) {
     if (!(isChrome || isMSIE || isFirefox)) {
