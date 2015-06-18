@@ -43,7 +43,7 @@ public class CommandExecuter implements Runnable {
 					case Actions.Login:
 						try {
 							Command command = new Command("LoginStatusChange",
-									new String[] { "ongoing" });
+									 "ongoing" );
 							OTermEnvironment.Instance().getCommandPusher()
 									.getCommandQueue().add(command);
 							Logger.Log("trying to connect");
@@ -57,26 +57,29 @@ public class CommandExecuter implements Runnable {
 							Thread outputFlusherThread = new Thread(
 									outputFlusher);
 							outputFlusherThread.start();
-
+							Logger.Log("LoginStatusChange1111");
 							Command command2 = new Command("LoginStatusChange",
-									new String[] { "success" });
+									 "success" );
+
+							Logger.Log("LoginStatusChange222");
 							OTermEnvironment.Instance().getCommandPusher()
 									.getCommandQueue().add(command2);
 						} catch (JSchException e) {
 							e.printStackTrace();
 							Command command = new Command("LoginStatusChange",
-									new String[] { "" });
+									 "" );
 							if (e.getCause() instanceof UnknownHostException)
-								command.getParameters()[0] = ("unknownhost");
+								command.setParameter1("unknownhost");
 							else if (e.getCause() instanceof ConnectException) {
-								command.getParameters()[0] = ("connectfailed");
+								command.setParameter1("connectfailed");
 							} else {
-								command.getParameters()[0] = ("wrongusername");
+								command.setParameter1 ("wrongusername");
 							}
 							OTermEnvironment.Instance().getCommandPusher()
 									.getCommandQueue().add(command);
 						} catch(Exception e){
-							e.printStackTrace();
+							System.err.println(e.toString());
+//							e.printStackTrace();
 						}
 						break;
 					case Actions.SignOut:
@@ -86,25 +89,25 @@ public class CommandExecuter implements Runnable {
 						break;
 					case Actions.SetPort:
 						OTermEnvironment.Instance().getIdentityInfo().Port = current
-								.getParameters()[0];
+								.getParameter1();
 						break;
 					case Actions.SetUserName:
 						OTermEnvironment.Instance().getIdentityInfo().UserName = current
-								.getParameters()[0];
+								.getParameter1();
 						break;
 					case Actions.SetPassword:
 						OTermEnvironment.Instance().getIdentityInfo().Password = current
-								.getParameters()[0];
+								.getParameter1();
 						break;
 					case Actions.SetHostName:
 						OTermEnvironment.Instance().getIdentityInfo().HostName = current
-								.getParameters()[0];
+								.getParameter1();
 						break;
 					case Actions.Input:
 						try {
 							BufferedWriter writer = OTermEnvironment.Instance()
 									.getSshConnection().getShellOutputStream();
-							writer.write(current.getParameters()[0]);
+							writer.write(current.getParameter1());
 							writer.flush();
 						} catch (IOException e) {
 							e.printStackTrace();
@@ -112,11 +115,11 @@ public class CommandExecuter implements Runnable {
 						break;
 					case Actions.SetPrivateKey:
 						OTermEnvironment.Instance().getIdentityInfo().PrivateKey = current
-								.getParameters()[0];
+								.getParameter1();
 						;
 						break;
 					case Actions.SetSize:
-						String[] widthAndHeight = current.getParameters()[0]
+						String[] widthAndHeight = current.getParameter1()
 								.split(":");
 						int width = Integer.valueOf(widthAndHeight[0]);
 						int height = Integer.valueOf(widthAndHeight[1]);
@@ -171,7 +174,7 @@ public class CommandExecuter implements Runnable {
 								.getCommandResultQueue().add(commandResult);
 						break;
 					case Actions.ListCurrentLocalFolder:
-						String currentLocalFolder = current.getParameters()[0];
+						String currentLocalFolder = current.getParameter1();
 						List<String> localFolders = FileCopyUtil
 								.ListLocalFolder(currentLocalFolder);
 						Logger.Log("the local folders size is "
@@ -185,7 +188,7 @@ public class CommandExecuter implements Runnable {
 								.getCommandResultQueue().add(commandResult);
 						break;
 					case Actions.ListCurrentRemoteFolder:
-						String currentRemoteFolder = current.getParameters()[0];
+						String currentRemoteFolder = current.getParameter1();
 						List<String> remoteFolders = FileCopyUtil
 								.ListRemoteFolder(currentRemoteFolder);
 						String[] remoteFolderArray = new String[remoteFolders
@@ -210,7 +213,7 @@ public class CommandExecuter implements Runnable {
 								.getCommandResultQueue().add(commandResult);
 						break;
 					case Actions.SelectCurrentLocalFolder:
-						String jumpTo = current.getParameters()[0];
+						String jumpTo = current.getParameter1();
 						List<String> localRootFoldersToSelect = FileCopyUtil
 								.ListLocalFolder(jumpTo);
 						Logger.Log("the local folders size is "
@@ -242,12 +245,12 @@ public class CommandExecuter implements Runnable {
 						break;
 					case Actions.CopyToLocal:
 						Logger.Log("copy to local "
-								+ current.getParameters()[0] + " "
-								+ current.getParameters()[1]);
+								+ current.getParameter1() + " "
+								+ current.getParameter2());
 						try {
-							FileCopyUtil.CopyFrom(current.getParameters()[0],
-									current.getParameters()[1],
-									current.getParameters()[2]);
+							FileCopyUtil.CopyFrom(current.getParameter1(),
+									current.getParameter2(),
+									current.getParameter3());
 							commandResult = new CommandResult(current.getId(),
 									current.getAction(),
 									new String[] { "success" });
@@ -262,12 +265,12 @@ public class CommandExecuter implements Runnable {
 						break;
 					case Actions.CopyToRemote:
 						Logger.Log("copy to remote "
-								+ current.getParameters()[0] + " "
-								+ current.getParameters()[1]);
+								+ current.getParameter1() + " "
+								+ current.getParameter2());
 						try {
-							FileCopyUtil.CopyTo(current.getParameters()[0],
-									current.getParameters()[1],
-									current.getParameters()[2]);
+							FileCopyUtil.CopyTo(current.getParameter1(),
+									current.getParameter2(),
+									current.getParameter3());
 							commandResult = new CommandResult(current.getId(),
 									current.getAction(),
 									new String[] { "success" });
@@ -281,7 +284,7 @@ public class CommandExecuter implements Runnable {
 						break;
 					case Actions.GeneratePrivateKey:
 						try {
-							String privateKeyFolder = current.getParameters()[0];
+							String privateKeyFolder = current.getParameter1();
 							String privateKeyFilename = "prvkey";
 							String publicKeyFileName = "pubkey";
 							String publicKeyExtension = ".pub";
@@ -299,7 +302,7 @@ public class CommandExecuter implements Runnable {
 										publicKeyFileName + "(" + (i) + ")"
 												+ publicKeyExtension);
 							}
-							String passphrase = current.getParameters()[1];
+							String passphrase = current.getParameter2();
 
 							if (passphrase == null) {
 								passphrase = "";

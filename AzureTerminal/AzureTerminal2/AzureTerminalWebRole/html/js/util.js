@@ -24,35 +24,36 @@ function getUrlVars() {
 }
 
 function getAccessToken(successFunc, failedFunc) {
-    var accessToken = $.cookie("AccessToken");
-    if (accessToken != null) {
-        successFunc(accessToken);
-    } else {
-        // check whether the Code exists in the uri, if not, jump.
-        var code = getUrlVars()["code"];
-        if (code == null) {
-            window.location = "https://login.windows.net/common/oauth2/authorize?response_type=code&client_id=2d0642ea-80ea-4713-9910-5b7eee904dc1&resource=https://management.core.windows.net/&redirect_uri=https://azureterminal.cloudapp.net/html/index.html"
-        } else {
-            $.ajax({
-                url: accessTokenUrl,
-                type: "GET",
-                beforeSend: function (request) {
-                    request.setRequestHeader("Code", code);
-                },
-                success: function (d) {
-                    if (successFunc != null) {
-                        $.cookie("AccessToken", d.value[0].access_token);
-                        successFunc(d.value[0].access_token);
-                    }
-                },
-                error: function (e) {
-                    if (failedFunc != null) {
-                        failedFunc(e);
-                    }
-                }
-            });
-        }
-    }
+    successFunc();
+    //var accessToken = $.cookie("AccessToken");
+    //if (accessToken != null) {
+    //    successFunc(accessToken);
+    //} else {
+    //    // check whether the Code exists in the uri, if not, jump.
+    //    var code = getUrlVars()["code"];
+    //    if (code == null) {
+    //        window.location = "https://login.windows.net/common/oauth2/authorize?response_type=code&client_id=2d0642ea-80ea-4713-9910-5b7eee904dc1&resource=https://management.core.windows.net/&redirect_uri=https://azureterminal.cloudapp.net/html/index.html"
+    //    } else {
+    //        $.ajax({
+    //            url: accessTokenUrl,
+    //            type: "GET",
+    //            beforeSend: function (request) {
+    //                request.setRequestHeader("Code", code);
+    //            },
+    //            success: function (d) {
+    //                if (successFunc != null) {
+    //                    $.cookie("AccessToken", d.value[0].access_token);
+    //                    successFunc(d.value[0].access_token);
+    //                }
+    //            },
+    //            error: function (e) {
+    //                if (failedFunc != null) {
+    //                    failedFunc(e);
+    //                }
+    //            }
+    //        });
+    //    }
+    //}
 }
 
 function getInnerText(element) {

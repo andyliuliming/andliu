@@ -11,8 +11,8 @@ function WaitForFrontCommand() {
                     //alert(commandForFront.trimLeft(result[0]).trimLeft(result[1]));
                     break;
                 case "LoginStatusChange":
-                    var resultParameters = commandForFront.getParameters();
-                    LoginStatusChange(resultParameters[0]);
+                    var resultParameters = commandForFront.getParameter1();
+                    LoginStatusChange(resultParameters);
                     break;
                 case "Disconnected":
                     StopPollingFrontCommand();

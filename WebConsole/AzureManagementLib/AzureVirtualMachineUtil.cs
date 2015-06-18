@@ -95,12 +95,12 @@ namespace AzureManagementLib
                 reference.ReferenceName = "VMAccessForLinux";
                 reference.Name = "VMAccessForLinux";
                 reference.Publisher = "Microsoft.OSTCExtensions";
-                reference.Version = "1.2";
+                //reference.Version = "1.2";
                 ResourceExtensionParameterValue parameterValue = new ResourceExtensionParameterValue();
                 parameterValue.Key = "VMAccessForLinuxPrivateConfigParameter";
 
                 publicKey.Position = 0;
-                var sr = new StreamReader(publicKey);
+                var sr = new StreamReader(publicKey, Encoding.UTF8);
                 var publicKeyString = sr.ReadToEnd();
                 string finalPrivateParameter = "{\"username\":  \"azureuser\",\"ssh_key\":  \"{" + publicKeyString + "}\",\"reset_ssh\":  \"true\",\"timestamp\":  635699820973851823}";
 
@@ -118,7 +118,7 @@ namespace AzureManagementLib
                 reference.ResourceExtensionParameterValues.Add(parameterValue);
                 parameters.ResourceExtensionReferences.Add(reference);
 
-                client.VirtualMachines.Update(serviceName, deploymentName, virtualMachineName, new VirtualMachineUpdateParameters());
+                client.VirtualMachines.Update(serviceName, deploymentName, virtualMachineName, parameters);
             }
         }
 

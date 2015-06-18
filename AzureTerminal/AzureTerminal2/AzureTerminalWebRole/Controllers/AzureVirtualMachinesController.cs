@@ -43,32 +43,56 @@ namespace AzureTerminalWebConsole.Controllers
             {
                 return BadRequest(ex.Message);
             }
+            List<AzureVirtualMachine> azureVirtualMachines = new List<AzureVirtualMachine>();
 
-            IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("access_token");
-            string accessToken = accessTokens.FirstOrDefault();
+            AzureVirtualMachine azureVirtualMachine = new AzureVirtualMachine();
+            azureVirtualMachine.Id = 5;
+            azureVirtualMachine.HostServiceName = "andliu-server";
+            azureVirtualMachine.OS = "Windows";
+            azureVirtualMachine.Port = 58276;
 
-            SubscriptionUtil util = new SubscriptionUtil();
-            List<Subscription> subs = util.GetSubscriptions(accessToken);
-            // get the subscriptions from the access token.
-            if (accessToken != null)
-            {
-                AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();
-                List<AzureVirtualMachine> azureVirtualMachines = new List<AzureVirtualMachine>();
-                foreach (Subscription sub in subs)
-                {
-                    List<AzureVirtualMachine> azureVirtualMachinesTmp = vmUtil.FindAllMachines(sub.SubscriptionId, accessToken);
-                    azureVirtualMachines.AddRange(azureVirtualMachinesTmp);
-                }
-                for (int i = 0; i < azureVirtualMachines.Count; i++)
-                {
-                    azureVirtualMachines[i].Id = i + 3;
-                }
-                return Ok<IEnumerable<AzureVirtualMachine>>(azureVirtualMachines);
-            }
-            else
-            {
-                return Unauthorized();
-            }
+            azureVirtualMachines.Add(azureVirtualMachine);
+
+
+            azureVirtualMachines.Add(azureVirtualMachine);
+
+
+            azureVirtualMachine = new AzureVirtualMachine();
+            azureVirtualMachine.Id = 6; 
+            azureVirtualMachine.HostServiceName = "andliu-ubuntu";
+            azureVirtualMachine.OS = "Linux";
+            azureVirtualMachine.Port = 22;
+
+            azureVirtualMachines.Add(azureVirtualMachine);
+            //eploymentName: "andliu-ubuntu"HostServiceName: "andliu-ubuntu"Id: 13OS: "Linux"Port: 22RoleInstanceName: "andliu-ubuntu"SubscriptionId: "c4528d9e-c99a-48bb-b12d-fde2176a43b8"Url: "https://management.core.windows.net/c4528d9e-c99a-48bb-b12d-fde2176a43b8/services/hostedservices/andliu-ubuntu"
+
+            //DeploymentName: "abel-extension"HostServiceName: "abel-extension"Id: 3OS: "Linux"Port: 22RoleInstanceName: "abel-extension"SubscriptionId: "4be8920b-2978-43d7-ab14-04d8549c1d05"Url: "https://management.core.windows.net/4be8920b-2978-43d7-ab14-04d8549c1d05/services/hostedservices/abel-extension"
+            return Ok<IEnumerable<AzureVirtualMachine>>(azureVirtualMachines);
+            //IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("access_token");
+            //string accessToken = accessTokens.FirstOrDefault();
+
+            //SubscriptionUtil util = new SubscriptionUtil();
+            //List<Subscription> subs = util.GetSubscriptions(accessToken);
+            //// get the subscriptions from the access token.
+            //if (accessToken != null)
+            //{
+            //    AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();
+            //    List<AzureVirtualMachine> azureVirtualMachines = new List<AzureVirtualMachine>();
+            //    foreach (Subscription sub in subs)
+            //    {
+            //        List<AzureVirtualMachine> azureVirtualMachinesTmp = vmUtil.FindAllMachines(sub.SubscriptionId, accessToken);
+            //        azureVirtualMachines.AddRange(azureVirtualMachinesTmp);
+            //    }
+            //    for (int i = 0; i < azureVirtualMachines.Count; i++)
+            //    {
+            //        azureVirtualMachines[i].Id = i + 3;
+            //    }
+            //    return Ok<IEnumerable<AzureVirtualMachine>>(azureVirtualMachines);
+            //}
+            //else
+            //{
+            //    return Unauthorized();
+            //}
         }
 
 

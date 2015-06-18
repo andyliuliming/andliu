@@ -87,7 +87,7 @@ public class SSHConnection {
 		Logger.Log("clear up...");
 		if (isConnected) {
 			isConnected = false;
-			Command command = new Command("", "", new String[]{""});
+			Command command = new Command("", "", "");
 			command.setAction("Disconnected");
 			OTermEnvironment.Instance().getCommandPusher().getCommandQueue()
 					.add(command);
@@ -148,7 +148,7 @@ public class SSHConnection {
 					public void showMessage(String message) {
 						UUID promptId = UUID.randomUUID();
 						Command command = new Command(promptId.toString(),
-								"Prompt", new String[]{message});
+								"Prompt", message);
 						OTermEnvironment.Instance().getCommandPusher()
 								.getCommandQueue().add(command);
 					}
@@ -156,7 +156,7 @@ public class SSHConnection {
 					public boolean promptYesNo(String message) {
 						UUID promptId = UUID.randomUUID();
 						Command command = new Command(promptId.toString(),
-								"Prompt",new String[]{ message});
+								"Prompt", message);
 						OTermEnvironment.Instance().getCommandPusher()
 								.getCommandQueue().add(command);
 						return true;
@@ -176,8 +176,9 @@ public class SSHConnection {
 						+ OTermEnvironment.Instance().getHeight());
 				channel.setPtySize(OTermEnvironment.Instance().getWidth(),
 						OTermEnvironment.Instance().getHeight(), 0, 0);
-				channel.connect();
-
+				System.err.println("channel.connect1");
+				channel.connect(20000);
+				System.err.println("channel.connect2");
 				isConnected = true;
 			}
 		} catch (Exception e) {

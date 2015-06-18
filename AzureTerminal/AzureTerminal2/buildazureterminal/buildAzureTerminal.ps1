@@ -10,7 +10,7 @@ $source ="https://raw.githubusercontent.com/andyliuliming/term.js/master/src/ter
 
 Invoke-WebRequest $source -OutFile $destination
 .\pack_and_sign.bat
-#xcopy /Y .\release\*.jar ..\AzureTerminalAzureService\AzureTerminalWebRole\java
+#xcopy /Y .\release\*.jar ..\AzureTerminalWebRole\java
 
 msbuild /t:Clean
 
