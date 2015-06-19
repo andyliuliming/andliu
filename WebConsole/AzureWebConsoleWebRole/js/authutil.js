@@ -13,7 +13,7 @@ function SignIn(successFunc) {
         }
     }
     else {
-        //window.location = "https://login.windows.net/4a5ab409-59d4-4ee1-acec-edc32d2cdb32/oauth2/authorize?client_id=e5740bbf-07d0-4e4c-b174-94ff7d6adbcd&response_type=token&redirect_uri=http://localhost:63808/index.html&resource=https://management.core.windows.net/"
+       window.location = "https://login.windows.net/4a5ab409-59d4-4ee1-acec-edc32d2cdb32/oauth2/authorize?client_id=e5740bbf-07d0-4e4c-b174-94ff7d6adbcd&response_type=token&redirect_uri=http://localhost:63808/index.html&resource=https://management.core.windows.net/"
     }
 }
 //function getAccessToken(successFunc, failedFunc) {
