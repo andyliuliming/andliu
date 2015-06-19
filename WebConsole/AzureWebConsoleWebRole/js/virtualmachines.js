@@ -60,7 +60,25 @@ function initializeVirtialMachinePanel(token) {
         { id: 1, pId: 0, name: "Windows Loading...", open: true },
         { id: 2, pId: 0, name: "Linux Loading...", open: true }
     ];
-
+    var setting = {
+        view: {
+            selectedMulti: false
+        },
+        check: {
+            enable: true
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        edit: {
+            enable: false
+        }, callback: {
+            beforeClick: beforeClick,
+            onClick: onClick
+        }
+    };
     var nodeId = 3;
     $.fn.zTree.init($("#treeDemo"), setting, zNodes);
 
