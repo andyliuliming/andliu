@@ -35,7 +35,7 @@ namespace Test
             //    string xx= reader.ReadToEnd();
             //}
 
-            string code = "AAABAAAAiL9Kn2Z27UubvWFPbm0gLYON4ZgZDEPPJJQ6XI5rmlfKgNJuN4cCv3LCYfiP4TLcIA-Hbvnk-LNpnANHvhwJWASAFCTIDhIO4yUbX-0SCY5vb9jiRNcNnreYkL--6HJHINPjwvjCeggKKBJUrfSGqPNYckmwCC_1KIg-6OS_G_R6GMiqiiSa2KMnRbHbyiXRPbTMhROcJ9a0jxlV8gX9h2Z10YxN1qUsJm2tAiTocXCjR_w5-238b6DvciHzV-lPvc1J1MHnzxMiVr9FmHfJzZyPD4Zwj3BBEvKFH38MaiHyECK8vB47tq92mrwQvLIfTaBp89IGpt4DwTlK0zdst-hon8XFTCMZyiuuZc_UDXPS9jGuTrH53caxfFYe_r6T5g-UBKfqZOY9_XBc5ePn-rt1EMLdCgtTqjU5I8XuGwGQXloguOnfrPTAlKGENNT5FgPQqKY06aHHlOUlGrfkdSbxUNcxFYrMWpgj0jxLhgNGvIgeRsRZhHT74p2TeVC9M3ctF8sCQ7nMNqOdV6aedlfS0TszG8AkDMbNG1i8vOehHqQPEy76TMa64hwWKpttP66PJkciIjK2qhGSkuCmkHGe8F6LoQAPGO6fmsYU64QiP7HKep4qzK0IJ6Iw3yRxXksnQa5NDG4kl5xLTblXA5puGgAtN716EFHurF8nzFrE9vJLVDfN--hGTHhRMsx2IAA";
+            string code = "AAABAAAAiL9Kn2Z27UubvWFPbm0gLQFF8DKVl4w-jWZEJo2kxacUWFkTWbA_wxo5zE3QxKM28RmbOY5U9M7Y_3pa-GkuVwb83qM2aQfpx78C-Gk6wfbGSEYvPcDguHxIDQ78l5wbiDF58cKCRmAMdrCQfq1WGBovzo1kuE0Jm2x-mq9bfI_phuW9sQoyt97rMdwcZdwA4hi_d4JI1vnbWgN3hq4OB_CK-FzwLIaUC4rrpRWk0ktjGkmNpI4dVvOOWutjE_4oPViYkAweKQ6D7pRI0fscE-ypMp9X-Lmw9WMMbe4yb6SuQS-BMMC96MxOKHQkHxMAhvPmVRScUj4W2SPyvdPKiqXiKMZa3QAURCEquUQgjjawp40i_dFGzJp2pLh8HZliC-WtD1HerbNFwOkonAB5ekU7Jf7z7YH0SHRZeISNEVec4oARSVdC6O3HcWEaZJsDTlFbI--X9EAWiopA0FppAGXID_TD8fR90kXPE5SsszkjxQiJ2ypj-zC6olN6RgRUw3zk7VwfZ7IJr_CAPtBHCAUR-Qc0dOnwSc0vYATJganPZlFbkyFHjMEzC0XpZG4fhFs2RrT-tB1MN5ZicCjm8SAA";
             using (var client = new HttpClient())
             {
                 //https://login.microsoftonline.com/common/oauth2/authorize?resource=https%3A%2F%2Fmanagement.core.windows.net%2F&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&response_type=code&redirect_uri=https%3A%2F%2Fazureterminal.cloudapp.net%2Findex.html
@@ -50,11 +50,11 @@ namespace Test
                         {
                             new KeyValuePair<string, string>("grant_type", "authorization_code"),
                             new KeyValuePair<string, string>("code", code), 
-                            new KeyValuePair<string,string>("redirect_uri","https://azureterminal.cloudapp.net/html/index.html"),
-                            new KeyValuePair<string,string>("client_id","2d0642ea-80ea-4713-9910-5b7eee904dc1"),
+                            new KeyValuePair<string,string>("redirect_uri","http://localhost:63808/index.html"),
+                            new KeyValuePair<string,string>("client_id","e5740bbf-07d0-4e4c-b174-94ff7d6adbcd"),
                             new KeyValuePair<string,string>("resource","https://management.core.windows.net/"),
                             //two is 
-                             new KeyValuePair<string,string>("client_secret","PolKyZpB2SHuYIYLNgOLsKCuVSJXOaQeSl7CjwhVOCc="),
+                             new KeyValuePair<string,string>("client_secret","pBfi+eJ1AAh+aZzz7Q/JO6+t2jHzsZxpCrWohc1T3i8="),
                         });
                 Task<HttpResponseMessage> response = client.PostAsync("/common/oauth2/token", content);
 
