@@ -1,4 +1,5 @@
-﻿using Microsoft.WindowsAzure;
+﻿
+using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Management.Compute;
 using Microsoft.WindowsAzure.Management.Compute.Models;
 using System;
