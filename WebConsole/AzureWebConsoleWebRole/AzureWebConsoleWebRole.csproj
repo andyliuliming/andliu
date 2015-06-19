@@ -252,7 +252,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AzureVirtualMachinesController.cs" />
     <Compile Include="Controllers\TerminalSessionController.cs" />
-    <Compile Include="Controllers\TokensController.cs" />
+    <Compile Include="backup\TokensController.cs" />
     <Compile Include="Controllers\WindowsRDPController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -293,7 +293,7 @@
     <Content Include="images\settings.png" />
     <Content Include="images\warning.png" />
     <Content Include="index.html" />
-    <Content Include="js\authcheck.js" />
+    <Content Include="js\authutil.js" />
     <Content Include="js\common.js" />
     <Content Include="js\index.js" />
     <Content Include="js\lib\jquery-1.11.1.js" />
