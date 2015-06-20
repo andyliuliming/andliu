@@ -35,7 +35,7 @@ namespace Test
             //    string xx= reader.ReadToEnd();
             //}
 
-            string code = "AAABAAAAiL9Kn2Z27UubvWFPbm0gLQFF8DKVl4w-jWZEJo2kxacUWFkTWbA_wxo5zE3QxKM28RmbOY5U9M7Y_3pa-GkuVwb83qM2aQfpx78C-Gk6wfbGSEYvPcDguHxIDQ78l5wbiDF58cKCRmAMdrCQfq1WGBovzo1kuE0Jm2x-mq9bfI_phuW9sQoyt97rMdwcZdwA4hi_d4JI1vnbWgN3hq4OB_CK-FzwLIaUC4rrpRWk0ktjGkmNpI4dVvOOWutjE_4oPViYkAweKQ6D7pRI0fscE-ypMp9X-Lmw9WMMbe4yb6SuQS-BMMC96MxOKHQkHxMAhvPmVRScUj4W2SPyvdPKiqXiKMZa3QAURCEquUQgjjawp40i_dFGzJp2pLh8HZliC-WtD1HerbNFwOkonAB5ekU7Jf7z7YH0SHRZeISNEVec4oARSVdC6O3HcWEaZJsDTlFbI--X9EAWiopA0FppAGXID_TD8fR90kXPE5SsszkjxQiJ2ypj-zC6olN6RgRUw3zk7VwfZ7IJr_CAPtBHCAUR-Qc0dOnwSc0vYATJganPZlFbkyFHjMEzC0XpZG4fhFs2RrT-tB1MN5ZicCjm8SAA";
+            string code = "AAABAAAAiL9Kn2Z27UubvWFPbm0gLSuGrEaqcTSa_KhnQMkDUPPwxn6c3FafAu_poWq_UXvf6l-IJ5JvQl7FhpN_awecuZgkzbyuZtEeHV6009bfDPtNRqtO3OtQ9nWHzJViRMjaVERpNF2llRPdDDgNc8nv4VERaauKZnlnnz2u3-sq-u8xkgNFjEo9_pEK1h3aJWqK0H1h8pH2Fi8eqn1roMcBg9-5LL2MyRgRjirGDd1Oheh4BLMHzZQC5CKs04Y7FC0VorFNfCiYnUqg9KEoXyYxYPO6stC9sEMe5WgLurxxItfIbjl0QwAW76jEk5ZKIj-lfGTWSQu0XJvqmd68XUK84JxV2tAjscavPx45r8jaH9v9PqNiXr8E5ROJl_C9oIbCJ1Q-pEpG8p-O00clnefSM9oIf_CAbyvN4qHesRT9K8HLGxeA1CcWrd7_4dy0b6egHmy00XEoTOYdi3OXjoD6VVW9Ld1V5HfGIHaKqjO8N3gL6gBaDIHajyqrI4pAI1fH2ay4EHq54DoiHtB-4gbsFaT7c_gaerTfau7mdE6qbpsdPGYLpLc8p-XKu-q5ifrMMlQ75FzcjnTuAenEOlpySyAA";
             using (var client = new HttpClient())
             {
                 //https://login.microsoftonline.com/common/oauth2/authorize?resource=https%3A%2F%2Fmanagement.core.windows.net%2F&client_id=0c46e28c-e8cb-490d-bd4f-21626b6601f6&response_type=code&redirect_uri=https%3A%2F%2Fazureterminal.cloudapp.net%2Findex.html
@@ -50,7 +50,7 @@ namespace Test
                         {
                             new KeyValuePair<string, string>("grant_type", "authorization_code"),
                             new KeyValuePair<string, string>("code", code), 
-                            new KeyValuePair<string,string>("redirect_uri","http://localhost:63808/index.html"),
+                            new KeyValuePair<string,string>("redirect_uri","https://localhost:63808/index.html"),
                             new KeyValuePair<string,string>("client_id","e5740bbf-07d0-4e4c-b174-94ff7d6adbcd"),
                             new KeyValuePair<string,string>("resource","https://management.core.windows.net/"),
                             //two is 
