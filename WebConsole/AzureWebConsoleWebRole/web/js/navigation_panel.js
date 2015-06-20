@@ -9,11 +9,11 @@
 
 var zNodeIndex = 1;
 function initializeSubscriptions(subscriptions) {
-    $("#virtual_machine_selections_ul option").remove();
+    $("#virtual_machine_selections option").remove();
     for (var i = 0; i < subscriptions.value.length; i++) {
         var opt = $("<option></option>").attr("value", subscriptions.value[i].AADTenant);
         opt.html(subscriptions.value[i].AADTenant);
-        $("#virtual_machine_selections_ul").append(opt);
+        $("#virtual_machine_selections").append(opt);
     }
 
     $("#virtual_machine_selections").unbind("change");
@@ -21,7 +21,9 @@ function initializeSubscriptions(subscriptions) {
         var subscriptionIdSelected = $("#virtual_machine_selections").val();
         $.cookie("current_subscription", subscriptionIdSelected);
         var subscriptionIdToken = $.cookie(subscriptionIdSelected);
-
+        if (subscriptionIdToken == null) {
+            window.location = "https://login.windows.net/" + subscriptionIdSelected + "/oauth2/authorize?client_id=e5740bbf-07d0-4e4c-b174-94ff7d6adbcd&response_type=token&redirect_uri=https://localhost:63808/index.html&resource=https://management.core.windows.net/";
+        }
     });
 }
 
