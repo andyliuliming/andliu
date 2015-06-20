@@ -183,8 +183,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AzureVirtualMachinesController.cs" />
+    <Compile Include="Controllers\SteppingNodesController.cs" />
     <Compile Include="Controllers\TerminalSessionController.cs" />
-    <Compile Include="backup\TokensController.cs" />
     <Compile Include="Controllers\WindowsRDPController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -259,6 +259,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\" />
     <Folder Include="Model\" />
   </ItemGroup>
   <PropertyGroup>
