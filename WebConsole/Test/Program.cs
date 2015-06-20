@@ -1,5 +1,4 @@
 ﻿using AzureManagementLib;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Renci.SshNet;
 using Renci.SshNet.Security;
 using System;
