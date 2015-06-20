@@ -41,10 +41,10 @@ namespace AzureWebConsole.Controllers
                 return BadRequest(ex.Message);
             }
 
-            IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("access_token");
-            string accessToken = accessTokens.FirstOrDefault();
+            IEnumerable<string> commonAccessTokens = this.ActionContext.Request.Headers.GetValues("common_access_token");
+            string commonAccessToken = commonAccessTokens.FirstOrDefault();
             AzureSubscriptionUtil util = new AzureSubscriptionUtil();
-            List<AzureSubscription> azureSubscriptions = util.GetSubscriptions(accessToken);
+            List<AzureSubscription> azureSubscriptions = util.GetSubscriptions(commonAccessToken);
             return Ok<IEnumerable<AzureSubscription>>(azureSubscriptions);
         }
     }

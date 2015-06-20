@@ -31,7 +31,11 @@
         $(document).ready(function () {
             SignIn(
                 function (token) {
-                    initializeVirtialMachinePanel(token);
+                    getSubscriptions(token, function (subscriptions) {
+
+                    });
+                    // initializeSubscriptions()
+                    // initializeVirtialMachinePanel(token);
                 })
         });
     </script>

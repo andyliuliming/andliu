@@ -1,5 +1,5 @@
-﻿function getSteppingNodes(token, successFunc, errorFunc) {
-    var url = serviceBaseUri + "/odata/AzureSubscriptions";
+﻿function getAzureSubscriptions(token, successFunc, errorFunc) {
+    var url = getServiceBaseUri() + "/odata/AzureSubscriptions";
     $.ajax({
         url: url,
         type: "GET",

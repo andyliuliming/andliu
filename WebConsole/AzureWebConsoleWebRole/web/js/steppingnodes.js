@@ -1,5 +1,5 @@
 ﻿function getSteppingNodes(token, successFunc, errorFunc) {
-    var url = serviceBaseUri + "/odata/SteppingNodes";
+    var url = getServiceBaseUri() + "/odata/SteppingNodes";
     $.ajax({
         url: url,
         type: "GET",
