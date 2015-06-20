@@ -18,6 +18,8 @@ namespace AzureWebConsole.Controllers
     {
         public HttpResponseMessage Get(String hostName, String userName, String passWord, String port, String columns, String rows)
         {
+            // judge whether we are using the username/password/key 
+            // or just the azure token.
             if (HttpContext.Current.IsWebSocketRequest)
             {
                 HttpContext.Current.AcceptWebSocketRequest(new SSHSocketHandler(hostName, userName, passWord, port, columns, rows));
