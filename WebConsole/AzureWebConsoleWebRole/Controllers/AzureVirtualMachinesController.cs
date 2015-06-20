@@ -47,6 +47,8 @@ namespace AzureWebConsole.Controllers
             IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("access_token");
             string accessToken = accessTokens.FirstOrDefault();
 
+            // get the SubscriptionId first and then filter it
+
             AzureSubscriptionUtil util = new AzureSubscriptionUtil();
             List<AzureSubscription> subs = util.GetSubscriptions(accessToken);
             // get the subscriptions from the access token.

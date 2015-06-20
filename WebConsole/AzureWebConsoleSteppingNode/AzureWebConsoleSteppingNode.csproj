@@ -178,6 +178,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\PrivateKeyTerminalSessionController.cs" />
+    <Compile Include="Controllers\AccessTokenTerminalSessionController.cs" />
     <Compile Include="Controllers\TerminalSessionController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

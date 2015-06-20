@@ -239,6 +239,7 @@
     <Content Include="web\js\lib\jquery.ztree.exedit-3.5.js" />
     <Content Include="web\js\select_folder.js" />
     <Content Include="web\js\steppingnodes.js" />
+    <Content Include="web\js\subscriptions.js" />
     <Content Include="web\js\terminal.js" />
     <Content Include="web\js\lib\term_downloaded.js" />
     <Content Include="web\js\util.js" />
