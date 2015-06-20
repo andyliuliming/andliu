@@ -18,11 +18,12 @@ namespace AzureManagementLib
             {
                 var subResponse = azure.Subscriptions.List();
                 var subscriptions = subResponse.Subscriptions;
-                
+
                 foreach (var subscription in subscriptions)
                 {
                     AzureSubscription sub = new AzureSubscription();
                     sub.SubscriptionId = subscription.SubscriptionId;
+                    sub.AADTenant = subscription.ActiveDirectoryTenantId;
                     subscriptionToReturn.Add(sub);
                 }
             }

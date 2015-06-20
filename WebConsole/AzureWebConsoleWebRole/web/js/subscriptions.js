@@ -4,7 +4,7 @@
         url: url,
         type: "GET",
         beforeSend: function (request) {
-            request.setRequestHeader("access_token", token);
+            request.setRequestHeader("common_access_token", token);
         },
         dataType: "json",
         contentType: "application/json",
