@@ -8,6 +8,7 @@ using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
 using AzureTerminalWebConsole.Model;
 using AzureManagementLib;
+using AzureWebConsoleDomain;
 namespace AzureWebConsole
 {
     public static class WebApiConfig
@@ -41,13 +42,9 @@ namespace AzureWebConsole
             //builder.EntitySet<ProductSaleRegion>("ProductSaleRegions");
             //builder.EntitySet<VendorBankInfo>("VendorBankInfoes");
             builder.EntitySet<Token>("Tokens");
-            builder.EntitySet<Token>("Token2s");
-            builder.EntitySet<AzureTerminalWebConsole.Model.Subscription>("Subscriptions");
+            builder.EntitySet<Subscription>("Subscriptions");
             builder.EntitySet<AzureVirtualMachine>("AzureVirtualMachines");
-            //builder.EntitySet<LinuxVM>("LinuxVMs");
-            //builder.EntitySet<TerminalAction>("TerminalActions");
-            //// Wrap Ups
-            //builder.EntitySet<ProductDetail>("ProductDetails");
+            builder.EntitySet<SteppingNode>("SteppingNodes");
 
             config.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
 
