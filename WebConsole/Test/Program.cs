@@ -62,8 +62,8 @@ namespace Test
                     response.Wait();
                     Task<Token> resposneResult = response.Result.Content.ReadAsAsync<Token>();
                     resposneResult.Wait();
-                    SubscriptionUtil subUtil=new SubscriptionUtil();
-                    List<AzureTerminalWebConsole.Model.Subscription>subscriptions = subUtil.GetSubscriptions(resposneResult.Result.access_token);
+                    AzureSubscriptionUtil subUtil=new AzureSubscriptionUtil();
+                    List<AzureTerminalWebConsole.Model.AzureSubscription>subscriptions = subUtil.GetSubscriptions(resposneResult.Result.access_token);
                     AzureVirtualMachineUtil util = new AzureVirtualMachineUtil();
                     util.FindAllMachines(subscriptions[0].SubscriptionId, resposneResult.Result.access_token);
                     //return Ok<IEnumerable<Token>>(new Token[] { resposneResult.Result });

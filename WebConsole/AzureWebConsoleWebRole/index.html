@@ -29,56 +29,17 @@
     <script>
         var ws = null;
         $(document).ready(function () {
-            // first check the sign in .
-
             SignIn(
                 function (token) {
                     initializeVirtialMachinePanel(token);
                 })
-     //       $("#terminal_actions_icon").unbind("mouseup");
-     //       $("#terminal_actions_icon").bind("mouseup", function (ev) {
-     //           toggleSettings();
-     //           ev.stopPropagation();
-     //       });
-
-     //       $(document).unbind("mouseup");
-     //       $(document).bind("mouseup", function (ev) {
-     //           toggleSettings(false);
-     //       });
-     //       $("#loginbutton").unbind("click");
-     //       $("#loginbutton").bind("click", function (ev) {
-     //           terminalResize();
-     //           renderTerminal();
-     //           var hostname = $("#hostname_input");
-     //           var username = $("#username_input");
-     //           var port = $("#port");
-     //           var password = $("#password");
-     //           //azureterminal.cloudapp.net
-     //           ws = new WebSocket("wss://" + serviceBaseUri + "/api/TerminalSession?hostName=" + hostname.val().trim() + "&userName=" + username.val().trim() + "&passWord=" + password.val()
-     //+ "&port=" + port.val().trim() + "&columns=" + termWidth + "&rows=" + termHeight);
-
-     //           ws.onmessage = function (result) {
-     //               //alert(result.data);
-     //               term.write(result.data);
-     //           };
-     //           ws.onopen = function () {
-     //               //alert("Connected!");
-     //               $("#login_blade").css("display", "none");
-     //               $("#terminal_main_panel").css("display", "block");
-     //           };
-     //           ws.onerror = function (error) {
-     //               alert(error.data);
-     //           };
-     //           ws.onclose = function () {
-     //               alert("Disconnected!");
-     //           };
-     //       });
         });
     </script>
 
     <div id="virtual_machines_tree">
         <ul id="treeDemo" class="ztree"></ul>
     </div>
+    
     <div id="login_blade">
         <div class="login_header">
             <p class="login_header_label">Login</p>
@@ -123,12 +84,5 @@
     </div>
     <div id="terminal_actions_icon">
     </div>
-
-    <!--<div id="terminal_actions_list">
-        <div id="terminal_action_file" class="terminal_actions_item">Copy Files</div>
-        <div id="terminal_action_generate_key" class="terminal_actions_item">Generate Key Pair</div>
-        <div id="terminal_action_signout" class="terminal_actions_item">Signout</div>
-    </div>-->
-
 </body>
 </html>

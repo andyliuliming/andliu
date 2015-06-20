@@ -42,7 +42,7 @@ namespace AzureWebConsole
             //builder.EntitySet<ProductSaleRegion>("ProductSaleRegions");
             //builder.EntitySet<VendorBankInfo>("VendorBankInfoes");
             builder.EntitySet<Token>("Tokens");
-            builder.EntitySet<Subscription>("Subscriptions");
+            builder.EntitySet<AzureSubscription>("Subscriptions");
             builder.EntitySet<AzureVirtualMachine>("AzureVirtualMachines");
             builder.EntitySet<SteppingNode>("SteppingNodes");
 
