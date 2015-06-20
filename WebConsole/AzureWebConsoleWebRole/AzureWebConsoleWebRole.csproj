@@ -184,7 +184,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AzureVirtualMachinesController.cs" />
     <Compile Include="Controllers\SteppingNodesController.cs" />
-    <Compile Include="Controllers\TerminalSessionController.cs" />
     <Compile Include="Controllers\WindowsRDPController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -209,44 +208,45 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="css\azureterminal.css" />
-    <Content Include="css\copyfile.css" />
-    <Content Include="css\global.css" />
-    <Content Include="css\login.css" />
-    <Content Include="css\private_key.css" />
-    <Content Include="css\select_folder.css" />
-    <Content Include="css\terminal.css" />
-    <Content Include="css\terminal_actions.css" />
-    <Content Include="css\TestFontSize.css" />
-    <Content Include="images\Action.png" />
-    <Content Include="images\Arrow_left.png" />
-    <Content Include="images\Arrow_right.png" />
-    <Content Include="images\copybuttons.png" />
-    <Content Include="images\copyfile.png" />
-    <Content Include="images\File.png" />
-    <Content Include="images\heroillustration.png" />
-    <Content Include="images\keypair.png" />
-    <Content Include="images\settings.png" />
-    <Content Include="images\warning.png" />
+    <Content Include="web\css\azureterminal.css" />
+    <Content Include="web\css\copyfile.css" />
+    <Content Include="web\css\global.css" />
+    <Content Include="web\css\login.css" />
+    <Content Include="web\css\private_key.css" />
+    <Content Include="web\css\select_folder.css" />
+    <Content Include="web\css\terminal.css" />
+    <Content Include="web\css\terminal_actions.css" />
+    <Content Include="web\css\TestFontSize.css" />
+    <Content Include="web\images\Action.png" />
+    <Content Include="web\images\Arrow_left.png" />
+    <Content Include="web\images\Arrow_right.png" />
+    <Content Include="web\images\copybuttons.png" />
+    <Content Include="web\images\copyfile.png" />
+    <Content Include="web\images\File.png" />
+    <Content Include="web\images\heroillustration.png" />
+    <Content Include="web\images\keypair.png" />
+    <Content Include="web\images\settings.png" />
+    <Content Include="web\images\warning.png" />
     <Content Include="index.html" />
-    <Content Include="js\authutil.js" />
-    <Content Include="js\common.js" />
-    <Content Include="js\index.js" />
-    <Content Include="js\lib\jquery-1.11.1.js" />
-    <Content Include="js\lib\jquery.cookie.js" />
-    <Content Include="js\lib\jquery.ztree.core-3.5.js" />
-    <Content Include="js\lib\jquery.ztree.excheck-3.5.js" />
-    <Content Include="js\lib\jquery.ztree.exedit-3.5.js" />
-    <Content Include="js\select_folder.js" />
-    <Content Include="js\terminal.js" />
-    <Content Include="js\lib\term_downloaded.js" />
-    <Content Include="js\util.js" />
-    <Content Include="js\virtualmachines.js" />
-    <Content Include="metroStyle\img\line_conn.png" />
-    <Content Include="metroStyle\img\loading.gif" />
-    <Content Include="metroStyle\img\metro.gif" />
-    <Content Include="metroStyle\img\metro.png" />
-    <Content Include="metroStyle\metroStyle.css" />
+    <Content Include="web\js\authutil.js" />
+    <Content Include="web\js\common.js" />
+    <Content Include="web\js\index.js" />
+    <Content Include="web\js\lib\jquery-1.11.1.js" />
+    <Content Include="web\js\lib\jquery.cookie.js" />
+    <Content Include="web\js\lib\jquery.ztree.core-3.5.js" />
+    <Content Include="web\js\lib\jquery.ztree.excheck-3.5.js" />
+    <Content Include="web\js\lib\jquery.ztree.exedit-3.5.js" />
+    <Content Include="web\js\select_folder.js" />
+    <Content Include="web\js\steppingnodes.js" />
+    <Content Include="web\js\terminal.js" />
+    <Content Include="web\js\lib\term_downloaded.js" />
+    <Content Include="web\js\util.js" />
+    <Content Include="web\js\virtualmachines.js" />
+    <Content Include="web\metroStyle\img\line_conn.png" />
+    <Content Include="web\metroStyle\img\loading.gif" />
+    <Content Include="web\metroStyle\img\metro.gif" />
+    <Content Include="web\metroStyle\img\metro.png" />
+    <Content Include="web\metroStyle\metroStyle.css" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web.config" />
@@ -260,7 +260,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Model\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

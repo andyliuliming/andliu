@@ -1,0 +1,8 @@
+﻿.azure_terminal_button {
+    color: white;
+    background: rgb(0, 188, 242);
+    font-family: 'Segoe UI';
+    border-width: 0px;
+    border-color: rgb(117, 117, 117);
+    cursor: pointer;
+}

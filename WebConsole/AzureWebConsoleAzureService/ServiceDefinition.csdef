@@ -32,7 +32,7 @@
       <Setting name="AllowedCrossDomainHost" />
     </ConfigurationSettings>
     <Endpoints>
-      <InputEndpoint name="Endpoint1" protocol="http" port="8080" />
+      <InputEndpoint name="Endpoint1" protocol="http" port="81" />
     </Endpoints>
   </WebRole>
 </ServiceDefinition>

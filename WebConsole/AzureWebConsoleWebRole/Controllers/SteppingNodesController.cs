@@ -40,89 +40,13 @@ namespace AzureWebConsole.Controllers
                 return BadRequest(ex.Message);
             }
 
-            // return Ok<IEnumerable<SteppingNode>>(steppingNodes);
-            return StatusCode(HttpStatusCode.NotImplemented);
-        }
+            SteppingNode node = new SteppingNode();
+            node.Id = 0;
+            node.Address = "https://azurewebconsole.cloudapp.net:81";
 
-        // GET: odata/SteppingNodes(5)
-        public IHttpActionResult GetSteppingNode([FromODataUri] long key, ODataQueryOptions<SteppingNode> queryOptions)
-        {
-            // validate the query.
-            try
-            {
-                queryOptions.Validate(_validationSettings);
-            }
-            catch (ODataException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-            // return Ok<SteppingNode>(steppingNode);
-            return StatusCode(HttpStatusCode.NotImplemented);
-        }
-
-        // PUT: odata/SteppingNodes(5)
-        public IHttpActionResult Put([FromODataUri] long key, Delta<SteppingNode> delta)
-        {
-            Validate(delta.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            // TODO: Get the entity here.
-
-            // delta.Put(steppingNode);
-
-            // TODO: Save the patched entity.
-
-            // return Updated(steppingNode);
-            return StatusCode(HttpStatusCode.NotImplemented);
-        }
-
-        // POST: odata/SteppingNodes
-        public IHttpActionResult Post(SteppingNode steppingNode)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            // TODO: Add create logic here.
-
-            // return Created(steppingNode);
-            return StatusCode(HttpStatusCode.NotImplemented);
-        }
-
-        // PATCH: odata/SteppingNodes(5)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] long key, Delta<SteppingNode> delta)
-        {
-            Validate(delta.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            // TODO: Get the entity here.
-
-            // delta.Patch(steppingNode);
-
-            // TODO: Save the patched entity.
-
-            // return Updated(steppingNode);
-            return StatusCode(HttpStatusCode.NotImplemented);
-        }
-
-        // DELETE: odata/SteppingNodes(5)
-        public IHttpActionResult Delete([FromODataUri] long key)
-        {
-            // TODO: Add delete logic here.
-
-            // return StatusCode(HttpStatusCode.NoContent);
-            return StatusCode(HttpStatusCode.NotImplemented);
+            List<SteppingNode> steppingNodes = new List<SteppingNode>();
+            steppingNodes.Add(node);
+            return Ok<IEnumerable<SteppingNode>>(steppingNodes);
         }
     }
 }
