@@ -23,6 +23,9 @@
         }
     };
     var nodeId = 3;
+
+    console.dir("subsciptions:");
+    console.dir(subscriptions);
     $.fn.zTree.init($("#treeDemo"), setting, zNodes);
 
 }

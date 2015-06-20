@@ -1,12 +1,11 @@
-﻿
-var isFirefox = false;
+﻿var isFirefox = false;
 var isMSIE = false;
 var isChrome = false;
 
 
 function getServiceBaseUri() {
     if (window.location.href.startsWith("http://localhost")
-        ||window.location.href.startsWith("https://localhost") {
+        || window.location.href.startsWith("https://localhost")) {
         return "http://localhost:63808";
     }
     else {

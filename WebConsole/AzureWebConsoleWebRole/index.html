@@ -2,17 +2,24 @@
 <html>
 <head>
     <title>Azure Terminal</title>
-    <script type="text/javascript" src="./js/lib/jquery-1.11.1.js"></script>
-    <script type="text/javascript" src="./js/lib/jquery.cookie.js"></script>
-    <script type="text/javascript" src="./js/lib/term_downloaded.js"></script>
-    <script type="text/javascript" src="./js/lib/jquery.ztree.core-3.5.js"></script>
-    <script type="text/javascript" src="./js/lib/jquery.ztree.excheck-3.5.js"></script>
-    <script type="text/javascript" src="./js/lib/jquery.ztree.exedit-3.5.js"></script>
-    <script type="text/javascript" src="./js/virtualmachines.js"></script>
-    <script type="text/javascript" src="./js/authutil.js"></script>
-    <script type="text/javascript" src="./js/util.js"></script>
-    <script type="text/javascript" src="./js/common.js"></script>
-    <script type="text/javascript" src="./js/terminal.js"></script>
+    <script type="text/javascript" src="./web/js/lib/jquery-1.11.1.js"></script>
+    <script type="text/javascript" src="./web/js/lib/jquery.cookie.js"></script>
+    <script type="text/javascript" src="./web/js/lib/term_downloaded.js"></script>
+    <script type="text/javascript" src="./web/js/lib/jquery.ztree.core-3.5.js"></script>
+    <script type="text/javascript" src="./web/js/lib/jquery.ztree.excheck-3.5.js"></script>
+    <script type="text/javascript" src="./web/js/lib/jquery.ztree.exedit-3.5.js"></script>
+    <script type="text/javascript" src="./web/js/lib/base64.js"></script>
+
+
+    <script type="text/javascript" src="./web/js/authutil.js"></script>
+    <script type="text/javascript" src="./web/js/common.js"></script>
+    <script type="text/javascript" src="./web/js/index.js"></script>
+    <script type="text/javascript" src="./web/js/navigation_panel.js"></script>
+    <script type="text/javascript" src="./web/js/steppingnodes.js"></script>
+    <script type="text/javascript" src="./web/js/subscriptions.js"></script>
+    <script type="text/javascript" src="./web/js/terminal.js"></script>
+    <script type="text/javascript" src="./web/js/util.js"></script>
+    <script type="text/javascript" src="./web/js/virtualmachines.js"></script>
 
     <link href="./web/metroStyle/metroStyle.css" rel="stylesheet" type="text/css">
     <link href="./web/css/login.css" rel="stylesheet" type="text/css" />
@@ -32,7 +39,7 @@
             SignIn(
                 function (token) {
                     getSubscriptions(token, function (subscriptions) {
-
+                        initializeSubscriptions(subscriptions);
                     });
                     // initializeSubscriptions()
                     // initializeVirtialMachinePanel(token);
@@ -43,7 +50,7 @@
     <div id="virtual_machines_tree">
         <ul id="treeDemo" class="ztree"></ul>
     </div>
-    
+
     <div id="login_blade">
         <div class="login_header">
             <p class="login_header_label">Login</p>

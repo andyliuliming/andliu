@@ -24,25 +24,8 @@ namespace AzureWebConsole
             config.MapHttpAttributeRoutes();
 
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
-            //builder.EntitySet<Logistic>("Logistics");
-            //builder.EntitySet<MicroShop>("MicroShops");
-            //builder.EntitySet<VendorSupport>("VendorSupports");
-            //builder.EntitySet<MicroShopCertification>("MicroShopCertifications");
-            //builder.EntitySet<Order>("Orders");
-            //builder.EntitySet<ProductCategory>("ProductCategories");
-            //builder.EntitySet<ProductInShop>("ProductInShops");
-            //builder.EntitySet<Product>("Products");
-            //builder.EntitySet<ProductSku>("ProductSkus");
-            //builder.EntitySet<Refund>("Refunds");
-            //builder.EntitySet<UserCertification>("UserCertifications");
-            //builder.EntitySet<UserPickupAddress>("UserPickupAddresses");
-            //builder.EntitySet<UserShow>("UserShows");
-            //builder.EntitySet<ProductImage>("ProductImages");
-            //builder.EntitySet<SaleRegion>("SaleRegions");
-            //builder.EntitySet<ProductSaleRegion>("ProductSaleRegions");
-            //builder.EntitySet<VendorBankInfo>("VendorBankInfoes");
             builder.EntitySet<Token>("Tokens");
-            builder.EntitySet<AzureSubscription>("Subscriptions");
+            builder.EntitySet<AzureSubscription>("AzureSubscriptions");
             builder.EntitySet<AzureVirtualMachine>("AzureVirtualMachines");
             builder.EntitySet<SteppingNode>("SteppingNodes");
 
