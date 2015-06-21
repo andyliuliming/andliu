@@ -103,9 +103,29 @@ function initializeLoginPanel(selectedVirtualMachine) {
 
     $("#loginbutton").unbind("click");
     $("#loginbutton").bind("click", function (ev) {
+        var userName = $("#username_input").val();
         if (currentLoginMethod == useTempKeyToLogin) {
             getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
-                connectToTargetLinuxVM(steppingNodes.value[0], selectedVirtualMachine, subscriptionAccessToken);
+                connectToTargetLinuxVMUseToken(steppingNodes.value[0], selectedVirtualMachine, userName, subscriptionAccessToken);
+            });
+        }
+
+        if (currentLoginMethod == usePasswordToLogin) {
+            getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
+                var passWord = $("#password").val();
+                connectToTargetLinuxVMUsePassword(steppingNodes.value[0], selectedVirtualMachine, userName, passWord);
+            });
+        }
+        if (currentLoginMethod == usePrivateKeyToLogin) {
+            getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
+                var identityFile = $("#identity_file")[0].files[0];
+                var identityReader = new FileReader();
+                identityReader.onload = function (e) {
+                    var contents = e.target.result;
+                    // convert this to base 64 encoding string 
+                    connectToTargetLinuxVMUsePrivateKey(steppingNodes.value[0], selectedVirtualMachine, userName, contents);
+                }
+                identityReader.readAsText(identityFile);
             });
         }
     });

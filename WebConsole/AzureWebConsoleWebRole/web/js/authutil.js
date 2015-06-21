@@ -11,9 +11,7 @@ function commonAccessTokenStage() {
     var commonAccessToken = $.cookie("common_access_token");
     getAzureSubscriptions(commonAccessToken, function (subscriptions) {
         initializeSubscriptions(subscriptions);
-
         var subscriptionToSignIn = subscriptions.value[0].SubscriptionId;
-
         var currentSubscriptionInCookie = $.cookie("current_subscription");
         if (currentSubscriptionInCookie != null) {
             var accessTokenInUri = getUrlVars()["access_token"];
@@ -22,9 +20,9 @@ function commonAccessTokenStage() {
             subscriptionAccessTokenStage(accessTokenInUri);
         } else {
             var subscriptionAccessTokenInCookie = $.cookie(subscriptionToSignIn);
-            if(subscriptionAccessTokenInCookie==null){
-            $.cookie("current_subscription", subscriptionToSignIn);
-            SignInToSubscription(subscriptions.value[0].AADTenant);
+            if (subscriptionAccessTokenInCookie == null) {
+                $.cookie("current_subscription", subscriptionToSignIn);
+                SignInToSubscription(subscriptions.value[0].AADTenant);
             } else {
                 subscriptionAccessTokenStage(subscriptionAccessTokenInCookie);
             }
@@ -50,7 +48,6 @@ function subscriptionAccessTokenStage(accessToken) {
 function SignIn() {
     // if we can get the subscriptions of with the saved machine, then just use it
     var commonAccessToken = $.cookie("common_access_token");
-
     if (commonAccessToken != null) {
         commonAccessTokenStage();
     } else {

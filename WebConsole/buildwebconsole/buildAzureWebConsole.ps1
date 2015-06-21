@@ -8,9 +8,9 @@ if(!$env:Path.Contains("MSBuild"))
 $destination="$pwd\..\AzureWebConsoleWebRole\scripts\term_downloaded.js"
 $source ="https://raw.githubusercontent.com/andyliuliming/term.js/master/src/term.js"
 
-Invoke-WebRequest $source -OutFile $destination
+#Invoke-WebRequest $source -OutFile $destination
 
-msbuild /t:Clean
+#msbuild /t:Clean
 
 msbuild ..\AzureManagementLib\AzureManagementLib.csproj
 msbuild ..\AzureWebConsoleDomain\AzureWebConsoleDomain.csproj
