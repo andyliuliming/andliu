@@ -1,13 +1,4 @@
-﻿function expandSubscriptionNode(event, treeId, treeNode, clickFlag) {
-    // check whether we got the subscriptions
-    console.dir(treeNode);
-    // get the subscription token and try to get it, if not signed in then jump to the sign in .
-    window.location = "https://login.windows.net/" + treeNode.AADTenant + "/oauth2/authorize?client_id=e5740bbf-07d0-4e4c-b174-94ff7d6adbcd&response_type=token&redirect_uri=https://localhost:63808/index.html&resource=https://management.core.windows.net/";
-
-    // save the current 
-}
-
-var zNodeIndex = 1;
+﻿var zNodeIndex = 3;
 function initializeSubscriptions(subscriptions) {
     $("#virtual_machine_selections option").remove();
     for (var i = 0; i < subscriptions.value.length; i++) {
@@ -63,11 +54,25 @@ function initializeVirtualMachines() {
     $.fn.zTree.init($("#virtual_machine_tree_ul"), setting, zNodes);
 }
 
+function virtualMachineTreeNodeClicked(event,tree,node,clickFlat) {
+    console.dir(tree);
+    var virtualMachine = node.data;
+    if (node.data.OS == "Linux") {
+
+    }
+    else {
+        // get the accessToken for the node.
+        var subscriptionAccessToken = $.cookie(node.SubscriptionId);
+        //([FromUri]string subscriptionId,[FromUri] string cloudServiceName,[FromUri] string deploymentName,[FromUri]string roleInstanceName)
+        window.open("/api/WindowsRDP?subscriptionId=" + virtualMachine.SubscriptionId + "&cloudServiceName=" + virtualMachine.HostServiceName + "&deploymentName=" + virtualMachine.DeploymentName +
+    "&roleInstanceName=" + virtualMachine.RoleInstanceName + "&accessToken=" + subscriptionAccessToken);
+
+    }
+}
 function setVirtualMachines(virtualMachines) {
     zNodes[0].name = "Windows";
     zNodes[1].name = "Linux";
 
-    var nodeIndex = 3;
     for (var i = 0; i < virtualMachines.value.length; i++) {
         var virtualMachine = virtualMachines.value[i];
         if (virtualMachine.OS == "Linux") {
@@ -75,7 +80,6 @@ function setVirtualMachines(virtualMachines) {
         } else {
             zNodes.push({ id: zNodeIndex, pId: 1, name: virtualMachine.RoleInstanceName, open: false, data: virtualMachines.value[i] });
         }
-        
         zNodeIndex += 1;
     }
 
@@ -94,8 +98,7 @@ function setVirtualMachines(virtualMachines) {
         edit: {
             enable: false
         }, callback: {
-            //beforeClick: expandSubscriptionNode,
-            //onClick: expandSubscriptionNode
+            onClick: virtualMachineTreeNodeClicked
         }
     };
 

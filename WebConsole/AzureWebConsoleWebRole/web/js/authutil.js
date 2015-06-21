@@ -1,9 +1,4 @@
-﻿function ReSignIn(successFunc) {
-    $.removeCookie("AccessToken");
-    SignIn(successFunc);
-}
-
-function JumptoCommonLogin() {
+﻿function JumptoCommonLogin() {
     window.location = "https://login.windows.net/common/oauth2/authorize?client_id=e5740bbf-07d0-4e4c-b174-94ff7d6adbcd&response_type=token&redirect_uri=https://localhost:63808/index.html&resource=https://management.core.windows.net/";
 }
 
@@ -54,10 +49,7 @@ function subscriptionAccessTokenStage(accessToken) {
 
 function SignIn() {
     // if we can get the subscriptions of with the saved machine, then just use it
-
-    
     var commonAccessToken = $.cookie("common_access_token");
-
 
     if (commonAccessToken != null) {
         commonAccessTokenStage();
