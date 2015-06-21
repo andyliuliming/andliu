@@ -35,6 +35,8 @@ namespace AzureTerminalWebConsole.Controllers
                 MemoryStream publicKey = new MemoryStream();
                 KeyUtil keyUtil = new KeyUtil();
                 keyUtil.GeneratePublicKey(privateKey, publicKey, null);
+                privateKey.Position = 0;
+                publicKey.Position = 0;
                 PrivateKeyFile pkf = new PrivateKeyFile(privateKey);
 
                 AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();

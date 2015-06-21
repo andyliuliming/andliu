@@ -56,11 +56,11 @@ function virtualMachineTreeNodeClicked(event, tree, node, clickFlat) {
     console.dir(tree);
     var virtualMachine = node.data;
 
-    var subscriptionAccessToken = $.cookie(node.SubscriptionId);
-    if (node.data.OS == "Linux") {
+    var subscriptionAccessToken = $.cookie(virtualMachine.SubscriptionId);
+    if (virtualMachine.OS == "Linux") {
         getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
             console.dir(steppingNodes.value[0]);
-
+            connectToTargetLinuxVM(steppingNodes.value[0], virtualMachine, subscriptionAccessToken);
         });
     }
     else {
