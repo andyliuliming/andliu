@@ -36,14 +36,7 @@
     <script>
         var ws = null;
         $(document).ready(function () {
-            SignIn(
-                function (token) {
-                    getAzureSubscriptions(token, function (subscriptions) {
-                        initializeSubscriptions(subscriptions);
-                    });
-                    // initializeSubscriptions()
-                    // initializeVirtialMachinePanel(token);
-                })
+            SignIn();
         });
     </script>
 

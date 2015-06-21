@@ -64,9 +64,18 @@ function initializeVirtualMachines() {
 }
 
 function setVirtualMachines(virtualMachines) {
+    zNodes[0].name = "Windows";
+    zNodes[1].name = "Linux";
+
     var nodeIndex = 3;
     for (var i = 0; i < virtualMachines.value.length; i++) {
-        zNodes.push({ id: zNodeIndex, pId: 0, name: virtualMachines.value[i].AADTenant, open: false, data: virtualMachines.value[i] });
+        var virtualMachine = virtualMachines.value[i];
+        if (virtualMachine.OS == "Linux") {
+            zNodes.push({ id: zNodeIndex, pId: 2, name: virtualMachine.RoleInstanceName, open: false, data: virtualMachines.value[i] });
+        } else {
+            zNodes.push({ id: zNodeIndex, pId: 1, name: virtualMachine.RoleInstanceName, open: false, data: virtualMachines.value[i] });
+        }
+        
         zNodeIndex += 1;
     }
 
@@ -90,7 +99,5 @@ function setVirtualMachines(virtualMachines) {
         }
     };
 
-    zNodes[0].name = "Windows";
-    zNodes[1].name = "Linux";
     $.fn.zTree.init($("#virtual_machine_tree_ul"), setting, zNodes);
 }
