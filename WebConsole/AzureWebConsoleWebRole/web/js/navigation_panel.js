@@ -52,20 +52,75 @@ function initializeVirtualMachines() {
     $.fn.zTree.init($("#virtual_machine_tree_ul"), setting, zNodes);
 }
 
+var selectedVirtualMachine = null;
+function getSelectedVirtualMachine() {
+    return selectedVirtualMachine;
+}
+
+var usePasswordToLogin = 1;
+var usePrivateKeyToLogin = 2;
+var useTempKeyToLogin = 3;
+var currentLoginMethod = 3;
+
+function initializeLoginPanel(selectedVirtualMachine) {
+    $("#hostname_input").val(selectedVirtualMachine.HostServiceName + ".cloudapp.net");
+    $("#username_input").val("azureuser");
+    $("#port").val(selectedVirtualMachine.Port);
+    $("#login_blade").css("display", "block");
+
+    $("#password_option_button").unbind("click");
+    $("#password_option_button").bind("click", function (e) {
+        currentLoginMethod = usePasswordToLogin;
+
+        $(".auth_button").removeClass("auth_button_selected");
+        $(e.target).addClass("auth_button_selected");
+
+        $("#login_private_key").css("display", "none");
+        $("#password").css("display", "block");
+        $("#auth_type_label").html("Password:");
+    });
+
+    $("#privatekey_option_button").unbind("click");
+    $("#privatekey_option_button").bind("click", function (e) {
+        currentLoginMethod = usePrivateKeyToLogin;
+        $(".auth_button").removeClass("auth_button_selected");
+        $(e.target).addClass("auth_button_selected");
+
+        $("#login_private_key").css("display", "block");
+        $("#password").css("display", "none");
+        $("#auth_type_label").html("Private Key:");
+    });
+
+
+
+    $("#identity_file").unbind("change");
+    $("#identity_file").bind("change", function (ev) {
+        var file = $('#identity_file')[0].files[0];
+        if (file != null) {
+            $("#login_private_key_file_name_text").val(file.name);
+        }
+    });
+
+    $("#loginbutton").unbind("click");
+    $("#loginbutton").bind("click", function (ev) {
+        if (currentLoginMethod == useTempKeyToLogin) {
+            getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
+                connectToTargetLinuxVM(steppingNodes.value[0], selectedVirtualMachine, subscriptionAccessToken);
+            });
+        }
+    });
+}
 function virtualMachineTreeNodeClicked(event, tree, node, clickFlat) {
     console.dir(tree);
-    var virtualMachine = node.data;
-
-    var subscriptionAccessToken = $.cookie(virtualMachine.SubscriptionId);
-    if (virtualMachine.OS == "Linux") {
-        getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
-            console.dir(steppingNodes.value[0]);
-            connectToTargetLinuxVM(steppingNodes.value[0], virtualMachine, subscriptionAccessToken);
-        });
+    //var virtualMachine = node.data;
+    selectedVirtualMachine = node.data;
+    var subscriptionAccessToken = $.cookie(selectedVirtualMachine.SubscriptionId);
+    if (selectedVirtualMachine.OS == "Linux") {
+        initializeLoginPanel(selectedVirtualMachine);
     }
     else {
-        window.open("/api/WindowsRDP?subscriptionId=" + virtualMachine.SubscriptionId + "&cloudServiceName=" + virtualMachine.HostServiceName + "&deploymentName=" + virtualMachine.DeploymentName +
-    "&roleInstanceName=" + virtualMachine.RoleInstanceName + "&accessToken=" + subscriptionAccessToken);
+        window.open("/api/WindowsRDP?subscriptionId=" + selectedVirtualMachine.SubscriptionId + "&cloudServiceName=" + selectedVirtualMachine.HostServiceName + "&deploymentName=" + selectedVirtualMachine.DeploymentName +
+    "&roleInstanceName=" + selectedVirtualMachine.RoleInstanceName + "&accessToken=" + subscriptionAccessToken);
     }
 }
 function setVirtualMachines(virtualMachines) {

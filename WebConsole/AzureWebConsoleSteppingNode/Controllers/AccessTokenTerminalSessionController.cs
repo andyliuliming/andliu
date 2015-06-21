@@ -40,7 +40,6 @@ namespace AzureTerminalWebConsole.Controllers
                 PrivateKeyFile pkf = new PrivateKeyFile(privateKey);
 
                 AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();
-                //vmUtil.SetPublicKey(string serviceName,string deploymentName,string virtualMachineName,string subscriptionId,string accessToken)
 
                 vmUtil.SetPublicKey(publicKey, hostName, userName, deploymentName, virtualMachineName, subscriptionId, accessToken);
                 var client = new SshClient(hostName, int.Parse(port), userName, pkf);
