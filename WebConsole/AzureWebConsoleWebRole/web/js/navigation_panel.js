@@ -30,7 +30,6 @@ var zNodes = [
 ];
 
 function initializeVirtualMachines() {
-
     var setting = {
         view: {
             selectedMulti: false
@@ -50,23 +49,23 @@ function initializeVirtualMachines() {
             //onClick: onClick
         }
     };
-
     $.fn.zTree.init($("#virtual_machine_tree_ul"), setting, zNodes);
 }
 
-function virtualMachineTreeNodeClicked(event,tree,node,clickFlat) {
+function virtualMachineTreeNodeClicked(event, tree, node, clickFlat) {
     console.dir(tree);
     var virtualMachine = node.data;
-    if (node.data.OS == "Linux") {
 
+    var subscriptionAccessToken = $.cookie(node.SubscriptionId);
+    if (node.data.OS == "Linux") {
+        getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
+            console.dir(steppingNodes.value[0]);
+
+        });
     }
     else {
-        // get the accessToken for the node.
-        var subscriptionAccessToken = $.cookie(node.SubscriptionId);
-        //([FromUri]string subscriptionId,[FromUri] string cloudServiceName,[FromUri] string deploymentName,[FromUri]string roleInstanceName)
         window.open("/api/WindowsRDP?subscriptionId=" + virtualMachine.SubscriptionId + "&cloudServiceName=" + virtualMachine.HostServiceName + "&deploymentName=" + virtualMachine.DeploymentName +
     "&roleInstanceName=" + virtualMachine.RoleInstanceName + "&accessToken=" + subscriptionAccessToken);
-
     }
 }
 function setVirtualMachines(virtualMachines) {

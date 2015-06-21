@@ -2,6 +2,11 @@
 var isMSIE = false;
 var isChrome = false;
 
+function isDebugMode() {
+    return (window.location.href.startsWith("http://localhost")
+|| window.location.href.startsWith("https://localhost"));
+}
+
 
 function getServiceBaseUri() {
     if (window.location.href.startsWith("http://localhost")
