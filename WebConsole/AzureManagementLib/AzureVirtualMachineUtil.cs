@@ -91,19 +91,22 @@ namespace AzureManagementLib
             TokenCloudCredentials credential = new TokenCloudCredentials(subscriptionId, accessToken);
             using (var client = new ComputeManagementClient(credential))
             {
+
                 VirtualMachineUpdateParameters parameters = new VirtualMachineUpdateParameters();
                 ResourceExtensionReference reference = new ResourceExtensionReference();
                 reference.ReferenceName = "VMAccessForLinux";
                 reference.Name = "VMAccessForLinux";
                 reference.Publisher = "Microsoft.OSTCExtensions";
-                //reference.Version = "1.2";
+                reference.Version = "1.*";
+                reference.State = "Enable";
                 ResourceExtensionParameterValue parameterValue = new ResourceExtensionParameterValue();
                 parameterValue.Key = "VMAccessForLinuxPrivateConfigParameter";
 
                 publicKey.Position = 0;
                 var sr = new StreamReader(publicKey, Encoding.UTF8);
                 var publicKeyString = sr.ReadToEnd();
-                string finalPrivateParameter = "{\"username\":  \"azureuser\",\"ssh_key\":  \"{" + publicKeyString + "}\",\"reset_ssh\":  \"true\",\"timestamp\":  635699820973851823}";
+
+                string finalPrivateParameter = "{\"username\":\"" + userName + "\",\"ssh_key\":\"" + publicKeyString + "\",\"reset_ssh\":\"true\",\"timestamp\":" + DateTime.UtcNow.Ticks + "}";
 
                 //              we should base 64 encode this:
                 //{
@@ -113,11 +116,20 @@ namespace AzureManagementLib
                 //    "timestamp":  635699820973851823
                 //}
 
-                string privateParameter = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(finalPrivateParameter));
-                parameterValue.Value = privateParameter;
+                //string privateParameter = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(finalPrivateParameter));
+                parameterValue.Value = finalPrivateParameter;
                 parameterValue.Type = "Private";
                 reference.ResourceExtensionParameterValues.Add(parameterValue);
                 parameters.ResourceExtensionReferences.Add(reference);
+                parameters.RoleName = virtualMachineName;
+                VirtualMachineGetResponse virtualMachine = client.VirtualMachines.Get(serviceName, deploymentName, virtualMachineName);
+                parameters.OSVirtualHardDisk = virtualMachine.OSVirtualHardDisk;
+                parameters.ConfigurationSets = virtualMachine.ConfigurationSets;
+                parameters.AvailabilitySetName = virtualMachine.AvailabilitySetName;
+                parameters.DataVirtualHardDisks = virtualMachine.DataVirtualHardDisks;
+                parameters.ProvisionGuestAgent = true;
+                parameters.RoleName = virtualMachine.RoleName;
+                parameters.RoleSize = virtualMachine.RoleSize;
 
                 client.VirtualMachines.Update(serviceName, deploymentName, virtualMachineName, parameters);
             }
