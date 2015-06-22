@@ -104,17 +104,10 @@ namespace AzureManagementLib
 
                 publicKey.Position = 0;
                 var sr = new StreamReader(publicKey, Encoding.UTF8);
-                var publicKeyString = sr.ReadToEnd();
+                var publicKeyString = sr.ReadToEnd().Trim();
 
                 string finalPrivateParameter = "{\"username\":\"" + userName + "\",\"ssh_key\":\"" + publicKeyString + "\",\"reset_ssh\":\"true\",\"timestamp\":" + DateTime.UtcNow.Ticks + "}";
 
-                //              we should base 64 encode this:
-                //{
-                //    "username":  "azureuser",
-                //    "ssh_key":  "I\u0027m a bad key.",
-                //    "reset_ssh":  "true",
-                //    "timestamp":  635699820973851823
-                //}
 
                 //string privateParameter = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(finalPrivateParameter));
                 parameterValue.Value = finalPrivateParameter;

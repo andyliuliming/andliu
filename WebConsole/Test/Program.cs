@@ -17,6 +17,15 @@ namespace Test
     {
         static void Main(string[] args)
         {
+            MemoryStream privateKey = new MemoryStream();
+            MemoryStream publicKey = new MemoryStream();
+            KeyUtil keyUtil = new KeyUtil();
+            keyUtil.GeneratePublicKey(privateKey, publicKey, null);
+            privateKey.Position = 0;
+            publicKey.Position = 0;
+            var sr = new StreamReader(publicKey, Encoding.UTF8);
+            var publicKeyString = sr.ReadToEnd();
+
             //String stream = null;
             //        MemoryStream privateKey = new MemoryStream();
             //        MemoryStream publicKey = new MemoryStream();
