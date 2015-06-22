@@ -237,6 +237,7 @@
     <Content Include="web\js\lib\jquery.ztree.core-3.5.js" />
     <Content Include="web\js\lib\jquery.ztree.excheck-3.5.js" />
     <Content Include="web\js\lib\jquery.ztree.exedit-3.5.js" />
+    <Content Include="web\js\login.js" />
     <Content Include="web\js\navigation_panel.js" />
     <Content Include="web\js\steppingnodes.js" />
     <Content Include="web\js\subscriptions.js" />

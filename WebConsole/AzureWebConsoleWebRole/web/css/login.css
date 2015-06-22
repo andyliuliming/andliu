@@ -14,7 +14,6 @@
     color: rgb(117, 117, 117);
     background: white;
     cursor: pointer;
-    float: left;
     margin: 0;
 }
 
@@ -29,6 +28,7 @@
     border-bottom-width: 1px;
     border-top-width: 1px;
     border-right: 1px;
+    float: left;
 }
 
 .auth_button:nth-child(2) {
@@ -37,6 +37,7 @@
     border-top-width: 1px;
     border-bottom-width: 1px;
     border-right-width: 0px;
+    float: left;
 }
 
 .auth_button:nth-child(3) {
