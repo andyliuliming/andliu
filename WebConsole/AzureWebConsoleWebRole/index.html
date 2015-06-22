@@ -26,10 +26,8 @@
     <link href="./web/css/terminal.css" rel="stylesheet" type="text/css" />
     <link href="./web/css/TestFontSize.css" rel="stylesheet" type="text/css" />
     <link href="./web/css/terminal_actions.css" rel="stylesheet" type="text/css" />
-    <link href="./web/css/private_key.css" rel="stylesheet" type="text/css" />
     <link href="./web/css/global.css" rel="stylesheet" type="text/css" />
     <link href="./web/css/copyfile.css" rel="stylesheet" type="text/css" />
-    <link href="./web/css/select_folder.css" rel="stylesheet" type="text/css" />
     <link href="./web/css/azureterminal.css" rel="stylesheet" type="text/css" />
     <link href="./web/css/navigation_bar.css" rel="stylesheet" type="text/css" />
 </head>
@@ -46,7 +44,8 @@
     </div>
 
     <div id="virtual_machine_navigation_panel">
-        <select id="virtual_machine_selections"></select>
+        <label for="virtual_machine_selections">Subscriptions:</label>
+        <select id="virtual_machine_selections" name="virtual_machine_selections"></select>
         <div id="virtual_machines_tree">
             <ul id="virtual_machine_tree_ul" class="ztree"></ul>
         </div>

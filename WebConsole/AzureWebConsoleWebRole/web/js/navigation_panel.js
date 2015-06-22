@@ -90,11 +90,11 @@ function initializeLoginPanel(selectedVirtualMachine) {
     $("#login_blade").css("display", "block");
 
     $("#password_option_button").unbind("click");
-    $("#password_option_button").bind("click", function (e) {
+    $("#password_option_button").bind("click", function (ev) {
         currentLoginMethod = usePasswordToLogin;
 
         $(".auth_button").removeClass("auth_button_selected");
-        $(e.target).addClass("auth_button_selected");
+        $(ev.target).addClass("auth_button_selected");
 
         $("#login_private_key").css("display", "none");
         $("#password").css("display", "block");
@@ -102,16 +102,25 @@ function initializeLoginPanel(selectedVirtualMachine) {
     });
 
     $("#privatekey_option_button").unbind("click");
-    $("#privatekey_option_button").bind("click", function (e) {
+    $("#privatekey_option_button").bind("click", function (ev) {
         currentLoginMethod = usePrivateKeyToLogin;
         $(".auth_button").removeClass("auth_button_selected");
-        $(e.target).addClass("auth_button_selected");
+        $(ev.target).addClass("auth_button_selected");
 
         $("#login_private_key").css("display", "block");
         $("#password").css("display", "none");
         $("#auth_type_label").html("Private Key:");
     });
 
+    $("#tempkey_option_button").unbind("click");
+    $("#tempkey_option_button").bind("click", function (ev) {
+        currentLoginMethod = useTempKeyToLogin; 
+        $(".auth_button").removeClass("auth_button_selected");
+        $(ev.target).addClass("auth_button_selected");
+        $("#login_private_key").css("display", "none");
+        $("#password").css("display", "none");
+        $("#auth_type_label").html("Temp Key:");
+    });
 
 
     $("#identity_file").unbind("change");
