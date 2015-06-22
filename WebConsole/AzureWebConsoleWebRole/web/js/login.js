@@ -37,10 +37,10 @@ function constructTheWebSocketAddressUsePrivateKey(steppingNode, virtualMachine,
     return webSocketAddress;
 }
 
-function connectToTargetLinuxVMUsePrivateKey(steppingNode, virtualMachine, userName, privateKey) {
+function connectToTargetLinuxVMUsePrivateKey(steppingNode, virtualMachine, userName, privateKey, passPhrase) {
     terminalResize();
     renderTerminal();
-    var address = constructTheWebSocketAddressUsePrivateKey(steppingNode, virtualMachine, userName, termWidth, termHeight, privateKey);
+    var address = constructTheWebSocketAddressUsePrivateKey(steppingNode, virtualMachine, userName, termWidth, termHeight, privateKey, passPhrase);
     connectToTargetLinuxVMCommon(address);
 }
 
@@ -93,6 +93,7 @@ function Login() {
             connectToTargetLinuxVMUsePassword(steppingNodes.value[0], selectedVirtualMachine, userName, passWord);
         });
     }
+
     if (currentLoginMethod == usePrivateKeyToLogin) {
         getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
             var identityFile = $("#identity_file")[0].files[0];
