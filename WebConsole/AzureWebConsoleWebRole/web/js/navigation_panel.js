@@ -1,6 +1,6 @@
 ﻿var zNodeIndex = 3;
 
-var showSettings = false;
+var showSettings = true;
 function toggleSettings(forceStatus) {
     if (forceStatus == undefined) {
         showSettings = !showSettings;
