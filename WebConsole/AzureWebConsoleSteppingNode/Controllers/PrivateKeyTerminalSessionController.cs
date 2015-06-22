@@ -49,10 +49,20 @@ namespace AzureTerminalWebConsole.Controllers
 //3ZtexuP1zGdOCpOWeh1es1TIvJf2wNXPrVzGOS3r5xVEWH+Tcne7cxEHqUTnYWNw
 //0Fo232jB3pAaHcZZFJzMcUX1b/l1MD8yKNbeHAlP/3v7YZf+g81TRQ==
 //-----END RSA PRIVATE KEY-----";
-                byte[] privateKeyByteArray = Encoding.UTF8.GetBytes(privateKey);
+
+                byte []privateKeyByteArray=Convert.FromBase64String(privateKey);
+                //byte[] privateKeyByteArray = Encoding.UTF8.GetBytes(privateKey);
                 MemoryStream privateKeyStream = new MemoryStream(privateKeyByteArray);
                 privateKeyStream.Position = 0;
-                PrivateKeyFile privateKeyFile = new PrivateKeyFile(privateKeyStream, passPhrase);
+                PrivateKeyFile privateKeyFile = null;
+                if(string.IsNullOrEmpty(passPhrase))
+                {
+                    privateKeyFile = new PrivateKeyFile(privateKeyStream);
+                }
+                else
+                {
+                    privateKeyFile = new PrivateKeyFile(privateKeyStream, passPhrase);
+                }
                 var client = new SshClient(hostName, int.Parse(port), userName, privateKeyFile);
                 client.Connect();
 

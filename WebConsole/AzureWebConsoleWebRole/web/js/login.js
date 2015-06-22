@@ -40,7 +40,9 @@ function constructTheWebSocketAddressUsePrivateKey(steppingNode, virtualMachine,
 function connectToTargetLinuxVMUsePrivateKey(steppingNode, virtualMachine, userName, privateKey, passPhrase) {
     terminalResize();
     renderTerminal();
-    var address = constructTheWebSocketAddressUsePrivateKey(steppingNode, virtualMachine, userName, termWidth, termHeight, privateKey, passPhrase);
+    // we should base 64 encode the privateKey so we can keep the \r\n thing in the string.
+    var encodedPrivateKey = Base64.encode(privateKey);
+    var address = constructTheWebSocketAddressUsePrivateKey(steppingNode, virtualMachine, userName, termWidth, termHeight, encodedPrivateKey, passPhrase);
     connectToTargetLinuxVMCommon(address);
 }
 
