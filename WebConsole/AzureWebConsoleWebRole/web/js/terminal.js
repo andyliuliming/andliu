@@ -31,5 +31,4 @@ function terminalResize() {
     var charWidth = (test.clientWidth);
     termWidth = Math.floor(width / charWidth) - 1;
     termHeight = Math.floor(height / charHeight) - 1;
-
 }

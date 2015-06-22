@@ -28,13 +28,11 @@
     <link href="./web/css/TestFontSize.css" rel="stylesheet" type="text/css" />
     <link href="./web/css/terminal_actions.css" rel="stylesheet" type="text/css" />
     <link href="./web/css/global.css" rel="stylesheet" type="text/css" />
-    <link href="./web/css/copyfile.css" rel="stylesheet" type="text/css" />
     <link href="./web/css/azureterminal.css" rel="stylesheet" type="text/css" />
     <link href="./web/css/navigation_bar.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <script>
-        var ws = null;
         $(document).ready(function () {
             SignIn();
             initializeNavigationBar();
@@ -57,11 +55,21 @@
             <p class="login_header_label">Login</p>
         </div>
         <ul class="login_blade-ul">
-            <li class="input_label_li"><label for="hostname_input">Host Name:</label></li>
-            <li><input class="login_input" id="hostname_input" type="text" /></li>
-            <li class="input_label_li"><label for="username_input">Username:</label></li>
-            <li><input class="login_input" id="username_input" type="text" /></li>
-            <li class="input_label_li"><label for="port">Port:</label></li>
+            <li class="input_label_li">
+                <label for="hostname_input">Host Name:</label>
+            </li>
+            <li>
+                <input class="login_input" id="hostname_input" type="text" />
+            </li>
+            <li class="input_label_li">
+                <label for="username_input">Username:</label>
+            </li>
+            <li>
+                <input class="login_input" id="username_input" type="text" />
+            </li>
+            <li class="input_label_li">
+                <label for="port">Port:</label>
+            </li>
             <li>
                 <input class="login_input" id="port" type="text" value="22" />
             </li>
@@ -70,7 +78,9 @@
                 <button id="privatekey_option_button" class="auth_button">SSH Private Key</button>
                 <button id="tempkey_option_button" class="auth_button">SSH Temp Key</button>
             </li>
-            <li class="input_label_li"><label id="auth_type_label" for="password">Password:</label></li>
+            <li class="input_label_li">
+                <label id="auth_type_label" for="password">Password:</label>
+            </li>
             <li>
                 <input class="login_input" id="password" type="password" />
                 <div id="login_private_key">
@@ -88,7 +98,7 @@
             </li>
             <li class="input_label_li">
                 <button class="connect_button azure_terminal_button" name="login" id="loginbutton">Connect</button>
-                <button class="connect_button azure_terminal_button" name="cancel" id="cancel_login_button">Cancel</button> 
+                <button class="connect_button azure_terminal_button" name="cancel" id="cancel_login_button">Cancel</button>
             </li>
         </ul>
     </div>
