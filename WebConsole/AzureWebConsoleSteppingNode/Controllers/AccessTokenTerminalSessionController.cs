@@ -42,7 +42,7 @@ namespace AzureTerminalWebConsole.Controllers
                 AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();
 
                 vmUtil.SetPublicKey(publicKey, hostName, userName, deploymentName, virtualMachineName, subscriptionId, accessToken);
-                var client = new SshClient(hostName, int.Parse(port), userName, pkf);
+                var client = new SshClient(hostName + ".cloudapp.net", int.Parse(port), userName, pkf);
                 client.Connect();
 
                 stream = client.CreateShellStream("xterm", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);
