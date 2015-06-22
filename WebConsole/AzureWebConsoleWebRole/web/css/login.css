@@ -151,6 +151,7 @@
     margin-top: auto;
     margin-left: auto;
     margin-right: auto;
+    z-index: 2;
 }
 
 .decoration_label {
