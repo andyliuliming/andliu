@@ -20,6 +20,7 @@ function initializeNavigationBar() {
         toggleSettings();
     });
 }
+
 function initializeSubscriptions(subscriptions) {
     $("#virtual_machine_selections option").remove();
     for (var i = 0; i < subscriptions.value.length; i++) {

@@ -35,7 +35,7 @@ function initializeLoginPanel(selectedVirtualMachine) {
     $("#hostname_input").val(selectedVirtualMachine.HostServiceName + ".cloudapp.net");
     $("#username_input").val("azureuser");
     $("#port").val(selectedVirtualMachine.Port);
-    $("#login_blade").css("display", "block");
+    $("#login_blade").fadeIn(200);
 
     $("#password_option_button").unbind("click");
     $("#password_option_button").bind("click", function (ev) {
@@ -89,5 +89,9 @@ function initializeLoginPanel(selectedVirtualMachine) {
     $("#loginbutton").unbind("click");
     $("#loginbutton").bind("click", function (ev) {
         Login();
+    });
+    $("#cancel_login_button").unbind("click");
+    $("#cancel_login_button").bind("click", function (ev) {
+        $("#login_blade").fadeOut(200);
     });
 }
