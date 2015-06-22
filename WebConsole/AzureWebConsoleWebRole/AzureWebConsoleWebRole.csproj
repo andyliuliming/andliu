@@ -213,8 +213,7 @@
     <Content Include="web\css\copyfile.css" />
     <Content Include="web\css\global.css" />
     <Content Include="web\css\login.css" />
-    <Content Include="web\css\private_key.css" />
-    <Content Include="web\css\select_folder.css" />
+    <Content Include="web\css\navigation_bar.css" />
     <Content Include="web\css\terminal.css" />
     <Content Include="web\css\terminal_actions.css" />
     <Content Include="web\css\TestFontSize.css" />

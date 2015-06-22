@@ -8,9 +8,9 @@ function toggleSettings(forceStatus) {
         showSettings = forceStatus;
     }
     if (showSettings) {
-        $("#virtual_machine_navigation_panel").css("display", "block");
+        $("#virtual_machine_navigation_panel").fadeIn(200);
     } else {
-        $("#virtual_machine_navigation_panel").css("display", "none");
+        $("#virtual_machine_navigation_panel").fadeOut(200);
     }
 }
 
