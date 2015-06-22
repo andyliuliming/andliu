@@ -210,7 +210,6 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="web\css\azureterminal.css" />
-    <Content Include="web\css\copyfile.css" />
     <Content Include="web\css\global.css" />
     <Content Include="web\css\login.css" />
     <Content Include="web\css\navigation_bar.css" />

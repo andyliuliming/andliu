@@ -60,6 +60,12 @@
         background-color: lightgrey;
     }
 
+#cancel_login_button {
+    height: 35px;
+    width: 90px;
+    font-size: 12px;
+    font-weight: bold;
+}
 
 .input_label_li {
     font-weight: normal;
