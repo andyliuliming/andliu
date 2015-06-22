@@ -1,4 +1,25 @@
 ﻿var zNodeIndex = 3;
+
+var showSettings = false;
+function toggleSettings(forceStatus) {
+    if (forceStatus == undefined) {
+        showSettings = !showSettings;
+    } else {
+        showSettings = forceStatus;
+    }
+    if (showSettings) {
+        $("#virtual_machine_navigation_panel").css("display", "block");
+    } else {
+        $("#virtual_machine_navigation_panel").css("display", "none");
+    }
+}
+
+function initializeNavigationBar() {
+    $("#terminal_actions_icon").unbind("click");
+    $("#terminal_actions_icon").bind("click", function (ev) {
+        toggleSettings();
+    });
+}
 function initializeSubscriptions(subscriptions) {
     $("#virtual_machine_selections option").remove();
     for (var i = 0; i < subscriptions.value.length; i++) {
@@ -104,6 +125,7 @@ function initializeLoginPanel(selectedVirtualMachine) {
     $("#loginbutton").unbind("click");
     $("#loginbutton").bind("click", function (ev) {
         var userName = $("#username_input").val();
+        var subscriptionAccessToken = $.cookie(selectedVirtualMachine.SubscriptionId);
         if (currentLoginMethod == useTempKeyToLogin) {
             getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
                 connectToTargetLinuxVMUseToken(steppingNodes.value[0], selectedVirtualMachine, userName, subscriptionAccessToken);

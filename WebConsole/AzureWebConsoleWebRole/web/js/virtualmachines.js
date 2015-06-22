@@ -1,5 +1,5 @@
-﻿function getAzureVirtualMachines(token, successFunc, errorFunc) {
-    var url = getServiceBaseUri() + "/odata/AzureVirtualMachines";
+﻿function getAzureVirtualMachines(token, subscriptionId, successFunc, errorFunc) {
+    var url = getServiceBaseUri() + "/odata/AzureVirtualMachines?$filter=(" + "SubscriptionId eq '" + subscriptionId + "')";
     $.ajax({
         url: url,
         type: "GET",

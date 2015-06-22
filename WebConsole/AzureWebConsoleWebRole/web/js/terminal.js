@@ -1,19 +1,7 @@
 var term = null;
 var termWidth;
 var termHeight;
-var showSettings = false;
-function toggleSettings(forceStatus) {
-    if (forceStatus == undefined) {
-        showSettings = !showSettings;
-    } else {
-        showSettings = forceStatus;
-    }
-    if (showSettings) {
-        $("#virtual_machines_tree").css("display", "block");
-    } else {
-        $("#virtual_machines_tree").css("display", "none");
-    }
-}
+
 function renderTerminal() {
     $("#terminal_main_panel").html("");
     if (term != null) {

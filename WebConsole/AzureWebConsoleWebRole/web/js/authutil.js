@@ -17,14 +17,14 @@ function commonAccessTokenStage() {
             var accessTokenInUri = getUrlVars()["access_token"];
             $.removeCookie("current_subscription");
             $.cookie(currentSubscriptionInCookie, accessTokenInUri);
-            subscriptionAccessTokenStage(accessTokenInUri);
+            subscriptionAccessTokenStage(subscriptionToSignIn,accessTokenInUri);
         } else {
             var subscriptionAccessTokenInCookie = $.cookie(subscriptionToSignIn);
             if (subscriptionAccessTokenInCookie == null) {
                 $.cookie("current_subscription", subscriptionToSignIn);
                 SignInToSubscription(subscriptions.value[0].AADTenant);
             } else {
-                subscriptionAccessTokenStage(subscriptionAccessTokenInCookie);
+                subscriptionAccessTokenStage(subscriptionToSignIn,subscriptionAccessTokenInCookie);
             }
         }
 
@@ -36,8 +36,8 @@ function commonAccessTokenStage() {
     });
 }
 
-function subscriptionAccessTokenStage(accessToken) {
-    getAzureVirtualMachines(accessToken, function (virtualMachines) {
+function subscriptionAccessTokenStage(currentSubscription,accessToken) {
+    getAzureVirtualMachines(accessToken,currentSubscription, function (virtualMachines) {
         setVirtualMachines(virtualMachines);
     }, function (error) {
         // Clear Up.

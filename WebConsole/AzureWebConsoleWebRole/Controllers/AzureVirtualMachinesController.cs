@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.IO;
 using AzureManagementLib;
+using Microsoft.OData.Core.UriParser.Semantic;
+using Microsoft.OData.Core.UriParser.TreeNodeKinds;
 
 namespace AzureWebConsole.Controllers
 {
@@ -46,26 +48,40 @@ namespace AzureWebConsole.Controllers
 
             IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("access_token");
             string accessToken = accessTokens.FirstOrDefault();
-
-            // get the SubscriptionId first and then filter it
-
-            AzureSubscriptionUtil util = new AzureSubscriptionUtil();
-            List<AzureSubscription> subs = util.GetSubscriptions(accessToken);
-            // get the subscriptions from the access token.
             if (accessToken != null)
             {
-                AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();
-                List<AzureVirtualMachine> azureVirtualMachines = new List<AzureVirtualMachine>();
-                foreach (AzureSubscription sub in subs)
+                // get the SubscriptionId first and then filter it
+
+                if (queryOptions != null && queryOptions.Filter != null)
                 {
-                    List<AzureVirtualMachine> azureVirtualMachinesTmp = vmUtil.FindAllMachines(sub.SubscriptionId, accessToken);
-                    azureVirtualMachines.AddRange(azureVirtualMachinesTmp);
+                    BinaryOperatorNode binaryOperator = queryOptions.Filter.FilterClause.Expression as BinaryOperatorNode;
+                    if (binaryOperator != null)
+                    {
+                        SingleValuePropertyAccessNode property = binaryOperator.Left as SingleValuePropertyAccessNode;
+                        if (property != null && binaryOperator.OperatorKind == BinaryOperatorKind.Equal
+                            && property.Property.Name == "SubscriptionId")
+                        {
+                            //return true;
+                            ConstantNode singleValueNode = binaryOperator.Right as ConstantNode;
+                            
+
+                            AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();
+                            List<AzureVirtualMachine> azureVirtualMachines = new List<AzureVirtualMachine>();
+
+                            List<AzureVirtualMachine> azureVirtualMachinesTmp = vmUtil.FindAllMachines(singleValueNode.Value.ToString(), accessToken);
+                            azureVirtualMachines.AddRange(azureVirtualMachinesTmp);
+
+                            for (int i = 0; i < azureVirtualMachines.Count; i++)
+                            {
+                                azureVirtualMachines[i].Id = i + 3;
+                            }
+                            return Ok<IEnumerable<AzureVirtualMachine>>(azureVirtualMachines);
+                        }
+                    }
                 }
-                for (int i = 0; i < azureVirtualMachines.Count; i++)
-                {
-                    azureVirtualMachines[i].Id = i + 3;
-                }
-                return Ok<IEnumerable<AzureVirtualMachine>>(azureVirtualMachines);
+                // get the subscriptions from the access token.
+
+                return BadRequest("");
             }
             else
             {
