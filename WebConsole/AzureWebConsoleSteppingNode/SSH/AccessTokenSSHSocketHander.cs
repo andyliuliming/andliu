@@ -11,10 +11,8 @@ using System.Web;
 
 namespace WebConsoleSteppingNode.SSH
 {
-    public class AccessTokenSSHSocketHander : WebSocketHandler
+    public class AccessTokenSSHSocketHander : AbstractSSHSocketHandler
     {
-        private object sendLock = new object();
-        bool firstTime = true; ShellStream stream;
         public AccessTokenSSHSocketHander(String hostName, String userName, String deploymentName, String virtualMachineName, String subscriptionId, String port, String accessToken, String columns, String rows)
         {
             MemoryStream privateKey = new MemoryStream();
@@ -33,37 +31,6 @@ namespace WebConsoleSteppingNode.SSH
 
             stream = client.CreateShellStream("xterm", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);
             stream.DataReceived += ChatSocketHandler_DataReceived;
-        }
-
-        void ChatSocketHandler_DataReceived(object sender, Renci.SshNet.Common.ShellDataEventArgs e)
-        {
-            lock (sendLock)
-            {
-                if (firstTime)
-                {
-                    firstTime = false;
-                    Thread.Sleep(5000);
-                }
-                string msgToSend = Encoding.UTF8.GetString(e.Data);
-                Send(msgToSend);
-            }
-        }
-
-        public override void OnOpen()
-        {
-            Console.WriteLine("OnOpen()");
-        }
-
-        public override void OnMessage(string message)
-        {
-            Console.WriteLine("OnMessage()");
-            stream.Write(message);
-        }
-
-        public override void OnClose()
-        {
-            Console.WriteLine("OnClose()");
-            stream.Close();
         }
     }
 }

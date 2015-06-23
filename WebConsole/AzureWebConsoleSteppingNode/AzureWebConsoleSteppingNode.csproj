@@ -185,6 +185,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SSH\AbstractSSHSocketHandler.cs" />
     <Compile Include="SSH\PasswordSSHSocketHandler.cs" />
     <Compile Include="SSH\AccessTokenSSHSocketHander.cs" />
     <Compile Include="SSH\PrivateKeySSHSocketHandler.cs" />

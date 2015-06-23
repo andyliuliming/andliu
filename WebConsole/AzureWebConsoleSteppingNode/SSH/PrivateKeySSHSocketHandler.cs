@@ -10,10 +10,8 @@ using System.Web;
 
 namespace WebConsoleSteppingNode.SSH
 {
-    public class PrivateKeySSHSocketHandler : WebSocketHandler
+    public class PrivateKeySSHSocketHandler : AbstractSSHSocketHandler
     {
-        ShellStream stream;
-        bool firstTime = true;
         public PrivateKeySSHSocketHandler(String hostName, String userName, String privateKey, String passPhrase, String port, String columns, String rows)
         {
             byte[] privateKeyByteArray = Convert.FromBase64String(privateKey);
@@ -34,38 +32,6 @@ namespace WebConsoleSteppingNode.SSH
 
             stream = client.CreateShellStream("xterm", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);
             stream.DataReceived += ChatSocketHandler_DataReceived;
-        }
-
-        private object sendLock = new object();
-        void ChatSocketHandler_DataReceived(object sender, Renci.SshNet.Common.ShellDataEventArgs e)
-        {
-            lock (sendLock)
-            {
-                if (firstTime)
-                {
-                    firstTime = false;
-                    Thread.Sleep(5000);
-                }
-                string msgToSend = Encoding.UTF8.GetString(e.Data);
-                Send(msgToSend);
-            }
-        }
-
-        public override void OnOpen()
-        {
-            Console.WriteLine("OnOpen()");
-        }
-
-        public override void OnMessage(string message)
-        {
-            Console.WriteLine("OnMessage()");
-            stream.Write(message);
-        }
-
-        public override void OnClose()
-        {
-            Console.WriteLine("OnClose()");
-            stream.Close();
         }
     }
 
