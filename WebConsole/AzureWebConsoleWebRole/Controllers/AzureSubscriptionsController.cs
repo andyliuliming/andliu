@@ -6,11 +6,11 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
-using AzureTerminalWebConsole.Model;
 using System.Web.OData;
 using System.Web.OData.Query;
 using Microsoft.OData.Core;
 using AzureManagementLib;
+using AzureWebConsoleDomain;
 
 namespace AzureWebConsole.Controllers
 {

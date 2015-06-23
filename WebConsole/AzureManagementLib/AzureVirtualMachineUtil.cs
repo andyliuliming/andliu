@@ -1,4 +1,5 @@
 ﻿
+using AzureWebConsoleDomain;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Management.Compute;
 using Microsoft.WindowsAzure.Management.Compute.Models;
@@ -91,11 +92,10 @@ namespace AzureManagementLib
             TokenCloudCredentials credential = new TokenCloudCredentials(subscriptionId, accessToken);
             using (var client = new ComputeManagementClient(credential))
             {
-
                 VirtualMachineUpdateParameters parameters = new VirtualMachineUpdateParameters();
                 ResourceExtensionReference reference = new ResourceExtensionReference();
-                reference.ReferenceName = "VMAccessForLinux";
-                reference.Name = "VMAccessForLinux";
+                reference.ReferenceName = "VMAccessForLinuxTest";
+                reference.Name = "VMAccessForLinuxTest";
                 reference.Publisher = "Microsoft.OSTCExtensions";
                 reference.Version = "1.*";
                 reference.State = "Enable";
@@ -106,10 +106,13 @@ namespace AzureManagementLib
                 var sr = new StreamReader(publicKey, Encoding.UTF8);
                 var publicKeyString = sr.ReadToEnd().Trim();
 
-                string finalPrivateParameter = "{\"username\":\"" + userName + "\",\"ssh_key\":\"" + publicKeyString + "\",\"reset_ssh\":\"true\",\"timestamp\":" + DateTime.UtcNow.Ticks + "}";
+                string finalPrivateParameter = "{\"username\":\"" + userName
+                    + "\",\"ssh_key\":\"" + publicKeyString
+                    + "\",\"reset_ssh\":\"true\""
+                    + ",\"timestamp\":" + DateTime.UtcNow.Ticks
+                    + ",\"no_convert\":\"true\""
+                    + "}";
 
-
-                //string privateParameter = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(finalPrivateParameter));
                 parameterValue.Value = finalPrivateParameter;
                 parameterValue.Type = "Private";
                 reference.ResourceExtensionParameterValues.Add(parameterValue);

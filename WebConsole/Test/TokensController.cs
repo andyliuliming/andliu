@@ -1,5 +1,4 @@
 ﻿using AzureManagementLib;
-using AzureTerminalWebConsole.Model;
 using Microsoft.OData.Core;
 using System;
 using System.Collections.Generic;

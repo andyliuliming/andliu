@@ -6,7 +6,6 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
-using AzureTerminalWebConsole.Model;
 using System.Web.OData;
 using System.Web.OData.Query;
 using Microsoft.OData.Core;
@@ -16,6 +15,7 @@ using System.IO;
 using AzureManagementLib;
 using Microsoft.OData.Core.UriParser.Semantic;
 using Microsoft.OData.Core.UriParser.TreeNodeKinds;
+using AzureWebConsoleDomain;
 
 namespace AzureWebConsole.Controllers
 {

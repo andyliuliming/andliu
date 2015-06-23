@@ -1,4 +1,4 @@
-﻿using AzureTerminalWebConsole.Model;
+﻿using AzureWebConsoleDomain;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Subscriptions;
 using System;

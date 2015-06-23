@@ -6,7 +6,6 @@ using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Serialization;
 using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
-using AzureTerminalWebConsole.Model;
 using AzureManagementLib;
 using AzureWebConsoleDomain;
 namespace AzureWebConsole
