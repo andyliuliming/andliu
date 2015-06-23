@@ -9,6 +9,7 @@
 
 namespace AzureWebConsoleDomain
 {
+    using AzureWebConsole;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
@@ -16,7 +17,7 @@ namespace AzureWebConsoleDomain
     public partial class AzureWebConsoleModelContainer : DbContext
     {
         public AzureWebConsoleModelContainer()
-            : base("name=AzureWebConsoleModelContainer")
+            : base(AppSettingsProvider.GetSetting("AzureWebConsoleModelContainer"))
         {
         }
     

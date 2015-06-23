@@ -132,6 +132,12 @@
   <ItemGroup>
     <Content Include="AzureWebConsoleModel.edmx.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AzureWebConsoleCommon\AzureWebConsoleCommon.csproj">
+      <Project>{92f4261e-6044-48c1-aa30-326f660b3975}</Project>
+      <Name>AzureWebConsoleCommon</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

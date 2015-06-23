@@ -145,6 +145,10 @@
       <Project>{dc167386-5217-4c69-b25c-539d25d6c6db}</Project>
       <Name>AzureManagementLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AzureWebConsoleCommon\AzureWebConsoleCommon.csproj">
+      <Project>{92f4261e-6044-48c1-aa30-326f660b3975}</Project>
+      <Name>AzureWebConsoleCommon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AzureWebConsoleDomain\AzureWebConsoleDomain.csproj">
       <Project>{e24c8e57-8586-4b3d-b178-430bb80eab35}</Project>
       <Name>AzureWebConsoleDomain</Name>
