@@ -1,10 +1,17 @@
 ﻿function JumptoCommonLogin() {
-    window.location = "https://login.windows.net/common/oauth2/authorize?client_id=e5740bbf-07d0-4e4c-b174-94ff7d6adbcd&response_type=token&redirect_uri=https://localhost:63808/index.html&resource=https://management.core.windows.net/";
+    window.location =
+        "https://login.windows.net/common/oauth2/authorize?client_id=" +
+        +clientId + "&response_type=token&redirect_uri="
+        + replyUri + "&resource=https://management.core.windows.net/";
 }
 
 function SignInToSubscription(subscriptionAADTenantId) {
     // call back the subscription specific one.
-    window.location = "https://login.windows.net/" + subscriptionAADTenantId + "/oauth2/authorize?client_id=e5740bbf-07d0-4e4c-b174-94ff7d6adbcd&response_type=token&redirect_uri=https://localhost:63808/index.html&resource=https://management.core.windows.net/";
+    window.location =
+        "https://login.windows.net/" + subscriptionAADTenantId
+        + "/oauth2/authorize?client_id="
+        + clientId + "&response_type=token&redirect_uri="
+        + replyUri + "&resource=https://management.core.windows.net/";
 }
 
 function commonAccessTokenStage() {
@@ -17,14 +24,14 @@ function commonAccessTokenStage() {
             var accessTokenInUri = getUrlVars()["access_token"];
             $.removeCookie("current_subscription");
             $.cookie(currentSubscriptionInCookie, accessTokenInUri);
-            subscriptionAccessTokenStage(subscriptionToSignIn,accessTokenInUri);
+            subscriptionAccessTokenStage(subscriptionToSignIn, accessTokenInUri);
         } else {
             var subscriptionAccessTokenInCookie = $.cookie(subscriptionToSignIn);
             if (subscriptionAccessTokenInCookie == null) {
                 $.cookie("current_subscription", subscriptionToSignIn);
                 SignInToSubscription(subscriptions.value[0].AADTenant);
             } else {
-                subscriptionAccessTokenStage(subscriptionToSignIn,subscriptionAccessTokenInCookie);
+                subscriptionAccessTokenStage(subscriptionToSignIn, subscriptionAccessTokenInCookie);
             }
         }
 
@@ -36,8 +43,8 @@ function commonAccessTokenStage() {
     });
 }
 
-function subscriptionAccessTokenStage(currentSubscription,accessToken) {
-    getAzureVirtualMachines(accessToken,currentSubscription, function (virtualMachines) {
+function subscriptionAccessTokenStage(currentSubscription, accessToken) {
+    getAzureVirtualMachines(accessToken, currentSubscription, function (virtualMachines) {
         setVirtualMachines(virtualMachines);
     }, function (error) {
         // Clear Up.

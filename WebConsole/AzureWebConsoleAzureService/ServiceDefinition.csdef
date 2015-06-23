@@ -5,6 +5,7 @@
       <Site name="Web">
         <Bindings>
           <Binding name="Endpoint1" endpointName="Endpoint1" />
+          <Binding name="Endpoint2" endpointName="Endpoint2" />
         </Bindings>
       </Site>
     </Sites>
@@ -15,9 +16,11 @@
       <Setting name="resource" />
       <Setting name="client_secret" />
       <Setting name="AzureWebConsoleModelContainer" />
+      <Setting name="AllowedCrossDomainHost" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />
+      <InputEndpoint name="Endpoint2" protocol="http" port="443" />
     </Endpoints>
   </WebRole>
   <WebRole name="AzureWebConsoleSteppingNode" vmsize="Small">

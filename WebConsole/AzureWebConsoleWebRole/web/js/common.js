@@ -23,7 +23,7 @@ var accessTokenUrl = getServiceBaseUri() + "/odata/Tokens";
 var subscriptionUrl = getServiceBaseUri() + "/odata/Subscriptions";
 var OSName = "Unknown OS";
 var OSNameGot = false;
-var clientId = "bdc9875c-7994-4812-803e-ea2b216efe60";
+var clientId = "e5740bbf-07d0-4e4c-b174-94ff7d6adbcd";
 
 var replyUri = getServiceBaseUri() + "/index.html";
 
