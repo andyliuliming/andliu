@@ -3,8 +3,8 @@
   <Role name="AzureWebConsoleWebRole">
     <Instances count="1" />
     <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
-      <Setting name="redirect_uri" value="http://localhost:63808/index.html" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName={DiagnosticStorageAccountName};AccountKey={DiagnosticStorageAccountKey}" />
+      <Setting name="redirect_uri" value="https://azurewebconsole.cloudapp.net/index.html" />
       <Setting name="client_id" value="e5740bbf-07d0-4e4c-b174-94ff7d6adbcd" />
       <Setting name="resource" value="https://management.core.windows.net/" />
       <Setting name="client_secret" value="S44An9h/jr2LdWMPglj+CJgOUXMyaMYFsnZWrdJRgYc=" />
@@ -12,7 +12,7 @@
       <Setting name="AllowedCrossDomainHost" value="{AllowedCrossDomainHost}" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="AzureWebConsoleCert" thumbprint="97EFF3028677894BDD4F9AC53F789BEE5DF4AD86" thumbprintAlgorithm="sha1" />
+      <Certificate name="AzureWebConsoleCert" thumbprint="815F526D5628ECD2A96F6FEC7E94DE6F622CCF6F" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
   <Role name="AzureWebConsoleSteppingNode">
@@ -22,7 +22,7 @@
       <Setting name="AllowedCrossDomainHost" value="*" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="AzureWebConsoleCert" thumbprint="97EFF3028677894BDD4F9AC53F789BEE5DF4AD86" thumbprintAlgorithm="sha1" />
+      <Certificate name="AzureWebConsoleCert" thumbprint="815F526D5628ECD2A96F6FEC7E94DE6F622CCF6F" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
 </ServiceConfiguration>
