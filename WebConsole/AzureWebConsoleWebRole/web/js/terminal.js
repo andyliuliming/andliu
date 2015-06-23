@@ -20,6 +20,17 @@ function renderTerminal() {
     term.on('data', function (data) {
         ws.send(data);
     });
+    bindFileDrop(term);
+}
+
+function bindFileDrop(termToBind) {
+    $(termToBind.element).unbind("drop");
+    $(termToBind.element).bind("drop", function (ev) {
+        var files = e.originalEvent.dataTransfer.files;
+        ev.preventDefault();
+        console.dir(files);
+        return false;
+    });
 }
 
 function terminalResize() {

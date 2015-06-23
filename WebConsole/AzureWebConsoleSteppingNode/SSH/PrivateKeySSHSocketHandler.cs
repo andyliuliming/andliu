@@ -15,7 +15,6 @@ namespace WebConsoleSteppingNode.SSH
         public PrivateKeySSHSocketHandler(String hostName, String userName, String privateKey, String passPhrase, String port, String columns, String rows)
         {
             byte[] privateKeyByteArray = Convert.FromBase64String(privateKey);
-            //byte[] privateKeyByteArray = Encoding.UTF8.GetBytes(privateKey);
             MemoryStream privateKeyStream = new MemoryStream(privateKeyByteArray);
             privateKeyStream.Position = 0;
             PrivateKeyFile privateKeyFile = null;
