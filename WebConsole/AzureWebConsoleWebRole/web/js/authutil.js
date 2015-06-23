@@ -1,7 +1,7 @@
 ﻿function JumptoCommonLogin() {
     window.location =
-        "https://login.windows.net/common/oauth2/authorize?client_id=" +
-        +clientId + "&response_type=token&redirect_uri="
+        "https://login.windows.net/common/oauth2/authorize?client_id=" 
+        + clientId + "&response_type=token&redirect_uri="
         + replyUri + "&resource=https://management.core.windows.net/";
 }
 
