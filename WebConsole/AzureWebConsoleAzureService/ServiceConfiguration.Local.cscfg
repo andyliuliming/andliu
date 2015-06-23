@@ -11,6 +11,9 @@
       <Setting name="AzureWebConsoleModelContainer" value="Provider=System.Data.SqlClient;Metadata=res://*/AzureWebConsoleModel.csdl|res://*/AzureWebConsoleModel.ssdl|res://*/AzureWebConsoleModel.msl;Provider Connection String='Data Source={DATABASE_SERVER_NAME}.database.windows.net;initial catalog={DATABASE_NAME};persist security info=True;user id={DATABASE_USER_NAME};password={DATABASE_PASSWORD};MultipleActiveResultSets=True;App=EntityFramework';" />
       <Setting name="AllowedCrossDomainHost" value="{AllowedCrossDomainHost}" />
     </ConfigurationSettings>
+    <Certificates>
+      <Certificate name="AzureWebConsoleCert" thumbprint="97EFF3028677894BDD4F9AC53F789BEE5DF4AD86" thumbprintAlgorithm="sha1" />
+    </Certificates>
   </Role>
   <Role name="AzureWebConsoleSteppingNode">
     <Instances count="1" />
@@ -18,5 +21,8 @@
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="AllowedCrossDomainHost" value="*" />
     </ConfigurationSettings>
+    <Certificates>
+      <Certificate name="AzureWebConsoleCert" thumbprint="97EFF3028677894BDD4F9AC53F789BEE5DF4AD86" thumbprintAlgorithm="sha1" />
+    </Certificates>
   </Role>
 </ServiceConfiguration>
