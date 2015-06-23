@@ -26,10 +26,10 @@ namespace WebConsoleSteppingNode.SSH
             AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();
 
             vmUtil.SetPublicKey(publicKey, hostName, userName, deploymentName, virtualMachineName, subscriptionId, accessToken);
-            var client = new SshClient(hostName + ".cloudapp.net", int.Parse(port), userName, pkf);
-            client.Connect();
+            sshClient = new SshClient(hostName + ".cloudapp.net", int.Parse(port), userName, pkf);
+            sshClient.Connect();
 
-            stream = client.CreateShellStream("xterm", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);
+            stream = sshClient.CreateShellStream("xterm", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);
             stream.DataReceived += ChatSocketHandler_DataReceived;
         }
     }

@@ -27,10 +27,10 @@ namespace WebConsoleSteppingNode.SSH
             {
                 privateKeyFile = new PrivateKeyFile(privateKeyStream, passPhrase);
             }
-            var client = new SshClient(hostName, int.Parse(port), userName, privateKeyFile);
-            client.Connect();
+            sshClient = new SshClient(hostName, int.Parse(port), userName, privateKeyFile);
+            sshClient.Connect();
 
-            stream = client.CreateShellStream("xterm", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);
+            stream = sshClient.CreateShellStream("xterm", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);
             stream.DataReceived += ChatSocketHandler_DataReceived;
         }
     }

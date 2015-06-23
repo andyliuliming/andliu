@@ -13,10 +13,10 @@ namespace WebConsoleSteppingNode.SSH
     {
         public PasswordSSHSocketHandler(String hostName, String userName, String passWord, String port, String columns, String rows)
         {
-            var client = new SshClient(hostName, int.Parse(port), userName, passWord);
-            client.Connect();
+            sshClient = new SshClient(hostName, int.Parse(port), userName, passWord);
+            sshClient.Connect();
 
-            stream = client.CreateShellStream("xterm", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);
+            stream = sshClient.CreateShellStream("xterm", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);
             stream.DataReceived += ChatSocketHandler_DataReceived;
         }
     }
