@@ -8,7 +8,7 @@
       <Setting name="client_id" value="bdc9875c-7994-4812-803e-ea2b216efe60" />
       <Setting name="resource" value="https://management.core.windows.net/" />
       <Setting name="client_secret" value="dOVtx79Bc9lGkOtyqEXmwAhOnAg5ZBFFPb402hvL1EQ=" />
-      <Setting name="DataBaseUserName" value="Provider=System.Data.SqlClient;Metadata=res://*/AzureWebConsoleModel.csdl|res://*/AzureWebConsoleModel.ssdl|res://*/AzureWebConsoleModel.msl;Provider Connection String='Data Source=fojiu0lsfn.database.windows.net;initial catalog=azurewebconsoledb;persist security info=True;user id=azureuser;password=User@123;MultipleActiveResultSets=True;App=EntityFramework';" />
+      <Setting name="AzureWebConsoleModelContainer" value="Provider=System.Data.SqlClient;Metadata=res://*/AzureWebConsoleModel.csdl|res://*/AzureWebConsoleModel.ssdl|res://*/AzureWebConsoleModel.msl;Provider Connection String='Data Source=fojiu0lsfn.database.windows.net;initial catalog=azurewebconsoledb;persist security info=True;user id=azureuser;password=User@123;MultipleActiveResultSets=True;App=EntityFramework';" />
     </ConfigurationSettings>
   </Role>
   <Role name="AzureWebConsoleSteppingNode">
