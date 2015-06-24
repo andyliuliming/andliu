@@ -8,6 +8,7 @@
         <EntityTypeShape EntityType="AzureWebConsoleModel.SteppingNode" Width="3.25" PointX="0.75" PointY="1.875" />
         <EntityTypeShape EntityType="AzureWebConsoleModel.AzureVirtualMachine" Width="3.25" PointX="0.75" PointY="3.875" />
         <EntityTypeShape EntityType="AzureWebConsoleModel.AzureSubscription" Width="3.25" PointX="4.375" PointY="1.875" />
+        <EntityTypeShape EntityType="AzureWebConsoleModel.TerminalFile" Width="3.25" PointX="4.375" PointY="3.875" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

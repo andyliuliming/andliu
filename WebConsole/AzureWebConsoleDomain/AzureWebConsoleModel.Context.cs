@@ -29,5 +29,6 @@ namespace AzureWebConsoleDomain
         public virtual DbSet<SteppingNode> SteppingNodes { get; set; }
         public virtual DbSet<AzureVirtualMachine> AzureVirtualMachines { get; set; }
         public virtual DbSet<AzureSubscription> AzureSubscriptions { get; set; }
+        public virtual DbSet<TerminalFile> TerminalFiles { get; set; }
     }
 }

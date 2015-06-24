@@ -26,7 +26,9 @@ namespace WebConsoleSteppingNode.SSH
             TerminalAuthorization authorization = new TerminalAuthorization();
             authorization.AuthorizationType = AuthorizationType.AccessToken;
             authorization.Identity = accessToken;
-
+            authorization.HostName = hostName;
+            authorization.UserName = userName;
+            authorization.Port = int.Parse(port);
             SSHSessionRepository.Instance().TerminalAuthorizations.Add(accessToken, authorization);
 
             AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();

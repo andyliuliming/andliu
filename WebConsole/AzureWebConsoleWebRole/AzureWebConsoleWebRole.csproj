@@ -215,6 +215,7 @@
     <Content Include="Global.asax" />
     <Content Include="web\css\azureterminal.css" />
     <Content Include="web\css\blade.css" />
+    <Content Include="web\css\copy_file.css" />
     <Content Include="web\css\global.css" />
     <Content Include="web\css\login.css" />
     <Content Include="web\css\navigation_bar.css" />
@@ -247,6 +248,7 @@
     <Content Include="web\js\subscriptions.js" />
     <Content Include="web\js\terminal.js" />
     <Content Include="web\js\lib\term_downloaded.js" />
+    <Content Include="web\js\terminalfile.js" />
     <Content Include="web\js\util.js" />
     <Content Include="web\js\virtualmachines.js" />
     <Content Include="web\metroStyle\img\line_conn.png" />

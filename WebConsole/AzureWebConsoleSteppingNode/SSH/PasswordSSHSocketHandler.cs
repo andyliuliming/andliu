@@ -16,7 +16,9 @@ namespace WebConsoleSteppingNode.SSH
             TerminalAuthorization authorization = new TerminalAuthorization();
             authorization.AuthorizationType = AuthorizationType.Password;
             authorization.Identity = accessToken;
-
+            authorization.HostName = hostName;
+            authorization.UserName = userName;
+            authorization.Port = int.Parse(port);
             SSHSessionRepository.Instance().TerminalAuthorizations[accessToken] = authorization;
 
             sshClient = new SshClient(hostName, int.Parse(port), userName, passWord);

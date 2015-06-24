@@ -10,5 +10,9 @@ namespace WebConsoleSteppingNode.SSH
     {
         public object Identity { get; set; }
         public AuthorizationType AuthorizationType { get; set; }
+
+        public string HostName { get; set; }
+        public string UserName { get; set; }
+        public int Port { get; set; }
     }
 }

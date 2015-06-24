@@ -1,0 +1,13 @@
+﻿#terminal_copy_file {
+    display: none;
+}
+
+#terminal_copy_target_path {
+    width: 200px;
+}
+
+#terminal_copy_ok_button {
+}
+
+terminal_copy_cancel_button {
+}

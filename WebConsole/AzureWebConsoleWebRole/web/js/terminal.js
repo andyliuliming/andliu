@@ -29,18 +29,28 @@ function bindFileDrop(termToBind) {
     $("#terminal_main_panel")[0].ondrop = function (e) {
         // get the node.
         e.preventDefault();
-        var data = new FormData();
-        data.append('file', e.dataTransfer.files[0]);
-        var request = new XMLHttpRequest();
-        request.open('POST', getHttpSchems() + currentSteppingNode.Address + "/api/TerminalFile?path=/home/azureuser/a.txt");
-        request.onload = function (e) {
-            console.log(request.response);
-        };
-        var currentAccessToken=getCurrentSubscriptionAccessToken();
-        request.setRequestHeader("access_token", currentAccessToken);
-        request.send(data);
 
-        console.dir(e.dataTransfer.files);
+        $("#terminal_copy_file").fadeIn(200);
+
+        $("#terminal_copy_ok_button").unbind("click");
+        $("#terminal_copy_ok_button").bind("click", function (ev) {
+            var data = new FormData();
+            data.append('file', e.dataTransfer.files[0]);
+            var request = new XMLHttpRequest();
+            var targetPath = $("#terminal_copy_target_path").val();
+            request.open('POST', getHttpSchems() + currentSteppingNode.Address + "/api/TerminalFileTransfer?targetPath=" + targetPath);
+            request.onload = function (e) {
+                console.log(request.response);
+            };
+            var currentAccessToken = getCurrentSubscriptionAccessToken();
+            request.setRequestHeader("access_token", currentAccessToken);
+            request.send(data);
+        });
+
+        $("#terminal_copy_cancel_button").unbind("click");
+        $("#terminal_copy_cancel_button").bind("click", function (ev) {
+
+        });
     }
 }
 

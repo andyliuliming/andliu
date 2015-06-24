@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 06/23/2015 13:43:31
+-- Date Created: 06/24/2015 16:12:16
 -- Generated from EDMX file: C:\Users\andliu\Documents\GitHub\andliu\WebConsole\AzureWebConsoleDomain\AzureWebConsoleModel.edmx
 -- --------------------------------------------------
 
@@ -22,6 +22,18 @@ GO
 -- Dropping existing tables
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[SteppingNodes]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[SteppingNodes];
+GO
+IF OBJECT_ID(N'[dbo].[AzureVirtualMachines]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[AzureVirtualMachines];
+GO
+IF OBJECT_ID(N'[dbo].[AzureSubscriptions]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[AzureSubscriptions];
+GO
+IF OBJECT_ID(N'[dbo].[TerminalFiles]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[TerminalFiles];
+GO
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -55,6 +67,14 @@ CREATE TABLE [dbo].[AzureSubscriptions] (
 );
 GO
 
+-- Creating table 'TerminalFiles'
+CREATE TABLE [dbo].[TerminalFiles] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [Path] nvarchar(max)  NOT NULL,
+    [ParentPath] nvarchar(max)  NULL
+);
+GO
+
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
@@ -74,6 +94,12 @@ GO
 -- Creating primary key on [Id] in table 'AzureSubscriptions'
 ALTER TABLE [dbo].[AzureSubscriptions]
 ADD CONSTRAINT [PK_AzureSubscriptions]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'TerminalFiles'
+ALTER TABLE [dbo].[TerminalFiles]
+ADD CONSTRAINT [PK_TerminalFiles]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 

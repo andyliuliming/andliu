@@ -9,6 +9,7 @@
     <EntitySet Name="SteppingNodes" EntityType="AzureWebConsoleModel.Store.SteppingNodes" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="AzureVirtualMachines" EntityType="AzureWebConsoleModel.Store.AzureVirtualMachines" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="AzureSubscriptions" EntityType="AzureWebConsoleModel.Store.AzureSubscriptions" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TerminalFiles" EntityType="AzureWebConsoleModel.Store.TerminalFiles" store:Type="Tables" Schema="dbo" />
   </EntityContainer>
   <EntityType Name="SteppingNodes">
     <Key>
@@ -38,6 +39,14 @@
     <Property Name="SubscriptionId" Type="nvarchar(max)" Nullable="false" />
     <Property Name="AADTenant" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
+  <EntityType Name="TerminalFiles">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Path" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ParentPath" Type="nvarchar(max)" Nullable="true" />
+  </EntityType>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -46,6 +55,7 @@
           <EntitySet Name="SteppingNodes" EntityType="AzureWebConsoleModel.SteppingNode" />
           <EntitySet Name="AzureVirtualMachines" EntityType="AzureWebConsoleModel.AzureVirtualMachine" />
           <EntitySet Name="AzureSubscriptions" EntityType="AzureWebConsoleModel.AzureSubscription" />
+          <EntitySet Name="TerminalFiles" EntityType="AzureWebConsoleModel.TerminalFile" />
         </EntityContainer>
         <EntityType Name="SteppingNode">
           <Key>
@@ -74,6 +84,14 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="SubscriptionId" Type="String" Nullable="false" />
           <Property Name="AADTenant" Type="String" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TerminalFile">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Path" Type="String" Nullable="false" />
+          <Property Name="ParentPath" Type="String" Nullable="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -109,6 +127,15 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="SubscriptionId" ColumnName="SubscriptionId" />
           <ScalarProperty Name="AADTenant" ColumnName="AADTenant" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TerminalFiles">
+      <EntityTypeMapping TypeName="IsTypeOf(AzureWebConsoleModel.TerminalFile)">
+        <MappingFragment StoreEntitySet="TerminalFiles">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Path" ColumnName="Path" />
+          <ScalarProperty Name="ParentPath" ColumnName="ParentPath" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -16,7 +16,7 @@ using WebConsoleSteppingNode.SSH;
 
 namespace AzureTerminalWebConsole.Controllers
 {
-    public class TerminalFileController : ApiController
+    public class TerminalFileTransferController : ApiController
     {
 
         [HttpGet]
@@ -29,7 +29,8 @@ namespace AzureTerminalWebConsole.Controllers
             }
             return null;
         }
-        public Task<HttpResponseMessage> Post()
+
+        public Task<HttpResponseMessage> Post(string targetPath)
         {
             var files = HttpContext.Current.Request.Files;
 
@@ -46,27 +47,26 @@ namespace AzureTerminalWebConsole.Controllers
                     switch (authorization.AuthorizationType)
                     {
                         case AuthorizationType.Password:
-                            //scpClient = new ScpClient("", "", "");
+                            scpClient = new ScpClient(authorization.HostName, authorization.Port, authorization.UserName, (string)authorization.Identity);
                             break;
                         case AuthorizationType.PrivateKey:
-                            //PrivateKeyFile privateKeyFile = authorization.Identity as PrivateKeyFile;
-                            //scpClient = new ScpClient("", "", privateKeyFile);
+                            PrivateKeyFile privateKeyFile = authorization.Identity as PrivateKeyFile;
+                            scpClient = new ScpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile);
                             break;
                         case AuthorizationType.AccessToken:
-                            //PrivateKeyFile privateKeyFile2 = authorization.Identity as PrivateKeyFile;
-                            //scpClient = new ScpClient("", "", privateKeyFile2);
+                            PrivateKeyFile privateKeyFile2 = authorization.Identity as PrivateKeyFile;
+                            scpClient = new ScpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile2);
                             break;
                         default:
                             break;
                     }
                     Task<Stream> task = this.Request.Content.ReadAsStreamAsync();
                     task.Wait();
-                    scpClient.Upload(postedFile.InputStream, "/ path of the destination");
+                    scpClient.Upload(postedFile.InputStream, targetPath);
                 }
             }
             // get the access token from the request.
             // read as the multi form data.
-            
 
             return null;
         }
