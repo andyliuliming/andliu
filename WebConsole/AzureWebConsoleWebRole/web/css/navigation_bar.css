@@ -20,6 +20,7 @@
     font-family: 'Segoe UI';
     border-color: grey;
     z-index: 2;
+    background-color: white;
 }
 
 #virtual_machine_selections {
