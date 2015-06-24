@@ -17,11 +17,11 @@ namespace AzureTerminalWebConsole.Controllers
 {
     public class PrivateKeyTerminalSessionController : ApiController
     {
-        public HttpResponseMessage Get(String hostName, String userName, String privateKey,String passPhrase, String port, String columns, String rows)
+        public HttpResponseMessage Get(String hostName, String userName, String privateKey,String passPhrase, String port, String columns, String rows,String accessToken)
         {
             if (HttpContext.Current.IsWebSocketRequest)
             {
-                HttpContext.Current.AcceptWebSocketRequest(new PrivateKeySSHSocketHandler(hostName, userName, privateKey,passPhrase, port, columns, rows));
+                HttpContext.Current.AcceptWebSocketRequest(new PrivateKeySSHSocketHandler(hostName, userName, privateKey, passPhrase, port, columns, rows, accessToken));
             }
             return new HttpResponseMessage(HttpStatusCode.SwitchingProtocols);
         }

@@ -2,9 +2,9 @@
 var usePrivateKeyToLogin = 2;
 var useTempKeyToLogin = 3;
 var currentLoginMethod = 1;
-
+var currentSteppingNode = null;
 function constructTheWebSocketAddressUseToken(steppingNode, virtualMachine, userName, columns, rows, subscriptionAccessToken) {
-    var webSocketAddress = steppingNode.Address + "/api/AccessTokenTerminalSession?hostName=" + virtualMachine.HostServiceName
+    var webSocketAddress = getWebSocketSchema() + steppingNode.Address + "/api/AccessTokenTerminalSession?hostName=" + virtualMachine.HostServiceName
         + "&userName=" + userName
         + "&deploymentName=" + virtualMachine.DeploymentName
         + "&virtualMachineName=" + virtualMachine.RoleInstanceName
@@ -16,40 +16,42 @@ function constructTheWebSocketAddressUseToken(steppingNode, virtualMachine, user
     return webSocketAddress;
 }
 
-function constructTheWebSocketAddressUsePassword(steppingNode, virtualMachine, userName, columns, rows, passWord) {
-    var webSocketAddress = steppingNode.Address + "/api/PasswordTerminalSession?hostName=" + (virtualMachine.HostServiceName + ".cloudapp.net")
-       + "&userName=" + userName
-       + "&passWord=" + passWord
-       + "&port=" + virtualMachine.Port
-       + "&columns=" + columns
-       + "&rows=" + rows;
+function constructTheWebSocketAddressUsePassword(steppingNode, virtualMachine, userName, columns, rows, passWord, subscriptionAccessToken) {
+    var webSocketAddress = getWebSocketSchema() + steppingNode.Address + "/api/PasswordTerminalSession?hostName=" + (virtualMachine.HostServiceName + ".cloudapp.net")
+        + "&userName=" + userName
+        + "&passWord=" + passWord
+        + "&port=" + virtualMachine.Port
+        + "&columns=" + columns
+        + "&rows=" + rows
+        + "&accessToken=" + subscriptionAccessToken;
     return webSocketAddress;
 }
 
-function constructTheWebSocketAddressUsePrivateKey(steppingNode, virtualMachine, userName, columns, rows, privateKey, passPhrase) {
-    var webSocketAddress = steppingNode.Address + "/api/PrivateKeyTerminalSession?hostName=" + (virtualMachine.HostServiceName + ".cloudapp.net")
-   + "&userName=" + userName
-   + "&privateKey=" + privateKey
-   + "&passPhrase=" + passPhrase
-   + "&port=" + virtualMachine.Port
-   + "&columns=" + columns
-   + "&rows=" + rows;
+function constructTheWebSocketAddressUsePrivateKey(steppingNode, virtualMachine, userName, columns, rows, privateKey, passPhrase, subscriptionAccessToken) {
+    var webSocketAddress = getWebSocketSchema()+steppingNode.Address + "/api/PrivateKeyTerminalSession?hostName=" + (virtualMachine.HostServiceName + ".cloudapp.net")
+        + "&userName=" + userName
+        + "&privateKey=" + privateKey
+        + "&passPhrase=" + passPhrase
+        + "&port=" + virtualMachine.Port
+        + "&columns=" + columns
+        + "&rows=" + rows
+        + "&accessToken=" + subscriptionAccessToken;
     return webSocketAddress;
 }
 
-function connectToTargetLinuxVMUsePrivateKey(steppingNode, virtualMachine, userName, privateKey, passPhrase) {
+function connectToTargetLinuxVMUsePrivateKey(steppingNode, virtualMachine, userName, privateKey, passPhrase, subscriptionAccessToken) {
     terminalResize();
     renderTerminal();
     // we should base 64 encode the privateKey so we can keep the \r\n thing in the string.
     var encodedPrivateKey = Base64.encode(privateKey);
-    var address = constructTheWebSocketAddressUsePrivateKey(steppingNode, virtualMachine, userName, termWidth, termHeight, encodedPrivateKey, passPhrase);
+    var address = constructTheWebSocketAddressUsePrivateKey(steppingNode, virtualMachine, userName, termWidth, termHeight, encodedPrivateKey, passPhrase, subscriptionAccessToken);
     connectToTargetLinuxVMCommon(address);
 }
 
-function connectToTargetLinuxVMUsePassword(steppingNode, virtualMachine, userName, passWord) {
+function connectToTargetLinuxVMUsePassword(steppingNode, virtualMachine, userName, passWord, subscriptionAccessToken) {
     terminalResize();
     renderTerminal();
-    var address = constructTheWebSocketAddressUsePassword(steppingNode, virtualMachine, userName, termWidth, termHeight, passWord);
+    var address = constructTheWebSocketAddressUsePassword(steppingNode, virtualMachine, userName, termWidth, termHeight, passWord, subscriptionAccessToken);
     connectToTargetLinuxVMCommon(address);
 }
 
@@ -67,9 +69,9 @@ function connectToTargetLinuxVMCommon(address) {
         term.write(result.data);
     };
     ws.onopen = function () {
-        $("#login_blade").fadeOut(200);//("display", "none");
+        $("#login_blade").fadeOut(200);
         $("#virtual_machine_navigation_panel").fadeOut(200);
-        $("#terminal_main_panel").fadeIn(200);//"display", "block");
+        $("#terminal_main_panel").fadeIn(200);
     };
     ws.onerror = function (error) {
         alert(error.data);
@@ -81,9 +83,10 @@ function connectToTargetLinuxVMCommon(address) {
 
 function Login() {
     var userName = $("#login_username_input").val();
-    var subscriptionAccessToken = $.cookie(selectedVirtualMachine.SubscriptionId);
+    var subscriptionAccessToken = getCurrentSubscriptionAccessToken();
     if (currentLoginMethod == useTempKeyToLogin) {
         getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
+            currentSteppingNode = steppingNodes.value[0];
             connectToTargetLinuxVMUseToken(steppingNodes.value[0], selectedVirtualMachine, userName, subscriptionAccessToken);
         });
     }
@@ -91,19 +94,20 @@ function Login() {
     if (currentLoginMethod == usePasswordToLogin) {
         getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
             var passWord = $("#login_password").val();
-            connectToTargetLinuxVMUsePassword(steppingNodes.value[0], selectedVirtualMachine, userName, passWord);
+            currentSteppingNode = steppingNodes.value[0];
+            connectToTargetLinuxVMUsePassword(steppingNodes.value[0], selectedVirtualMachine, userName, passWord, subscriptionAccessToken);
         });
     }
 
     if (currentLoginMethod == usePrivateKeyToLogin) {
         getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
+            currentSteppingNode = steppingNodes.value[0];
             var identityFile = $("#identity_file")[0].files[0];
             var passWord = $("#login_password").val();
             var identityReader = new FileReader();
             identityReader.onload = function (e) {
                 var privateKey = e.target.result;
-                // convert this to base 64 encoding string 
-                connectToTargetLinuxVMUsePrivateKey(steppingNodes.value[0], selectedVirtualMachine, userName, privateKey, passWord);
+                connectToTargetLinuxVMUsePrivateKey(steppingNodes.value[0], selectedVirtualMachine, userName, privateKey, passWord, subscriptionAccessToken);
             }
             identityReader.readAsText(identityFile);
         });

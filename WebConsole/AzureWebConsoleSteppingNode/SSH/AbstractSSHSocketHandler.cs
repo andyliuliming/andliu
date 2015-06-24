@@ -23,7 +23,7 @@ namespace WebConsoleSteppingNode.SSH
                 if (firstTime)
                 {
                     firstTime = false;
-                    Thread.Sleep(5000);
+                    Thread.Sleep(1000);
                 }
                 string msgToSend = Encoding.UTF8.GetString(e.Data);
                 Send(msgToSend);
@@ -45,6 +45,7 @@ namespace WebConsoleSteppingNode.SSH
         {
             Console.WriteLine("OnClose()");
             stream.Close();
+            sshClient.Disconnect();
         }
     }
 }

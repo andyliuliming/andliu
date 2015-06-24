@@ -23,6 +23,12 @@ namespace WebConsoleSteppingNode.SSH
             publicKey.Position = 0;
             PrivateKeyFile pkf = new PrivateKeyFile(privateKey);
 
+            TerminalAuthorization authorization = new TerminalAuthorization();
+            authorization.AuthorizationType = AuthorizationType.AccessToken;
+            authorization.Identity = accessToken;
+
+            SSHSessionRepository.Instance().TerminalAuthorizations.Add(accessToken, authorization);
+
             AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();
 
             vmUtil.SetPublicKey(publicKey, hostName, userName, deploymentName, virtualMachineName, subscriptionId, accessToken);

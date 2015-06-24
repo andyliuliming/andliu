@@ -18,6 +18,26 @@ function getServiceBaseUri() {
     }
 }
 
+function getWebSocketSchema() {
+    if (window.location.href.startsWith("http://localhost")
+      || window.location.href.startsWith("https://localhost")) {
+        return "ws://";
+    }
+    else {
+        return "wss://";
+    }
+}
+
+function getHttpSchems() {
+    if (window.location.href.startsWith("http://localhost")
+     || window.location.href.startsWith("https://localhost")) {
+        return "http://";
+    }
+    else {
+        return "https://";
+    }
+}
+
 
 var accessTokenUrl = getServiceBaseUri() + "/odata/Tokens";
 var subscriptionUrl = getServiceBaseUri() + "/odata/Subscriptions";

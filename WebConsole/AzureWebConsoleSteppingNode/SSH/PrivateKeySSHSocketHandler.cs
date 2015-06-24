@@ -12,7 +12,7 @@ namespace WebConsoleSteppingNode.SSH
 {
     public class PrivateKeySSHSocketHandler : AbstractSSHSocketHandler
     {
-        public PrivateKeySSHSocketHandler(String hostName, String userName, String privateKey, String passPhrase, String port, String columns, String rows)
+        public PrivateKeySSHSocketHandler(String hostName, String userName, String privateKey, String passPhrase, String port, String columns, String rows, String accessToken)
         {
             byte[] privateKeyByteArray = Convert.FromBase64String(privateKey);
             MemoryStream privateKeyStream = new MemoryStream(privateKeyByteArray);
@@ -26,6 +26,11 @@ namespace WebConsoleSteppingNode.SSH
             {
                 privateKeyFile = new PrivateKeyFile(privateKeyStream, passPhrase);
             }
+
+            TerminalAuthorization authorization = new TerminalAuthorization();
+            authorization.AuthorizationType = AuthorizationType.PrivateKey;
+            authorization.Identity = privateKeyFile;
+            SSHSessionRepository.Instance().TerminalAuthorizations.Add(accessToken, authorization);
 
             sshClient = new SshClient(hostName, int.Parse(port), userName, privateKeyFile);
             sshClient.Connect();

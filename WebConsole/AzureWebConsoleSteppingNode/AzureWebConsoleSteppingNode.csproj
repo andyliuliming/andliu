@@ -178,6 +178,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\TerminalFileController.cs" />
     <Compile Include="Controllers\PrivateKeyTerminalSessionController.cs" />
     <Compile Include="Controllers\AccessTokenTerminalSessionController.cs" />
     <Compile Include="Controllers\PasswordTerminalSessionController.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="SSH\AccessTokenSSHSocketHander.cs" />
     <Compile Include="SSH\PrivateKeySSHSocketHandler.cs" />
     <Compile Include="SSH\SSHSessionRepository.cs" />
+    <Compile Include="SSH\TerminalAuthorization.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

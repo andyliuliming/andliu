@@ -17,15 +17,13 @@ namespace AzureTerminalWebConsole.Controllers
 {
     public class PasswordTerminalSessionController : ApiController
     {
-        public HttpResponseMessage Get(String hostName, String userName, String passWord, String port, String columns, String rows)
+        public HttpResponseMessage Get(String hostName, String userName, String passWord, String port, String columns, String rows, String accessToken)
         {
             if (HttpContext.Current.IsWebSocketRequest)
             {
-                HttpContext.Current.AcceptWebSocketRequest(new PasswordSSHSocketHandler(hostName, userName, passWord, port, columns, rows));
+                HttpContext.Current.AcceptWebSocketRequest(new PasswordSSHSocketHandler(hostName, userName, passWord, port, columns, rows, accessToken));
             }
             return new HttpResponseMessage(HttpStatusCode.SwitchingProtocols);
         }
-
-       
     }
 }

@@ -3,7 +3,7 @@
     if (isDebugMode()) {
         //public long Id { get; set; }
         //public string Address { get; set; }
-        var steppingNodes = { value: [{ "Id": 1, "Address": "ws://localhost:48019" }] };
+        var steppingNodes = { value: [{ "Id": 1, "Address": "localhost:48019" }] };
         successFunc(steppingNodes);
     } else {
         var url = getServiceBaseUri() + "/odata/SteppingNodes";

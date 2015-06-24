@@ -11,8 +11,14 @@ namespace WebConsoleSteppingNode.SSH
 {
     public class PasswordSSHSocketHandler : AbstractSSHSocketHandler
     {
-        public PasswordSSHSocketHandler(String hostName, String userName, String passWord, String port, String columns, String rows)
+        public PasswordSSHSocketHandler(String hostName, String userName, String passWord, String port, String columns, String rows, String accessToken)
         {
+            TerminalAuthorization authorization = new TerminalAuthorization();
+            authorization.AuthorizationType = AuthorizationType.Password;
+            authorization.Identity = accessToken;
+
+            SSHSessionRepository.Instance().TerminalAuthorizations[accessToken] = authorization;
+
             sshClient = new SshClient(hostName, int.Parse(port), userName, passWord);
             sshClient.Connect();
 
