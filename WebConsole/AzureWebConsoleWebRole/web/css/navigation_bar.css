@@ -12,14 +12,22 @@
     position: fixed;
     width: 260px;
     height: 100%;
-    background-color: red;
+    border-style: solid;
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 1px;
+    border-bottom-width: 0px;
+    font-family: 'Segoe UI';
+    border-color: grey;
     z-index: 2;
 }
 
 #virtual_machine_selections {
     margin: 0;
     padding: 0;
-    width: 100%;
+    width: 85%;
+    margin-left: 30px;
+    margin-top: 15px;
 }
 
 #virtual_machines_tree {
