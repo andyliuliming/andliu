@@ -26,6 +26,7 @@ namespace WebConsoleSteppingNode.SSH
             {
                 privateKeyFile = new PrivateKeyFile(privateKeyStream, passPhrase);
             }
+
             sshClient = new SshClient(hostName, int.Parse(port), userName, privateKeyFile);
             sshClient.Connect();
 
@@ -33,5 +34,4 @@ namespace WebConsoleSteppingNode.SSH
             stream.DataReceived += ChatSocketHandler_DataReceived;
         }
     }
-
 }

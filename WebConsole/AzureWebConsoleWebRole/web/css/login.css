@@ -67,7 +67,7 @@
     font-weight: bold;
 }
 
-.input_label_li {
+.login_input_label_li {
     font-weight: normal;
     font-size: 12px;
     margin-top: 15px;
@@ -137,35 +137,23 @@
     padding-left: 30px;
 }
 
-.login_header {
-    background-color: black;
-    color: white;
-    padding-bottom: 10px;
-}
 
-.login_header_label {
-    padding-left: 35px;
-    font-family: 'Segoe UI light','segoe ui';
-    font-size: 35px;
-    margin-bottom: 0px;
-    margin-top: 0px;
-}
 
 #login_blade {
     display: none;
     background-color: white;
     font-family: 'Segoe UI';
-    width: 36%;
+    width: 400px;
     height: 100%;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin-left: auto;
-    margin-top: auto;
-    margin-left: auto;
-    margin-right: auto;
+    position: relative;
+    /* top: 0; */
+    /* bottom: 0; */
+    left: 260px;
+    /* right: 0; */
+    /* margin-left: auto; */
+    /* margin-top: auto; */
+    /* margin-left: auto; */
+    /* margin-right: auto; */
     z-index: 2;
 }
 

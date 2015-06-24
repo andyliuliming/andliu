@@ -189,6 +189,7 @@
     <Compile Include="SSH\PasswordSSHSocketHandler.cs" />
     <Compile Include="SSH\AccessTokenSSHSocketHander.cs" />
     <Compile Include="SSH\PrivateKeySSHSocketHandler.cs" />
+    <Compile Include="SSH\SSHSessionRepository.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

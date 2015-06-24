@@ -24,13 +24,12 @@ function renderTerminal() {
 }
 
 function bindFileDrop(termToBind) {
-    $(termToBind.element).unbind("drop");
-    $(termToBind.element).bind("drop", function (ev) {
-        var files = e.originalEvent.dataTransfer.files;
-        ev.preventDefault();
-        console.dir(files);
-        return false;
-    });
+    $("#terminal_main_panel")[0].ondragover = function () { return false; };
+    $("#terminal_main_panel")[0].ondragend = function () { return false; };
+    $("#terminal_main_panel")[0].ondrop = function (e) {
+        e.preventDefault();
+        console.dir(e.dataTransfer.files);
+    }
 }
 
 function terminalResize() {

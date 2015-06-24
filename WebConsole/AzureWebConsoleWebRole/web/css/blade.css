@@ -1,0 +1,20 @@
+﻿.blade_header {
+}
+
+.blade {
+}
+
+
+.blade_header {
+    background-color: black;
+    color: white;
+    padding-bottom: 10px;
+}
+
+.blade_header_p {
+    padding-left: 35px;
+    font-family: 'Segoe UI light','segoe ui';
+    font-size: 35px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}

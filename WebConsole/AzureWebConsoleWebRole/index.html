@@ -30,6 +30,7 @@
     <link href="./web/css/global.css" rel="stylesheet" type="text/css" />
     <link href="./web/css/azureterminal.css" rel="stylesheet" type="text/css" />
     <link href="./web/css/navigation_bar.css" rel="stylesheet" type="text/css" />
+    <link href="./web/css/blade.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <script>
@@ -42,47 +43,49 @@
     <div id="terminal_actions_icon">
     </div>
 
-    <div id="virtual_machine_navigation_panel">
-        <label for="virtual_machine_selections">Subscriptions:</label>
+    <div id="virtual_machine_navigation_panel" class="blade">
+        <div class="blade_header">
+            <p id="virtual_machine_selections_label" class="blade_header_p">Subscriptions:</p>
+        </div>
         <select id="virtual_machine_selections" name="virtual_machine_selections"></select>
         <div id="virtual_machines_tree">
             <ul id="virtual_machine_tree_ul" class="ztree"></ul>
         </div>
     </div>
 
-    <div id="login_blade">
-        <div class="login_header">
-            <p class="login_header_label">Login</p>
+    <div id="login_blade" class="blade">
+        <div class="blade_header">
+            <p class="blade_header_p">Login</p>
         </div>
         <ul class="login_blade-ul">
-            <li class="input_label_li">
-                <label for="hostname_input">Host Name:</label>
+            <li class="login_input_label_li">
+                <label for="login_hostname_input">Host Name:</label>
             </li>
             <li>
-                <input class="login_input" id="hostname_input" type="text" />
+                <input class="login_input" id="login_hostname_input" type="text" />
             </li>
-            <li class="input_label_li">
-                <label for="username_input">Username:</label>
+            <li class="login_input_label_li">
+                <label for="login_username_input">Username:</label>
             </li>
             <li>
-                <input class="login_input" id="username_input" type="text" />
+                <input class="login_input" id="login_username_input" type="text" />
             </li>
-            <li class="input_label_li">
+            <li class="login_input_label_li">
                 <label for="port">Port:</label>
             </li>
             <li>
-                <input class="login_input" id="port" type="text" value="22" />
+                <input class="login_input" id="login_port" type="text" value="22" />
             </li>
-            <li class="input_label_li">
-                <button id="password_option_button" class="auth_button auth_button_selected">Password</button>
-                <button id="privatekey_option_button" class="auth_button">SSH Private Key</button>
-                <button id="tempkey_option_button" class="auth_button">SSH Temp Key</button>
+            <li class="login_input_label_li">
+                <button id="login_password_option_button" class="auth_button auth_button_selected">Password</button>
+                <button id="login_privatekey_option_button" class="auth_button">SSH Private Key</button>
+                <button id="login_tempkey_option_button" class="auth_button">SSH Temp Key</button>
             </li>
-            <li class="input_label_li">
-                <label id="auth_type_label" for="password">Password:</label>
+            <li class="login_input_label_li">
+                <label id="login_type_label" for="password">Password:</label>
             </li>
             <li>
-                <input class="login_input" id="password" type="password" />
+                <input class="login_input" id="login_password" type="password" />
                 <div id="login_private_key">
                     <div id="login_private_key_file_name">
                         <input id="login_private_key_file_name_text" type="text" />
@@ -96,7 +99,7 @@
             <li>
                 <label id="login_warning_label"></label>
             </li>
-            <li class="input_label_li">
+            <li class="login_input_label_li">
                 <button class="connect_button azure_terminal_button" name="login" id="loginbutton">Connect</button>
                 <button class="connect_button azure_terminal_button" name="cancel" id="cancel_login_button">Cancel</button>
             </li>
