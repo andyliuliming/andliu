@@ -32,10 +32,11 @@ function bindFileDrop(termToBind) {
 
         $("#terminal_copy_file").fadeIn(200);
 
+        var data = new FormData();
+        data.append('file', e.dataTransfer.files[0]);
+
         $("#terminal_copy_ok_button").unbind("click");
         $("#terminal_copy_ok_button").bind("click", function (ev) {
-            var data = new FormData();
-            data.append('file', e.dataTransfer.files[0]);
             var request = new XMLHttpRequest();
             var targetPath = $("#terminal_copy_target_path").val();
             request.open('POST', getHttpSchems() + currentSteppingNode.Address + "/api/TerminalFileTransfer?targetPath=" + targetPath);

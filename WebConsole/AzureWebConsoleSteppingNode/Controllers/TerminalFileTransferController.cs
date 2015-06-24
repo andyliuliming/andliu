@@ -62,7 +62,9 @@ namespace AzureTerminalWebConsole.Controllers
                     }
                     Task<Stream> task = this.Request.Content.ReadAsStreamAsync();
                     task.Wait();
+                    scpClient.Connect();
                     scpClient.Upload(postedFile.InputStream, targetPath);
+                    scpClient.Disconnect();
                 }
             }
             // get the access token from the request.
