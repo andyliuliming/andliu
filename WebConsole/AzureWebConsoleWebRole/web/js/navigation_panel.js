@@ -1,6 +1,6 @@
 ﻿var zNodeIndex = 3;
 
-var showNavigationPanel = true;
+var showNavigationPanel = false;
 function toggleNavigationPanel(forceStatus) {
     if (forceStatus == undefined) {
         showNavigationPanel = !showNavigationPanel;
@@ -14,12 +14,6 @@ function toggleNavigationPanel(forceStatus) {
     }
 }
 
-function initializeNavigationBar() {
-    $("#navigatin_panel_icon").unbind("click");
-    $("#navigatin_panel_icon").bind("click", function (ev) {
-        toggleNavigationPanel();
-    });
-}
 
 function initializeSubscriptions(subscriptions) {
     $("#virtual_machine_selections option").remove();

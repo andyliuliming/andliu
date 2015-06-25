@@ -217,33 +217,61 @@
     <Content Include="web\css\blade.css" />
     <Content Include="web\css\copy_file.css" />
     <Content Include="web\css\global.css" />
-    <Content Include="web\css\lib\progress.css" />
     <Content Include="web\css\login.css" />
     <Content Include="web\css\navigation_bar.css" />
     <Content Include="web\css\terminal.css" />
     <Content Include="web\css\terminal_actions.css" />
     <Content Include="web\css\TestFontSize.css" />
-    <Content Include="web\images\Action.png" />
-    <Content Include="web\images\Arrow_left.png" />
-    <Content Include="web\images\Arrow_right.png" />
-    <Content Include="web\images\copy-01.png" />
-    <Content Include="web\images\copybuttons.png" />
-    <Content Include="web\images\copyfile.png" />
-    <Content Include="web\images\File.png" />
-    <Content Include="web\images\heroillustration.png" />
-    <Content Include="web\images\key-01.png" />
-    <Content Include="web\images\keypair.png" />
-    <Content Include="web\images\log_out-01.png" />
-    <Content Include="web\images\menu_icons.png" />
-    <Content Include="web\images\settings.png" />
-    <Content Include="web\images\updated_background_image.png" />
-    <Content Include="web\images\warning.png" />
+    <Content Include="web\images\Action.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="web\images\Arrow_left.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="web\images\Arrow_right.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="web\images\copy-01.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="web\images\copybuttons.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="web\images\copyfile.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="web\images\File.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="web\images\heroillustration.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="web\images\key-01.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="web\images\keypair.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="web\images\log_out-01.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="web\images\menu_icons.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="web\images\settings.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="web\images\updated_background_image.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="web\images\warning.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="index.html" />
     <Content Include="web\js\authutil.js" />
     <Content Include="web\js\common.js" />
     <Content Include="web\js\filecopy.js" />
     <Content Include="web\js\index.js" />
-    <Content Include="web\js\lib\jquery-asPieProgress.js" />
     <Content Include="web\js\lib\jquery.circle-diagram.js" />
     <Content Include="web\js\lib\base64.js" />
     <Content Include="web\js\lib\jquery-1.11.1.js" />
@@ -278,6 +306,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="web\css\lib\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
