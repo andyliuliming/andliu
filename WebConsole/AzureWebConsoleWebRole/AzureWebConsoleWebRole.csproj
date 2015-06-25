@@ -225,12 +225,17 @@
     <Content Include="web\images\Action.png" />
     <Content Include="web\images\Arrow_left.png" />
     <Content Include="web\images\Arrow_right.png" />
+    <Content Include="web\images\copy-01.png" />
     <Content Include="web\images\copybuttons.png" />
     <Content Include="web\images\copyfile.png" />
     <Content Include="web\images\File.png" />
     <Content Include="web\images\heroillustration.png" />
+    <Content Include="web\images\key-01.png" />
     <Content Include="web\images\keypair.png" />
+    <Content Include="web\images\log_out-01.png" />
+    <Content Include="web\images\menu_icons.png" />
     <Content Include="web\images\settings.png" />
+    <Content Include="web\images\updated_background_image.png" />
     <Content Include="web\images\warning.png" />
     <Content Include="index.html" />
     <Content Include="web\js\authutil.js" />

@@ -42,7 +42,7 @@
         });
     </script>
 
-    <div id="terminal_actions_icon">
+    <div id="navigatin_panel_icon">
     </div>
 
     <div id="virtual_machine_navigation_panel" class="blade">
@@ -56,7 +56,7 @@
     </div>
 
     <div id="login_blade" class="blade">
-        <div class="blade_header">
+        <div id="login_blade_header" class="blade_header">
             <p class="blade_header_p">Login</p>
         </div>
         <ul class="login_blade-ul">
@@ -111,6 +111,25 @@
     <div id="TestFontSize">@</div>
     <div id="terminal_main_panel">
     </div>
+
+    <div id="terminal_actions_icon">
+    </div>
+
+    <div id="terminal_actions_list">
+        <div id="terminal_action_file" class="terminal_actions_item">
+            <div id="terminal_action_file_icon" class="terminal_action_item_icon"></div>
+            <p>Copy File</p>
+        </div>
+        <div id="terminal_action_generate_key" class="terminal_actions_item">
+            <div id="terminal_action_generate_key_icon" class="terminal_action_item_icon"></div>
+            <p>Generate Key</p>
+        </div>
+        <div id="terminal_action_signout" class="terminal_actions_item">
+            <div id="terminal_action_signout_icon" class="terminal_action_item_icon"></div>
+            <p>Signout</p>
+        </div>
+    </div>
+
     <div id="terminal_copy_file">
         <input id="terminal_copy_target_path" />
         <button id="terminal_copy_ok_button" type="button">OK</button>

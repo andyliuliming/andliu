@@ -1,13 +1,12 @@
 ﻿#terminal_actions_icon {
-    z-index: 3;
-    position: fixed;
+    display: none;
+    position: absolute;
     height: 20px;
     width: 20px;
-    top: 3px;
-    background-color: grey;
-    left: 0px;
+    top: 11px;
+    right: 20px;
     cursor: pointer;
-    background: url(../images/Arrow_right.png);
+    background: url(../images/menu_icons.png);
     background-repeat: no-repeat;
     background-position: center;
     -webkit-background-size: contain;
@@ -19,37 +18,95 @@
 #terminal_actions_list {
     display: none;
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 8px;
+    right: 50px;
     padding: 0px;
     margin: 0px;
-    color: rgb(117, 117, 117);
-    background-color: white;
+    width: 285px;
+    color: white;
+    background-color: rgb(100,100,100);
 }
 
-.terminal_actions_item:first-child {
+/*.terminal_actions_item:first-child {
     border-top-width: 1px;
+}*/
+
+#terminal_action_file {
+    width: 90px;
+    padding-left: 5px;
+}
+
+.terminal_action_item_icon {
+    width: 25px;
+    height: 25px;
+    float: left;
+    background-repeat: no-repeat;
+    background-position: center;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
+    margin-top: 2px;
+    margin-bottom: auto;
+    top: 0px;
+    bottom: 0px;
+    /* position: absolute; */
+}
+
+#terminal_action_file_icon {
+    background-image: url(../images/copy-01.png);
+}
+
+#terminal_action_generate_key {
+}
+
+#terminal_action_generate_key_icon {
+    background-image: url(../images/key-01.png);
+}
+
+#terminal_action_signout {
+    width: 80px;
+    padding-left: 10px;
+}
+
+#terminal_action_signout_icon {
+    background-image: url(../images/log_out-01.png);
+}
+
+.terminal_actions_item p {
+    /* padding: 0px; */
+    margin: 0px;
+    float: left;
+    position: relative;
+    /* left: 30px; */
+    /* top: 0px; */
+    /* bottom: 0px; */
+    margin-top: 5px;
+    margin-left: 2px;
 }
 
 .terminal_actions_item {
-    border-right-width: 1px;
-    border-left-width: 1px;
-    border-bottom-width: 1px;
-    border-top-width: 0px;
+    padding: 0;
+    margin: 0px;
+    border-width: 0px;
+    /* border-top-width: 0px; */
     border-color: white;
-    padding-left: 18px;
-    padding-right: 10px;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    /* padding-left: 18px; */
+    /* padding-right: 10px; */
+    /* padding-top: 3px; */
+    /* padding-bottom: 3px; */
     font-family: segoe ui;
     /* border-right-width: 10px; */
     /* border-left-width: 10px; */
-    border-style: solid;
+    /* border-style: solid; */
     cursor: pointer;
     font-size: 12px;
+    float: left;
+    width: 100px;
+    height: 30px;
 }
 
     .terminal_actions_item:hover {
         color: white;
-        background-color: rgb(0, 188, 242);
+        background-color: rgb(120,120,120);
     }

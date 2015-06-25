@@ -1,13 +1,13 @@
 ﻿var zNodeIndex = 3;
 
-var showSettings = true;
-function toggleSettings(forceStatus) {
+var showNavigationPanel = true;
+function toggleNavigationPanel(forceStatus) {
     if (forceStatus == undefined) {
-        showSettings = !showSettings;
+        showNavigationPanel = !showNavigationPanel;
     } else {
-        showSettings = forceStatus;
+        showNavigationPanel = forceStatus;
     }
-    if (showSettings) {
+    if (showNavigationPanel) {
         $("#virtual_machine_navigation_panel").fadeIn(200);
     } else {
         $("#virtual_machine_navigation_panel").fadeOut(200);
@@ -15,9 +15,9 @@ function toggleSettings(forceStatus) {
 }
 
 function initializeNavigationBar() {
-    $("#terminal_actions_icon").unbind("click");
-    $("#terminal_actions_icon").bind("click", function (ev) {
-        toggleSettings();
+    $("#navigatin_panel_icon").unbind("click");
+    $("#navigatin_panel_icon").bind("click", function (ev) {
+        toggleNavigationPanel();
     });
 }
 
