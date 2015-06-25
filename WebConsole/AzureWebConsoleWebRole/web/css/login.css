@@ -137,8 +137,12 @@
     background-color: darkgrey;
 }
 
+#login_blade_controller {
+    background-color: darkgrey;
+}
+
 #login_blade-ul {
-    padding-left: 30px;
+    padding-left: 15px;
 }
 
 

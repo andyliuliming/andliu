@@ -120,6 +120,7 @@ function initializeLoginPanel(selectedVirtualMachine) {
     $("#login_port").val(selectedVirtualMachine.Port);
     $("#login_blade").fadeIn(200);
 
+
     $("#login_password_option_button").unbind("click");
     $("#login_password_option_button").bind("click", function (ev) {
         currentLoginMethod = usePasswordToLogin;
@@ -153,7 +154,6 @@ function initializeLoginPanel(selectedVirtualMachine) {
         $("#login_type_label").html("Temp Key:");
     });
 
-
     $("#identity_file").unbind("change");
     $("#identity_file").bind("change", function (ev) {
         var file = $('#identity_file')[0].files[0];
@@ -175,6 +175,11 @@ function initializeLoginPanel(selectedVirtualMachine) {
     });
     $("#cancel_login_button").unbind("click");
     $("#cancel_login_button").bind("click", function (ev) {
+        $("#login_blade").fadeOut(200);
+    });
+
+    $("#login_blade_controller > .blade_close_button").unbind("click");
+    $("#login_blade_controller > .blade_close_button").bind("click", function (ev) {
         $("#login_blade").fadeOut(200);
     });
 }

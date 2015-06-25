@@ -7,6 +7,7 @@ function toggleNavigationPanel(forceStatus) {
     } else {
         showNavigationPanel = forceStatus;
     }
+
     if (showNavigationPanel) {
         $("#virtual_machine_navigation_panel").fadeIn(200);
     } else {

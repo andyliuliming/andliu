@@ -40,10 +40,26 @@
     <script>
         $(document).ready(function () {
             SignIn();
+
+            $("#virtual_machine_navigation_panel_controller > .blade_close_button").unbind("click");
+            $("#virtual_machine_navigation_panel_controller > .blade_close_button").bind("click", function (ev) {
+                $("#virtual_machine_navigation_panel").fadeOut(200);
+            });
         });
     </script>
 
     <div id="virtual_machine_navigation_panel" class="blade">
+        <div id="virtual_machine_navigation_panel_controller" class="blade_controller">
+            <button class="blade_close_button">
+                <svg style="fill:#FFF;width:15px;height:15px;" focusable="false" viewBox="0 0 16 16" class="msportalfx-svg-placeholder" role="img" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <polygon points="14,3.3 12.7,2 8,6.7 3.3,2 2,3.3 6.7,8 2,12.7 3.3,14 8,9.3 12.7,14 14,12.7 9.3,8 "></polygon> </svg>
+            </button>
+            <button class="blade_max_button">
+                <svg style="fill:#FFF;width:15px;height:15px;" focusable="false" viewBox="0 0 16 16" class="msportalfx-svg-placeholder" role="img" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <path d="M1,2v12h14V2H1z M3,12V6h10v6H3z"></path> </svg>
+            </button>
+            <button class="blade_min_button">
+                <svg style="fill:#FFF;width:15px;height:15px;" focusable="false" viewBox="0 0 16 16" class="msportalfx-svg-placeholder" role="img" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <rect x="2" y="12" width="12" height="2"></rect> </svg>
+            </button>
+        </div>
         <div class="blade_header">
             <p id="virtual_machine_selections_label" class="blade_header_p">Subscriptions</p>
         </div>
@@ -54,10 +70,21 @@
     </div>
 
     <div id="login_blade" class="blade">
+        <div id="login_blade_controller" class="blade_controller">
+            <button class="blade_close_button">
+                <svg style="fill:#FFF;width:15px;height:15px;" focusable="false" viewBox="0 0 16 16" class="msportalfx-svg-placeholder" role="img" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <polygon points="14,3.3 12.7,2 8,6.7 3.3,2 2,3.3 6.7,8 2,12.7 3.3,14 8,9.3 12.7,14 14,12.7 9.3,8 "></polygon> </svg>
+            </button>
+            <button class="blade_max_button">
+                <svg style="fill:#FFF;width:15px;height:15px;" focusable="false" viewBox="0 0 16 16" class="msportalfx-svg-placeholder" role="img" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <path d="M1,2v12h14V2H1z M3,12V6h10v6H3z"></path> </svg>
+            </button>
+            <button class="blade_min_button">
+                <svg style="fill:#FFF;width:15px;height:15px;" focusable="false" viewBox="0 0 16 16" class="msportalfx-svg-placeholder" role="img" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <rect x="2" y="12" width="12" height="2"></rect> </svg>
+            </button>
+        </div>
         <div id="login_blade_header" class="blade_header">
             <p class="blade_header_p">Login</p>
         </div>
-        <ul class="login_blade-ul">
+        <ul id="login_blade-ul">
             <li class="login_input_label_li">
                 <label for="login_hostname_input">Host Name:</label>
             </li>
