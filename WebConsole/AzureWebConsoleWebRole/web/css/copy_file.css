@@ -1,13 +1,29 @@
 ﻿#terminal_copy_file {
     display: none;
+    position: absolute;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    width: 300px;
+    height:200px;
 }
 
 #terminal_copy_target_path {
-    width: 200px;
+    width: 100%;
+    position: relative;
 }
 
 #terminal_copy_ok_button {
+    position: relative;
+    width: 50%;
 }
 
 terminal_copy_cancel_button {
+    position: relative;
+    width: 50%;
 }
