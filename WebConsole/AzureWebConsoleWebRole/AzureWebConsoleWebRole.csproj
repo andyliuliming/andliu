@@ -217,6 +217,7 @@
     <Content Include="web\css\blade.css" />
     <Content Include="web\css\copy_file.css" />
     <Content Include="web\css\global.css" />
+    <Content Include="web\css\lib\progress.css" />
     <Content Include="web\css\login.css" />
     <Content Include="web\css\navigation_bar.css" />
     <Content Include="web\css\terminal.css" />
@@ -240,7 +241,10 @@
     <Content Include="index.html" />
     <Content Include="web\js\authutil.js" />
     <Content Include="web\js\common.js" />
+    <Content Include="web\js\filecopy.js" />
     <Content Include="web\js\index.js" />
+    <Content Include="web\js\lib\jquery-asPieProgress.js" />
+    <Content Include="web\js\lib\jquery.circle-diagram.js" />
     <Content Include="web\js\lib\base64.js" />
     <Content Include="web\js\lib\jquery-1.11.1.js" />
     <Content Include="web\js\lib\jquery.cookie.js" />

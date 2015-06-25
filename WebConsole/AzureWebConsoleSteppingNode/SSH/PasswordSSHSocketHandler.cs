@@ -22,6 +22,8 @@ namespace WebConsoleSteppingNode.SSH
             SSHSessionRepository.Instance().TerminalAuthorizations[accessToken] = authorization;
 
             sshClient = new SshClient(hostName, int.Parse(port), userName, passWord);
+            
+            sshClient.KeepAliveInterval = new TimeSpan(0, 1, 0);
             sshClient.Connect();
 
             stream = sshClient.CreateShellStream("xterm", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);

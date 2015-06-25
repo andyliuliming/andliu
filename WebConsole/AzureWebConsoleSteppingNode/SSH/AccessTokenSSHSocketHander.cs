@@ -35,6 +35,8 @@ namespace WebConsoleSteppingNode.SSH
 
             vmUtil.SetPublicKey(publicKey, hostName, userName, deploymentName, virtualMachineName, subscriptionId, accessToken);
             sshClient = new SshClient(hostName + ".cloudapp.net", int.Parse(port), userName, pkf);
+
+            sshClient.KeepAliveInterval = new TimeSpan(0, 1, 0); 
             sshClient.Connect();
 
             stream = sshClient.CreateShellStream("xterm", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);
