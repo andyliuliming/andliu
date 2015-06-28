@@ -213,7 +213,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="svg.html" />
     <Content Include="web\css\azureterminal.css" />
     <Content Include="web\css\blade.css" />
     <Content Include="web\css\copy_file.css" />
