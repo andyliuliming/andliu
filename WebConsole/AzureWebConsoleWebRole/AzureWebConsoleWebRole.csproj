@@ -43,6 +43,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.IdentityModel.Protocol.Extensions">
+      <HintPath>..\packages\Microsoft.IdentityModel.Protocol.Extensions.1.0.2.206221351\lib\net45\Microsoft.IdentityModel.Protocol.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.OData.Core, Version=6.12.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.OData.Core.6.12.0\lib\portable-net40+sl5+wp8+win8+wpa\Microsoft.OData.Core.dll</HintPath>
@@ -269,10 +272,13 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="index.html" />
-    <Content Include="web\js\authutil.js" />
+    <Content Include="web\js\app.js" />
+    <Content Include="web\js\backup\authutil.js" />
     <Content Include="web\js\common.js" />
     <Content Include="web\js\filecopy.js" />
     <Content Include="web\js\index.js" />
+    <Content Include="web\js\lib\adal.js" />
+    <Content Include="web\js\backup\app.js" />
     <Content Include="web\js\lib\jquery.circle-diagram.js" />
     <Content Include="web\js\lib\base64.js" />
     <Content Include="web\js\lib\jquery-1.11.1.js" />

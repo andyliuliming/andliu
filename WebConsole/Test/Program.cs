@@ -63,7 +63,7 @@ namespace Test
                             new KeyValuePair<string,string>("client_id","e5740bbf-07d0-4e4c-b174-94ff7d6adbcd"),
                             new KeyValuePair<string,string>("resource","https://management.core.windows.net/"),
                             //two is 
-                             new KeyValuePair<string,string>("client_secret","pBfi+eJ1AAh+aZzz7Q/JO6+t2jHzsZxpCrWohc1T3i8="),
+                             new KeyValuePair<string,string>("client_secret","G3mnk95Y29vRcOPeKc36nuarYrNj5JdWbF2HXqzatbw="),
                         });
                 Task<HttpResponseMessage> response = client.PostAsync("/common/oauth2/token", content);
 

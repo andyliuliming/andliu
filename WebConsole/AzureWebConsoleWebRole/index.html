@@ -10,9 +10,8 @@
     <script type="text/javascript" src="./web/js/lib/jquery.ztree.exedit-3.5.js"></script>
     <script type="text/javascript" src="./web/js/lib/base64.js"></script>
     <script type="text/javascript" src="./web/js/lib/jquery.circle-diagram.js"></script>
+    <script type="text/javascript" src="./web/js/lib/adal.js"></script>
 
-
-    <script type="text/javascript" src="./web/js/authutil.js"></script>
     <script type="text/javascript" src="./web/js/common.js"></script>
     <script type="text/javascript" src="./web/js/index.js"></script>
     <script type="text/javascript" src="./web/js/navigation_panel.js"></script>
@@ -24,6 +23,7 @@
     <script type="text/javascript" src="./web/js/virtualmachines.js"></script>
     <script type="text/javascript" src="./web/js/terminalfile.js"></script>
     <script type="text/javascript" src="./web/js/filecopy.js"></script>
+    <script type="text/javascript" src="./web/js/app.js"></script>
 
     <link href="./web/metroStyle/metroStyle.css" rel="stylesheet" type="text/css" />
     <link href="./web/css/login.css" rel="stylesheet" type="text/css" />
@@ -41,6 +41,7 @@
         $(document).ready(function () {
             SignIn();
 
+            initializeAuth();
             $("#virtual_machine_navigation_panel_controller > .blade_close_button").unbind("click");
             $("#virtual_machine_navigation_panel_controller > .blade_close_button").bind("click", function (ev) {
                 $("#virtual_machine_navigation_panel").fadeOut(200);

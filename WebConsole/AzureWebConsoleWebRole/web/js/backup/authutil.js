@@ -34,7 +34,6 @@ function commonAccessTokenStage() {
                 subscriptionAccessTokenStage(subscriptionToSignIn, subscriptionAccessTokenInCookie);
             }
         }
-
     }, function (error) {
         // if the error is not authourized, then jump to the login.
         // jump to the login 
