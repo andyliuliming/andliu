@@ -2,12 +2,12 @@
     width: 200px;
     height: 100%;
     display: block;
-    background-color: red;
 }
 
 #sign_up_ul {
-    padding: 0px;
 }
 
 #signup_button {
+    margin-top: 15px;
+    float: right;
 }

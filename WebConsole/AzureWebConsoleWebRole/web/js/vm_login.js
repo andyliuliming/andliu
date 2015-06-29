@@ -83,7 +83,7 @@ function connectToTargetLinuxVMCommon(address) {
 
 function Login() {
     var userName = $("#login_username_input").val();
-    var subscriptionAccessToken = getCurrentSubscriptionAccessToken();
+    var subscriptionAccessToken = authContext.getCachedToken();
     if (currentLoginMethod == useTempKeyToLogin) {
         getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
             currentSteppingNode = steppingNodes.value[0];
@@ -170,12 +170,12 @@ function initializeLoginPanel(selectedVirtualMachine) {
             Login();
         }
     });
-    $("#loginbutton").unbind("click");
-    $("#loginbutton").bind("click", function (ev) {
+    $("#login_connect_button").unbind("click");
+    $("#login_connect_button").bind("click", function (ev) {
         Login();
     });
-    $("#cancel_login_button").unbind("click");
-    $("#cancel_login_button").bind("click", function (ev) {
+    $("#login_cancel_button").unbind("click");
+    $("#login_cancel_button").bind("click", function (ev) {
         $("#login_blade").fadeOut(200);
     });
 

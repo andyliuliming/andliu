@@ -35,7 +35,13 @@
 }
 
 #virtual_machine_navigation_sign_in_panel {
+    width:50%;
 }
 
 #virtual_machine_navigation_sign_up_panel {
+    width:50%;
+}
+#virtual_machine_navigation_sign_as_admin_in_panel
+{
+    width:100%;
 }

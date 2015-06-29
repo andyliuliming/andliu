@@ -48,6 +48,7 @@ function getCurrentSubscriptionAccessToken() {
     var subscriptionAccessToken = $.cookie(selectedVirtualMachine.SubscriptionId);
     return subscriptionAccessToken;
 }
+
 function subscriptionAccessTokenStage(currentSubscription, accessToken) {
     getAzureVirtualMachines(accessToken, currentSubscription, function (virtualMachines) {
         setVirtualMachines(virtualMachines);

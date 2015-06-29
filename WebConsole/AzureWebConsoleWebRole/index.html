@@ -85,16 +85,26 @@
             <div class="blade_header">
                 <p id="virtual_machine_selections_label" class="blade_header_p">Azure Machines</p>
             </div>
-            <div id="virtual_machines_tree">
-                <ul id="virtual_machine_tree_ul" class="ztree"></ul>
-            </div>
-            <div id="virtual_machine_navigation_sign_panel">
-                <button id="virtual_machine_navigation_sign_in_panel">Sign in</button>
-                <button id="virtual_machine_navigation_sign_up_panel">Sign up</button>
-                <button id="virtual_machine_navigation_sign_as_admin_in_panel">Sign up for My Organization.</button>
-            </div>
-            <select id="virtual_machine_selections" name="virtual_machine_selections"></select>
-            <button id="virtual_machine_navigation_new_machine">New Machine Connection</button>
+            <ul class="blade_ul">
+                <li>
+                    <div id="virtual_machines_tree">
+                        <ul id="virtual_machine_tree_ul" class="ztree"></ul>
+                    </div>
+                </li>
+                <li>
+                    <div id="virtual_machine_navigation_sign_panel">
+                        <button id="virtual_machine_navigation_sign_in_panel" class="azure_terminal_button">Sign in</button>
+                        <button id="virtual_machine_navigation_sign_up_panel" class="azure_terminal_button">Sign up</button>
+                        <button id="virtual_machine_navigation_sign_as_admin_in_panel" class="azure_terminal_button">Sign up for My Organization.</button>
+                    </div>
+                </li>
+                <li>
+                    <select id="virtual_machine_selections" name="virtual_machine_selections"></select>
+                </li>
+                <li>
+                    <button id="virtual_machine_navigation_new_machine" class="azure_terminal_button">New Machine Connection</button>
+                </li>
+            </ul>
         </div>
 
         <div id="sign_up_blade" class="blade">
@@ -114,7 +124,7 @@
                 <p id="sign_up_label" class="blade_header_p">Sign Up</p>
             </div>
 
-            <ul id="sign_up_ul">
+            <ul id="sign_up_ul" class="blade_ul">
                 <li class="sign_up_input_label_li blade_input_label">
                     <label for="sign_up_username_input">Username:</label>
                 </li>
@@ -128,7 +138,7 @@
                     <input class="sign_up_input blade_input" id="sign_up_password_input" type="password" />
                 </li>
                 <li>
-                    <button class="azure_terminal_button"  id="signup_button">Ok</button>
+                    <button class="azure_terminal_button blade_big_button" id="signup_button">Ok</button>
                 </li>
             </ul>
         </div>
@@ -148,7 +158,7 @@
             <div id="login_blade_header" class="blade_header">
                 <p class="blade_header_p">Login</p>
             </div>
-            <ul id="login_blade-ul">
+            <ul id="login_blade-ul" class="blade_ul">
                 <li class="login_input_label_li blade_input_label">
                     <label for="login_hostname_input">Host Name:</label>
                 </li>
@@ -191,8 +201,8 @@
                     <label id="login_warning_label"></label>
                 </li>
                 <li class="login_input_label_li blade_input_label">
-                    <button class="connect_button azure_terminal_button" name="login" id="loginbutton">Connect</button>
-                    <button class="connect_button azure_terminal_button" name="cancel" id="cancel_login_button">Cancel</button>
+                    <button class="connect_button azure_terminal_button blade_big_button" name="cancel" id="login_cancel_button">Cancel</button>
+                    <button class="connect_button azure_terminal_button blade_big_button" name="login" id="login_connect_button">Connect</button>
                 </li>
             </ul>
         </div>

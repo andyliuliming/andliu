@@ -55,6 +55,8 @@ namespace AzureWebConsole
             //
             protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
             {
+                //TODO: skip the sign up action.
+
                 string authHeader = null;
                 string jwtToken = null;
                 string issuer;
