@@ -13,6 +13,9 @@
       <Setting name="AuthString" value="https://login.windows.net/azurewebconsole.onmicrosoft.com" />
       <Setting name="AzureGraphAPI" value="https://graph.windows.net" />
       <Setting name="ServiceRootAPI" value="https://graph.windows.net/azurewebconsole.onmicrosoft.com" />
+      <Setting name="idaTenant" value="azurewebconsole.onmicrosoft.com" />
+      <Setting name="idaAudience" value="https://azurewebconsole.onmicrosoft.com/" />
+      <Setting name="idaAADInstance" value="https://login.microsoftonline.com/{0}" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="AzureWebConsoleCert" thumbprint="815F526D5628ECD2A96F6FEC7E94DE6F622CCF6F" thumbprintAlgorithm="sha1" />

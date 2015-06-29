@@ -29,7 +29,7 @@ namespace AzureWebConsole
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             AppConfig.ConfigApp();
-            //GlobalConfiguration.Configuration.MessageHandlers.Add(new TokenValidationHandler());
+            GlobalConfiguration.Configuration.MessageHandlers.Add(new TokenValidationHandler());
         }
 
         internal class TokenValidationHandler : DelegatingHandler
@@ -40,9 +40,9 @@ namespace AzureWebConsole
             // The Authority is the sign-in URL of the tenant.
             // The Audience is the value the service expects to see in tokens that are addressed to it.
             //
-            static string aadInstance = ConfigurationManager.AppSettings["ida:AADInstance"];
-            static string tenant = ConfigurationManager.AppSettings["ida:Tenant"];
-            static string audience = ConfigurationManager.AppSettings["ida:Audience"];
+            static string aadInstance = AppSettingsProvider.GetSetting("idaAADInstance");
+            static string tenant = AppSettingsProvider.GetSetting("idaTenant");
+            static string audience = AppSettingsProvider.GetSetting("idaAudience");
             string authority = String.Format(CultureInfo.InvariantCulture, aadInstance, tenant);
 
             static string _issuer = string.Empty;
@@ -137,7 +137,7 @@ namespace AzureWebConsole
 
                     return await base.SendAsync(request, cancellationToken);
                 }
-                catch (SecurityTokenValidationException)
+                catch (SecurityTokenValidationException e)
                 {
                     HttpResponseMessage response = BuildResponseErrorMessage(HttpStatusCode.Unauthorized);
                     return response;

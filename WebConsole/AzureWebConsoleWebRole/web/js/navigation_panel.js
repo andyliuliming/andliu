@@ -25,6 +25,15 @@ function initializeNavigationPanel() {
             }, function (error) { });
         });
     });
+
+
+    var cachedToken = authContext.getCachedToken("e5740bbf-07d0-4e4c-b174-94ff7d6adbcd");
+    if (cachedToken) {
+        // get the virtual machines 
+        getAzureVirtualMachines(cachedToken, function (azureVirtualMachinesGot) {
+            console.dir(azureVirtualMachinesGot);
+        }, function (error) { });
+    }
 }
 
 

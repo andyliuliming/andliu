@@ -46,11 +46,15 @@ namespace AzureWebConsole.Controllers
                 return BadRequest(ex.Message);
             }
 
-            IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("access_token");
+            IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("Authorization");
             string accessToken = accessTokens.FirstOrDefault();
             if (accessToken != null)
             {
+                // verify the access token first, then return the azure virtual machines cached in db.
+
+
                 // get the SubscriptionId first and then filter it
+
 
                 if (queryOptions != null && queryOptions.Filter != null)
                 {

@@ -20,6 +20,9 @@
       <Setting name="AuthString" />
       <Setting name="AzureGraphAPI" />
       <Setting name="ServiceRootAPI" />
+      <Setting name="idaTenant" />
+      <Setting name="idaAudience" />
+      <Setting name="idaAADInstance" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="HTTPEndpoint" protocol="http" port="80" />
