@@ -1,20 +1,15 @@
-﻿#virtual_machine_selections_label {
-    display: block;
-    width: 100%;
-}
-
+﻿
 #virtual_machine_navigation_panel {
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-left: auto;
-    margin-top: auto;
-    top: 0;
-    position: fixed;
     width: 260px;
-    height: 100%;
     font-family: 'Segoe UI';
     z-index: 2;
     background-color: white;
+}
+
+
+#virtual_machine_selections_label {
+    display: block;
+    width: 100%;
 }
 
 #virtual_machine_selections {
@@ -27,11 +22,20 @@
 }
 
 #virtual_machines_tree {
-    display: block;
+    display: none;
     width: 100%;
     height: 100%;
     background-color: white;
 }
 
 #virtual_machine_tree_ul {
+}
+
+#virtual_machine_navigation_sign_panel {
+}
+
+#virtual_machine_navigation_sign_in_panel {
+}
+
+#virtual_machine_navigation_sign_up_panel {
 }

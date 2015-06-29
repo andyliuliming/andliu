@@ -10,6 +10,7 @@
     <EntitySet Name="AzureVirtualMachines" EntityType="AzureWebConsoleModel.Store.AzureVirtualMachines" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="AzureSubscriptions" EntityType="AzureWebConsoleModel.Store.AzureSubscriptions" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="TerminalFiles" EntityType="AzureWebConsoleModel.Store.TerminalFiles" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AzureWebConsoleUsers" EntityType="AzureWebConsoleModel.Store.AzureWebConsoleUsers" store:Type="Tables" Schema="dbo" />
   </EntityContainer>
   <EntityType Name="SteppingNodes">
     <Key>
@@ -47,6 +48,14 @@
     <Property Name="Path" Type="nvarchar(max)" Nullable="false" />
     <Property Name="ParentPath" Type="nvarchar(max)" Nullable="true" />
   </EntityType>
+  <EntityType Name="AzureWebConsoleUsers">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -56,6 +65,7 @@
           <EntitySet Name="AzureVirtualMachines" EntityType="AzureWebConsoleModel.AzureVirtualMachine" />
           <EntitySet Name="AzureSubscriptions" EntityType="AzureWebConsoleModel.AzureSubscription" />
           <EntitySet Name="TerminalFiles" EntityType="AzureWebConsoleModel.TerminalFile" />
+          <EntitySet Name="AzureWebConsoleUsers" EntityType="AzureWebConsoleModel.AzureWebConsoleUser" />
         </EntityContainer>
         <EntityType Name="SteppingNode">
           <Key>
@@ -92,6 +102,14 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Path" Type="String" Nullable="false" />
           <Property Name="ParentPath" Type="String" Nullable="true" />
+        </EntityType>
+        <EntityType Name="AzureWebConsoleUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="UserName" Type="String" Nullable="false" />
+          <Property Name="Password" Type="String" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -136,6 +154,15 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Path" ColumnName="Path" />
           <ScalarProperty Name="ParentPath" ColumnName="ParentPath" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AzureWebConsoleUsers">
+      <EntityTypeMapping TypeName="IsTypeOf(AzureWebConsoleModel.AzureWebConsoleUser)">
+        <MappingFragment StoreEntitySet="AzureWebConsoleUsers">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

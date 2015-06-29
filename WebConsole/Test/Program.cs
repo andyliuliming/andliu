@@ -18,6 +18,11 @@ namespace Test
     {
         static void Main(string[] args)
         {
+
+            GraphTest graphTest = new GraphTest();
+            graphTest.CreateUser();
+
+            Thread.Sleep(60000);
             MemoryStream privateKey = new MemoryStream();
             MemoryStream publicKey = new MemoryStream();
             KeyUtil keyUtil = new KeyUtil();

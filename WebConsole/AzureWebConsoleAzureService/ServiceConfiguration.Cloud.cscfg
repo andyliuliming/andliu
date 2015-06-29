@@ -4,12 +4,15 @@
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName={DiagnosticStorageAccountName};AccountKey={DiagnosticStorageAccountKey}" />
-      <Setting name="redirect_uri" value="https://azurewebconsole.cloudapp.net/index.html" />
-      <Setting name="client_id" value="e5740bbf-07d0-4e4c-b174-94ff7d6adbcd" />
-      <Setting name="resource" value="https://management.core.windows.net/" />
-      <Setting name="client_secret" value="S44An9h/jr2LdWMPglj+CJgOUXMyaMYFsnZWrdJRgYc=" />
+      <Setting name="RedirectUri" value="https://azurewebconsole.cloudapp.net/index.html" />
+      <Setting name="ClientID" value="e5740bbf-07d0-4e4c-b174-94ff7d6adbcd" />
+      <Setting name="AzureManagementResource" value="https://management.core.windows.net/" />
+      <Setting name="ClientSecret" value="ex9yNJueAfNHSuSm5vVo8tp/l8NtcRA6oeP/4dLEJq0=" />
       <Setting name="AzureWebConsoleModelContainer" value="Provider=System.Data.SqlClient;Metadata=res://*/AzureWebConsoleModel.csdl|res://*/AzureWebConsoleModel.ssdl|res://*/AzureWebConsoleModel.msl;Provider Connection String='Data Source={DATABASE_SERVER_NAME}.database.windows.net;initial catalog={DATABASE_NAME};persist security info=True;user id={DATABASE_USER_NAME};password={DATABASE_PASSWORD};MultipleActiveResultSets=True;App=EntityFramework';" />
       <Setting name="AllowedCrossDomainHost" value="{AllowedCrossDomainHost}" />
+      <Setting name="AuthString" value="https://login.windows.net/azurewebconsole.onmicrosoft.com" />
+      <Setting name="AzureGraphAPI" value="https://graph.windows.net" />
+      <Setting name="ServiceRootAPI" value="https://graph.windows.net/azurewebconsole.onmicrosoft.com" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="AzureWebConsoleCert" thumbprint="815F526D5628ECD2A96F6FEC7E94DE6F622CCF6F" thumbprintAlgorithm="sha1" />
@@ -19,7 +22,10 @@
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
-      <Setting name="AllowedCrossDomainHost" value="*" />
+      <Setting name="AllowedCrossDomainHost" value="{AllowedCrossDomainHost}" />
+      <Setting name="ClientID" value="e5740bbf-07d0-4e4c-b174-94ff7d6adbcd" />
+      <Setting name="ClientSecret" value="ex9yNJueAfNHSuSm5vVo8tp/l8NtcRA6oeP/4dLEJq0=" />
+      <Setting name="AuthString" value="https://login.windows.net/azurewebconsole.onmicrosoft.com" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="AzureWebConsoleCert" thumbprint="815F526D5628ECD2A96F6FEC7E94DE6F622CCF6F" thumbprintAlgorithm="sha1" />

@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 06/24/2015 16:12:16
+-- Date Created: 06/29/2015 14:45:01
 -- Generated from EDMX file: C:\Users\andliu\Documents\GitHub\andliu\WebConsole\AzureWebConsoleDomain\AzureWebConsoleModel.edmx
 -- --------------------------------------------------
 
@@ -75,6 +75,14 @@ CREATE TABLE [dbo].[TerminalFiles] (
 );
 GO
 
+-- Creating table 'AzureWebConsoleUsers'
+CREATE TABLE [dbo].[AzureWebConsoleUsers] (
+    [Id] uniqueidentifier  NOT NULL,
+    [UserName] nvarchar(max)  NOT NULL,
+    [Password] nvarchar(max)  NOT NULL
+);
+GO
+
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
@@ -100,6 +108,12 @@ GO
 -- Creating primary key on [Id] in table 'TerminalFiles'
 ALTER TABLE [dbo].[TerminalFiles]
 ADD CONSTRAINT [PK_TerminalFiles]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'AzureWebConsoleUsers'
+ALTER TABLE [dbo].[AzureWebConsoleUsers]
+ADD CONSTRAINT [PK_AzureWebConsoleUsers]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 

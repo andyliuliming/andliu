@@ -1,6 +1,33 @@
 ﻿var zNodeIndex = 3;
 
 var showNavigationPanel = false;
+
+
+
+function initializeNavigationPanel() {
+    bindNewMachine();
+
+    $("#virtual_machine_navigation_sign_in_panel").unbind("click");
+    $("#virtual_machine_navigation_sign_in_panel").bind("click", function (ev) {
+        authContext.login();
+    });
+
+    $("#virtual_machine_navigation_sign_up_panel").unbind("click");
+    $("#virtual_machine_navigation_sign_up_panel").bind("click", function (ev) {
+
+        $("#signup_button").unbind("click");
+        $("#signup_button").bind("click", function (ev) {
+            var userName = $("#sign_up_username_input").val();
+            var password = $("#sign_up_password_input").val();
+            var userToSignUp = { "UserName": userName, "Password": password };
+            add_azurewebconsole_user(userToSignUp, function (userCreated) {
+                console.dir(userCreated);
+            }, function (error) { });
+        });
+    });
+}
+
+
 function toggleNavigationPanel(forceStatus) {
     if (forceStatus == undefined) {
         showNavigationPanel = !showNavigationPanel;
@@ -88,6 +115,7 @@ function virtualMachineTreeNodeClicked(event, tree, node, clickFlat) {
     "&roleInstanceName=" + selectedVirtualMachine.RoleInstanceName + "&accessToken=" + subscriptionAccessToken);
     }
 }
+
 function setVirtualMachines(virtualMachines) {
     zNodes[0].name = "Windows";
     zNodes[1].name = "Linux";
@@ -122,4 +150,15 @@ function setVirtualMachines(virtualMachines) {
     };
 
     $.fn.zTree.init($("#virtual_machine_tree_ul"), setting, zNodes);
+
+
+}
+
+function bindNewMachine() {
+    // bind the new machine button
+    $("#virtual_machine_navigation_new_machine").unbind("click");
+    $("#virtual_machine_navigation_new_machine").bind("click", function (ev) {
+        console.dir("Jump To The Login Panel");
+        initializeLoginPanel(null);
+    });
 }

@@ -1,3 +1,22 @@
+
+#login_blade {
+    /*display: none;*/
+    background-color: white;
+    font-family: 'Segoe UI';
+    width: 400px;
+    height: 100%;
+    /*position: absolute;*/
+    /* top: 0; */
+    /* bottom: 0; */
+    /*left: 260px;*/
+    /* right: 0; */
+    /* margin-left: auto; */
+    /* margin-top: auto; */
+    /* margin-left: auto; */
+    /* margin-right: auto; */
+    z-index: 2;
+}
+
 #login_main_panel li {
     width: 90%;
 }
@@ -68,17 +87,11 @@
 }
 
 .login_input_label_li {
-    font-weight: normal;
-    font-size: 12px;
     margin-top: 15px;
-    color: rgb(117, 117, 117);
 }
 
 .login_input {
     width: 95%;
-    color: rgb(13, 24, 33);
-    font-size: 12px;
-    font-family: 'Segoe UI';
 }
 
 #login_private_key {
@@ -132,7 +145,7 @@
     width: 100%;
     height: 100%;
 }
-
+     
 #login_blade_header {
     background-color: darkgrey;
 }
@@ -147,23 +160,6 @@
 
 
 
-#login_blade {
-    display: none;
-    background-color: white;
-    font-family: 'Segoe UI';
-    width: 400px;
-    height: 100%;
-    position: absolute;
-    /* top: 0; */
-    /* bottom: 0; */
-    left: 260px;
-    /* right: 0; */
-    /* margin-left: auto; */
-    /* margin-top: auto; */
-    /* margin-left: auto; */
-    /* margin-right: auto; */
-    z-index: 2;
-}
 
 .decoration_label {
     color: #b7e2f9;

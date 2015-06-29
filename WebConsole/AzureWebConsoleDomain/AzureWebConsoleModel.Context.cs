@@ -30,5 +30,6 @@ namespace AzureWebConsoleDomain
         public virtual DbSet<AzureVirtualMachine> AzureVirtualMachines { get; set; }
         public virtual DbSet<AzureSubscription> AzureSubscriptions { get; set; }
         public virtual DbSet<TerminalFile> TerminalFiles { get; set; }
+        public virtual DbSet<AzureWebConsoleUser> AzureWebConsoleUsers { get; set; }
     }
 }

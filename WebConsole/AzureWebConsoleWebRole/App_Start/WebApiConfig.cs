@@ -23,10 +23,12 @@ namespace AzureWebConsole
             config.MapHttpAttributeRoutes();
 
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
+
             builder.EntitySet<Token>("Tokens");
             builder.EntitySet<AzureSubscription>("AzureSubscriptions");
             builder.EntitySet<AzureVirtualMachine>("AzureVirtualMachines");
             builder.EntitySet<SteppingNode>("SteppingNodes");
+            builder.EntitySet<AzureWebConsoleUser>("AzureWebConsoleUsers");
 
             config.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
 

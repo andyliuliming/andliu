@@ -11,12 +11,15 @@
     </Sites>
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
-      <Setting name="redirect_uri" />
-      <Setting name="client_id" />
-      <Setting name="resource" />
-      <Setting name="client_secret" />
+      <Setting name="RedirectUri" />
+      <Setting name="ClientID" />
+      <Setting name="AzureManagementResource" />
+      <Setting name="ClientSecret" />
       <Setting name="AzureWebConsoleModelContainer" />
       <Setting name="AllowedCrossDomainHost" />
+      <Setting name="AuthString" />
+      <Setting name="AzureGraphAPI" />
+      <Setting name="ServiceRootAPI" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="HTTPEndpoint" protocol="http" port="80" />
@@ -37,6 +40,9 @@
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
       <Setting name="AllowedCrossDomainHost" />
+      <Setting name="ClientID" />
+      <Setting name="ClientSecret" />
+      <Setting name="AuthString" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="HTTPSEndpoint" protocol="https" port="81" certificate="AzureWebConsoleCert" />

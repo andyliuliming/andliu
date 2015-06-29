@@ -1,0 +1,13 @@
+﻿#sign_up_blade {
+    width: 200px;
+    height: 100%;
+    display: block;
+    background-color: red;
+}
+
+#sign_up_ul {
+    padding: 0px;
+}
+
+#signup_button {
+}
