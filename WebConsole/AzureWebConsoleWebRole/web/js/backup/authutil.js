@@ -3,6 +3,8 @@
         "https://login.windows.net/common/oauth2/authorize?client_id=" 
         + clientId + "&response_type=token&redirect_uri="
         + replyUri + "&resource=https://management.core.windows.net/";
+
+    //https://login.windows.net/common/oauth2/authorize?client_id=e5740bbf-07d0-4e4c-b174-94ff7d6adbcd&response_type=token&redirect_uri=http://localhost:63808/index.html&resource=https://management.core.windows.net/
 }
 
 function SignInToSubscription(subscriptionAADTenantId) {
