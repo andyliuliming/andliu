@@ -67,8 +67,14 @@
             $("#virtual_machine_navigation_panel_controller > .blade_close_button").bind("click", function (ev) {
                 $("#virtual_machine_navigation_panel").fadeOut(200);
             });
+
+            $("#sign_up_panel_controller > .blade_close_button").unbind("click");
+            $("#sign_up_panel_controller > .blade_close_button").bind("click", function (ev) {
+                $("#sign_up_blade").fadeOut(200);
+            });
         });
     </script>
+
     <div id="blade_panel">
         <div id="virtual_machine_navigation_panel" class="blade">
             <div id="virtual_machine_navigation_panel_controller" class="blade_controller">
@@ -229,6 +235,12 @@
             <div id="terminal_action_signout_icon" class="terminal_action_item_icon"></div>
             <p>Switch Machine</p>
         </div>
+    </div>
+
+    <div id="download_file_dialog">
+         <ul id="download_file_list">
+
+         </ul>
     </div>
 
     <div id="terminal_copy_file_progress_indicator_wrapper">

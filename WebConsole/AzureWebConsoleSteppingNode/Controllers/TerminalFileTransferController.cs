@@ -23,7 +23,9 @@ namespace AzureTerminalWebConsole.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> Get([FromUri]string filePath)
         {
-            IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("access_token");
+            IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("Authorization");
+
+            // TODO verify the access token and then get the principal.
             string accessToken = accessTokens.FirstOrDefault();
             if (accessToken != null)
             {

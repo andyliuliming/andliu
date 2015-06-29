@@ -1,4 +1,8 @@
-﻿function bindFileDrop(termToBind) {
+﻿function openFileCopyDialog() {
+
+}
+
+function bindFileDrop(termToBind) {
     $("#terminal_main_panel")[0].ondragover = function () { return false; };
     $("#terminal_main_panel")[0].ondragend = function () { return false; };
     $("#terminal_main_panel")[0].ondrop = function (e) {

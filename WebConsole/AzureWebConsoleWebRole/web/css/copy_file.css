@@ -1,4 +1,11 @@
-﻿#terminal_copy_file {
+﻿#download_file_dialog {
+    display: none;
+}
+
+#download_file_list {
+}
+
+#terminal_copy_file {
     display: none;
     position: absolute;
     margin-top: auto;

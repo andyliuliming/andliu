@@ -51,13 +51,14 @@ function renderTerminal() {
     // bind the actions
     $("#terminal_action_file").unbind("click");
     $("#terminal_action_file").bind("click", function (e) {
-
+        openFileCopyDialog();
     });
 
     $("#terminal_action_generate_key").unbind("click");
     $("#terminal_action_generate_key").bind("click", function (e) {
 
     });
+
     $("#terminal_action_signout").unbind("click");
     $("#terminal_action_signout").bind("click", function (e) {
         toggleNavigationPanel();

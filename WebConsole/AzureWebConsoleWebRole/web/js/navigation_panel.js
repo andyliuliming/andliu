@@ -26,6 +26,11 @@ function initializeNavigationPanel() {
         });
     });
 
+    $("#virtual_machine_navigation_sign_as_admin_in_panel").unbind("click");
+    $("#virtual_machine_navigation_sign_as_admin_in_panel").bind("click", function (ev) {
+
+    });
+
 
     var cachedToken = authContext.getCachedToken("e5740bbf-07d0-4e4c-b174-94ff7d6adbcd");
     if (cachedToken) {

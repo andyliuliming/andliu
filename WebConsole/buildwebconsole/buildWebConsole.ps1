@@ -5,10 +5,10 @@ if(!$env:Path.Contains("MSBuild"))
 
 #C:\Users\andliu\Documents\GitHub\andliu\AzureTerminal\AzureTerminalAzureService\AzureTerminalWebRole\scripts\terminal.js
 
-$destination="$pwd\..\AzureWebConsoleWebRole\web\js\lib\term_downloaded.js"
-$source ="https://raw.githubusercontent.com/andyliuliming/term.js/master/src/term.js"
+#$destination="$pwd\..\AzureWebConsoleWebRole\web\js\lib\term_downloaded.js"
+#$source ="https://raw.githubusercontent.com/andyliuliming/term.js/master/src/term.js"
 
-Invoke-WebRequest $source -OutFile $destination
+#Invoke-WebRequest $source -OutFile $destination
 
 
 msbuild /t:Clean
