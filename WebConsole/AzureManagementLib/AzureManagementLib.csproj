@@ -199,6 +199,7 @@
     <Compile Include="TokenUtil.cs" />
     <Compile Include="AzureVirtualMachineUtil.cs" />
     <Compile Include="TokenValidationHandler.cs" />
+    <Compile Include="TokenValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
