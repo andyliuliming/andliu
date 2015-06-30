@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Web.Http;
 using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Serialization;
-using System.Web.Http.Cors;
+using System.Web.OData.Builder;
+using System.Web.OData.Extensions;
 using AzureManagementLib;
+using AzureWebConsoleDomain;
 using AzureWebConsole;
-
+using System.Web.Http.Cors;
 namespace WebConsoleSteppingNode
 {
     public static class WebApiConfig
@@ -26,6 +27,14 @@ namespace WebConsoleSteppingNode
 
             // Web API routes
             config.MapHttpAttributeRoutes();
+
+            ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
+
+            builder.EntitySet<TerminalFile>("TerminalFiles");
+
+            config.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
+
+            config.AddODataQueryFilter();
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",

@@ -73,6 +73,7 @@
     #login_connect_button:disabled {
         color: grey;
         background-color: lightgrey;
+        cursor: wait;
     }
 
 #login_cancel_button {
@@ -153,7 +154,7 @@
 }
 
     .connect_button:first-child {
-        margin-left: 1px;
+        margin-left: 5px;
     }
 
 .decoration_label {

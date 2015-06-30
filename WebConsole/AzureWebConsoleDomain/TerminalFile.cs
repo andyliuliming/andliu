@@ -17,5 +17,6 @@ namespace AzureWebConsoleDomain
         public int Id { get; set; }
         public string Path { get; set; }
         public string ParentPath { get; set; }
+        public bool IsDirectory { get; set; }
     }
 }

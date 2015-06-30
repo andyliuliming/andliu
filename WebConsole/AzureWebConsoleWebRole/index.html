@@ -109,19 +109,16 @@
                 </li>
                 <li>
                     <div id="virtual_machine_navigation_sign_panel">
-                        <button id="virtual_machine_navigation_sign_in_panel" class="azure_terminal_button">Sign in</button>
-                        <button id="virtual_machine_navigation_sign_up_panel" class="azure_terminal_button">Sign up</button>
-                        <!--<button id="virtual_machine_navigation_sign_as_admin_in_panel" class="azure_terminal_button" title="The machines would be listed here for the users in your organization after you did this.">Sign up for My Organization.</button>-->
+                        <button id="virtual_machine_navigation_sign_up_panel" class="azure_terminal_button blade_big_button">Sign up</button>
+                        <button id="virtual_machine_navigation_sign_in_panel" class="azure_terminal_button blade_big_button">Sign in</button>
                     </div>
                 </li>
                 <li>
                     <select id="virtual_machine_selections" name="virtual_machine_selections"></select>
                 </li>
                 <li>
-                    <button id="virtual_machine_navigation_new_machine" class="azure_terminal_button">Other Machine</button>
-                </li>
-                <li>
-                    <button id="virtual_machine_sign_out" class="azure_terminal_button">Sign Out</button>
+                    <button id="virtual_machine_sign_out" class="azure_terminal_button blade_big_button">Sign Out</button>
+                    <button id="virtual_machine_navigation_new_machine" class="azure_terminal_button blade_big_button">Other Machine</button>
                 </li>
             </ul>
         </div>
@@ -256,9 +253,18 @@
     </div>
 
     <div id="download_file_dialog">
-         <ul id="download_file_list">
-
-         </ul>
+        <button class="blade_close_button">
+            <svg style="fill:#FFF;width:15px;height:15px;" focusable="false" viewBox="0 0 16 16" class="msportalfx-svg-placeholder" role="img" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <polygon points="14,3.3 12.7,2 8,6.7 3.3,2 2,3.3 6.7,8 2,12.7 3.3,14 8,9.3 12.7,14 14,12.7 9.3,8 "></polygon> </svg>
+        </button>
+        <button class="blade_max_button">
+            <svg style="fill:#FFF;width:15px;height:15px;" focusable="false" viewBox="0 0 16 16" class="msportalfx-svg-placeholder" role="img" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <path d="M1,2v12h14V2H1z M3,12V6h10v6H3z"></path> </svg>
+        </button>
+        <button class="blade_min_button">
+            <svg style="fill:#FFF;width:15px;height:15px;" focusable="false" viewBox="0 0 16 16" class="msportalfx-svg-placeholder" role="img" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <rect x="2" y="12" width="12" height="2"></rect> </svg>
+        </button>
+        <div id="download_file_list_wrapper">
+            <ul id="download_file_list"></ul>
+        </div>
     </div>
 
     <div id="terminal_copy_file_progress_indicator_wrapper">

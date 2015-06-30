@@ -159,8 +159,6 @@ function setVirtualMachines(virtualMachines) {
     };
 
     $.fn.zTree.init($("#virtual_machine_tree_ul"), setting, zNodes);
-
-
 }
 
 function bindNewMachine() {

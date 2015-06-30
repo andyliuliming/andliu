@@ -13,7 +13,7 @@
 }
 
 #virtual_machine_selections {
-    display:none;
+    display: none;
     margin: 0;
     padding: 0;
     margin-left: 9px;
@@ -36,14 +36,17 @@
 }
 
 #virtual_machine_navigation_sign_in_panel {
+    margin-top: 15px;
     display: none;
-    width: 50%;
+    float: right;
+    margin-right: 5px;
 }
 
 #virtual_machine_navigation_sign_up_panel {
-    display:none;
-    margin-top:5px;
-    width: 50%;
+    margin-top: 15px;
+    display: none;
+    float: right;
+    margin-right: 5px;
 }
 
 #virtual_machine_navigation_sign_as_admin_in_panel {
@@ -51,4 +54,16 @@
 }
 
 #signed_in_welcome {
+}
+
+#virtual_machine_navigation_new_machine {
+    margin-top: 15px;
+    float: right;
+    margin-right: 5px;
+}
+
+#virtual_machine_sign_out {
+    margin-top: 15px;
+    float: right;
+    /*margin-top: 5px;*/
 }

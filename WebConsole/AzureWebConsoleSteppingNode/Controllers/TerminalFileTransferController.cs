@@ -26,30 +26,12 @@ namespace AzureTerminalWebConsole.Controllers
         {
             IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("Authorization");
 
-            // TODO verify the access token and then get the principal.
             string accessToken = accessTokens.FirstOrDefault();
             if (accessToken != null)
             {
                 TokenValidationResult result = await this.ValidateToken(accessToken);
 
                 SshClient authorization = SSHSessionRepository.Instance().TerminalAuthorizations[result.ClaimsPrincipal.Identity.Name];
-                //ScpClient scpClient = null;
-                //switch (authorization.AuthorizationType)
-                //{
-                //    case AuthorizationType.Password:
-                //        scpClient = new ScpClient(authorization.HostName, authorization.Port, authorization.UserName, (string)authorization.Identity);
-                //        break;
-                //    case AuthorizationType.PrivateKey:
-                //        PrivateKeyFile privateKeyFile = authorization.Identity as PrivateKeyFile;
-                //        scpClient = new ScpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile);
-                //        break;
-                //    case AuthorizationType.AccessToken:
-                //        PrivateKeyFile privateKeyFile2 = authorization.Identity as PrivateKeyFile;
-                //        scpClient = new ScpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile2);
-                //        break;
-                //    default:
-                //        break;
-                //}
                 Task<Stream> task = this.Request.Content.ReadAsStreamAsync();
                 task.Wait();
                 ScpClient scpClient = new ScpClient(
@@ -72,8 +54,6 @@ namespace AzureTerminalWebConsole.Controllers
                 scpClient.Disconnect();
 
                 return message;
-
-                //scpClient.Upload(postedFile.InputStream, targetPath);
             }
             return null;
         }

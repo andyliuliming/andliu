@@ -64,25 +64,28 @@ function connectToTargetLinuxVMUseToken(steppingNode, virtualMachine, userName, 
 }
 
 var ws = null;
+
 function connectToTargetLinuxVMCommon(address) {
     ws = new WebSocket(address);
     ws.onmessage = function (result) {
         term.write(result.data);
     };
     ws.onopen = function () {
+        $('#login_connect_button').removeAttr("disabled", "disabled")
         $("#login_blade").fadeOut(200);
         $("#virtual_machine_navigation_panel").fadeOut(200);
         $("#terminal_main_panel").fadeIn(200);
     };
     ws.onerror = function (error) {
-        alert(error.data);
+        $('#login_connect_button').removeAttr("disabled", "disabled")
     };
     ws.onclose = function () {
-        alert("Disconnected!");
+        $('#login_connect_button').removeAttr("disabled", "disabled")
     };
 }
 
 function Login() {
+    $("#login_connect_button").attr("disabled", true);
     var userName = $("#login_username_input").val();
     var subscriptionAccessToken = authContext.getCachedToken("e5740bbf-07d0-4e4c-b174-94ff7d6adbcd");;
 

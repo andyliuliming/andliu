@@ -37,58 +37,36 @@ namespace WebConsoleSteppingNode.Controllers
         // GET: odata/TerminalFiles
         public async Task<IHttpActionResult> GetTerminalFiles(ODataQueryOptions<TerminalFile> queryOptions)
         {
-
             // list the files
-            IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("access_token");
+            IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("Authorization");
             string accessToken = accessTokens.FirstOrDefault();
             if (accessToken != null)
             {
                 TokenValidator validator = new TokenValidator();
-                TokenValidationResult code = await validator.Validate("Bearer " + accessToken);
+                TokenValidationResult code = await validator.Validate(accessToken);
 
                 SshClient authorization = SSHSessionRepository.Instance().TerminalAuthorizations[code.ClaimsPrincipal.Identity.Name];
 
-                //SftpClient scpClient = null;
-                //switch (authorization.AuthorizationType)
-                //{
-                //    case AuthorizationType.Password:
-                //        scpClient = new SftpClient(authorization.HostName, authorization.Port, authorization.UserName, (string)authorization.Identity);
-                //        break;
-                //    case AuthorizationType.PrivateKey:
-                //        PrivateKeyFile privateKeyFile = authorization.Identity as PrivateKeyFile;
-                //        scpClient = new SftpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile);
-                //        break;
-                //    case AuthorizationType.AccessToken:
-                //        PrivateKeyFile privateKeyFile2 = authorization.Identity as PrivateKeyFile;
-                //        scpClient = new SftpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile2);
-                //        break;
-                //    default:
-                //        break;
-                //}
-
                 SftpClient scpClient = new SftpClient(authorization.ConnectionInfo);
                 scpClient.Connect();
-                IEnumerable<SftpFile> files = scpClient.ListDirectory("~");
+                IEnumerable<SftpFile> files = scpClient.ListDirectory(".");
 
                 List<TerminalFile> terminalFiles = new List<TerminalFile>();
                 foreach (SftpFile file in files)
                 {
                     TerminalFile tf = new TerminalFile();
                     tf.Path = file.FullName;
+                    tf.IsDirectory = file.IsDirectory;
+                    terminalFiles.Add(tf);
                 }
                 scpClient.Disconnect();
 
-
-                return null;
+                return Ok<IEnumerable<TerminalFile>>(terminalFiles);
             }
             else
             {
                 return Unauthorized();
             }
-
-
-            // return Ok<IEnumerable<TerminalFile>>(terminalFiles);
-            //return StatusCode(HttpStatusCode.NotImplemented);
         }
     }
 }

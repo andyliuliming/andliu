@@ -33,6 +33,7 @@ namespace WebConsoleSteppingNode.SSH
             stream.DataReceived += SSHShellHandler_DataReceived;
         }
 
+
         public void SSHShellHandler_DataReceived(object sender, Renci.SshNet.Common.ShellDataEventArgs e)
         {
             lock (sendLock)
@@ -55,7 +56,15 @@ namespace WebConsoleSteppingNode.SSH
         public override void OnMessage(string message)
         {
             Console.WriteLine("OnMessage()");
-            stream.Write(message);
+            if (stream.CanWrite)
+            {
+                stream.Write(message);
+            }
+            else
+            {
+                this.Close();
+                sshClient.Disconnect();
+            }
         }
 
         public override void OnClose()
