@@ -16,8 +16,8 @@ namespace WebConsoleSteppingNode.SSH
 
         public PasswordSSHSocketHandler(String hostName, String userName, String passWord, int port, uint columns, uint rows, String accessToken)
         {
-            sshClient = new SshClient(hostName, port, userName, passWord);
-            sshClient.KeepAliveInterval = new TimeSpan(0, 1, 0);
+            SshClient = new SshClient(hostName, port, userName, passWord);
+            SshClient.KeepAliveInterval = new TimeSpan(0, 1, 0);
 
             base.columns = (columns);
             base.rows = (rows);

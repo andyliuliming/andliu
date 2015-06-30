@@ -45,7 +45,7 @@ function bindFileDrop(termToBind) {
                 });
             }
         }
-        request.open('POST', getHttpSchems() + currentSteppingNode.Address + "/api/TerminalFileTransfer?targetPath=" + "~/" + fileToUpload.name);
+        request.open('POST', getHttpSchems() + currentSteppingNode.Address + "/api/TerminalFileTransfer?targetPath=" + fileToUpload.name);
 
         request.onload = function (e) {
             //console.log(request.response);
@@ -61,8 +61,9 @@ function bindFileDrop(termToBind) {
                 $("#terminal_copy_file_progress_indicator_wrapper").fadeOut(200);
             };
         };
-        var currentAccessToken = getCurrentSubscriptionAccessToken();
-        request.setRequestHeader("access_token", currentAccessToken);
+        var cachedToken = authContext.getCachedToken("e5740bbf-07d0-4e4c-b174-94ff7d6adbcd");
+        //var currentAccessToken = getCurrentSubscriptionAccessToken();
+        request.setRequestHeader("Authorization", "Bearer " + cachedToken);
         request.send(data);
     }
 }

@@ -59,41 +59,6 @@ namespace AzureWebConsole.Controllers
 
                 IQueryable<AzureVirtualMachine> azureVirtualMachines = db.AzureVirtualMachines.Where(avm => avm.Owner == code.ClaimsPrincipal.Identity.Name);
                 return Ok<IEnumerable<AzureVirtualMachine>>(azureVirtualMachines);
-
-                // verify the access token first, then return the azure virtual machines cached in db.
-
-                // get the SubscriptionId first and then filter it
-
-
-                //if (queryOptions != null && queryOptions.Filter != null)
-                //{
-                //    BinaryOperatorNode binaryOperator = queryOptions.Filter.FilterClause.Expression as BinaryOperatorNode;
-                //    if (binaryOperator != null)
-                //    {
-                //        SingleValuePropertyAccessNode property = binaryOperator.Left as SingleValuePropertyAccessNode;
-                //        if (property != null && binaryOperator.OperatorKind == BinaryOperatorKind.Equal
-                //            && property.Property.Name == "SubscriptionId")
-                //        {
-                //            //return true;
-                //            ConstantNode singleValueNode = binaryOperator.Right as ConstantNode;
-                            
-
-                //            AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();
-                //            List<AzureVirtualMachine> azureVirtualMachines = new List<AzureVirtualMachine>();
-
-                //            List<AzureVirtualMachine> azureVirtualMachinesTmp = vmUtil.FindAllMachines(singleValueNode.Value.ToString(), accessToken);
-                //            azureVirtualMachines.AddRange(azureVirtualMachinesTmp);
-
-                //            for (int i = 0; i < azureVirtualMachines.Count; i++)
-                //            {
-                //                azureVirtualMachines[i].Id = i + 3;
-                //            }
-                //            return Ok<IEnumerable<AzureVirtualMachine>>(azureVirtualMachines);
-                //        }
-                //    }
-                //}
-                // get the subscriptions from the access token.
-
             }
             else
             {

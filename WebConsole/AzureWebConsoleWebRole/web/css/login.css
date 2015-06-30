@@ -1,6 +1,6 @@
 
 #login_blade {
-    /*display: none;*/
+    display: none;
     background-color: white;
     font-family: 'Segoe UI';
     width: 400px;
@@ -151,9 +151,10 @@
 .connect_button {
     float: right;
 }
-.connect_button:first-child{
-    margin-left:1px;
-}
+
+    .connect_button:first-child {
+        margin-left: 1px;
+    }
 
 .decoration_label {
     color: #b7e2f9;

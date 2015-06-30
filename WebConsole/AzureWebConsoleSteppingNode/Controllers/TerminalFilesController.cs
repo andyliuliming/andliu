@@ -46,26 +46,27 @@ namespace WebConsoleSteppingNode.Controllers
                 TokenValidator validator = new TokenValidator();
                 TokenValidationResult code = await validator.Validate("Bearer " + accessToken);
 
-                TerminalAuthorization authorization = SSHSessionRepository.Instance().TerminalAuthorizations[code.ClaimsPrincipal.Identity.Name];
+                SshClient authorization = SSHSessionRepository.Instance().TerminalAuthorizations[code.ClaimsPrincipal.Identity.Name];
 
-                SftpClient scpClient = null;
-                switch (authorization.AuthorizationType)
-                {
-                    case AuthorizationType.Password:
-                        scpClient = new SftpClient(authorization.HostName, authorization.Port, authorization.UserName, (string)authorization.Identity);
-                        break;
-                    case AuthorizationType.PrivateKey:
-                        PrivateKeyFile privateKeyFile = authorization.Identity as PrivateKeyFile;
-                        scpClient = new SftpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile);
-                        break;
-                    case AuthorizationType.AccessToken:
-                        PrivateKeyFile privateKeyFile2 = authorization.Identity as PrivateKeyFile;
-                        scpClient = new SftpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile2);
-                        break;
-                    default:
-                        break;
-                }
+                //SftpClient scpClient = null;
+                //switch (authorization.AuthorizationType)
+                //{
+                //    case AuthorizationType.Password:
+                //        scpClient = new SftpClient(authorization.HostName, authorization.Port, authorization.UserName, (string)authorization.Identity);
+                //        break;
+                //    case AuthorizationType.PrivateKey:
+                //        PrivateKeyFile privateKeyFile = authorization.Identity as PrivateKeyFile;
+                //        scpClient = new SftpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile);
+                //        break;
+                //    case AuthorizationType.AccessToken:
+                //        PrivateKeyFile privateKeyFile2 = authorization.Identity as PrivateKeyFile;
+                //        scpClient = new SftpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile2);
+                //        break;
+                //    default:
+                //        break;
+                //}
 
+                SftpClient scpClient = new SftpClient(authorization.ConnectionInfo);
                 scpClient.Connect();
                 IEnumerable<SftpFile> files = scpClient.ListDirectory("~");
 

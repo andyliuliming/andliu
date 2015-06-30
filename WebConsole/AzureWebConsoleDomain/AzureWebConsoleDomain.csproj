@@ -109,7 +109,6 @@
     <Compile Include="TerminalFile.cs">
       <DependentUpon>AzureWebConsoleModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Token.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

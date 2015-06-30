@@ -20,7 +20,7 @@ $azureWebConsoleServiceRoleName="AzureWebConsoleWebRole"
 $DatabaseUserName= "azurewebconsole"
 $DatabasePassword="User@123"
 
-$Stage="Staging"
+$Slot="Staging"
 $currentFolder = pwd
 
 $deploymentStorageAccountName=$Prefix + "deploy"
@@ -187,4 +187,4 @@ NewOrUpgradeDeployment -ServiceName $azureWebConsoleAzureServiceName `
             -Configuration $azureTerminalServiceConfig `
             -DiagnosticConfigPath $azureTerminalServiceDiagnosticConfig `
             -RoleName $azureWebConsoleServiceRoleName `
-            -Slot $Stage
+            -Slot $Slot

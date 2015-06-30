@@ -75,12 +75,12 @@ namespace Test
                 if (response.Result.IsSuccessStatusCode)
                 {
                     response.Wait();
-                    Task<Token> resposneResult = response.Result.Content.ReadAsAsync<Token>();
-                    resposneResult.Wait();
-                    AzureSubscriptionUtil subUtil=new AzureSubscriptionUtil();
-                    List<AzureSubscription>subscriptions = subUtil.GetSubscriptions(resposneResult.Result.access_token);
-                    AzureVirtualMachineUtil util = new AzureVirtualMachineUtil();
-                    util.FindAllMachines(subscriptions[0].SubscriptionId, resposneResult.Result.access_token);
+                    //Task<Token> resposneResult = response.Result.Content.ReadAsAsync<Token>();
+                    //resposneResult.Wait();
+                    //AzureSubscriptionUtil subUtil=new AzureSubscriptionUtil();
+                    //List<AzureSubscription>subscriptions = subUtil.GetSubscriptions(resposneResult.Result.access_token);
+                    //AzureVirtualMachineUtil util = new AzureVirtualMachineUtil();
+                    //util.FindAllMachines(subscriptions[0].SubscriptionId, resposneResult.Result.access_token);
                     //return Ok<IEnumerable<Token>>(new Token[] { resposneResult.Result });
                 }
                 else

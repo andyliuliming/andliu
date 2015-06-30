@@ -32,26 +32,28 @@ namespace AzureTerminalWebConsole.Controllers
             {
                 TokenValidationResult result = await this.ValidateToken(accessToken);
 
-                TerminalAuthorization authorization = SSHSessionRepository.Instance().TerminalAuthorizations[result.ClaimsPrincipal.Identity.Name];
-                ScpClient scpClient = null;
-                switch (authorization.AuthorizationType)
-                {
-                    case AuthorizationType.Password:
-                        scpClient = new ScpClient(authorization.HostName, authorization.Port, authorization.UserName, (string)authorization.Identity);
-                        break;
-                    case AuthorizationType.PrivateKey:
-                        PrivateKeyFile privateKeyFile = authorization.Identity as PrivateKeyFile;
-                        scpClient = new ScpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile);
-                        break;
-                    case AuthorizationType.AccessToken:
-                        PrivateKeyFile privateKeyFile2 = authorization.Identity as PrivateKeyFile;
-                        scpClient = new ScpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile2);
-                        break;
-                    default:
-                        break;
-                }
+                SshClient authorization = SSHSessionRepository.Instance().TerminalAuthorizations[result.ClaimsPrincipal.Identity.Name];
+                //ScpClient scpClient = null;
+                //switch (authorization.AuthorizationType)
+                //{
+                //    case AuthorizationType.Password:
+                //        scpClient = new ScpClient(authorization.HostName, authorization.Port, authorization.UserName, (string)authorization.Identity);
+                //        break;
+                //    case AuthorizationType.PrivateKey:
+                //        PrivateKeyFile privateKeyFile = authorization.Identity as PrivateKeyFile;
+                //        scpClient = new ScpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile);
+                //        break;
+                //    case AuthorizationType.AccessToken:
+                //        PrivateKeyFile privateKeyFile2 = authorization.Identity as PrivateKeyFile;
+                //        scpClient = new ScpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile2);
+                //        break;
+                //    default:
+                //        break;
+                //}
                 Task<Stream> task = this.Request.Content.ReadAsStreamAsync();
                 task.Wait();
+                ScpClient scpClient = new ScpClient(
+                authorization.ConnectionInfo);
                 scpClient.Connect();
 
                 HttpResponseMessage message = new HttpResponseMessage();
@@ -76,7 +78,7 @@ namespace AzureTerminalWebConsole.Controllers
             return null;
         }
 
-        public string Post(string targetPath)
+        public async Task<string> Post(string targetPath)
         {
             var files = HttpContext.Current.Request.Files;
 
@@ -84,33 +86,29 @@ namespace AzureTerminalWebConsole.Controllers
             {
                 var postedFile = files[file];
 
-                IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("access_token");
+                IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("Authorization");
                 string accessToken = accessTokens.FirstOrDefault();
                 if (accessToken != null)
                 {
-                    TerminalAuthorization authorization = SSHSessionRepository.Instance().TerminalAuthorizations[accessToken];
-                    ScpClient scpClient = null;
-                    switch (authorization.AuthorizationType)
+                    TokenValidationResult result = await this.ValidateToken(accessToken);
+
+                    SshClient authorization = SSHSessionRepository.Instance().TerminalAuthorizations[result.ClaimsPrincipal.Identity.Name];
+                    
+                    try
                     {
-                        case AuthorizationType.Password:
-                            scpClient = new ScpClient(authorization.HostName, authorization.Port, authorization.UserName, (string)authorization.Identity);
-                            break;
-                        case AuthorizationType.PrivateKey:
-                            PrivateKeyFile privateKeyFile = authorization.Identity as PrivateKeyFile;
-                            scpClient = new ScpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile);
-                            break;
-                        case AuthorizationType.AccessToken:
-                            PrivateKeyFile privateKeyFile2 = authorization.Identity as PrivateKeyFile;
-                            scpClient = new ScpClient(authorization.HostName, authorization.Port, authorization.UserName, privateKeyFile2);
-                            break;
-                        default:
-                            break;
+
+                        SshCommand command = authorization.RunCommand("pwd");
+                        string currentFolder = command.Result;
+                        
+                        ScpClient scpClient = new ScpClient(authorization.ConnectionInfo);
+                        scpClient.Connect();
+                        scpClient.Upload(postedFile.InputStream, currentFolder.Trim() + "/" + targetPath);
+                        scpClient.Disconnect();
                     }
-                    Task<Stream> task = this.Request.Content.ReadAsStreamAsync();
-                    task.Wait();
-                    scpClient.Connect();
-                    scpClient.Upload(postedFile.InputStream, targetPath);
-                    scpClient.Disconnect();
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
                 }
             }
             // get the access token from the request.

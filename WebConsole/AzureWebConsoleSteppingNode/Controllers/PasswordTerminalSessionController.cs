@@ -27,14 +27,14 @@ namespace AzureTerminalWebConsole.Controllers
             {
                 TokenValidationResult result = await this.ValidateToken(accessToken);
 
-                TerminalAuthorization authorization = new TerminalAuthorization();
-                authorization.AuthorizationType = AuthorizationType.Password;
-                authorization.Identity = passWord;
-                authorization.HostName = hostName;
-                authorization.UserName = userName;
-                authorization.Port = (port);
+                //TerminalAuthorization authorization = new TerminalAuthorization();
+                //authorization.AuthorizationType = AuthorizationType.Password;
+                //authorization.Identity = passWord;
+                //authorization.HostName = hostName;
+                //authorization.UserName = userName;
+                //authorization.Port = (port);
 
-                SSHSessionRepository.Instance().TerminalAuthorizations[result.ClaimsPrincipal.Identity.Name] = authorization;
+                //SSHSessionRepository.Instance().TerminalAuthorizations[result.ClaimsPrincipal.Identity.Name] = authorization;
 
                 string customer = result.ClaimsPrincipal.Identity.Name;
 
@@ -55,6 +55,8 @@ namespace AzureTerminalWebConsole.Controllers
                 db.SaveChanges();
 
                 PasswordSSHSocketHandler handler = new PasswordSSHSocketHandler(hostName, userName, passWord, port, columns, rows, accessToken);
+
+                SSHSessionRepository.Instance().TerminalAuthorizations[result.ClaimsPrincipal.Identity.Name] = handler.SshClient;
                 handler.Connect();
                 HttpContext.Current.AcceptWebSocketRequest(handler);
             }

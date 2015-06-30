@@ -24,7 +24,6 @@ namespace AzureWebConsole
 
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
 
-            builder.EntitySet<Token>("Tokens");
             builder.EntitySet<AzureSubscription>("AzureSubscriptions");
             builder.EntitySet<AzureVirtualMachine>("AzureVirtualMachines");
             builder.EntitySet<SteppingNode>("SteppingNodes");

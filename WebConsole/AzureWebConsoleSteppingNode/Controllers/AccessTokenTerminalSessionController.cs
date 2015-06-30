@@ -42,7 +42,7 @@ namespace AzureTerminalWebConsole.Controllers
                 authorization.HostName = hostName;
                 authorization.UserName = userName;
                 authorization.Port = (port);
-                SSHSessionRepository.Instance().TerminalAuthorizations.Add(accessToken, authorization);
+                //SSHSessionRepository.Instance().TerminalAuthorizations.Add(accessToken, authorization);
 
                 AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();
 

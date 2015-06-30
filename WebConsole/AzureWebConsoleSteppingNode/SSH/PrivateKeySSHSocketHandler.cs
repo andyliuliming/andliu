@@ -30,17 +30,17 @@ namespace WebConsoleSteppingNode.SSH
             //    privateKeyFile = new PrivateKeyFile(privateKeyStream, passPhrase);
             //}
 
-            TerminalAuthorization authorization = new TerminalAuthorization();
-            authorization.AuthorizationType = AuthorizationType.PrivateKey;
-            authorization.Identity = privateKey;
-            authorization.HostName = hostName;
-            authorization.UserName = userName;
-            authorization.Port = (port);
-            SSHSessionRepository.Instance().TerminalAuthorizations.Add(accessToken, authorization);
+            //TerminalAuthorization authorization = new TerminalAuthorization();
+            //authorization.AuthorizationType = AuthorizationType.PrivateKey;
+            //authorization.Identity = privateKey;
+            //authorization.HostName = hostName;
+            //authorization.UserName = userName;
+            //authorization.Port = (port);
+            //SSHSessionRepository.Instance().TerminalAuthorizations.Add(accessToken, authorization);
 
-            sshClient = new SshClient(hostName, (port), userName, privateKey);
+            SshClient = new SshClient(hostName, (port), userName, privateKey);
 
-            sshClient.KeepAliveInterval = new TimeSpan(0, 1, 0); 
+            SshClient.KeepAliveInterval = new TimeSpan(0, 1, 0); 
         }
     }
 }

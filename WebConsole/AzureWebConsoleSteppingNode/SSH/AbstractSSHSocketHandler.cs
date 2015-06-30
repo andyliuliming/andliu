@@ -16,15 +16,19 @@ namespace WebConsoleSteppingNode.SSH
         protected object sendLock = new object();
         protected bool firstTime = true;
         protected ShellStream stream = null;
-        protected SshClient sshClient = null;
+        private SshClient sshClient = null;
+
+        public SshClient SshClient
+        {
+            get { return sshClient; }
+            set { sshClient = value; }
+        }
         protected uint columns;
         protected uint rows;
         protected string accessToken;
         public void Connect()
         {
             sshClient.Connect();
-
-
             stream = sshClient.CreateShellStream("xterm", columns, rows, 800, 600, 1024);
             stream.DataReceived += SSHShellHandler_DataReceived;
         }

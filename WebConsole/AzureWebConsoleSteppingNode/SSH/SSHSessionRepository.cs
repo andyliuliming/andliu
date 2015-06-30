@@ -9,14 +9,14 @@ namespace WebConsoleSteppingNode.SSH
     public class SSHSessionRepository
     {
         // string is the access token
-        private Dictionary<string, TerminalAuthorization> terminalAuthorizations = null;
+        private Dictionary<string, SshClient> terminalAuthorizations = null;
         // string is the access token
         //private Dictionary<string, SshClient> sshSessions = null;
 
         private SSHSessionRepository()
         {
             //sshSessions = new Dictionary<string, SshClient>();
-            terminalAuthorizations = new Dictionary<string, TerminalAuthorization>();
+            terminalAuthorizations = new Dictionary<string, SshClient>();
         }
 
         private static SSHSessionRepository instance = null;
@@ -36,6 +36,6 @@ namespace WebConsoleSteppingNode.SSH
             return instance;
         }
 
-        public Dictionary<string, TerminalAuthorization> TerminalAuthorizations { get { return terminalAuthorizations; } }
+        public Dictionary<string, SshClient> TerminalAuthorizations { get { return terminalAuthorizations; } }
     }
 }
