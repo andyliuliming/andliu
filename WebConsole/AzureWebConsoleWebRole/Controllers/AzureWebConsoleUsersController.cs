@@ -11,6 +11,7 @@ using System.Web.OData;
 using System.Web.OData.Query;
 using Microsoft.OData.Core;
 using AzureManagementLib;
+using System.Threading.Tasks;
 
 namespace AzureWebConsole.Controllers
 {
@@ -83,7 +84,7 @@ namespace AzureWebConsole.Controllers
         }
 
         // POST: odata/AzureWebConsoleUsers
-        public IHttpActionResult Post(AzureWebConsoleUser azureWebConsoleUser)
+        public async Task<IHttpActionResult> Post(AzureWebConsoleUser azureWebConsoleUser)
         {
             if (!ModelState.IsValid)
             {
@@ -92,8 +93,8 @@ namespace AzureWebConsole.Controllers
 
             // TODO: Add create logic here.
             AzureGraphUtil azureGraphUtil = new AzureGraphUtil();
-            azureGraphUtil.CreateUser(azureWebConsoleUser);
-
+           Microsoft.Azure.ActiveDirectory.GraphClient.User userCreated=  await azureGraphUtil.CreateUser(azureWebConsoleUser);
+           azureWebConsoleUser.UserName = userCreated.UserPrincipalName;
             return Created<AzureWebConsoleUser>(azureWebConsoleUser);
         }
 

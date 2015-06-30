@@ -123,6 +123,10 @@ function initializeLoginPanel(selectedVirtualMachine) {
         $("#login_hostname_input").val(selectedVirtualMachine.HostServiceName);
         $("#login_username_input").val("azureuser");
         $("#login_port").val(selectedVirtualMachine.Port);
+    } else {
+        $("#login_hostname_input").val("");
+        $("#login_username_input").val("");
+        $("#login_port").val("22");
     }
 
     $("#login_blade").fadeIn(200);

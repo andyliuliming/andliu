@@ -99,7 +99,7 @@
             <ul class="blade_ul">
                 <li>
                     <div id="signed_in_welcome">
-                        <p>Welcome</p>
+                        <p></p>
                     </div>
                 </li>
                 <li>
@@ -111,14 +111,17 @@
                     <div id="virtual_machine_navigation_sign_panel">
                         <button id="virtual_machine_navigation_sign_in_panel" class="azure_terminal_button">Sign in</button>
                         <button id="virtual_machine_navigation_sign_up_panel" class="azure_terminal_button">Sign up</button>
-                        <button id="virtual_machine_navigation_sign_as_admin_in_panel" class="azure_terminal_button" title="The machines would be listed here for the users in your organization after you did this.">Sign up for My Organization.</button>
+                        <!--<button id="virtual_machine_navigation_sign_as_admin_in_panel" class="azure_terminal_button" title="The machines would be listed here for the users in your organization after you did this.">Sign up for My Organization.</button>-->
                     </div>
                 </li>
                 <li>
                     <select id="virtual_machine_selections" name="virtual_machine_selections"></select>
                 </li>
                 <li>
-                    <button id="virtual_machine_navigation_new_machine" class="azure_terminal_button">New Machine Connection</button>
+                    <button id="virtual_machine_navigation_new_machine" class="azure_terminal_button">Other Machine</button>
+                </li>
+                <li>
+                    <button id="virtual_machine_sign_out" class="azure_terminal_button">Sign Out</button>
                 </li>
             </ul>
         </div>
@@ -154,7 +157,12 @@
                     <input class="sign_up_input blade_input" id="sign_up_password_input" type="password" />
                 </li>
                 <li>
-                    <button class="azure_terminal_button blade_big_button" id="signup_button">Ok</button>
+                    <div id="">
+                        <button class="azure_terminal_button blade_big_button" id="signup_button">Ok</button>
+                    </div>
+                </li>
+                <li>
+                    <p id="sign_up_result_status"></p>
                 </li>
             </ul>
         </div>

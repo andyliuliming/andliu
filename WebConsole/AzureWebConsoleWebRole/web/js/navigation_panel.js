@@ -12,16 +12,10 @@ function initializeNavigationPanel() {
     $("#virtual_machine_navigation_sign_up_panel").unbind("click");
     $("#virtual_machine_navigation_sign_up_panel").bind("click", function (ev) {
 
+        $("#sign_up_blade").fadeIn(200);
         $("#signup_button").unbind("click");
         $("#signup_button").bind("click", function (ev) {
-            var userName = $("#sign_up_username_input").val();
-            var password = $("#sign_up_password_input").val();
-            var userToSignUp = { "UserName": userName, "Password": password };
-            add_azurewebconsole_user(userToSignUp, function (userCreated) {
-                console.dir(userCreated);
-            }, function (error) {
-
-            });
+            SignUp();
         });
     });
 
@@ -30,6 +24,10 @@ function initializeNavigationPanel() {
 
     });
 
+    $("#virtual_machine_sign_out").unbind("click");
+    $("#virtual_machine_sign_out").bind("click", function (ev) {
+        authContext.logOut()
+    });
 
     var cachedToken = authContext.getCachedToken("e5740bbf-07d0-4e4c-b174-94ff7d6adbcd");
     if (cachedToken) {
@@ -38,10 +36,21 @@ function initializeNavigationPanel() {
             initializeVirtualMachines();
             setVirtualMachines(azureVirtualMachinesGot);
             console.dir(azureVirtualMachinesGot);
-            $("#virtual_machines_tree").fadeIn(200);
-        }, function (error) {
 
+            var userName = JSON.parse(Base64.decode(cachedToken.split('.')[1])).name;
+            $("#signed_in_welcome > p").html("Welcome " + userName);
+            $("#virtual_machines_tree").fadeIn(200);
+
+            //hide the sign in
+            $("#virtual_machine_sign_out").css("display", "block");
+        }, function (error) {
+            $("#virtual_machine_navigation_sign_in_panel").css("display", "block");
+            $("#virtual_machine_navigation_sign_up_panel").css("display", "block");
         });
+    } else {
+        $("#virtual_machine_sign_out").css("display", "none");
+        $("#virtual_machine_navigation_sign_in_panel").css("display", "block");
+        $("#virtual_machine_navigation_sign_up_panel").css("display", "block");
     }
 }
 
@@ -56,7 +65,7 @@ function toggleNavigationPanel(forceStatus) {
     if (showNavigationPanel) {
         $("#blade_panel").fadeIn(200);
         $("#virtual_machine_navigation_panel").fadeIn(200);
-        
+
     } else {
         $("#blade_panel").fadeOut(200);
         $("#virtual_machine_navigation_panel").fadeOut(200);
@@ -123,9 +132,10 @@ function setVirtualMachines(virtualMachines) {
     var zNodes = [
             { id: 2, pId: 0, name: "Linux", open: true }
     ];
+
     for (var i = 0; i < virtualMachines.value.length; i++) {
         var virtualMachine = virtualMachines.value[i];
-        zNodes.push({ id: zNodeIndex, pId: 2, name: virtualMachine.HostServiceName+":"+virtualMachine.Port, open: false, data: virtualMachines.value[i] });
+        zNodes.push({ id: zNodeIndex, pId: 2, name: virtualMachine.HostServiceName + ":" + virtualMachine.Port, open: false, data: virtualMachines.value[i] });
         zNodeIndex += 1;
     }
 

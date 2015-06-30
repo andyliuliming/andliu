@@ -30,7 +30,10 @@ namespace AzureWebConsole
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             AppConfig.ConfigApp();
-            GlobalConfiguration.Configuration.MessageHandlers.Add(new TokenValidationHandler());
+            List<string> skips = new List<string>();
+            skips.Add("/odata/AzureWebConsoleUsers");
+            TokenValidationHandler skipCheck = new TokenValidationHandler(skips);
+            GlobalConfiguration.Configuration.MessageHandlers.Add(skipCheck);
         }
 
     }

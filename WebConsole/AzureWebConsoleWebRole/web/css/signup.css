@@ -11,3 +11,12 @@
     margin-top: 15px;
     float: right;
 }
+
+#azure_terminal_sign_button_wrapper {
+    height: 50px;
+}
+
+#sign_up_result_status {
+    font-family: 'Segoe UI';
+    font-size: 12px;
+}

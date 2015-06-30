@@ -13,6 +13,7 @@
 }
 
 #virtual_machine_selections {
+    display:none;
     margin: 0;
     padding: 0;
     margin-left: 9px;
@@ -35,10 +36,13 @@
 }
 
 #virtual_machine_navigation_sign_in_panel {
+    display: none;
     width: 50%;
 }
 
 #virtual_machine_navigation_sign_up_panel {
+    display:none;
+    margin-top:5px;
     width: 50%;
 }
 

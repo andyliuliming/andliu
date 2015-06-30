@@ -26,7 +26,7 @@ namespace AzureManagementLib
         // The Azure AD Graph API for my directory is available at this URL.
         //const string serviceRootURL = "https://graph.windows.net/azurewebconsole.onmicrosoft.com";
 
-        public string GetAppTokenAsync()
+        public async Task<string> GetAppTokenAsync()
         {
             // Instantiate an AuthenticationContext for my directory (see authString above).
 
@@ -43,19 +43,19 @@ namespace AzureManagementLib
             string resAzureGraphAPI = AppSettingsProvider.GetSetting("AzureGraphAPI");
             // Acquire an access token from Azure AD to access the Azure AD Graph (the resource)
             // using the Client ID and Key/Secret as credentials.
-            AuthenticationResult authenticationResult = authenticationContext.AcquireToken(resAzureGraphAPI, clientCred);
+            AuthenticationResult authenticationResult = await authenticationContext.AcquireTokenAsync(resAzureGraphAPI, clientCred);
 
             Console.WriteLine(authenticationResult);
             return authenticationResult.AccessToken;
         }
 
-        public void CreateUser(AzureWebConsoleUser azureWebConsoleUser)
+        public async Task<User> CreateUser(AzureWebConsoleUser azureWebConsoleUser)
         {
             string serviceRootURL = AppSettingsProvider.GetSetting("ServiceRootAPI");
             Uri serviceRoot = new Uri(serviceRootURL);
             ActiveDirectoryClient adClient = new ActiveDirectoryClient(
                 serviceRoot,
-                async () =>   GetAppTokenAsync());
+                async () =>  await GetAppTokenAsync());
 
             var newUser = new User()
             {
@@ -74,7 +74,8 @@ namespace AzureManagementLib
             };
 
             // Add the user to the directory
-            adClient.Users.AddUserAsync(newUser).Wait();
+            await adClient.Users.AddUserAsync(newUser);
+            return newUser;
         }
     }
 }

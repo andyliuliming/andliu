@@ -25,14 +25,25 @@ namespace AzureManagementLib
         // The Authority is the sign-in URL of the tenant.
         // The Audience is the value the service expects to see in tokens that are addressed to it.
         //
-       
+        List<string> skipCheck;
+        public TokenValidationHandler(List<string> skipCheck)
+        {
+            this.skipCheck = skipCheck;
+        }
+
         //
         // SendAsync checks that incoming requests have a valid access token, and sets the current user identity using that access token.
         //
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             //TODO: skip the sign up action.
-
+            foreach (var skip in skipCheck)
+            {
+                if (request.RequestUri.LocalPath == skip)
+                {
+                    return await base.SendAsync(request, cancellationToken); 
+                }
+            }
             TokenValidator validator = new TokenValidator();
             string authHeader = HttpContext.Current.Request.Headers["Authorization"];
             TokenValidationResult code = await validator.Validate(authHeader);
