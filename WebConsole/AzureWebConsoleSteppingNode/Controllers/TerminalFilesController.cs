@@ -34,39 +34,74 @@ namespace WebConsoleSteppingNode.Controllers
     {
         private static ODataValidationSettings _validationSettings = new ODataValidationSettings();
 
+        public bool SingleEqualRequired(ODataQueryOptions queryOptions, string propertyName)
+        {
+            // check we must use the shop id to filter.
+            if (queryOptions != null && queryOptions.Filter != null)
+            {
+                BinaryOperatorNode binaryOperator = queryOptions.Filter.FilterClause.Expression as BinaryOperatorNode;
+                if (binaryOperator != null)
+                {
+                    SingleValuePropertyAccessNode property = binaryOperator.Left as SingleValuePropertyAccessNode;
+                    if (property != null && binaryOperator.OperatorKind == BinaryOperatorKind.Equal
+                        && property.Property.Name == propertyName)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         // GET: odata/TerminalFiles
         public async Task<IHttpActionResult> GetTerminalFiles(ODataQueryOptions<TerminalFile> queryOptions)
         {
-            // list the files
             IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("Authorization");
             string accessToken = accessTokens.FirstOrDefault();
             if (accessToken != null)
             {
-                TokenValidator validator = new TokenValidator();
-                TokenValidationResult code = await validator.Validate(accessToken);
-
-                SshClient authorization = SSHSessionRepository.Instance().TerminalAuthorizations[code.ClaimsPrincipal.Identity.Name];
-
-                SftpClient scpClient = new SftpClient(authorization.ConnectionInfo);
-                scpClient.Connect();
-                IEnumerable<SftpFile> files = scpClient.ListDirectory(".");
-
-                List<TerminalFile> terminalFiles = new List<TerminalFile>();
-                foreach (SftpFile file in files)
+                if (this.SingleEqualRequired((ODataQueryOptions)queryOptions, "ParentPath"))
                 {
-                    TerminalFile tf = new TerminalFile();
-                    tf.Path = file.FullName;
-                    tf.IsDirectory = file.IsDirectory;
-                    terminalFiles.Add(tf);
-                }
-                scpClient.Disconnect();
+                    string parentPath = "";
+                    BinaryOperatorNode binaryOperator = queryOptions.Filter.FilterClause.Expression as BinaryOperatorNode;
 
-                return Ok<IEnumerable<TerminalFile>>(terminalFiles);
+                    ConstantNode valueNode = binaryOperator.Right as ConstantNode;
+                    parentPath = (string)valueNode.Value;
+                    // list the files
+
+                    TokenValidator validator = new TokenValidator();
+                    TokenValidationResult code = await validator.Validate(accessToken);
+
+                    SshClient authorization = SSHSessionRepository.Instance().TerminalAuthorizations[code.ClaimsPrincipal.Identity.Name];
+
+                    SftpClient sftpClient = new SftpClient(authorization.ConnectionInfo);
+                    sftpClient.Connect();
+                    parentPath = sftpClient.Get(parentPath).FullName;
+                    IEnumerable<SftpFile> files = sftpClient.ListDirectory(parentPath);
+
+                    List<TerminalFile> terminalFiles = new List<TerminalFile>();
+                    foreach (SftpFile file in files)
+                    {
+                        TerminalFile tf = new TerminalFile();
+                        tf.Path = file.FullName;
+                        tf.IsDirectory = file.IsDirectory;
+                        terminalFiles.Add(tf);
+                    }
+                    sftpClient.Disconnect();
+
+                    TerminalFileBag terminalFileBag = new TerminalFileBag();
+                    terminalFileBag.TerminalFiles = terminalFiles;
+                    terminalFileBag.CurrentDirectory = parentPath;
+
+                    return Json<TerminalFileBag>(terminalFileBag);
+
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
-            else
-            {
-                return Unauthorized();
-            }
+            return Unauthorized();
         }
     }
 }

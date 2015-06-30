@@ -73,13 +73,11 @@ namespace AzureTerminalWebConsole.Controllers
                     TokenValidationResult result = await this.ValidateToken(accessToken);
 
                     SshClient authorization = SSHSessionRepository.Instance().TerminalAuthorizations[result.ClaimsPrincipal.Identity.Name];
-                    
+
                     try
                     {
-
                         SshCommand command = authorization.RunCommand("pwd");
-                        string currentFolder = command.Result;
-                        
+                        string currentFolder = command.Result;                        
                         ScpClient scpClient = new ScpClient(authorization.ConnectionInfo);
                         scpClient.Connect();
                         scpClient.Upload(postedFile.InputStream, currentFolder.Trim() + "/" + targetPath);

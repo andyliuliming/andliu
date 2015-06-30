@@ -1,5 +1,5 @@
 ﻿function getTerminalFiles(steppingNode, token, parentPath, successFunc, errorFunc) {
-    var url = getHttpSchems() + steppingNode.Address + "/odata/TerminalFiles?$filter=ParentPath eq " + parentPath;
+    var url = getHttpSchems() + steppingNode.Address + "/odata/TerminalFiles?$filter=(ParentPath eq '" + parentPath + "')";
     $.ajax({
         url: url,
         type: "GET",
