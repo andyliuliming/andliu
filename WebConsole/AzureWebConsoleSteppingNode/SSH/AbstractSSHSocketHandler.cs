@@ -1,10 +1,12 @@
-﻿using Microsoft.Web.WebSockets;
+﻿using AzureManagementLib;
+using Microsoft.Web.WebSockets;
 using Renci.SshNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace WebConsoleSteppingNode.SSH
@@ -15,8 +17,19 @@ namespace WebConsoleSteppingNode.SSH
         protected bool firstTime = true;
         protected ShellStream stream = null;
         protected SshClient sshClient = null;
+        protected uint columns;
+        protected uint rows;
+        protected string accessToken;
+        public void Connect()
+        {
+            sshClient.Connect();
 
-        public void ChatSocketHandler_DataReceived(object sender, Renci.SshNet.Common.ShellDataEventArgs e)
+
+            stream = sshClient.CreateShellStream("xterm", columns, rows, 800, 600, 1024);
+            stream.DataReceived += SSHShellHandler_DataReceived;
+        }
+
+        public void SSHShellHandler_DataReceived(object sender, Renci.SshNet.Common.ShellDataEventArgs e)
         {
             lock (sendLock)
             {

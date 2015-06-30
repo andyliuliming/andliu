@@ -17,6 +17,21 @@ using Tamir.SharpSsh.java.lang;
 
 namespace AzureManagementLib
 {
+    public class TokenValidationResult
+    {
+        public TokenValidationResult(HttpStatusCode code)
+        {
+            this.StatusCode = code;
+        }
+        public TokenValidationResult(HttpStatusCode code, ClaimsPrincipal principal)
+        {
+            this.StatusCode = code;
+            this.ClaimsPrincipal = principal;
+        }
+        public ClaimsPrincipal ClaimsPrincipal { get; set; }
+        public HttpStatusCode StatusCode { get; set; }
+    }
+
     public class TokenValidator
     {
         public HttpResponseMessage BuildResponseErrorMessage(HttpStatusCode statusCode)
@@ -38,7 +53,8 @@ namespace AzureManagementLib
 
             return response;
         }
-        public HttpStatusCode Validate(HttpRequestMessage request)
+
+        public async Task<TokenValidationResult> Validate(string authHeader)
         {
             string aadInstance = AppSettingsProvider.GetSetting("idaAADInstance");
             string tenant = AppSettingsProvider.GetSetting("idaTenant");
@@ -51,7 +67,6 @@ namespace AzureManagementLib
             string scopeClaimType = "http://schemas.microsoft.com/identity/claims/scope";
 
 
-             string authHeader = null;
             string jwtToken = null;
             string issuer;
             string stsDiscoveryEndpoint = string.Format("{0}/.well-known/openid-configuration", authority);
@@ -59,7 +74,7 @@ namespace AzureManagementLib
             List<SecurityToken> signingTokens;
 
             // The header is of the form "bearer <accesstoken>", so extract to the right of the whitespace to find the access token.
-            authHeader = HttpContext.Current.Request.Headers["Authorization"];
+           
             if (authHeader != null)
             {
                 int startIndex = authHeader.LastIndexOf(' ');
@@ -71,7 +86,7 @@ namespace AzureManagementLib
 
             if (jwtToken == null)
             {
-                return (HttpStatusCode.Unauthorized);
+                return new TokenValidationResult(HttpStatusCode.Unauthorized);
             }
 
             try
@@ -83,11 +98,10 @@ namespace AzureManagementLib
                 {
                     // Get tenant information that's used to validate incoming jwt tokens
                     ConfigurationManager<OpenIdConnectConfiguration> configManager = new ConfigurationManager<OpenIdConnectConfiguration>(stsDiscoveryEndpoint);
-                    Task<OpenIdConnectConfiguration> connectionConfiguration = configManager.GetConfigurationAsync();//.Wait();
-                    connectionConfiguration.Wait();
-                    OpenIdConnectConfiguration config = connectionConfiguration.Result;
-                    _issuer = config.Issuer;
-                    _signingTokens = config.SigningTokens.ToList();
+                    OpenIdConnectConfiguration connectionConfiguration = await configManager.GetConfigurationAsync();//.Wait();
+
+                    _issuer = connectionConfiguration.Issuer;
+                    _signingTokens = connectionConfiguration.SigningTokens.ToList();
 
                     _stsMetadataRetrievalTime = DateTime.UtcNow;
                 }
@@ -95,9 +109,9 @@ namespace AzureManagementLib
                 issuer = _issuer;
                 signingTokens = _signingTokens;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return (HttpStatusCode.InternalServerError);
+                return new TokenValidationResult(HttpStatusCode.InternalServerError);
             }
 
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
@@ -128,20 +142,20 @@ namespace AzureManagementLib
                 // If the token is scoped, verify that required permission is set in the scope claim.
                 if (ClaimsPrincipal.Current.FindFirst(scopeClaimType) != null && ClaimsPrincipal.Current.FindFirst(scopeClaimType).Value != "user_impersonation")
                 {
-                   return HttpStatusCode.Forbidden;
+                    return new TokenValidationResult(HttpStatusCode.Forbidden);
                 }
 
-                return HttpStatusCode.OK;
+                return new TokenValidationResult(HttpStatusCode.OK,claimsPrincipal);
             }
             catch (SecurityTokenValidationException e)
             {
-                return HttpStatusCode.Unauthorized;
+                return new TokenValidationResult(HttpStatusCode.Unauthorized);
                 //HttpResponseMessage response = BuildResponseErrorMessage(HttpStatusCode.Unauthorized);
                 //return response;
             }
             catch (Exception)
             {
-                return (HttpStatusCode.InternalServerError);
+                return new TokenValidationResult(HttpStatusCode.InternalServerError);
             }
         }
     }

@@ -212,6 +212,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\TokenValidationApiController.cs" />
     <Compile Include="Controllers\TerminalFilesController.cs" />
     <Compile Include="Controllers\TerminalFileTransferController.cs" />
     <Compile Include="Controllers\PrivateKeyTerminalSessionController.cs" />

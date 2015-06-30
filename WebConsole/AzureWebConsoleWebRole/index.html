@@ -72,6 +72,11 @@
             $("#sign_up_panel_controller > .blade_close_button").bind("click", function (ev) {
                 $("#sign_up_blade").fadeOut(200);
             });
+
+            $("#login_blade_controller > .blade_close_button").unbind("click");
+            $("#login_blade_controller > .blade_close_button").bind("click", function (ev) {
+                $("#login_blade").fadeOut(200);
+            });
         });
     </script>
 
@@ -101,7 +106,7 @@
                     <div id="virtual_machine_navigation_sign_panel">
                         <button id="virtual_machine_navigation_sign_in_panel" class="azure_terminal_button">Sign in</button>
                         <button id="virtual_machine_navigation_sign_up_panel" class="azure_terminal_button">Sign up</button>
-                        <button id="virtual_machine_navigation_sign_as_admin_in_panel" class="azure_terminal_button">Sign up for My Organization.</button>
+                        <button id="virtual_machine_navigation_sign_as_admin_in_panel" class="azure_terminal_button" title="The machines would be listed here for the users in your organization after you did this.">Sign up for My Organization.</button>
                     </div>
                 </li>
                 <li>

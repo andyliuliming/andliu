@@ -13,11 +13,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using WebConsoleSteppingNode.Controllers;
 using WebConsoleSteppingNode.SSH;
 
 namespace AzureTerminalWebConsole.Controllers
 {
-    public class TerminalFileTransferController : ApiController
+    public class TerminalFileTransferController : TokenValidationApiController
     {
 
         [HttpGet]
@@ -29,7 +30,9 @@ namespace AzureTerminalWebConsole.Controllers
             string accessToken = accessTokens.FirstOrDefault();
             if (accessToken != null)
             {
-                TerminalAuthorization authorization = SSHSessionRepository.Instance().TerminalAuthorizations[accessToken];
+                TokenValidationResult result = await this.ValidateToken(accessToken);
+
+                TerminalAuthorization authorization = SSHSessionRepository.Instance().TerminalAuthorizations[result.ClaimsPrincipal.Identity.Name];
                 ScpClient scpClient = null;
                 switch (authorization.AuthorizationType)
                 {

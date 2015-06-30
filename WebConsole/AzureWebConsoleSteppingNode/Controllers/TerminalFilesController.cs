@@ -15,6 +15,8 @@ using Microsoft.OData.Core.UriParser.TreeNodeKinds;
 using WebConsoleSteppingNode.SSH;
 using Renci.SshNet;
 using Renci.SshNet.Sftp;
+using System.Threading.Tasks;
+using AzureManagementLib;
 
 namespace WebConsoleSteppingNode.Controllers
 {
@@ -33,16 +35,19 @@ namespace WebConsoleSteppingNode.Controllers
         private static ODataValidationSettings _validationSettings = new ODataValidationSettings();
 
         // GET: odata/TerminalFiles
-        public IHttpActionResult GetTerminalFiles(ODataQueryOptions<TerminalFile> queryOptions)
+        public async Task<IHttpActionResult> GetTerminalFiles(ODataQueryOptions<TerminalFile> queryOptions)
         {
-
 
             // list the files
             IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("access_token");
             string accessToken = accessTokens.FirstOrDefault();
             if (accessToken != null)
             {
-                TerminalAuthorization authorization = SSHSessionRepository.Instance().TerminalAuthorizations[accessToken];
+                TokenValidator validator = new TokenValidator();
+                TokenValidationResult code = await validator.Validate("Bearer " + accessToken);
+
+                TerminalAuthorization authorization = SSHSessionRepository.Instance().TerminalAuthorizations[code.ClaimsPrincipal.Identity.Name];
+
                 SftpClient scpClient = null;
                 switch (authorization.AuthorizationType)
                 {
@@ -59,7 +64,8 @@ namespace WebConsoleSteppingNode.Controllers
                         break;
                     default:
                         break;
-                } 
+                }
+
                 scpClient.Connect();
                 IEnumerable<SftpFile> files = scpClient.ListDirectory("~");
 

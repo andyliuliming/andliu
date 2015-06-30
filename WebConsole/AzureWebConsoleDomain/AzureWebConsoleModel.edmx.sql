@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 06/29/2015 14:45:01
+-- Date Created: 06/30/2015 09:32:23
 -- Generated from EDMX file: C:\Users\andliu\Documents\GitHub\andliu\WebConsole\AzureWebConsoleDomain\AzureWebConsoleModel.edmx
 -- --------------------------------------------------
 
@@ -34,6 +34,9 @@ GO
 IF OBJECT_ID(N'[dbo].[TerminalFiles]', 'U') IS NOT NULL
     DROP TABLE [dbo].[TerminalFiles];
 GO
+IF OBJECT_ID(N'[dbo].[AzureWebConsoleUsers]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[AzureWebConsoleUsers];
+GO
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -55,7 +58,8 @@ CREATE TABLE [dbo].[AzureVirtualMachines] (
     [Port] bigint  NULL,
     [OS] nvarchar(max)  NOT NULL,
     [DeploymentName] nvarchar(max)  NOT NULL,
-    [RoleInstanceName] nvarchar(max)  NOT NULL
+    [RoleInstanceName] nvarchar(max)  NOT NULL,
+    [Owner] nvarchar(max)  NOT NULL
 );
 GO
 

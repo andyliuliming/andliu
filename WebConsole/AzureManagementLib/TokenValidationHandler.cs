@@ -34,14 +34,15 @@ namespace AzureManagementLib
             //TODO: skip the sign up action.
 
             TokenValidator validator = new TokenValidator();
-            HttpStatusCode code = validator.Validate(request);
-            if (code == HttpStatusCode.OK)
+            string authHeader = HttpContext.Current.Request.Headers["Authorization"];
+            TokenValidationResult code = await validator.Validate(authHeader);
+            if (code.StatusCode == HttpStatusCode.OK)
             {
                 return await base.SendAsync(request, cancellationToken);
             }
             else
             {
-                return validator.BuildResponseErrorMessage(code);
+                return validator.BuildResponseErrorMessage(code.StatusCode);
             }
             //string authHeader = null;
             //string jwtToken = null;

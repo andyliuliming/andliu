@@ -31,6 +31,7 @@
     <Property Name="OS" Type="nvarchar(max)" Nullable="false" />
     <Property Name="DeploymentName" Type="nvarchar(max)" Nullable="false" />
     <Property Name="RoleInstanceName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Owner" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="AzureSubscriptions">
     <Key>
@@ -86,6 +87,7 @@
           <Property Name="OS" Type="String" Nullable="false" />
           <Property Name="DeploymentName" Type="String" Nullable="false" />
           <Property Name="RoleInstanceName" Type="String" Nullable="false" />
+          <Property Name="Owner" Type="String" Nullable="false" />
         </EntityType>
         <EntityType Name="AzureSubscription">
           <Key>
@@ -136,6 +138,7 @@
           <ScalarProperty Name="OS" ColumnName="OS" />
           <ScalarProperty Name="DeploymentName" ColumnName="DeploymentName" />
           <ScalarProperty Name="RoleInstanceName" ColumnName="RoleInstanceName" />
+          <ScalarProperty Name="Owner" ColumnName="Owner" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

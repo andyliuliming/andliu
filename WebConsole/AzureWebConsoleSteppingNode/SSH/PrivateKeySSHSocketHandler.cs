@@ -1,4 +1,6 @@
-﻿using Microsoft.Web.WebSockets;
+﻿using AzureManagementLib;
+using AzureWebConsoleDomain;
+using Microsoft.Web.WebSockets;
 using Renci.SshNet;
 using System;
 using System.Collections.Generic;
@@ -12,6 +14,7 @@ namespace WebConsoleSteppingNode.SSH
 {
     public class PrivateKeySSHSocketHandler : AbstractSSHSocketHandler
     {
+        AzureWebConsoleModelContainer db = new AzureWebConsoleModelContainer();
         public PrivateKeySSHSocketHandler(String hostName, String userName, String privateKey, String passPhrase, String port, String columns, String rows, String accessToken)
         {
             byte[] privateKeyByteArray = Convert.FromBase64String(privateKey);
@@ -38,10 +41,6 @@ namespace WebConsoleSteppingNode.SSH
             sshClient = new SshClient(hostName, int.Parse(port), userName, privateKeyFile);
 
             sshClient.KeepAliveInterval = new TimeSpan(0, 1, 0); 
-            sshClient.Connect();
-
-            stream = sshClient.CreateShellStream("xterm", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);
-            stream.DataReceived += ChatSocketHandler_DataReceived;
         }
     }
 }

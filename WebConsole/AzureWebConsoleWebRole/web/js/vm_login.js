@@ -3,6 +3,7 @@ var usePrivateKeyToLogin = 2;
 var useTempKeyToLogin = 3;
 var currentLoginMethod = 1;
 var currentSteppingNode = null;
+
 function constructTheWebSocketAddressUseToken(steppingNode, virtualMachine, userName, columns, rows, subscriptionAccessToken) {
     var webSocketAddress = getWebSocketSchema() + steppingNode.Address + "/api/AccessTokenTerminalSession?hostName=" + virtualMachine.HostServiceName
         + "&userName=" + userName
@@ -17,7 +18,7 @@ function constructTheWebSocketAddressUseToken(steppingNode, virtualMachine, user
 }
 
 function constructTheWebSocketAddressUsePassword(steppingNode, virtualMachine, userName, columns, rows, passWord, subscriptionAccessToken) {
-    var webSocketAddress = getWebSocketSchema() + steppingNode.Address + "/api/PasswordTerminalSession?hostName=" + (virtualMachine.HostServiceName + ".cloudapp.net")
+    var webSocketAddress = getWebSocketSchema() + steppingNode.Address + "/api/PasswordTerminalSession?hostName=" + (virtualMachine.HostServiceName )
         + "&userName=" + userName
         + "&passWord=" + passWord
         + "&port=" + virtualMachine.Port
@@ -28,7 +29,7 @@ function constructTheWebSocketAddressUsePassword(steppingNode, virtualMachine, u
 }
 
 function constructTheWebSocketAddressUsePrivateKey(steppingNode, virtualMachine, userName, columns, rows, privateKey, passPhrase, subscriptionAccessToken) {
-    var webSocketAddress = getWebSocketSchema()+steppingNode.Address + "/api/PrivateKeyTerminalSession?hostName=" + (virtualMachine.HostServiceName + ".cloudapp.net")
+    var webSocketAddress = getWebSocketSchema()+steppingNode.Address + "/api/PrivateKeyTerminalSession?hostName=" + (virtualMachine.HostServiceName )
         + "&userName=" + userName
         + "&privateKey=" + privateKey
         + "&passPhrase=" + passPhrase
@@ -83,19 +84,22 @@ function connectToTargetLinuxVMCommon(address) {
 
 function Login() {
     var userName = $("#login_username_input").val();
-    var subscriptionAccessToken = authContext.getCachedToken();
-    if (currentLoginMethod == useTempKeyToLogin) {
-        getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
-            currentSteppingNode = steppingNodes.value[0];
-            connectToTargetLinuxVMUseToken(steppingNodes.value[0], selectedVirtualMachine, userName, subscriptionAccessToken);
-        });
-    }
+    var subscriptionAccessToken = authContext.getCachedToken("e5740bbf-07d0-4e4c-b174-94ff7d6adbcd");;
+
+    var virtualMachineToConnect = { "HostServiceName": $("#login_hostname_input").val(), "Port": $("#login_port").val() };
 
     if (currentLoginMethod == usePasswordToLogin) {
         getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
             var passWord = $("#login_password").val();
             currentSteppingNode = steppingNodes.value[0];
-            connectToTargetLinuxVMUsePassword(steppingNodes.value[0], selectedVirtualMachine, userName, passWord, subscriptionAccessToken);
+            connectToTargetLinuxVMUsePassword(steppingNodes.value[0], virtualMachineToConnect, userName, passWord, subscriptionAccessToken);
+        });
+    }
+
+    if (currentLoginMethod == useTempKeyToLogin) {
+        getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
+            currentSteppingNode = steppingNodes.value[0];
+            connectToTargetLinuxVMUseToken(steppingNodes.value[0], virtualMachineToConnect, userName, subscriptionAccessToken);
         });
     }
 
@@ -104,10 +108,10 @@ function Login() {
             currentSteppingNode = steppingNodes.value[0];
             var identityFile = $("#identity_file")[0].files[0];
             var passWord = $("#login_password").val();
-            var identityReader = new FileReader();
+            var identityReader = new FileReader(); 
             identityReader.onload = function (e) {
                 var privateKey = e.target.result;
-                connectToTargetLinuxVMUsePrivateKey(steppingNodes.value[0], selectedVirtualMachine, userName, privateKey, passWord, subscriptionAccessToken);
+                connectToTargetLinuxVMUsePrivateKey(steppingNodes.value[0], virtualMachineToConnect, userName, privateKey, passWord, subscriptionAccessToken);
             }
             identityReader.readAsText(identityFile);
         });
@@ -120,6 +124,7 @@ function initializeLoginPanel(selectedVirtualMachine) {
         $("#login_username_input").val("azureuser");
         $("#login_port").val(selectedVirtualMachine.Port);
     }
+
     $("#login_blade").fadeIn(200);
 
     $("#login_password_option_button").unbind("click");

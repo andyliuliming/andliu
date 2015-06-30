@@ -22,5 +22,6 @@ namespace AzureWebConsoleDomain
         public string OS { get; set; }
         public string DeploymentName { get; set; }
         public string RoleInstanceName { get; set; }
+        public string Owner { get; set; }
     }
 }

@@ -40,7 +40,7 @@ namespace WebConsoleSteppingNode.SSH
             sshClient.Connect();
 
             stream = sshClient.CreateShellStream("xterm", uint.Parse(columns), uint.Parse(rows), 800, 600, 1024);
-            stream.DataReceived += ChatSocketHandler_DataReceived;
+            stream.DataReceived += SSHShellHandler_DataReceived;
         }
     }
 }

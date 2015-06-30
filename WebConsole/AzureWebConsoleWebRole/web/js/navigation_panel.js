@@ -50,8 +50,11 @@ function toggleNavigationPanel(forceStatus) {
     }
 
     if (showNavigationPanel) {
+        $("#blade_panel").fadeIn(200);
         $("#virtual_machine_navigation_panel").fadeIn(200);
+        
     } else {
+        $("#blade_panel").fadeOut(200);
         $("#virtual_machine_navigation_panel").fadeOut(200);
     }
 }
@@ -110,16 +113,16 @@ function initializeVirtualMachines() {
     $.fn.zTree.init($("#virtual_machine_tree_ul"), setting, zNodes);
 }
 
-var selectedVirtualMachine = null;
-function getSelectedVirtualMachine() {
-    return selectedVirtualMachine;
-}
+//var selectedVirtualMachine = null;
+//function getSelectedVirtualMachine() {
+//    return selectedVirtualMachine;
+//}
 
 
 function virtualMachineTreeNodeClicked(event, tree, node, clickFlat) {
     console.dir(tree);
     //var virtualMachine = node.data;
-    selectedVirtualMachine = node.data;
+    var selectedVirtualMachine = node.data;
     var subscriptionAccessToken = $.cookie(selectedVirtualMachine.SubscriptionId);
     if (selectedVirtualMachine.OS == "Linux") {
         initializeLoginPanel(selectedVirtualMachine);
