@@ -49,10 +49,10 @@ namespace AzureManagementLib
                                 }
                                 AzureVirtualMachine azureVirtualMachine = new AzureVirtualMachine();
                                 azureVirtualMachine.HostServiceName = hostService.ServiceName;
-                                azureVirtualMachine.Url = hostService.Uri.ToString();
-                                azureVirtualMachine.DeploymentName = deploymentGetResponse.Name;
-                                azureVirtualMachine.RoleInstanceName = roleInstanceFound == null ? string.Empty : roleInstanceFound.InstanceName;
-                                azureVirtualMachine.SubscriptionId = subscriptionId;
+                                //azureVirtualMachine.Url = hostService.Uri.ToString();
+                                //azureVirtualMachine.DeploymentName = deploymentGetResponse.Name;
+                                //azureVirtualMachine.RoleInstanceName = roleInstanceFound == null ? string.Empty : roleInstanceFound.InstanceName;
+                                //azureVirtualMachine.SubscriptionId = subscriptionId;
                                 foreach (var configurationSet in role.ConfigurationSets)
                                 {
                                     if (configurationSet.ConfigurationSetType == "NetworkConfiguration")
@@ -71,7 +71,7 @@ namespace AzureManagementLib
                                         }
                                     }
                                 }
-                                azureVirtualMachine.OS = role.OSVirtualHardDisk.OperatingSystem;
+                                //azureVirtualMachine.OS = role.OSVirtualHardDisk.OperatingSystem;
 
                                 azureVirtualMachines.Add(azureVirtualMachine);
                             }

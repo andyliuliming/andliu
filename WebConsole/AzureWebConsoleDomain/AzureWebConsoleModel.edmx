@@ -24,14 +24,10 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="SubscriptionId" Type="nvarchar(max)" Nullable="false" />
     <Property Name="HostServiceName" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="Url" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Port" Type="bigint" Nullable="true" />
-    <Property Name="OS" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="DeploymentName" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="RoleInstanceName" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Owner" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="AzureSubscriptions">
     <Key>
@@ -80,14 +76,10 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SubscriptionId" Type="String" Nullable="false" />
           <Property Name="HostServiceName" Type="String" Nullable="false" />
-          <Property Name="Url" Type="String" Nullable="false" />
           <Property Name="Port" Type="Int64" Nullable="true" />
-          <Property Name="OS" Type="String" Nullable="false" />
-          <Property Name="DeploymentName" Type="String" Nullable="false" />
-          <Property Name="RoleInstanceName" Type="String" Nullable="false" />
           <Property Name="Owner" Type="String" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" />
         </EntityType>
         <EntityType Name="AzureSubscription">
           <Key>
@@ -131,14 +123,10 @@
       <EntityTypeMapping TypeName="IsTypeOf(AzureWebConsoleModel.AzureVirtualMachine)">
         <MappingFragment StoreEntitySet="AzureVirtualMachines">
           <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="SubscriptionId" ColumnName="SubscriptionId" />
           <ScalarProperty Name="HostServiceName" ColumnName="HostServiceName" />
-          <ScalarProperty Name="Url" ColumnName="Url" />
           <ScalarProperty Name="Port" ColumnName="Port" />
-          <ScalarProperty Name="OS" ColumnName="OS" />
-          <ScalarProperty Name="DeploymentName" ColumnName="DeploymentName" />
-          <ScalarProperty Name="RoleInstanceName" ColumnName="RoleInstanceName" />
           <ScalarProperty Name="Owner" ColumnName="Owner" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -19,7 +19,7 @@ namespace AzureTerminalWebConsole.Controllers
 {
     public class PrivateKeyTerminalSessionController : TokenValidationApiController
     {
-        public async Task<HttpResponseMessage> Get(String hostName, String userName, String privateKey, String passPhrase, String port, String columns, String rows, String accessToken)
+        public async Task<HttpResponseMessage> Get(String hostName, String userName, String privateKey, String passPhrase, int port, uint columns, uint rows, String accessToken)
         {
             if (HttpContext.Current.IsWebSocketRequest)
             {
@@ -27,7 +27,20 @@ namespace AzureTerminalWebConsole.Controllers
 
                 await this.ValidateToken(accessToken);
 
-                PrivateKeySSHSocketHandler handler = new PrivateKeySSHSocketHandler(hostName, userName, privateKey, passPhrase, port, columns, rows, accessToken);
+                byte[] privateKeyByteArray = Convert.FromBase64String(privateKey);
+                MemoryStream privateKeyStream = new MemoryStream(privateKeyByteArray);
+                privateKeyStream.Position = 0;
+                PrivateKeyFile privateKeyFile = null;
+                if (string.IsNullOrEmpty(passPhrase))
+                {
+                    privateKeyFile = new PrivateKeyFile(privateKeyStream);
+                }
+                else
+                {
+                    privateKeyFile = new PrivateKeyFile(privateKeyStream, passPhrase);
+                }
+
+                PrivateKeySSHSocketHandler handler = new PrivateKeySSHSocketHandler(hostName, userName, privateKeyFile, port, columns, rows, accessToken);
                 handler.Connect();
                 HttpContext.Current.AcceptWebSocketRequest(handler);
             }

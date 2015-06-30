@@ -15,30 +15,30 @@ namespace WebConsoleSteppingNode.SSH
     public class PrivateKeySSHSocketHandler : AbstractSSHSocketHandler
     {
         AzureWebConsoleModelContainer db = new AzureWebConsoleModelContainer();
-        public PrivateKeySSHSocketHandler(String hostName, String userName, String privateKey, String passPhrase, String port, String columns, String rows, String accessToken)
+        public PrivateKeySSHSocketHandler(String hostName, String userName, PrivateKeyFile privateKey, int port, uint columns, uint rows, String accessToken)
         {
-            byte[] privateKeyByteArray = Convert.FromBase64String(privateKey);
-            MemoryStream privateKeyStream = new MemoryStream(privateKeyByteArray);
-            privateKeyStream.Position = 0;
-            PrivateKeyFile privateKeyFile = null;
-            if (string.IsNullOrEmpty(passPhrase))
-            {
-                privateKeyFile = new PrivateKeyFile(privateKeyStream);
-            }
-            else
-            {
-                privateKeyFile = new PrivateKeyFile(privateKeyStream, passPhrase);
-            }
+            //byte[] privateKeyByteArray = Convert.FromBase64String(privateKey);
+            //MemoryStream privateKeyStream = new MemoryStream(privateKeyByteArray);
+            //privateKeyStream.Position = 0;
+            //PrivateKeyFile privateKeyFile = null;
+            //if (string.IsNullOrEmpty(passPhrase))
+            //{
+            //    privateKeyFile = new PrivateKeyFile(privateKeyStream);
+            //}
+            //else
+            //{
+            //    privateKeyFile = new PrivateKeyFile(privateKeyStream, passPhrase);
+            //}
 
             TerminalAuthorization authorization = new TerminalAuthorization();
             authorization.AuthorizationType = AuthorizationType.PrivateKey;
-            authorization.Identity = privateKeyFile;
+            authorization.Identity = privateKey;
             authorization.HostName = hostName;
             authorization.UserName = userName;
-            authorization.Port = int.Parse(port);
+            authorization.Port = (port);
             SSHSessionRepository.Instance().TerminalAuthorizations.Add(accessToken, authorization);
 
-            sshClient = new SshClient(hostName, int.Parse(port), userName, privateKeyFile);
+            sshClient = new SshClient(hostName, (port), userName, privateKey);
 
             sshClient.KeepAliveInterval = new TimeSpan(0, 1, 0); 
         }

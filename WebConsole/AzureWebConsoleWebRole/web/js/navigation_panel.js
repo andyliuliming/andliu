@@ -1,8 +1,5 @@
 ﻿var zNodeIndex = 3;
-
 var showNavigationPanel = false;
-
-
 
 function initializeNavigationPanel() {
     bindNewMachine();
@@ -22,7 +19,9 @@ function initializeNavigationPanel() {
             var userToSignUp = { "UserName": userName, "Password": password };
             add_azurewebconsole_user(userToSignUp, function (userCreated) {
                 console.dir(userCreated);
-            }, function (error) { });
+            }, function (error) {
+
+            });
         });
     });
 
@@ -36,8 +35,13 @@ function initializeNavigationPanel() {
     if (cachedToken) {
         // get the virtual machines 
         getAzureVirtualMachines(cachedToken, function (azureVirtualMachinesGot) {
+            initializeVirtualMachines();
+            setVirtualMachines(azureVirtualMachinesGot);
             console.dir(azureVirtualMachinesGot);
-        }, function (error) { });
+            $("#virtual_machines_tree").fadeIn(200);
+        }, function (error) {
+
+        });
     }
 }
 
@@ -58,7 +62,6 @@ function toggleNavigationPanel(forceStatus) {
         $("#virtual_machine_navigation_panel").fadeOut(200);
     }
 }
-
 
 function initializeSubscriptions(subscriptions) {
     $("#virtual_machine_selections option").remove();
@@ -85,10 +88,6 @@ function initializeSubscriptions(subscriptions) {
     });
 }
 
-var zNodes = [
-          { id: 1, pId: 0, name: "Windows Loading...", open: true },
-          { id: 2, pId: 0, name: "Linux Loading...", open: true }
-];
 
 function initializeVirtualMachines() {
     var setting = {
@@ -110,40 +109,23 @@ function initializeVirtualMachines() {
             //onClick: onClick
         }
     };
-    $.fn.zTree.init($("#virtual_machine_tree_ul"), setting, zNodes);
+    $.fn.zTree.init($("#virtual_machine_tree_ul"), setting, null);
 }
-
-//var selectedVirtualMachine = null;
-//function getSelectedVirtualMachine() {
-//    return selectedVirtualMachine;
-//}
-
 
 function virtualMachineTreeNodeClicked(event, tree, node, clickFlat) {
     console.dir(tree);
-    //var virtualMachine = node.data;
     var selectedVirtualMachine = node.data;
     var subscriptionAccessToken = $.cookie(selectedVirtualMachine.SubscriptionId);
-    if (selectedVirtualMachine.OS == "Linux") {
-        initializeLoginPanel(selectedVirtualMachine);
-    }
-    else {
-        window.open("/api/WindowsRDP?subscriptionId=" + selectedVirtualMachine.SubscriptionId + "&cloudServiceName=" + selectedVirtualMachine.HostServiceName + "&deploymentName=" + selectedVirtualMachine.DeploymentName +
-    "&roleInstanceName=" + selectedVirtualMachine.RoleInstanceName + "&accessToken=" + subscriptionAccessToken);
-    }
+    initializeLoginPanel(selectedVirtualMachine);
 }
 
 function setVirtualMachines(virtualMachines) {
-    zNodes[0].name = "Windows";
-    zNodes[1].name = "Linux";
-
+    var zNodes = [
+            { id: 2, pId: 0, name: "Linux", open: true }
+    ];
     for (var i = 0; i < virtualMachines.value.length; i++) {
         var virtualMachine = virtualMachines.value[i];
-        if (virtualMachine.OS == "Linux") {
-            zNodes.push({ id: zNodeIndex, pId: 2, name: virtualMachine.RoleInstanceName, open: false, data: virtualMachines.value[i] });
-        } else {
-            zNodes.push({ id: zNodeIndex, pId: 1, name: virtualMachine.RoleInstanceName, open: false, data: virtualMachines.value[i] });
-        }
+        zNodes.push({ id: zNodeIndex, pId: 2, name: virtualMachine.HostServiceName+":"+virtualMachine.Port, open: false, data: virtualMachines.value[i] });
         zNodeIndex += 1;
     }
 

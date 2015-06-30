@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 06/30/2015 09:32:23
+-- Date Created: 06/30/2015 11:44:13
 -- Generated from EDMX file: C:\Users\andliu\Documents\GitHub\andliu\WebConsole\AzureWebConsoleDomain\AzureWebConsoleModel.edmx
 -- --------------------------------------------------
 
@@ -52,14 +52,10 @@ GO
 -- Creating table 'AzureVirtualMachines'
 CREATE TABLE [dbo].[AzureVirtualMachines] (
     [Id] bigint IDENTITY(1,1) NOT NULL,
-    [SubscriptionId] nvarchar(max)  NOT NULL,
     [HostServiceName] nvarchar(max)  NOT NULL,
-    [Url] nvarchar(max)  NOT NULL,
     [Port] bigint  NULL,
-    [OS] nvarchar(max)  NOT NULL,
-    [DeploymentName] nvarchar(max)  NOT NULL,
-    [RoleInstanceName] nvarchar(max)  NOT NULL,
-    [Owner] nvarchar(max)  NOT NULL
+    [Owner] nvarchar(max)  NOT NULL,
+    [UserName] nvarchar(max)  NOT NULL
 );
 GO
 

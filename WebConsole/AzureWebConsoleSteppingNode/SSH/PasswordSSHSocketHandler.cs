@@ -14,15 +14,13 @@ namespace WebConsoleSteppingNode.SSH
     public class PasswordSSHSocketHandler : AbstractSSHSocketHandler
     {
 
-        public PasswordSSHSocketHandler(String hostName, String userName, String passWord, String port, String columns, String rows, String accessToken)
+        public PasswordSSHSocketHandler(String hostName, String userName, String passWord, int port, uint columns, uint rows, String accessToken)
         {
-
-            sshClient = new SshClient(hostName, int.Parse(port), userName, passWord);
-            
+            sshClient = new SshClient(hostName, port, userName, passWord);
             sshClient.KeepAliveInterval = new TimeSpan(0, 1, 0);
 
-            base.columns = uint.Parse(columns);
-            base.rows = uint.Parse(rows);
+            base.columns = (columns);
+            base.rows = (rows);
             base.accessToken = accessToken;
         }
     }

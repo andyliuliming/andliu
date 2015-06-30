@@ -1,4 +1,5 @@
 ﻿using AzureManagementLib;
+using AzureWebConsoleDomain;
 using Microsoft.Web.WebSockets;
 using Renci.SshNet;
 using System;
@@ -19,7 +20,8 @@ namespace AzureTerminalWebConsole.Controllers
 {
     public class PasswordTerminalSessionController : TokenValidationApiController
     {
-        public async Task<HttpResponseMessage> Get(String hostName, String userName, String passWord, String port, String columns, String rows, String accessToken)
+        AzureWebConsoleModelContainer db = new AzureWebConsoleModelContainer();
+        public async Task<HttpResponseMessage> Get(String hostName, String userName, String passWord, int port, uint columns, uint rows, String accessToken)
         {
             if (HttpContext.Current.IsWebSocketRequest)
             {
@@ -30,9 +32,27 @@ namespace AzureTerminalWebConsole.Controllers
                 authorization.Identity = passWord;
                 authorization.HostName = hostName;
                 authorization.UserName = userName;
-                authorization.Port = int.Parse(port);
+                authorization.Port = (port);
 
                 SSHSessionRepository.Instance().TerminalAuthorizations[result.ClaimsPrincipal.Identity.Name] = authorization;
+
+                string customer = result.ClaimsPrincipal.Identity.Name;
+
+                AzureVirtualMachine existedVirtualMachine = db.AzureVirtualMachines.Where(avm => avm.HostServiceName == hostName && avm.Port==(port)).FirstOrDefault();
+                if (existedVirtualMachine != null)
+                {
+                    existedVirtualMachine.UserName = userName;
+                }
+                else
+                {
+                    AzureVirtualMachine azureVirtualMachine = new AzureVirtualMachine();
+                    azureVirtualMachine.HostServiceName = hostName;
+                    azureVirtualMachine.Port = port;
+                    azureVirtualMachine.UserName = userName;
+                    azureVirtualMachine.Owner = customer;
+                    db.AzureVirtualMachines.Add(azureVirtualMachine);
+                }
+                db.SaveChanges();
 
                 PasswordSSHSocketHandler handler = new PasswordSSHSocketHandler(hostName, userName, passWord, port, columns, rows, accessToken);
                 handler.Connect();

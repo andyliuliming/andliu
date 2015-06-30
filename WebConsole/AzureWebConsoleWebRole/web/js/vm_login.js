@@ -120,7 +120,7 @@ function Login() {
 
 function initializeLoginPanel(selectedVirtualMachine) {
     if (selectedVirtualMachine) {
-        $("#login_hostname_input").val(selectedVirtualMachine.HostServiceName + ".cloudapp.net");
+        $("#login_hostname_input").val(selectedVirtualMachine.HostServiceName);
         $("#login_username_input").val("azureuser");
         $("#login_port").val(selectedVirtualMachine.Port);
     }

@@ -15,13 +15,9 @@ namespace AzureWebConsoleDomain
     public partial class AzureVirtualMachine
     {
         public long Id { get; set; }
-        public string SubscriptionId { get; set; }
         public string HostServiceName { get; set; }
-        public string Url { get; set; }
         public Nullable<long> Port { get; set; }
-        public string OS { get; set; }
-        public string DeploymentName { get; set; }
-        public string RoleInstanceName { get; set; }
         public string Owner { get; set; }
+        public string UserName { get; set; }
     }
 }

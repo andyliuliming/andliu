@@ -19,7 +19,7 @@ namespace AzureTerminalWebConsole.Controllers
 {
     public class AccessTokenTerminalSessionController : TokenValidationApiController
     {
-        public async Task<HttpResponseMessage> Get(String hostName, String userName, String deploymentName, String virtualMachineName, String subscriptionId, String port, String accessToken, String columns, String rows)
+        public async Task<HttpResponseMessage> Get(String hostName, String userName, String deploymentName, String virtualMachineName, String subscriptionId, int port, uint columns, uint rows, String accessToken)
         {
             if (HttpContext.Current.IsWebSocketRequest)
             {
@@ -27,7 +27,28 @@ namespace AzureTerminalWebConsole.Controllers
 
                 await this.ValidateToken(accessToken);
 
-                AccessTokenSSHSocketHander handler = new AccessTokenSSHSocketHander(hostName, userName, deploymentName, virtualMachineName, subscriptionId, port, accessToken, columns, rows);
+
+                MemoryStream privateKey = new MemoryStream();
+                MemoryStream publicKey = new MemoryStream();
+                KeyUtil keyUtil = new KeyUtil();
+                keyUtil.GeneratePublicKey(privateKey, publicKey, null);
+                privateKey.Position = 0;
+                publicKey.Position = 0;
+                PrivateKeyFile pkf = new PrivateKeyFile(privateKey);
+
+                TerminalAuthorization authorization = new TerminalAuthorization();
+                authorization.AuthorizationType = AuthorizationType.AccessToken;
+                authorization.Identity = accessToken;
+                authorization.HostName = hostName;
+                authorization.UserName = userName;
+                authorization.Port = (port);
+                SSHSessionRepository.Instance().TerminalAuthorizations.Add(accessToken, authorization);
+
+                AzureVirtualMachineUtil vmUtil = new AzureVirtualMachineUtil();
+
+                vmUtil.SetPublicKey(publicKey, hostName, userName, deploymentName, virtualMachineName, subscriptionId, accessToken);
+
+                PrivateKeySSHSocketHandler handler = new PrivateKeySSHSocketHandler(hostName, userName, pkf, port, columns, rows, accessToken);
                 handler.Connect();
                 HttpContext.Current.AcceptWebSocketRequest(handler);
             }
