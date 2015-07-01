@@ -12,6 +12,12 @@
     float: right;
 }
 
+    #signup_button:disabled {
+        color: grey;
+        background-color: lightgrey;
+        cursor: wait;
+    }
+
 #azure_terminal_sign_button_wrapper {
     height: 50px;
 }

@@ -71,7 +71,7 @@ function connectToTargetLinuxVMCommon(address) {
         term.write(result.data);
     };
     ws.onopen = function () {
-        $('#login_connect_button').removeAttr("disabled", "disabled")
+        $("#login_connect_button").removeAttr("disabled", "disabled")
         $("#login_blade").fadeOut(200);
         $("#virtual_machine_navigation_panel").fadeOut(200);
         $("#terminal_main_panel").fadeIn(200);
