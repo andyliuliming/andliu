@@ -27,18 +27,11 @@ namespace AzureTerminalWebConsole.Controllers
             {
                 TokenValidationResult result = await this.ValidateToken(accessToken);
 
-                //TerminalAuthorization authorization = new TerminalAuthorization();
-                //authorization.AuthorizationType = AuthorizationType.Password;
-                //authorization.Identity = passWord;
-                //authorization.HostName = hostName;
-                //authorization.UserName = userName;
-                //authorization.Port = (port);
-
-                //SSHSessionRepository.Instance().TerminalAuthorizations[result.ClaimsPrincipal.Identity.Name] = authorization;
-
                 string customer = result.ClaimsPrincipal.Identity.Name;
 
-                AzureVirtualMachine existedVirtualMachine = db.AzureVirtualMachines.Where(avm => avm.HostServiceName == hostName && avm.Port==(port)).FirstOrDefault();
+                AzureVirtualMachine existedVirtualMachine 
+                    = db.AzureVirtualMachines.Where(avm => avm.HostServiceName == hostName && avm.Port==(port)
+                    && avm.Owner == result.ClaimsPrincipal.Identity.Name).FirstOrDefault();
                 if (existedVirtualMachine != null)
                 {
                     existedVirtualMachine.UserName = userName;

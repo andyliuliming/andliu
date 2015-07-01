@@ -55,8 +55,6 @@ function updateDownloadFileList(filesGot) {
 
     $("#download_file_list li a").unbind("click");
     $("#download_file_list li a").bind("click", function (ev) {
-        //console.dir($(ev.target));
-        alert("you clicked " + getInnerText(ev.target));
         // " now we are trying to download"
         var filePath = getInnerText(ev.target);
 
