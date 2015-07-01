@@ -1,5 +1,6 @@
 ﻿#download_file_dialog {
     display: none;
+    font-family: 'Segoe UI';
     position: absolute;
     margin-top: auto;
     margin-bottom: auto;
@@ -11,7 +12,8 @@
     right: 0px;
     width: 400px;
     height: 300px;
-    background-color: grey;
+    background-color: black;
+    color: white;
     border-width: 1px;
     border-color: rgb(169,169,169);
     border-style: solid;
@@ -41,6 +43,10 @@
         margin: 0px;
         padding: 0px;
     }
+
+        #download_file_list li a {
+            color: lightblue;
+        }
 
         #download_file_list li.selected {
             cursor: pointer;
