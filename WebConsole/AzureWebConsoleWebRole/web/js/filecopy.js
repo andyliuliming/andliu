@@ -4,6 +4,7 @@ var currentFolder = null;
 
 function updateDownloadFileList(filesGot) {
     console.dir(filesGot);
+    $("#download_file_list").empty();
     var upItem = { "Path": goUpItem, "IsDirectory": true };
     var itemBuilt = BuildDownloadFileListItem(upItem);
 
@@ -25,18 +26,13 @@ function updateDownloadFileList(filesGot) {
 
     $("#download_file_list li").unbind("dblclick");
     $("#download_file_list li").bind("dblclick", function (ev) {
-        if (!$(ev.target).hasClass("directory")) {
+        if (!ev.target.attributes["isdirectory"]) {
             return;
         }
         var clicked_item = getInnerText(ev.target);
         if (clicked_item != goUpItem) {
             // jump to up
-
-           
-            //var cachedToken = authContext.getCachedToken("e5740bbf-07d0-4e4c-b174-94ff7d6adbcd");
-
-            ////get the current folder first, then 
-            //getTerminalFiles(currentSteppingNode, cachedToken, ".", updateDownloadFileList, getTerminalFileFailed);
+            JumpToRemoteFolder(clicked_item);
         }
         else {
             console.dir("you double clicked upItem");
@@ -46,22 +42,27 @@ function updateDownloadFileList(filesGot) {
             } else {
                 var lastIndexOfSlash = currentFolder.lastIndexOf('/');
                 if (lastIndexOfSlash == 0) {
-                    JumpToRemoteFolder(".");
+                    currentFolder = "/";
+                    JumpToRemoteFolder(currentFolder);
                 } else {
                     currentFolder = currentFolder.substr(0, lastIndexOfSlash);
                     // console.dir("now we jump to up " + currentRemoteFolder)
                     JumpToRemoteFolder(currentFolder);
                 }
             }
-
         }
-        // update the current local folder     of the selections combobox.
     });
 
     $("#download_file_list li a").unbind("click");
     $("#download_file_list li a").bind("click", function (ev) {
         //console.dir($(ev.target));
         alert("you clicked " + getInnerText(ev.target));
+        // " now we are trying to download"
+        var filePath = getInnerText(ev.target);
+
+        var cachedToken = authContext.getCachedToken("e5740bbf-07d0-4e4c-b174-94ff7d6adbcd");
+
+        window.open(getHttpSchems() + currentSteppingNode.Address + "/api/TerminalFileTransfer?filePath=" + filePath + "&accessToken=" + "Bearer " + cachedToken);
     });
 }
 
@@ -79,13 +80,18 @@ function JumpToRemoteFolder(folder) {
 function openFileCopyDialog() {
     $("#download_file_dialog").fadeIn(200);
     JumpToRemoteFolder(".");
+
+    $("#download_file_dialog .blade_close_button").unbind("click");
+    $("#download_file_dialog .blade_close_button").bind("click", function (ev) {
+        $("#download_file_dialog").fadeOut(200);
+    });
 }
 
 
 function BuildDownloadFileListItem(fileItem) {
     var opt;
     if (fileItem.IsDirectory == true) {
-        opt = $("<li class='directory'></li>").html(fileItem.Path);
+        opt = $("<li class='directory' isdirectory></li>").html(fileItem.Path);
     } else {
         opt = $("<li class='file'><a href='#'>" + fileItem.Path + "</a></li>");
     }
@@ -152,7 +158,6 @@ function bindFileDrop(termToBind) {
             };
         };
         var cachedToken = authContext.getCachedToken("e5740bbf-07d0-4e4c-b174-94ff7d6adbcd");
-        //var currentAccessToken = getCurrentSubscriptionAccessToken();
         request.setRequestHeader("Authorization", "Bearer " + cachedToken);
         request.send(data);
     }

@@ -22,11 +22,8 @@ namespace AzureTerminalWebConsole.Controllers
     {
 
         [HttpGet]
-        public async Task<HttpResponseMessage> Get([FromUri]string filePath)
+        public async Task<HttpResponseMessage> Get([FromUri]string filePath,[FromUri]string accessToken)
         {
-            IEnumerable<string> accessTokens = this.ActionContext.Request.Headers.GetValues("Authorization");
-
-            string accessToken = accessTokens.FirstOrDefault();
             if (accessToken != null)
             {
                 TokenValidationResult result = await this.ValidateToken(accessToken);
@@ -42,15 +39,15 @@ namespace AzureTerminalWebConsole.Controllers
 
                 MemoryStream memoryStream = new MemoryStream();
                 message.Content = new StreamContent(memoryStream);
-                message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/rdp");
+                //message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/rdp");
 
                 message.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
                 {
-                    FileName = "filecopied"
+                    FileName = filePath
                 };
 
                 scpClient.Download(filePath, memoryStream);
-
+                memoryStream.Position = 0;
                 scpClient.Disconnect();
 
                 return message;

@@ -19,7 +19,6 @@
 
 #download_file_list_wrapper {
     width: 100%;
-    margin-top: 5%;
     height: 95%;
     overflow: scroll;
 }
