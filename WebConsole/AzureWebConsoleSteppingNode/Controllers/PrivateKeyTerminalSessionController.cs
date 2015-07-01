@@ -1,4 +1,5 @@
 ﻿using AzureManagementLib;
+using AzureWebConsoleDomain;
 using Microsoft.Web.WebSockets;
 using Renci.SshNet;
 using System;
@@ -23,9 +24,27 @@ namespace AzureTerminalWebConsole.Controllers
         {
             if (HttpContext.Current.IsWebSocketRequest)
             {
-                // validate the token here :)
+                TokenValidationResult result = await this.ValidateToken(accessToken);
 
-                await this.ValidateToken(accessToken);
+                string customer = result.ClaimsPrincipal.Identity.Name;
+
+                AzureVirtualMachine existedVirtualMachine
+                    = db.AzureVirtualMachines.Where(avm => avm.HostServiceName == hostName && avm.Port == (port)
+                    && avm.Owner == result.ClaimsPrincipal.Identity.Name).FirstOrDefault();
+                if (existedVirtualMachine != null)
+                {
+                    existedVirtualMachine.UserName = userName;
+                }
+                else
+                {
+                    AzureVirtualMachine azureVirtualMachine = new AzureVirtualMachine();
+                    azureVirtualMachine.HostServiceName = hostName;
+                    azureVirtualMachine.Port = port;
+                    azureVirtualMachine.UserName = userName;
+                    azureVirtualMachine.Owner = customer;
+                    db.AzureVirtualMachines.Add(azureVirtualMachine);
+                }
+                db.SaveChanges();
 
                 byte[] privateKeyByteArray = Convert.FromBase64String(privateKey);
                 MemoryStream privateKeyStream = new MemoryStream(privateKeyByteArray);
@@ -41,12 +60,15 @@ namespace AzureTerminalWebConsole.Controllers
                 }
 
                 PrivateKeySSHSocketHandler handler = new PrivateKeySSHSocketHandler(hostName, userName, privateKeyFile, port, columns, rows, accessToken);
+
+                SSHSessionRepository.Instance().TerminalAuthorizations[result.ClaimsPrincipal.Identity.Name] = handler.SshClient;
+
                 handler.Connect();
                 HttpContext.Current.AcceptWebSocketRequest(handler);
             }
             return new HttpResponseMessage(HttpStatusCode.SwitchingProtocols);
         }
 
-      
+
     }
 }

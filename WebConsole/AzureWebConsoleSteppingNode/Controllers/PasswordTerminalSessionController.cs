@@ -20,7 +20,6 @@ namespace AzureTerminalWebConsole.Controllers
 {
     public class PasswordTerminalSessionController : TokenValidationApiController
     {
-        AzureWebConsoleModelContainer db = new AzureWebConsoleModelContainer();
         public async Task<HttpResponseMessage> Get(String hostName, String userName, String passWord, int port, uint columns, uint rows, String accessToken)
         {
             if (HttpContext.Current.IsWebSocketRequest)
@@ -29,8 +28,8 @@ namespace AzureTerminalWebConsole.Controllers
 
                 string customer = result.ClaimsPrincipal.Identity.Name;
 
-                AzureVirtualMachine existedVirtualMachine 
-                    = db.AzureVirtualMachines.Where(avm => avm.HostServiceName == hostName && avm.Port==(port)
+                AzureVirtualMachine existedVirtualMachine
+                    = db.AzureVirtualMachines.Where(avm => avm.HostServiceName == hostName && avm.Port == (port)
                     && avm.Owner == result.ClaimsPrincipal.Identity.Name).FirstOrDefault();
                 if (existedVirtualMachine != null)
                 {
