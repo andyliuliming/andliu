@@ -16,7 +16,7 @@ $azureWebConsoleDataBaseName = $Prefix+"db"
 $databaseEdition="Basic"
 $azureWebConsoleAzureServiceName=$Prefix
 $azureWebConsoleServiceRoleName="AzureWebConsoleWebRole"
-
+$AllowedCrossDomainHost="*"
 $DatabaseUserName= "azurewebconsole"
 $DatabasePassword="User@123"
 

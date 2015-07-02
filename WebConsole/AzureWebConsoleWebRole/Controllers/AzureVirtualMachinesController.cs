@@ -54,8 +54,7 @@ namespace AzureWebConsole.Controllers
             if (accessToken != null)
             {
                 TokenValidator validator = new TokenValidator();
-                string authHeader = HttpContext.Current.Request.Headers["Authorization"];
-                TokenValidationResult code = await validator.Validate(authHeader);
+                TokenValidationResult code = await validator.Validate(accessToken);
 
                 IQueryable<AzureVirtualMachine> azureVirtualMachines = db.AzureVirtualMachines.Where(avm => avm.Owner == code.ClaimsPrincipal.Identity.Name);
                 return Ok<IEnumerable<AzureVirtualMachine>>(azureVirtualMachines);

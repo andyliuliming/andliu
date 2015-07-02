@@ -14,7 +14,7 @@
       <Setting name="AzureGraphAPI" value="https://graph.windows.net" />
       <Setting name="ServiceRootAPI" value="https://graph.windows.net/azurewebconsole.onmicrosoft.com" />
       <Setting name="idaTenant" value="azurewebconsole.onmicrosoft.com" />
-      <Setting name="idaAudience" value="https://azurewebconsole.onmicrosoft.com/" />
+      <Setting name="idaAudience" value="e5740bbf-07d0-4e4c-b174-94ff7d6adbcd" />
       <Setting name="idaAADInstance" value="https://login.microsoftonline.com/{0}" />
     </ConfigurationSettings>
     <Certificates>
@@ -24,7 +24,7 @@
   <Role name="AzureWebConsoleSteppingNode">
     <Instances count="1" />
     <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName={DiagnosticStorageAccountName};AccountKey={DiagnosticStorageAccountKey}" />
       <Setting name="AllowedCrossDomainHost" value="{AllowedCrossDomainHost}" />
       <Setting name="ClientID" value="e5740bbf-07d0-4e4c-b174-94ff7d6adbcd" />
       <Setting name="ClientSecret" value="ex9yNJueAfNHSuSm5vVo8tp/l8NtcRA6oeP/4dLEJq0=" />
