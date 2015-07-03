@@ -110,7 +110,7 @@ function Login() {
         getSteppingNodes(subscriptionAccessToken, function (steppingNodes) {
             currentSteppingNode = steppingNodes.value[0];
             var identityFile = $("#identity_file")[0].files[0];
-            var passWord = $("#login_password").val();
+            var passWord = $("#login_private_key_passphrase_input").val();
             var identityReader = new FileReader(); 
             identityReader.onload = function (e) {
                 var privateKey = e.target.result;

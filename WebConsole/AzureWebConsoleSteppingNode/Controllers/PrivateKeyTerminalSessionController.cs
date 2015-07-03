@@ -24,6 +24,7 @@ namespace AzureTerminalWebConsole.Controllers
         {
             if (HttpContext.Current.IsWebSocketRequest)
             {
+                try { 
                 TokenValidationResult result = await this.ValidateToken(accessToken);
 
                 string customer = result.ClaimsPrincipal.Identity.Name;
@@ -65,6 +66,11 @@ namespace AzureTerminalWebConsole.Controllers
 
                 handler.Connect();
                 HttpContext.Current.AcceptWebSocketRequest(handler);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
             return new HttpResponseMessage(HttpStatusCode.SwitchingProtocols);
         }
