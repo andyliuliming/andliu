@@ -206,7 +206,7 @@
                 <li class="login_input_label_li blade_input_label">
                     <label id="login_type_label" for="password">Password:</label>
                 </li>
-                <li>
+                <li class="login_input_label_li blade_input_label">
                     <input class="login_input blade_input" id="login_password" type="password" />
                     <div id="login_private_key">
                         <div id="login_private_key_file_name">
@@ -216,6 +216,11 @@
                             <button type="button" class="azure_terminal_button" id="login_private_key_browse">Browse</button>
                             <input type="file" id="identity_file" />
                         </div>
+                    </div>
+
+                    <div id="login_private_key_passphrase">
+                        <label id="login_private_key_pass_label" for="login_private_key_passphrase_input">Passphrase(If have)</label>
+                        <input type="text" id="login_private_key_passphrase_input" />
                     </div>
                 </li>
                 <li>
