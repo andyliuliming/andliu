@@ -184,3 +184,11 @@
     height: 100%;
     float: left;
 }
+
+#login_private_key_pass_label {
+    display: none;
+}
+
+#login_private_key_passphrase_input {
+    display: none;
+}

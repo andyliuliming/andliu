@@ -144,6 +144,9 @@ function initializeLoginPanel(selectedVirtualMachine) {
         $("#login_private_key").css("display", "none");
         $("#login_password").css("display", "block");
         $("#login_type_label").html("Password:");
+
+        $("#login_private_key_pass_label").css("display", "none");
+        $("#login_private_key_passphrase_input").css("display", "none");
     });
 
     $("#login_privatekey_option_button").unbind("click");
@@ -152,9 +155,14 @@ function initializeLoginPanel(selectedVirtualMachine) {
         $(".auth_button").removeClass("auth_button_selected");
         $(ev.target).addClass("auth_button_selected");
 
+        $("#login_password").css("display", "none");
+
         $("#login_private_key").css("display", "block");
-        $("#login_password").css("display", "block");
+        
         $("#login_type_label").html("Private Key:");
+
+        $("#login_private_key_pass_label").css("display", "block");
+        $("#login_private_key_passphrase_input").css("display", "block");
     });
 
     $("#login_tempkey_option_button").unbind("click");
@@ -165,6 +173,9 @@ function initializeLoginPanel(selectedVirtualMachine) {
         $("#login_private_key").css("display", "none");
         $("#login_password").css("display", "none");
         $("#login_type_label").html("Temp Key:");
+
+        $("#login_private_key_pass_label").css("display", "none");
+        $("#login_private_key_passphrase_input").css("display", "none");
     });
 
     $("#identity_file").unbind("change");

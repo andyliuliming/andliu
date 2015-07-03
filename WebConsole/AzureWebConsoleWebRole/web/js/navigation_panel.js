@@ -44,8 +44,14 @@ function initializeNavigationPanel() {
             //hide the sign in
             $("#virtual_machine_sign_out").css("display", "block");
         }, function (error) {
-            $("#virtual_machine_navigation_sign_in_panel").css("display", "block");
-            $("#virtual_machine_navigation_sign_up_panel").css("display", "block");
+            // if this is the 500 error, then just show the error:
+            // if this is the 401 error, show the sign in and the sign up button.
+            if (error.status == 401) {
+                $("#virtual_machine_navigation_sign_in_panel").css("display", "block");
+                $("#virtual_machine_navigation_sign_up_panel").css("display", "block");
+            } else {
+                $("#signed_in_welcome p").html("One error occured, please try again later.");
+            }
         });
     } else {
         $("#virtual_machine_sign_out").css("display", "none");

@@ -206,7 +206,7 @@
                 <li class="login_input_label_li blade_input_label">
                     <label id="login_type_label" for="password">Password:</label>
                 </li>
-                <li class="login_input_label_li blade_input_label">
+                <li >
                     <input class="login_input blade_input" id="login_password" type="password" />
                     <div id="login_private_key">
                         <div id="login_private_key_file_name">
@@ -217,23 +217,24 @@
                             <input type="file" id="identity_file" />
                         </div>
                     </div>
-
-                    <div id="login_private_key_passphrase">
-                        <label id="login_private_key_pass_label" for="login_private_key_passphrase_input">Passphrase(If have)</label>
-                        <input type="text" id="login_private_key_passphrase_input" />
-                    </div>
-                </li>
-                <li>
-                    <label id="login_warning_label"></label>
                 </li>
                 <li class="login_input_label_li blade_input_label">
+                    <label id="login_private_key_pass_label" for="login_private_key_passphrase_input">Passphrase(If have):</label>
+                </li>
+                <li >
+                    <input type="text" class="login_input blade_input" id="login_private_key_passphrase_input" />
+                </li>
+                <li class="login_input_label_li blade_input_label">
+                    <label id="login_warning_label"></label>
+                </li>
+                <li >
                     <button class="connect_button azure_terminal_button blade_big_button" name="cancel" id="login_cancel_button">Cancel</button>
                     <button class="connect_button azure_terminal_button blade_big_button" name="login" id="login_connect_button">Connect</button>
                 </li>
             </ul>
         </div>
     </div>
-    
+
 
     <div id="TestFontSize">@</div>
     <div id="terminal_main_panel">
