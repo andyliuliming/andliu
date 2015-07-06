@@ -88,13 +88,10 @@ namespace WebConsoleSteppingNode.Controllers
                         terminalFiles.Add(tf);
                     }
                     sftpClient.Disconnect();
-
                     TerminalFileBag terminalFileBag = new TerminalFileBag();
                     terminalFileBag.TerminalFiles = terminalFiles;
                     terminalFileBag.CurrentDirectory = parentPath;
-
                     return Json<TerminalFileBag>(terminalFileBag);
-
                 }
                 else
                 {

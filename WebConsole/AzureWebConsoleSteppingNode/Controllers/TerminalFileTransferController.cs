@@ -39,7 +39,6 @@ namespace AzureTerminalWebConsole.Controllers
 
                 MemoryStream memoryStream = new MemoryStream();
                 message.Content = new StreamContent(memoryStream);
-                //message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/rdp");
 
                 message.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
                 {

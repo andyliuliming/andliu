@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureWebConsoleDomain", "Az
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureWebConsoleCommon", "AzureWebConsoleCommon\AzureWebConsoleCommon.csproj", "{92F4261E-6044-48C1-AA30-326F660B3975}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDeploy", "AutoDeploy\AutoDeploy.csproj", "{60C59030-7C89-4AC8-B3B9-0E310F678C84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{92F4261E-6044-48C1-AA30-326F660B3975}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92F4261E-6044-48C1-AA30-326F660B3975}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92F4261E-6044-48C1-AA30-326F660B3975}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60C59030-7C89-4AC8-B3B9-0E310F678C84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60C59030-7C89-4AC8-B3B9-0E310F678C84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60C59030-7C89-4AC8-B3B9-0E310F678C84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60C59030-7C89-4AC8-B3B9-0E310F678C84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

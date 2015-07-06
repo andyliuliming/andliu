@@ -16,6 +16,7 @@ $azureWebConsoleDataBaseName = $Prefix+"db"
 $databaseEdition="Basic"
 $azureWebConsoleAzureServiceName=$Prefix
 $azureWebConsoleServiceRoleName="AzureWebConsoleWebRole"
+$azureWebConsoleSteppingNodeRoleName="AzureWebConsoleSteppingNode"
 $AllowedCrossDomainHost="*"
 $DatabaseUserName= "azurewebconsole"
 $DatabasePassword="User@123"
@@ -23,8 +24,8 @@ $DatabasePassword="User@123"
 $Slot="Staging"
 $currentFolder = pwd
 
-$deploymentStorageAccountName=$Prefix + "deploy"
-$diagnosticStorageAccountName=$Prefix + "diag"
+$deploymentStorageAccountName = "andliuwebconsole"
+$diagnosticStorageAccountName = "andliuwebconsole"
 
 function MakeSureStorageAccountExists
 {
@@ -88,8 +89,6 @@ function MakeSureDatabaseExists
 
 MakeSureDatabaseExists -DatabaseName $azureWebConsoleDataBaseName -ServerName $databaseServerInSpecifiedLocation.ServerName
 
-
-
 Set-AzureSubscription -SubscriptionName $subscriptionName -CurrentStorageAccountName $deploymentStorageAccountName
 #buildhappyzl.ps1
 
@@ -110,6 +109,9 @@ function MakeSureAzureServiceExists
 }
 MakeSureAzureServiceExists -ServiceName $azureWebConsoleAzureServiceName
 
+$diagnosticStorageKey = (Get-AzureStorageKey -StorageAccountName $diagnosticStorageAccountName).Primary
+Write-Host "DiagnosticStorageAccountName is $diagnosticStorageAccountName "
+$storageContext = New-AzureStorageContext -StorageAccountName $diagnosticStorageAccountName -StorageAccountKey $diagnosticStorageKey
 
 function ReplaceRealValue
 {
@@ -117,8 +119,7 @@ function ReplaceRealValue
     (
     $TemplateOrigin
     )
-    # get the account key
-    $diagnosticStorageKey = (Get-AzureStorageKey -StorageAccountName $diagnosticStorageAccountName).Primary
+    # get the account key    
     
     $TemplateOrigin=$TemplateOrigin -replace "{DiagnosticStorageAccountName}",$diagnosticStorageAccountName
     $TemplateOrigin=$TemplateOrigin -replace "{DiagnosticStorageAccountKey}",$diagnosticStorageKey
@@ -136,9 +137,6 @@ $cloudConfig = Get-Content -Encoding UTF8 -Path $azureWebConsoleServiceConfig
 $cloudConfig = ReplaceRealValue -TemplateOrigin $cloudConfig
 Set-Content -Encoding UTF8 -Path $azureWebConsoleServiceConfig -Value $cloudConfig
 
-
-#todo generate the CloudDeploy.cscfg according to the cloud because.
-
 function NewOrUpgradeDeployment
 {
     param
@@ -147,44 +145,58 @@ function NewOrUpgradeDeployment
     $RoleName,
     $Package,
     $Configuration,
-    $Slot,
-    $DiagnosticConfigPath
+    $Slot
     )
     $azureDeployment = Get-AzureDeployment -ServiceName $ServiceName -Slot $Slot
 
-    $diagnosticStorageKey = (Get-AzureStorageKey -StorageAccountName $diagnosticStorageAccountName).Primary
-    Write-Host "DiagnosticStorageAccountName is $diagnosticStorageAccountName "
-    $storageContext = New-AzureStorageContext -StorageAccountName $diagnosticStorageAccountName -StorageAccountKey $diagnosticStorageKey
-
     if($azureDeployment -eq $null)
     {
-        Write-Host "no azure deployment exists, so create directly..."
-        #$DiagnosticConfig = New-AzureServiceDiagnosticsExtensionConfig -StorageContext $storageContext -DiagnosticsConfigurationPath $DiagnosticConfigPath -Role $RoleName
-        New-AzureDeployment -ServiceName $ServiceName -Package $Package -Configuration $Configuration -Slot $Slot #-ExtensionConfiguration @($DiagnosticConfig)
+        Write-Host "no azure deployment exists, so create directly..."        
+        New-AzureDeployment -ServiceName $ServiceName -Package $Package -Configuration $Configuration -Slot $Slot
         $azureDeployment = $null
     }
     else
-    {
-        if ($azureDeployment.Name -ne $null) 
-        {
-            Write-Output "Deployment exists in $ServiceName. remove it."
-            Remove-AzureDeployment -Slot $Slot -ServiceName $ServiceName -Force
-        } 
-        Set-AzureDeployment -Upgrade  -ServiceName $ServiceName -Package $Package -Configuration $Configuration -Slot $Slot #-ExtensionConfiguration @($DiagnosticConfig)
+    {           
+        Set-AzureDeployment -Upgrade -ServiceName $ServiceName -Package $Package -Configuration $Configuration -Slot $Slot
         $azureDeployment = $null
     }
-}
-
+}       
 
 "deploying the azure terminal service"
 $azureTerminalServiceConfig = "$currentFolder/../AzureWebConsoleAzureService/bin/$buildType/app.publish/ServiceConfiguration.Cloud.cscfg"
-
-$azureTerminalServiceDiagnosticConfig = "$currentFolder/../AzureWebConsoleAzureService/bin/$buildType/app.publish/Extensions/PaaSDiagnostics.AzureWebConsoleWebRole.PubConfig.xml"
 
 
 NewOrUpgradeDeployment -ServiceName $azureWebConsoleAzureServiceName `
             -Package "$currentFolder/../AzureWebConsoleAzureService/bin/$buildType/app.publish/AzureWebConsoleAzureService.cspkg" `
             -Configuration $azureTerminalServiceConfig `
-            -DiagnosticConfigPath $azureTerminalServiceDiagnosticConfig `
             -RoleName $azureWebConsoleServiceRoleName `
             -Slot $Slot
+
+# set the diagnostic extension
+function SetDiagnosticExtension
+{
+    param
+    (
+    $ServiceName,
+    $DiagnosticConfigurationPath,
+    $RoleName,
+    $StorageContext,
+    $Slot
+    )
+    Set-AzureServiceDiagnosticsExtension -ServiceName $ServiceName -DiagnosticsConfigurationPath $DiagnosticConfigurationPath -Role $RoleName -Slot $Slot -StorageContext $StorageContext 
+}
+
+$azureTerminalServiceDiagnosticConfig = "$currentFolder/../AzureWebConsoleAzureService/bin/$buildType/app.publish/Extensions/PaaSDiagnostics.AzureWebConsoleWebRole.PubConfig.xml"
+
+$diagnosticConfig = Get-Content -Encoding UTF8 -Path $azureTerminalServiceDiagnosticConfig
+$diagnosticConfig = ReplaceRealValue -TemplateOrigin $diagnosticConfig
+Set-Content -Encoding UTF8 -Path $azureTerminalServiceDiagnosticConfig -Value $diagnosticConfig
+
+$azureTerminalSteppingNodeDiagnosticConfig = "$currentFolder/../AzureWebConsoleAzureService/bin/$buildType/app.publish/Extensions/PaaSDiagnostics.AzureWebConsoleSteppingNode.PubConfig.xml"
+$diagnosticConfig = Get-Content -Encoding UTF8 -Path $azureTerminalSteppingNodeDiagnosticConfig
+$diagnosticConfig = ReplaceRealValue -TemplateOrigin $diagnosticConfig
+Set-Content -Encoding UTF8 -Path $azureTerminalSteppingNodeDiagnosticConfig -Value $diagnosticConfig
+
+Write-Host "setting diagnostic extensions..."     
+SetDiagnosticExtension -ServiceName $azureWebConsoleAzureServiceName -StorageContext $storageContext -RoleName $azureWebConsoleServiceRoleName -DiagnosticConfigurationPath $azureTerminalServiceDiagnosticConfig -Slot $Slot
+SetDiagnosticExtension -ServiceName $azureWebConsoleAzureServiceName -StorageContext $storageContext -RoleName $azureWebConsoleSteppingNodeRoleName -DiagnosticConfigurationPath $azureTerminalSteppingNodeDiagnosticConfig -Slot $Slot

@@ -4,6 +4,7 @@ using Microsoft.Web.WebSockets;
 using Renci.SshNet;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -69,12 +70,10 @@ namespace AzureTerminalWebConsole.Controllers
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    Trace.TraceError(e.ToString());
                 }
             }
             return new HttpResponseMessage(HttpStatusCode.SwitchingProtocols);
         }
-
-
     }
 }
