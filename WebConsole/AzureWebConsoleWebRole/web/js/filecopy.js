@@ -4,6 +4,9 @@ var currentFolder = null;
 
 function updateDownloadFileList(filesGot) {
     console.dir(filesGot);
+
+    $("#download_file_dialog").css("cursor", "default");
+
     $("#download_file_list").empty();
     var upItem = { "Path": goUpItem, "IsDirectory": true };
     var itemBuilt = BuildDownloadFileListItem(upItem);
@@ -65,13 +68,13 @@ function updateDownloadFileList(filesGot) {
 }
 
 function getTerminalFileFailed(error) {
-
+    $("#download_file_dialog").css("cursor", "default");
 }
 
 function JumpToRemoteFolder(folder) {
     var cachedToken = authContext.getCachedToken("e5740bbf-07d0-4e4c-b174-94ff7d6adbcd");
 
-
+    $("#download_file_dialog").css("cursor", "wait");
     //get the current folder first, then 
     getTerminalFiles(currentSteppingNode, cachedToken, folder, updateDownloadFileList, getTerminalFileFailed);
 }

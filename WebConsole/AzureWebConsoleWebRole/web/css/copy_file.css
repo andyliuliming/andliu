@@ -19,6 +19,12 @@
     border-style: solid;
 }
 
+    #download_file_dialog:disabled {
+        color: grey;
+        background-color: lightgrey;
+        cursor: wait;
+    }
+
 #download_file_list_wrapper {
     width: 100%;
     height: 95%;
