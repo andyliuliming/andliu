@@ -19,6 +19,7 @@ function initializeAuth() {
     //$errorMessage.html(authContext.getLoginError());
 
     if (isCallback && !authContext.getLoginError()) {
-        window.location = authContext._getItem(authContext.CONSTANTS.STORAGE.LOGIN_REQUEST);
+        var jumpLocation = authContext._getItem(authContext.CONSTANTS.STORAGE.LOGIN_REQUEST);
+        window.location = jumpLocation;
     }
 }

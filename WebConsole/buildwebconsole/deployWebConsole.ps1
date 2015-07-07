@@ -173,30 +173,30 @@ NewOrUpgradeDeployment -ServiceName $azureWebConsoleAzureServiceName `
             -Slot $Slot
 
 # set the diagnostic extension
-function SetDiagnosticExtension
-{
-    param
-    (
-    $ServiceName,
-    $DiagnosticConfigurationPath,
-    $RoleName,
-    $StorageContext,
-    $Slot
-    )
-    Set-AzureServiceDiagnosticsExtension -ServiceName $ServiceName -DiagnosticsConfigurationPath $DiagnosticConfigurationPath -Role $RoleName -Slot $Slot -StorageContext $StorageContext 
-}
+#function SetDiagnosticExtension
+#{
+#    param
+#    (
+#    $ServiceName,
+#    $DiagnosticConfigurationPath,
+#    $RoleName,
+#    $StorageContext,
+#    $Slot
+#    )
+#    Set-AzureServiceDiagnosticsExtension -ServiceName $ServiceName -DiagnosticsConfigurationPath $DiagnosticConfigurationPath -Role $RoleName -Slot $Slot -StorageContext $StorageContext 
+#}
 
-$azureTerminalServiceDiagnosticConfig = "$currentFolder/../AzureWebConsoleAzureService/bin/$buildType/app.publish/Extensions/PaaSDiagnostics.AzureWebConsoleWebRole.PubConfig.xml"
+#$azureTerminalServiceDiagnosticConfig = "$currentFolder/../AzureWebConsoleAzureService/bin/$buildType/app.publish/Extensions/PaaSDiagnostics.AzureWebConsoleWebRole.PubConfig.xml"
 
-$diagnosticConfig = Get-Content -Encoding UTF8 -Path $azureTerminalServiceDiagnosticConfig
-$diagnosticConfig = ReplaceRealValue -TemplateOrigin $diagnosticConfig
-Set-Content -Encoding UTF8 -Path $azureTerminalServiceDiagnosticConfig -Value $diagnosticConfig
+#$diagnosticConfig = Get-Content -Encoding UTF8 -Path $azureTerminalServiceDiagnosticConfig
+#$diagnosticConfig = ReplaceRealValue -TemplateOrigin $diagnosticConfig
+#Set-Content -Encoding UTF8 -Path $azureTerminalServiceDiagnosticConfig -Value $diagnosticConfig
 
-$azureTerminalSteppingNodeDiagnosticConfig = "$currentFolder/../AzureWebConsoleAzureService/bin/$buildType/app.publish/Extensions/PaaSDiagnostics.AzureWebConsoleSteppingNode.PubConfig.xml"
-$diagnosticConfig = Get-Content -Encoding UTF8 -Path $azureTerminalSteppingNodeDiagnosticConfig
-$diagnosticConfig = ReplaceRealValue -TemplateOrigin $diagnosticConfig
-Set-Content -Encoding UTF8 -Path $azureTerminalSteppingNodeDiagnosticConfig -Value $diagnosticConfig
+#$azureTerminalSteppingNodeDiagnosticConfig = "$currentFolder/../AzureWebConsoleAzureService/bin/$buildType/app.publish/Extensions/PaaSDiagnostics.AzureWebConsoleSteppingNode.PubConfig.xml"
+#$diagnosticConfig = Get-Content -Encoding UTF8 -Path $azureTerminalSteppingNodeDiagnosticConfig
+#$diagnosticConfig = ReplaceRealValue -TemplateOrigin $diagnosticConfig
+#Set-Content -Encoding UTF8 -Path $azureTerminalSteppingNodeDiagnosticConfig -Value $diagnosticConfig
 
-Write-Host "setting diagnostic extensions..."     
-SetDiagnosticExtension -ServiceName $azureWebConsoleAzureServiceName -StorageContext $storageContext -RoleName $azureWebConsoleServiceRoleName -DiagnosticConfigurationPath $azureTerminalServiceDiagnosticConfig -Slot $Slot
-SetDiagnosticExtension -ServiceName $azureWebConsoleAzureServiceName -StorageContext $storageContext -RoleName $azureWebConsoleSteppingNodeRoleName -DiagnosticConfigurationPath $azureTerminalSteppingNodeDiagnosticConfig -Slot $Slot
+#Write-Host "setting diagnostic extensions..."     
+#SetDiagnosticExtension -ServiceName $azureWebConsoleAzureServiceName -StorageContext $storageContext -RoleName $azureWebConsoleServiceRoleName -DiagnosticConfigurationPath $azureTerminalServiceDiagnosticConfig -Slot $Slot
+#SetDiagnosticExtension -ServiceName $azureWebConsoleAzureServiceName -StorageContext $storageContext -RoleName $azureWebConsoleSteppingNodeRoleName -DiagnosticConfigurationPath $azureTerminalSteppingNodeDiagnosticConfig -Slot $Slot

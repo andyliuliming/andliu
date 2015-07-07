@@ -276,6 +276,7 @@
     <Content Include="web\js\auth.js" />
     <Content Include="web\js\rest_api.js" />
     <Content Include="web\js\sign_up.js" />
+    <Content Include="web\js\auth_subscription.js" />
     <Content Include="web\js\telemetry\ai.0.15.0-build28683.js" />
     <Content Include="web\js\telemetry\ai.0.15.0-build28683.min.js" />
     <Content Include="web\css\azureterminal.css" />
@@ -333,7 +334,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="index.html" />
-    <Content Include="web\js\app.js" />
     <Content Include="web\js\backup\authutil.js" />
     <Content Include="web\js\common.js" />
     <Content Include="web\js\filecopy.js" />

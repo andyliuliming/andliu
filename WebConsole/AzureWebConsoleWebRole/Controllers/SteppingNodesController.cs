@@ -42,7 +42,7 @@ namespace AzureWebConsole.Controllers
 
             SteppingNode node = new SteppingNode();
             node.Id = 0;
-            node.Address = "wss://azurewebconsole.cloudapp.net:81";
+            node.Address = "azurewebconsole.cloudapp.net:81";
 
             List<SteppingNode> steppingNodes = new List<SteppingNode>();
             steppingNodes.Add(node);
