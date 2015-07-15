@@ -24,18 +24,10 @@ from common import CommonVariables
 
 
 # parameter format should be like this:
-# {"command":"newdisk","query":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdb"},"force":"true"
-# "filesystem":"ext4","mountpoint":"/mnt/","password":"password1","passphrase":"User@123"
-# }
+#{"command":"enableencryption","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}], "force":"true", "passphrase":"User@123"}
 
-# {"command":"existingdisk","query":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdb"},"force":"true","existQuery":{"scsi_number":"[5:0:0:1]","devpath":"/dev/sdc"}
-# "passphrase":"User@123"
-# }
-
-# {"command":"folder","path":"/home/andy/Private","password":"password1"}
 class ExtensionParameter(object):
-
-    def __init__(self,hutil, protected_settings, public_settings):
+    def __init__(self, hutil, protected_settings, public_settings):
         """
         TODO: we should validate the parameter first
         """
@@ -44,11 +36,9 @@ class ExtensionParameter(object):
         self.force = protected_settings.get('force')
         self.devpath = None
         self.query = protected_settings.get('query')
-        self.exist_query = protected_settings.get('existQuery')
-        self.filesystem = protected_settings.get('filesystem')
-        #self.mountname = protected_settings.get('mountname')
-        self.mountpoint = protected_settings.get('mountpoint')
         self.passphrase = protected_settings.get('passphrase')
+        # parse the query from the array
+
 
     def validate_parameter_format(self):
         if(self.query is None):
@@ -59,7 +49,6 @@ class ExtensionParameter(object):
         if(self.command is None):
             return CommonVariables.parameter_error
         elif(self.command == 'newdisk'):
-
             pass
         if(self.force is not None):
             if(self.force != "true" and self.force != "false"):

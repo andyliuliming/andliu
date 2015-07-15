@@ -37,19 +37,12 @@ class redhatPatching(AbstractPatching):
     def __init__(self):
         super(redhatPatching,self).__init__()
     def install_extras(self,paras):
-        print("installing in redhat")
-        if(paras.command == CommonVariables.newdisk_command or paras.command == CommonVariables.existdisk_command):
-            common_extras = ['cryptsetup','lsscsi']
-            for extra in common_extras:
+        common_extras = ['cryptsetup','lsscsi','gdisk']
+        for extra in common_extras:
+            print("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
+
+        if(paras.filesystem == "btrfs"):
+            extras = ['btrfs-tools']
+            for extra in extras:
                 print("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
-
-            if(paras.filesystem == "btrfs"):
-                extras = ['btrfs-tools']
-                for extra in extras:
-                    print("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
-            pass
-
-        elif(paras.command == "folder"):
-            common_extras = ['ecryptfs-utils']
-            for extra in common_extras:
-                    print("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
+        pass

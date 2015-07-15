@@ -73,33 +73,7 @@ class Encryption(object):
     def __init__(self, hutil):
         self.hutil = hutil
 
-    #validate whether the paras are ok, check if the block device is indeed an
-    #empty disk.
-
-    def format_disk(self, filesystem, devpath):
-        error = EncryptionError()
-        mkfs_command = ""
-        if(filesystem == "ext4"):
-            mkfs_command = "mkfs.ext4"
-        elif(filesystem == "ext3"):
-            mkfs_command = "mkfs.ext3"
-        elif(filesystem == "xfs"):
-            mkfs_command = "mkfs.xfs"
-        elif(filesystem == "btrfs"):
-            mkfs_command = "mkfs.btrfs"
-
-        commandToExecute = '/bin/bash -c "' + mkfs_command + ' ' + devpath + ' 2> /dev/null"'
-        self.hutil.log("command to execute :" + commandToExecute)
-        proc = Popen(commandToExecute, shell=True)
-        returnCode = proc.wait()
-        if(returnCode != 0):
-            error.errorcode = returnCode
-            error.code = CommonVariables.mkfs_error
-            error.info = "command to execute is " + commandToExecute
-            self.hutil.log('mkfs_command returnCode is ' + str(returnCode))
-        return error
-
-    def encrypt_disk(self, devpath,passphrase,mappername):
+    def encrypt_disk(self, devpath, passphrase, mappername):
         error = EncryptionError()
         self.hutil.log("dev path to cryptsetup luksFormat " + str(devpath))
         commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksFormat ' + devpath + '"'
@@ -126,14 +100,17 @@ class Encryption(object):
         # we should specify the file system?
         # if self.paras.fstype is specified, then use it, if not, use ext4
         return error
-
-
-    def encrypt_folder(self):
-        error = EncryptionError()
-        commandToExecute = 'ecryptfs-setup-private'
-        proc = Popen(commandToExecute, shell=True)
-        returnCode = proc.wait() 
-        if(returnCode != 0):
-            error.errorcode = returnCode
-            self.hutil.log('returnCode is ' + str(returnCode))
-        return error
+    #sfdisk -d /dev/sdc | sfdisk /dev/sdd for MBR
+    # sgdisk -R /dev/sdY /dev/sdX for gpt 
+    #sgdisk -G /dev/sdY
+#sda      8:0    0 31457280000  0 disk
+#??sda1   8:1    0 31456231424  0 part /
+#sdb      8:16   0 75161927680  0 disk
+#??sdb1   8:17   0 75159830528  0 part /mnt
+#sdc      8:32   0  2147483648  0 disk
+#??sdc1   8:33   0  1022951936  0 part
+#??sdc2   8:34   0  1123483136  0 part
+#sdd      8:48   0  3221225472  0 disk
+#??sdd1   8:49   0  1022951936  0 part
+#??sdd2   8:50   0  1123483136  0 part
+#sr0     11:0    1     4521984  0 rom

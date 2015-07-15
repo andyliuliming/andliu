@@ -38,20 +38,12 @@ class SuSEPatching(AbstractPatching):
         super(SuSEPatching,self).__init__()
 
     def install_extras(self,paras):
-        print("installing in suse")
-        if(paras.command == CommonVariables.newdisk_command or paras.command == CommonVariables.existdisk_command):
-            #p = subprocess.Popen(["rescan-scsi-bus.sh"])
-            common_extras = ['cryptsetup','lsscsi']
-            for extra in common_extras:
+        common_extras = ['cryptsetup','lsscsi','gdisk']
+        for extra in common_extras:
+            print("installation for " + extra + 'result is ' + str(subprocess.call(['zypper', 'install','-l', extra])))
+
+        if(paras.filesystem == "btrfs"):
+            extras = ['btrfs-tools']
+            for extra in extras:
                 print("installation for " + extra + 'result is ' + str(subprocess.call(['zypper', 'install','-l', extra])))
-
-            if(paras.filesystem == "btrfs"):
-                extras = ['btrfs-tools']
-                for extra in extras:
-                    print("installation for " + extra + 'result is ' + str(subprocess.call(['zypper', 'install','-l', extra])))
-            pass
-
-        elif(paras.command == "folder"):
-            common_extras = ['ecryptfs-utils']
-            for extra in common_extras:
-                    print("installation for " + extra + 'result is ' + str(subprocess.call(['zypper', 'install','-l', extra])))
+        pass

@@ -38,20 +38,6 @@ class UbuntuPatching(AbstractPatching):
         super(UbuntuPatching,self).__init__()
 
     def install_extras(self, paras):
-        print("installing in ubuntu")
-        if(paras.command == CommonVariables.newdisk_command or paras.command == CommonVariables.existdisk_command):
-            common_extras = ['cryptsetup-bin','lsscsi']
-            for extra in common_extras:
-                print("installation for " + extra + 'result is ' + str(subprocess.call(['apt-get', 'install','-y', extra])))
-
-            if(paras.filesystem == "btrfs"):
-                extras = ['btrfs-tools']
-                for extra in extras:
-                    print("installation for " + extra + 'result is ' + str(subprocess.call(['apt-get', 'install','-y', extra])))
-            pass
-
-        elif(paras.command == CommonVariables.folder_command):
-            common_extras = ['ecryptfs-utils']
-            for extra in common_extras:
-                    print("installation for " + extra + 'result is ' + str(subprocess.call(['apt-get', 'install','-y', extra])))
-            pass
+        common_extras = ['cryptsetup-bin','lsscsi','gdisk']
+        for extra in common_extras:
+            print("installation for " + extra + 'result is ' + str(subprocess.call(['apt-get', 'install','-y', extra])))

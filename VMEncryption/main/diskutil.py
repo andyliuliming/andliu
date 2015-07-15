@@ -29,11 +29,13 @@ class DiskPartition(object):
         self.dev_path = ""
         self.start = 0
         self.end = 0
+        self.size = 0
+        self.name=""
 
 class DiskUtil(object):
     def __init__(self,hutil):
         self.hutil = hutil
-        pass
+
     def copy(self,from_device,to_device):
         #dd if=/dev/sda of=/dev/mapper/sda-crypt bs=512
         error = EncryptionError()
@@ -48,26 +50,36 @@ class DiskUtil(object):
             error.info = "from_device is " + str(from_device) + " to_device is " + str(to_device)
             self.hutil.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
         return error
-    def get_disk_partitions(self,devpath):
+
+    def get_disk_partitions(self, devpath):
+        #TODO check the dev path parameter
         disk_partitions = []
-        space_reserved = 8 * 1024
-        space_index = 0
-        diskPartition1 = DiskPartition()
-        diskPartition1.dev_path = "/dev/sdc1"
-        diskPartition1.start = 2048 
-        diskPartition1.end = 1000000 
-        disk_partitions.append(diskPartition1)
-        space_index += 1
-        diskPartition2 = DiskPartition()
-        diskPartition2.dev_path = "/dev/sdc2"
-        diskPartition2.start = 1000001
-        diskPartition2.end = 4194303 
-        disk_partitions.append(diskPartition2)
+        
+        p = subprocess.Popen(['lsblk', '-b', '-l', '-n', '-P', '-o','NAME,TYPE,FSTYPE,SIZE,MOUNTPOINT', devpath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out_lsblk_output, err = p.communicate()
+        out_lsblk_output = str(out_lsblk_output)
+        self.logger.log("out_lsblk_output:\n" + str(out_lsblk_output))
+        disk_info_lines = out_lsblk_output.splitlines()
+        line_number = len(disk_info_lines)
+        for i in range(0,line_number):
+            disk_info_item_value = disk_info_lines[i].strip().split()
+            disk_info_item_array = disk_info_item_value.split()
+            disk_info_item_array_length = len(disk_info_item_array)
+            partition = DiskPartition()
+            for j in range(0, disk_info_item_array_length):
+                disk_info_property=disk_info_item_array[j]
+                if(disk_info_property.startwith('SIZE')):
+                    partition.size = long(disk_info_property.split('=')[1].strip())
+                if(disk_info_property.startwith('NAME')):
+                    partition.name = disk_info_property.split('=')[1].strip()           
+            disk_partitions.append(partition)
         return disk_partitions
 
-    def partit(self,target_dev,origin_disk_partitions):
+    def partit(self,target_dev, origin_disk_partitions):
+        # partition it 
+
         target_disk_partitions = []
-        space_reserved = 8 * 1024
+        space_reserved = 2 * 1024
         space_index = 0
         diskPartition1 = DiskPartition()
         diskPartition1.dev_path = "/dev/sdd1"

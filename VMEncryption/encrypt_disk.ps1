@@ -30,19 +30,19 @@ function Encrypt-Disk
 
     $privateConfig='
     {
-        "command":"existdisk",
-        "query":{"scsi_number":"[5:0:0:1]"},
-        "passphrase":"MicrosoftLoveLinuxBecauseWeHaveCCIC@123",
-        "existQuery":{"scsi_number":"[5:0:0:0]"}
+        "command":"enableencryption",
+        "query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:1]"}],
+        "passphrase":"MicrosoftLoveLinuxBecauseWeHaveCCIC@123"
     }
     '
+
+    #construct the parameters
 
     $tempAzurevm = (Get-AzureVM -ServiceName $cloudServiceName -Name $virtualMachineName)
  
     set-azurevmextension -extensionName "VMEncryption" -Publisher "Microsoft.OSTCExtensions" -Version 0.1 -vm $tempAzurevm -PrivateConfiguration $privateConfig | update-azurevm
 }
 
-
 #Add-AzureAccount
 Select-AzureSubscription "OSTC Shanghai Dev"
-Encrypt-Disk -cloudServiceName "andliu-ubuntu" -virtualMachineName "andliu-ubuntu"
+Encrypt-Disk -cloudServiceName "andliu-ubuntu2" -virtualMachineName "andliu-ubuntu2"
