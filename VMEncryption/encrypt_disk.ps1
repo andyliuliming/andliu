@@ -15,24 +15,24 @@ function Encrypt-Disk
     #prepare the keydisk
 
     # get the max lun of the vm
-    $dataDisks = $vm | Get-AzureDataDisk
-    $lun = -1
-    Foreach($disk in $dataDisks)
-    {
-        if($disk.lun -gt $lun)
-        {
-            $lun=$disk.lun
-        }
-    }
-    $lun+=1
-    Write-Output "the lun of your newly attached disk is "+$lun
-    Add-AzureDataDisk -CreateNew -DiskSizeInGB 3 -DiskLabel "disklabel$lun" -VM $vm -LUN $lun -MediaLocation $destinationKeyDiskPath| update-azurevm
+    #$dataDisks = $vm | Get-AzureDataDisk
+   # $lun = -1
+   # Foreach($disk in $dataDisks)
+   # {
+    #    if($disk.lun -gt $lun)
+    #    {
+    #        $lun=$disk.lun
+    #    }
+    #}
+    #$lun+=1
+    #Write-Output "the lun of your newly attached disk is "+$lun
+    #Add-AzureDataDisk -CreateNew -DiskSizeInGB 3 -DiskLabel "disklabel$lun" -VM $vm -LUN $lun -MediaLocation $destinationKeyDiskPath| update-azurevm
 
     $privateConfig='
     {
         "command":"enableencryption",
         "query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:1]"}],
-        "passphrase":"MicrosoftLoveLinuxBecauseWeHaveCCIC@123"
+        "passphrase":"MicrosoftLoveLinuxBecausVeWeHaveCCIC@123"
     }
     '
 

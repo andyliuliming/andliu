@@ -40,7 +40,7 @@ class DiskUtil(object):
         #dd if=/dev/sda of=/dev/mapper/sda-crypt bs=512
         error = EncryptionError()
         self.hutil.log("copying from " + from_device + " to " + to_device)
-        commandToExecute = '/bin/bash -c "' + 'dd if=' + from_device + ' of=' + to_device + ' bs=512K"'
+        commandToExecute = '/bin/bash -c "' + 'dd if=' + from_device + ' of=' + to_device + ' bs=2M"'
 
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
@@ -64,20 +64,20 @@ class DiskUtil(object):
         p = subprocess.Popen(['lsblk', '-b', '-l', '-n', '-P', '-o','NAME,TYPE,FSTYPE,SIZE,MOUNTPOINT', devpath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out_lsblk_output, err = p.communicate()
         out_lsblk_output = str(out_lsblk_output)
-        self.logger.log("out_lsblk_output:\n" + str(out_lsblk_output))
+        self.hutil.log("out_lsblk_output:\n" + str(out_lsblk_output))
         disk_info_lines = out_lsblk_output.splitlines()
         line_number = len(disk_info_lines)
         for i in range(0,line_number):
-            disk_info_item_value = disk_info_lines[i].strip().split()
+            disk_info_item_value = disk_info_lines[i].strip()
             disk_info_item_array = disk_info_item_value.split()
             disk_info_item_array_length = len(disk_info_item_array)
             partition = DiskPartition()
             for j in range(0, disk_info_item_array_length):
                 disk_info_property=disk_info_item_array[j]
-                if(disk_info_property.startwith('SIZE')):
-                    partition.size = long(disk_info_property.split('=')[1].strip())
-                if(disk_info_property.startwith('NAME')):
-                    partition.name = disk_info_property.split('=')[1].strip()           
+                if(disk_info_property.startswith('SIZE')):
+                    partition.size = long(disk_info_property.split('=')[1].strip('"'))
+                if(disk_info_property.startswith('NAME')):
+                    partition.name = disk_info_property.split('=')[1].strip('"')           
             disk_partitions.append(partition)
         return disk_partitions
 

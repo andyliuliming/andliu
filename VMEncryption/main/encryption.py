@@ -77,13 +77,13 @@ class Encryption(object):
     def create_luks_header(self):
         luks_header_path = "/azureluksheader"
         if(os.path.exists(luks_header_path)):
-            pass
+            return luks_header_path
         else:
             commandToExecute = '/bin/bash -c "' + 'dd if=/dev/zero bs=1049600 count=1 > ' + luks_header_path + '"'
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()
             self.hutil.log("result of make luks header result is " + str(returnCode))
-            pass
+            return luks_header_path
 
     def encrypt_disk(self, devpath, passphrase, mappername, headerfile):
         error = EncryptionError()

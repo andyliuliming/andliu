@@ -136,7 +136,7 @@ def daemon():
 
             target_disk_partitions = disk_util.get_disk_partitions(encryption_dev_root_path)
             encryption = Encryption(hutil)   
-            encryption.create_luks_header()         
+            luks_header_path = encryption.create_luks_header()         
             #TODO: make the source/target pair 
             for partition_index in range(len(origin_disk_partitions)):
                 origin_disk_partition = origin_disk_partitions[partition_index]
