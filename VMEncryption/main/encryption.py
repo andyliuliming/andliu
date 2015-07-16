@@ -19,7 +19,8 @@
 # Requires Python 2.7+
 #
 import subprocess
-import sys  
+import sys
+import os
 from common import CommonVariables
 from subprocess import *  
 from patch import *
@@ -73,10 +74,21 @@ class Encryption(object):
     def __init__(self, hutil):
         self.hutil = hutil
 
-    def encrypt_disk(self, devpath, passphrase, mappername):
+    def create_luks_header(self):
+        luks_header_path = "/azureluksheader"
+        if(os.path.exists(luks_header_path)):
+            pass
+        else:
+            commandToExecute = '/bin/bash -c "' + 'dd if=/dev/zero bs=1049600 count=1 > ' + luks_header_path + '"'
+            proc = Popen(commandToExecute, shell=True)
+            returnCode = proc.wait()
+            self.hutil.log("result of make luks header result is " + str(returnCode))
+            pass
+
+    def encrypt_disk(self, devpath, passphrase, mappername, headerfile):
         error = EncryptionError()
         self.hutil.log("dev path to cryptsetup luksFormat " + str(devpath))
-        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksFormat ' + devpath + '"'
+        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksFormat ' + devpath + '-header ' + headerfile + '"'
 
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
@@ -87,7 +99,7 @@ class Encryption(object):
             self.hutil.log('cryptsetup -y luksFormat returnCode is ' + str(returnCode))
             return error
 
-        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksOpen ' + devpath + ' ' + mappername + '"'
+        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksOpen ' + devpath + ' ' + mappername + '-header ' + headerfile + '"'
         self.hutil.log("dev mapper name to cryptsetup luksFormat " + (mappername))
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
@@ -97,20 +109,4 @@ class Encryption(object):
             error.info = "devpath is " + str(devpath) + " dev_mapper_name is " + str(mappername)
             self.hutil.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
             return error
-        # we should specify the file system?
-        # if self.paras.fstype is specified, then use it, if not, use ext4
         return error
-    #sfdisk -d /dev/sdc | sfdisk /dev/sdd for MBR
-    # sgdisk -R /dev/sdY /dev/sdX for gpt 
-    #sgdisk -G /dev/sdY
-#sda      8:0    0 31457280000  0 disk
-#??sda1   8:1    0 31456231424  0 part /
-#sdb      8:16   0 75161927680  0 disk
-#??sdb1   8:17   0 75159830528  0 part /mnt
-#sdc      8:32   0  2147483648  0 disk
-#??sdc1   8:33   0  1022951936  0 part
-#??sdc2   8:34   0  1123483136  0 part
-#sdd      8:48   0  3221225472  0 disk
-#??sdd1   8:49   0  1022951936  0 part
-#??sdd2   8:50   0  1123483136  0 part
-#sr0     11:0    1     4521984  0 rom

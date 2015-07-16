@@ -51,6 +51,12 @@ class DiskUtil(object):
             self.hutil.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
         return error
 
+    def get_disk_partition_table_type(self,devpath):
+        # parted /dev/sdc print
+        # and find for Partition Table: msdos
+        # TODO: implement this
+        return "mbr"
+
     def get_disk_partitions(self, devpath):
         #TODO check the dev path parameter
         disk_partitions = []
@@ -75,24 +81,13 @@ class DiskUtil(object):
             disk_partitions.append(partition)
         return disk_partitions
 
-    def partit(self,target_dev, origin_disk_partitions):
+    def clone_partition_table(self, target_dev, source_dev):
         # partition it 
-
-        target_disk_partitions = []
-        space_reserved = 2 * 1024
-        space_index = 0
-        diskPartition1 = DiskPartition()
-        diskPartition1.dev_path = "/dev/sdd1"
-        diskPartition1.start = 2048 + space_reserved * space_index
-        diskPartition1.end = 1000000 + space_reserved * space_index
-        target_disk_partitions.append(diskPartition1)
-        space_index += 1
-        diskPartition2 = DiskPartition()
-        diskPartition2.dev_path = "/dev/sdd2"
-        diskPartition2.start = 1000001 + space_reserved * space_index
-        diskPartition2.end = 4194303 + space_reserved * space_index
-        target_disk_partitions.append(diskPartition2)
-        return target_disk_partitions
+        # http://superuser.com/questions/823922/dm-cryptluks-can-i-have-a-separate-header-without-storing-it-on-the-luks-encry
+        commandToExecute = '/bin/bash -c "' + 'sfdisk -d ' + source_dev + ' | sfdisk --force ' + target_dev + '"'
+        proc = Popen(commandToExecute, shell=True)
+        returnCode = proc.wait()
+        pass
 
     def format_disk(self, dev_path):
         error = EncryptionError()
