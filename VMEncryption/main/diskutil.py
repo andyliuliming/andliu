@@ -30,7 +30,8 @@ class DiskPartition(object):
         self.start = 0
         self.end = 0
         self.size = 0
-        self.name=""
+        self.name = ""
+        self.type = ""
 
 class DiskUtil(object):
     def __init__(self,hutil):
@@ -40,7 +41,7 @@ class DiskUtil(object):
         #dd if=/dev/sda of=/dev/mapper/sda-crypt bs=512
         error = EncryptionError()
         self.hutil.log("copying from " + from_device + " to " + to_device)
-        commandToExecute = '/bin/bash -c "' + 'dd if=' + from_device + ' of=' + to_device + ' bs=2M"'
+        commandToExecute = '/bin/bash -c "' + 'dd if=' + from_device + ' of=' + to_device + ' bs=4M"'
 
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
@@ -73,16 +74,21 @@ class DiskUtil(object):
             disk_info_item_array_length = len(disk_info_item_array)
             partition = DiskPartition()
             for j in range(0, disk_info_item_array_length):
-                disk_info_property=disk_info_item_array[j]
+                disk_info_property = disk_info_item_array[j]
                 if(disk_info_property.startswith('SIZE')):
                     partition.size = long(disk_info_property.split('=')[1].strip('"'))
                 if(disk_info_property.startswith('NAME')):
-                    partition.name = disk_info_property.split('=')[1].strip('"')           
-            disk_partitions.append(partition)
+                    partition.name = disk_info_property.split('=')[1].strip('"')
+                    partition.dev_path = "/dev/" + partition.name
+                if(disk_info_property.startswith('TYPE')):
+                    partition.type = disk_info_property.split('=')[1].strip('"')
+            # skip the disk, because we do not need the 
+            if(partition.type=="part"):
+                disk_partitions.append(partition)
         return disk_partitions
 
     def clone_partition_table(self, target_dev, source_dev):
-        # partition it 
+        # partition it
         # http://superuser.com/questions/823922/dm-cryptluks-can-i-have-a-separate-header-without-storing-it-on-the-luks-encry
         commandToExecute = '/bin/bash -c "' + 'sfdisk -d ' + source_dev + ' | sfdisk --force ' + target_dev + '"'
         proc = Popen(commandToExecute, shell=True)
@@ -101,7 +107,7 @@ class DiskUtil(object):
         elif(encryption_parameters.filesystem == "btrfs"):
             mkfs_command = "mkfs.btrfs"
         #' <<< ' + encryption_parameters.mount_name +
-        commandToExecute = '/bin/bash -c "' + mkfs_command + ' ' + dev_path +  ' 2> /dev/null"'
+        commandToExecute = '/bin/bash -c "' + mkfs_command + ' ' + dev_path + ' 2> /dev/null"'
         self.hutil.log("command to execute :" + commandToExecute)
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()

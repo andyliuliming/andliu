@@ -88,7 +88,7 @@ class Encryption(object):
     def encrypt_disk(self, devpath, passphrase, mappername, headerfile):
         error = EncryptionError()
         self.hutil.log("dev path to cryptsetup luksFormat " + str(devpath))
-        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksFormat ' + devpath + '-header ' + headerfile + '"'
+        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksFormat ' + devpath + ' --header ' + headerfile + '"'
 
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
@@ -99,7 +99,7 @@ class Encryption(object):
             self.hutil.log('cryptsetup -y luksFormat returnCode is ' + str(returnCode))
             return error
 
-        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksOpen ' + devpath + ' ' + mappername + '-header ' + headerfile + '"'
+        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + '"'
         self.hutil.log("dev mapper name to cryptsetup luksFormat " + (mappername))
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
