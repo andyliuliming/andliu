@@ -39,9 +39,9 @@ class DiskUtil(object):
 
     def copy(self,from_device,to_device):
         error = EncryptionError()
-        self.hutil.log("copying from " + from_device + " to " + to_device)
         commandToExecute = '/bin/bash -c "' + 'dd conv=sparse if=' + from_device + ' of=' + to_device + ' bs=512"'
-
+        
+        self.hutil.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
         if(returnCode != 0):
@@ -61,7 +61,7 @@ class DiskUtil(object):
         #TODO check the dev path parameter
         disk_partitions = []
         
-        p = subprocess.Popen(['lsblk', '-b', '-l', '-n', '-P', '-o','NAME,TYPE,FSTYPE,SIZE,MOUNTPOINT', devpath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(['lsblk', '-b', '-n', '-P', '-o','NAME,TYPE,FSTYPE,SIZE,MOUNTPOINT', devpath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out_lsblk_output, err = p.communicate()
         out_lsblk_output = str(out_lsblk_output)
         self.hutil.log("out_lsblk_output:\n" + str(out_lsblk_output))
@@ -81,8 +81,8 @@ class DiskUtil(object):
                     partition.dev_path = "/dev/" + partition.name
                 if(disk_info_property.startswith('TYPE')):
                     partition.type = disk_info_property.split('=')[1].strip('"')
-            # skip the disk, because we do not need the 
-            if(partition.type=="part"):
+            # skip the disk, because we do not need the
+            if(partition.type == "part"):
                 disk_partitions.append(partition)
         return disk_partitions
 

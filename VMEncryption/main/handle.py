@@ -119,17 +119,20 @@ def daemon():
             print ("################" + str(extension_parameter.query))
             current_mapping = extension_parameter.query[i]
             hutil.log("scsi_number to query is " + str(current_mapping["source_scsi_number"]))
-            exist_disk_path = dev_manager.query_dev_uuid_path(current_mapping["source_scsi_number"])
+            exist_disk_path = dev_manager.query_dev_sdx_path(current_mapping["source_scsi_number"])#dev_manager.query_dev_uuid_path(current_mapping["source_scsi_number"])
+            hutil.log("exist_disk_path is " + str(exist_disk_path))
             if(exist_disk_path == None):
                 raise Exception("the scsi number is not found")
 
             # scsi_host,channel,target_number,LUN
             # find the scsi using the filter
             hutil.log("scsi_number to query is " + str(current_mapping["target_scsi_number"]))
-            encryption_dev_root_path = dev_manager.query_dev_uuid_path(current_mapping["target_scsi_number"])
+            encryption_dev_root_path = dev_manager.query_dev_sdx_path(current_mapping["target_scsi_number"])#dev_manager.query_dev_uuid_path(current_mapping["target_scsi_number"])
+            hutil.log("encryption_dev_root_path is " + str(encryption_dev_root_path))
             if(encryption_dev_root_path == None):
                 raise Exception("the scsi number is not found")
-            ################### we need to check whether the target encryption ###################
+            ################### we need to check whether the target encryption
+            ################### ###################
 
             ################### device is a blank one ###################
             origin_disk_partitions = disk_util.get_disk_partitions(exist_disk_path)
@@ -150,11 +153,11 @@ def daemon():
                     disk_util.copy(origin_disk_partition.dev_path, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
                 else:
                     hutil.log("encrypt disk result: " + str(encryption_result))
-        # TODO:change the fstab to do the mounting            
+        # TODO:change the fstab to do the mounting
         
         mounter = Mounter(hutil)
 
-        mounter.replace_mounts_in_fs_tab(origin_disk_partition,target_disk_partition)
+        mounter.replace_mounts_in_fs_tab(origin_disk_partitions,target_disk_partitions)
 
         mounter.mount_all()
 
