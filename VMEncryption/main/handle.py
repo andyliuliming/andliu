@@ -112,9 +112,10 @@ def daemon():
         disk_util = DiskUtil(hutil)
         # scsi_host,channel,target_number,LUN
         # find the scsi using the filter
-        line_number = len(extension_parameter.query)
+        encryption_keypair_len = len(extension_parameter.query)
 
-        for i in range(0, line_number):
+
+        for i in range(0, encryption_keypair_len):
             print ("################" + str(extension_parameter.query))
             current_mapping = extension_parameter.query[i]
             hutil.log("scsi_number to query is " + str(current_mapping["source_scsi_number"]))
@@ -130,14 +131,15 @@ def daemon():
                 raise Exception("the scsi number is not found")
             ################### we need to check whether the target encryption ###################
 
-            ################### device is a blank one ###################            
+            ################### device is a blank one ###################
             origin_disk_partitions = disk_util.get_disk_partitions(exist_disk_path)
-            disk_util.clone_partition_table(encryption_dev_root_path, exist_disk_path)            
+
+            disk_util.clone_partition_table(encryption_dev_root_path, exist_disk_path)
 
             target_disk_partitions = disk_util.get_disk_partitions(encryption_dev_root_path)
-            encryption = Encryption(hutil)   
-            luks_header_path = encryption.create_luks_header()         
-            #TODO: make the source/target pair 
+            encryption = Encryption(hutil)
+            luks_header_path = encryption.create_luks_header()
+            #TODO: make the source/target pair matches exactly
             for partition_index in range(len(origin_disk_partitions)):
                 origin_disk_partition = origin_disk_partitions[partition_index]
                 target_disk_partition = target_disk_partitions[partition_index]
@@ -148,11 +150,16 @@ def daemon():
                     disk_util.copy(origin_disk_partition.dev_path, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
                 else:
                     hutil.log("encrypt disk result: " + str(encryption_result))
-        # change the fstab to do the mounting            
+        # TODO:change the fstab to do the mounting            
+        
         mounter = Mounter(hutil)
+
+        mounter.replace_mounts_in_fs_tab(origin_disk_partition,target_disk_partition)
+
         mounter.mount_all()
 
     except Exception, e:
+        # mount the file systems back.
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
         hutil.do_exit(1, 'Enable','error','1', 'Enable failed.')
     finally:

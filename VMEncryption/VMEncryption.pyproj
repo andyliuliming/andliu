@@ -68,6 +68,7 @@
     <Folder Include="main\" />
     <Folder Include="main\patch\" />
     <Folder Include="main\Utils\" />
+    <Folder Include="test\" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
