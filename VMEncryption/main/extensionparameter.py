@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
-# Copyright 2014 Microsoft Corporation
+# Copyright 2015 Microsoft Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ from common import CommonVariables
 
 
 # parameter format should be like this:
-#{"command":"enableencryption","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}], "force":"true", "passphrase":"User@123"}
-
+#{"command":"enableencryption","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
+#"force":"true", "passphrase":"User@123"}
 class ExtensionParameter(object):
     def __init__(self, hutil, protected_settings, public_settings):
         """
@@ -56,3 +56,8 @@ class ExtensionParameter(object):
                 return CommonVariables.parameter_error
         return CommonVariables.success
 
+class EncryptionItem(object):
+    def __init__(self):
+        self.exist_disk_path = None
+        self.encryption_dev_root_path = None
+        self.origin_disk_partitions = None

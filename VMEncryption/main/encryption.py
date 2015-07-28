@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
-# Copyright 2014 Microsoft Corporation
+# Copyright 2015 Microsoft Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -79,7 +79,8 @@ class Encryption(object):
         if(os.path.exists(luks_header_path)):
             return luks_header_path
         else:
-            commandToExecute = '/bin/bash -c "' + 'dd if=/dev/zero bs=1049600 count=1 > ' + luks_header_path + '"'
+            # 8M
+            commandToExecute = '/bin/bash -c "' + 'dd if=/dev/zero bs=8388608 count=1 > ' + luks_header_path + '"'
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()
             self.hutil.log("result of make luks header result is " + str(returnCode))

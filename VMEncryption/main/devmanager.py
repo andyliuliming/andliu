@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
-# Copyright 2014 Microsoft Corporation
+# Copyright 2015 Microsoft Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ from common import CommonVariables
 # }
 # {"command":"folder","path":"/home/andy/Private","password":"password1"}
 class DevManager(object):
-
     def __init__(self,hutil):
         self.hutil = hutil
         pass
@@ -45,10 +44,7 @@ class DevManager(object):
         sdx_path = vals[len(vals) - 1]
         return sdx_path
 
-    def query_dev_uuid_path(self,scsi_number):
-        # find the scsi using the filter
-        sdx_path = self.query_dev_sdx_path(scsi_number)
-        # blkid /dev/sdc
+    def query_dev_uuid_path_by_sdx_path(self,sdx_path):
         p = Popen(['blkid',sdx_path],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         identity,err = p.communicate()
         identity = identity.lower()
@@ -64,3 +60,9 @@ class DevManager(object):
         if(uuid.strip() == ""):
             return sdx_path
         return os.path.join("/dev/disk/by-uuid/",uuid)
+
+    def query_dev_uuid_path_by_scsi_number(self,scsi_number):
+        # find the scsi using the filter
+        # TODO figure out why the disk formated using fdisk do not have uuid
+        sdx_path = self.query_dev_sdx_path(scsi_number)
+        return query_dev_uuid_by_sdx_path(sdx_path)

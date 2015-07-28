@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
-# Copyright 2014 Microsoft Corporation
+# Copyright 2015 Microsoft Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import sys
 from subprocess import *  
 from encryption import EncryptionError
 from common import CommonVariables
+from devmanager import DevManager
 
 class DiskPartition(object):
     def __init__(self):
@@ -32,6 +33,7 @@ class DiskPartition(object):
         self.size = 0
         self.name = ""
         self.type = ""
+        self.uuid_path = ""
 
 class DiskUtil(object):
     def __init__(self,hutil):
@@ -60,7 +62,7 @@ class DiskUtil(object):
     def get_disk_partitions(self, devpath):
         #TODO check the dev path parameter
         disk_partitions = []
-        
+        dev_manager = DevManager(self.hutil)
         p = subprocess.Popen(['lsblk', '-b', '-n', '-P', '-o','NAME,TYPE,FSTYPE,SIZE,MOUNTPOINT', devpath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out_lsblk_output, err = p.communicate()
         out_lsblk_output = str(out_lsblk_output)
@@ -81,8 +83,10 @@ class DiskUtil(object):
                     partition.dev_path = "/dev/" + partition.name
                 if(disk_info_property.startswith('TYPE')):
                     partition.type = disk_info_property.split('=')[1].strip('"')
-            # skip the disk, because we do not need the
+            # skip the disk, because we do not need
+            # TODO, if there's only disk?
             if(partition.type == "part"):
+                partition.uuid_path = dev_manager.query_dev_uuid_path_by_sdx_path(partition.dev_path)
                 disk_partitions.append(partition)
         return disk_partitions
 
@@ -92,7 +96,6 @@ class DiskUtil(object):
         commandToExecute = '/bin/bash -c "' + 'sfdisk -d ' + source_dev + ' | sfdisk --force ' + target_dev + '"'
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
-        pass
 
     def format_disk(self, dev_path):
         error = EncryptionError()

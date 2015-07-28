@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
-# Copyright 2014 Microsoft Corporation
+# Copyright 2015 Microsoft Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import httplib
 from Utils import HandlerUtil
 from common import CommonVariables
 from extensionparameter import ExtensionParameter
+from extensionparameter import EncryptionItem
 from encryption import *
 from mounter import Mounter
 from devmanager import DevManager
@@ -114,38 +115,55 @@ def daemon():
         # find the scsi using the filter
         encryption_keypair_len = len(extension_parameter.query)
 
+        # save the mounts info down.
 
+        encryption_items = []
+        # check the scsi
         for i in range(0, encryption_keypair_len):
-            print ("################" + str(extension_parameter.query))
+            hutil.log("checking the encryptoin_keypair parameter")
             current_mapping = extension_parameter.query[i]
             hutil.log("scsi_number to query is " + str(current_mapping["source_scsi_number"]))
             exist_disk_path = dev_manager.query_dev_sdx_path(current_mapping["source_scsi_number"])#dev_manager.query_dev_uuid_path(current_mapping["source_scsi_number"])
+
             hutil.log("exist_disk_path is " + str(exist_disk_path))
             if(exist_disk_path == None):
                 raise Exception("the scsi number is not found")
 
-            # scsi_host,channel,target_number,LUN
-            # find the scsi using the filter
             hutil.log("scsi_number to query is " + str(current_mapping["target_scsi_number"]))
             encryption_dev_root_path = dev_manager.query_dev_sdx_path(current_mapping["target_scsi_number"])#dev_manager.query_dev_uuid_path(current_mapping["target_scsi_number"])
+
+            # scsi_host,channel,target_number,LUN
+            # find the scsi using the filter
+
             hutil.log("encryption_dev_root_path is " + str(encryption_dev_root_path))
             if(encryption_dev_root_path == None):
                 raise Exception("the scsi number is not found")
-            ################### we need to check whether the target encryption
-            ################### ###################
+
+            encryption_item = EncryptionItem()
+            encryption_item.exist_disk_path = exist_disk_path
+            encryption_item.encryption_dev_root_path = encryption_dev_root_path
+            encryption_item.origin_disk_partitions = disk_util.get_disk_partitions(encryption_item.exist_disk_path)
+            encryption_items.append(encryption_item)
+
+        mounter = Mounter(hutil)
+        # find the existing mapping, both by uuid and the sdx path
+        mounter.save_mount_info(encryption_items)
+
+        for i in range(0, encryption_keypair_len):
+            print ("################" + str(encryption_items))
+            encryption_item = encryption_items[i]
 
             ################### device is a blank one ###################
-            origin_disk_partitions = disk_util.get_disk_partitions(exist_disk_path)
 
-            disk_util.clone_partition_table(encryption_dev_root_path, exist_disk_path)
+            disk_util.clone_partition_table(encryption_item.encryption_dev_root_path,encryption_item.exist_disk_path)
+            encryption_item.target_disk_partitions = disk_util.get_disk_partitions(encryption_item.encryption_dev_root_path)
 
-            target_disk_partitions = disk_util.get_disk_partitions(encryption_dev_root_path)
             encryption = Encryption(hutil)
             luks_header_path = encryption.create_luks_header()
             #TODO: make the source/target pair matches exactly
-            for partition_index in range(len(origin_disk_partitions)):
-                origin_disk_partition = origin_disk_partitions[partition_index]
-                target_disk_partition = target_disk_partitions[partition_index]
+            for partition_index in range(len(encryption_item.origin_disk_partitions)):
+                origin_disk_partition = encryption_item.origin_disk_partitions[partition_index]
+                target_disk_partition = encryption_item.target_disk_partitions[partition_index]
                 mapper_name = str(uuid.uuid4())
                 encryption_result = encryption.encrypt_disk(target_disk_partition.dev_path, extension_parameter.passphrase, mapper_name, luks_header_path)
 
@@ -154,11 +172,9 @@ def daemon():
                 else:
                     hutil.log("encrypt disk result: " + str(encryption_result))
         # TODO:change the fstab to do the mounting
-        
-        mounter = Mounter(hutil)
 
-        mounter.replace_mounts_in_fs_tab(origin_disk_partitions,target_disk_partitions)
-
+        # mounter.replace_mounts_in_fs_tab(encryption_item.origin_disk_partitions, encryption_item.target_disk_partitions)
+        mounter.update_mount_info(encryption_items)
         mounter.mount_all()
 
     except Exception, e:
@@ -180,8 +196,7 @@ def start_daemon():
     #throw Broke pipe exeception when parent process exit.
     devnull = open(os.devnull, 'w')
     child = subprocess.Popen(args, stdout=devnull, stderr=devnull)
-    hutil.do_exit(0, 'Enable', 'transitioning', '0', 
-                    'Launching the script...')        
+    hutil.do_exit(0, 'Enable', 'transitioning', '0', 'Launching the script...')
 
 def uninstall():
     hutil.do_parse_context('Uninstall')
