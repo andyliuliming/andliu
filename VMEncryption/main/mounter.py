@@ -22,6 +22,7 @@ import os
 import subprocess
 from subprocess import *
 import shutil
+import uuid
 from encryption import EncryptionError
 from common import CommonVariables
 
@@ -40,15 +41,18 @@ class Mounter(object):
         # backup the /etc/fstab file
         # TODO Handle exception
 
-        shutil.copy2('/etc/fstab', '/etc/fstab.backup')
+        shutil.copy2('/etc/fstab', '/etc/fstab.backup'+str(str(uuid.uuid4())))
+
         new_mount_content = ""
         with open("/etc/fstab",'r') as f:
             mount_lines = f.read().splitlines()
-            for i in range(mount_lines):
-                if(not mount_lines[i].strip().startswith("#")):
+            for i in range(len(mount_lines)):
+                line_stripped = mount_lines[i].strip()
+                if(not line_stripped.startswith("#") and not line_stripped == ""):
                     """
                     /dev/sdb1 /mnt auto defaults,nobootwait,comment=cloudconfig 0 2
                     """
+                    print ("mount_lines[i] == " + str(mount_lines[i]))
                     item_array = mount_lines[i].split()
                     dev_path_in_mount = item_array[0]
                     for j in range(len(encryption_items)):
@@ -58,18 +62,18 @@ class Mounter(object):
                             if(dev_path_in_mount == encryption_item.origin_disk_partitions[k].dev_path):
                                 white_space = " "
                                 item_array[0] = encryption_item.target_disk_partitions[k].dev_path
-                                new_mount_content = new_mount_content + white_space.join(item_array)
+                                new_mount_content = new_mount_content + "\n" + white_space.join(item_array)
                                 found = True
                                 pass
                             if (dev_path_in_mount == encryption_item.origin_disk_partitions[k].uuid_path):
                                 white_space = " "
                                 item_array[0] = encryption_item.target_disk_partitions[k].uuid_path
-                                new_mount_content = new_mount_content + white_space.join(item_array)
+                                new_mount_content = new_mount_content + "\n" + white_space.join(item_array)
                                 found = True
                         if(not found):
                             new_mount_content = new_mount_content + mount_lines[i]
-                    pass
-                pass
+                else:
+                    new_mount_content = new_mount_content + "\n" + line_stripped
         with open("/etc/fstab",'w') as wf:
             wf.write(new_mount_content)
 

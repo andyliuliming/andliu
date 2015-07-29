@@ -19,12 +19,11 @@
 # Requires Python 2.7+
 #
 import subprocess
-import sys  
+import sys
 from subprocess import *  
 from encryption import EncryptionError
 from common import CommonVariables
 from devmanager import DevManager
-from handle import MyPatching
 
 class DiskPartition(object):
     def __init__(self):
@@ -37,14 +36,13 @@ class DiskPartition(object):
         self.uuid_path = ""
 
 class DiskUtil(object):
-    def __init__(self,hutil):
+    def __init__(self,hutil,patching):
         self.hutil = hutil
+        self.patching = patching
 
     def copy_using_cp(self,from_device,to_device):
         error = EncryptionError()
-
-        commandToExecute = '/bin/bash -c "' + 'dd conv=sparse if=' + from_device + ' of=' + to_device + ' bs=512"'
-        
+        commandToExecute = '/bin/bash -c "' + 'sg_dd oflag=sparse if=' + from_device + ' of=' + to_device
         self.hutil.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
@@ -74,8 +72,11 @@ class DiskUtil(object):
         """
         if the os is ubuntu 12.04, then ues the cp --sparse instead.
         """
-        print(MyPatching.distro_info)
-        return self.copy_using_dd(from_device,to_device)
+        print(self.patching.distro_info)
+        if(self.patching.distro_info[0].lower() == "ubuntu" and self.patching.distro_info[1] == "12.04"):
+            return self.copy_using_cp(from_device,to_device)
+        else:
+            return self.copy_using_dd(from_device,to_device)
 
     def get_disk_partition_table_type(self,devpath):
         # parted /dev/sdc print
@@ -143,5 +144,3 @@ class DiskUtil(object):
             error.info = "command to execute is " + commandToExecute
             self.hutil.log('mkfs_command returnCode is ' + str(returnCode))
         return error
-
-

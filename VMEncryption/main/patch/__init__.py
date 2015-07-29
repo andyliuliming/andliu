@@ -49,8 +49,9 @@ def GetMyPatching():
     Return MyPatching object.
     NOTE: Logging is not initialized at this point.
     """
+    dist_info = DistInfo()
     if 'Linux' in platform.system():
-        Distro = DistInfo()[0]
+        Distro = dist_info[0]
     else: # I know this is not Linux!
         if 'FreeBSD' in platform.system():
             Distro = platform.system()
@@ -62,5 +63,5 @@ def GetMyPatching():
         print Distro + ' is not a supported distribution.'
         return None
     patchingInstance = globals()[patching_class_name]()
-    patchingInstance.distro_info = Distro
+    patchingInstance.distro_info = dist_info
     return patchingInstance

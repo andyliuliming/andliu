@@ -72,7 +72,7 @@ def install():
     hutil.do_parse_context('Install')
     hutil.do_exit(0, 'Install','Installed','0', 'Install Succeeded')
 
-def enable():    
+def enable():
     hutil.do_parse_context('Enable')
     # we need to start another subprocess to do it, because the initial process
     # would be killed by the wala in 5 minutes.
@@ -110,7 +110,7 @@ def daemon():
         # {"command":"enableencryption","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
         # "force":"true", "passphrase":"User@123"}
         hutil.log("executing the existingdisk command.")
-        disk_util = DiskUtil(hutil)
+        disk_util = DiskUtil(hutil,MyPatching)
         # scsi_host,channel,target_number,LUN
         # find the scsi using the filter
         encryption_keypair_len = len(extension_parameter.query)
@@ -147,7 +147,6 @@ def daemon():
 
         mounter = Mounter(hutil)
         # find the existing mapping, both by uuid and the sdx path
-        mounter.save_mount_info(encryption_items)
 
         for i in range(0, encryption_keypair_len):
             print ("################" + str(encryption_items))
@@ -173,7 +172,8 @@ def daemon():
                     hutil.log("encrypt disk result: " + str(encryption_result))
         # TODO:change the fstab to do the mounting
 
-        # mounter.replace_mounts_in_fs_tab(encryption_item.origin_disk_partitions, encryption_item.target_disk_partitions)
+        # mounter.replace_mounts_in_fs_tab(encryption_item.origin_disk_partitions,
+        # encryption_item.target_disk_partitions)
         mounter.update_mount_info(encryption_items)
         mounter.mount_all()
 

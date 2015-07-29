@@ -1,4 +1,4 @@
-#!/usr/bin/python
+﻿#!/usr/bin/python
 #
 # Copyright 2015 Microsoft Corporation
 #
@@ -38,6 +38,13 @@ class UbuntuPatching(AbstractPatching):
         super(UbuntuPatching,self).__init__()
 
     def install_extras(self, paras):
-        common_extras = ['cryptsetup-bin','lsscsi','gdisk']
+        """
+        install the sg_dd because the default dd do not support the sparse write
+        """
+        if(self.patching.distro_info[0].lower() == "ubuntu" and self.patching.distro_info[1] == "12.04"):
+
+            common_extras = ['cryptsetup-bin','lsscsi','gdisk','sg_dd']
+        else:
+            common_extras = ['cryptsetup-bin','lsscsi','gdisk']
         for extra in common_extras:
             print("installation for " + extra + 'result is ' + str(subprocess.call(['apt-get', 'install','-y', extra])))

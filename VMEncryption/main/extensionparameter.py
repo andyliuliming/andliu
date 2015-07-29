@@ -61,3 +61,4 @@ class EncryptionItem(object):
         self.exist_disk_path = None
         self.encryption_dev_root_path = None
         self.origin_disk_partitions = None
+        self.target_disk_partitions = None
