@@ -24,6 +24,7 @@ from subprocess import *
 from encryption import EncryptionError
 from common import CommonVariables
 from devmanager import DevManager
+from handle import MyPatching
 
 class DiskPartition(object):
     def __init__(self):
@@ -39,8 +40,9 @@ class DiskUtil(object):
     def __init__(self,hutil):
         self.hutil = hutil
 
-    def copy(self,from_device,to_device):
+    def copy_using_cp(self,from_device,to_device):
         error = EncryptionError()
+
         commandToExecute = '/bin/bash -c "' + 'dd conv=sparse if=' + from_device + ' of=' + to_device + ' bs=512"'
         
         self.hutil.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
@@ -50,8 +52,30 @@ class DiskUtil(object):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_open_error
             error.info = "from_device is " + str(from_device) + " to_device is " + str(to_device)
-            self.hutil.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
+            self.hutil.log(str(commandToExecute) + ' is ' + str(returnCode))
         return error
+
+    def copy_using_dd(self,from_device,to_device):
+        error = EncryptionError()
+
+        commandToExecute = '/bin/bash -c "' + 'dd conv=sparse if=' + from_device + ' of=' + to_device + ' bs=512"'
+        
+        self.hutil.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
+        proc = Popen(commandToExecute, shell=True)
+        returnCode = proc.wait()
+        if(returnCode != 0):
+            error.errorcode = returnCode
+            error.code = CommonVariables.luks_open_error
+            error.info = "from_device is " + str(from_device) + " to_device is " + str(to_device)
+            self.hutil.log(str(commandToExecute) + ' is ' + str(returnCode))
+        return error
+
+    def copy(self,from_device,to_device):
+        """
+        if the os is ubuntu 12.04, then ues the cp --sparse instead.
+        """
+        print(MyPatching.distro_info)
+        return self.copy_using_dd(from_device,to_device)
 
     def get_disk_partition_table_type(self,devpath):
         # parted /dev/sdc print

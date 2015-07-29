@@ -1,4 +1,4 @@
-#!/usr/bin/python
+﻿#!/usr/bin/python
 #
 # AbstractPatching is the base patching class of all the linux distros
 #
@@ -36,7 +36,7 @@ class AbstractPatching(object):
     AbstractPatching defines a skeleton neccesary for a concrete Patching class.
     """
     def __init__(self):
-        #self.common_extras = ['cryptsetup-bin', 'ecryptfs-utils']
+        self.distro_info = None
         pass
     def install_extras(self,paras):
         pass

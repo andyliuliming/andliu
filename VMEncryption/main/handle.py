@@ -46,10 +46,13 @@ from diskutil import DiskUtil
 from diskutil import DiskPartition
 #Main function is the only entrence to this extension handler
 def main():
-    global hutil
+    global hutil,MyPatching
     HandlerUtil.LoggerInit('/var/log/waagent.log','/dev/stdout')
     HandlerUtil.waagent.Log("%s started to handle." % (CommonVariables.extension_name)) 
     hutil = HandlerUtil.HandlerUtility(HandlerUtil.waagent.Log, HandlerUtil.waagent.Error, CommonVariables.extension_name)
+    MyPatching = GetMyPatching()
+    if MyPatching == None:
+        hutil.do_exit(0, 'Enable','error', str(CommonVariables.os_not_supported), 'the os is not supported')
 
     for a in sys.argv[1:]:
         if re.match("^([-/]*)(disable)", a):
@@ -74,7 +77,7 @@ def enable():
     # we need to start another subprocess to do it, because the initial process
     # would be killed by the wala in 5 minutes.
     hutil.log("")
-    start_daemon()    
+    start_daemon()
 
 def daemon():
     hutil.do_parse_context('Executing')
@@ -97,12 +100,9 @@ def daemon():
         if(para_validate_result != 0):
             hutil.do_exit(0, 'Enable', 'error', str(para_validate_result), "parameter not right")
         # install the required softwares.
-        MyPatching = GetMyPatching()
-        if MyPatching == None:
-            hutil.do_exit(0, 'Enable','error', str(CommonVariables.os_not_supported), 'the os is not supported')
-        else:
-            hutil.log("trying to install the extras")
-            MyPatching.install_extras(extension_parameter)
+       
+        hutil.log("trying to install the extras")
+        MyPatching.install_extras(extension_parameter)
     
         dev_manager = DevManager(hutil)
         ########### the existing scenario starts ###################

@@ -40,9 +40,9 @@ function Encrypt-Disk
 
     $tempAzurevm = (Get-AzureVM -ServiceName $cloudServiceName -Name $virtualMachineName)
  
-    set-azurevmextension -extensionName "VMEncryption" -Publisher "Microsoft.OSTCExtensions" -Version 0.1 -vm $tempAzurevm -PrivateConfiguration $privateConfig | update-azurevm
+    set-azurevmextension -extensionName "VMEncryption2" -Publisher "Microsoft.OSTCExtensions" -Version 0.1 -vm $tempAzurevm -PrivateConfiguration $privateConfig | update-azurevm
 }
 
 #Add-AzureAccount
 Select-AzureSubscription "OSTC Shanghai Dev"
-Encrypt-Disk -cloudServiceName "andliu-ubuntu" -virtualMachineName "andliu-ubuntu"
+Encrypt-Disk -cloudServiceName "andliuu12" -virtualMachineName "andliuu12"

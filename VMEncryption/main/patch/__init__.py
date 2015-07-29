@@ -1,4 +1,4 @@
-#!/usr/bin/python
+﻿#!/usr/bin/python
 #
 # Copyright 2015 Microsoft Corporation
 #
@@ -27,7 +27,7 @@ from OraclePatching import OraclePatching
 from SuSEPatching import SuSEPatching
 
 # Define the function in case waagent(<2.0.4) doesn't have DistInfo()
-def DistInfo(fullname=0):
+def DistInfo():
     if 'FreeBSD' in platform.system():
         release = re.sub('\-.*\Z', '', str(platform.release()))
         distinfo = ['FreeBSD', release]
@@ -37,31 +37,30 @@ def DistInfo(fullname=0):
         distinfo = ['Oracle', release]
         return distinfo
     if 'linux_distribution' in dir(platform):
-        distinfo = list(platform.linux_distribution(\
-                        full_distribution_name=fullname))
+        distinfo = list(platform.linux_distribution(full_distribution_name=0))
         # remove trailing whitespace in distro name
         distinfo[0] = distinfo[0].strip()
         return distinfo
     else:
         return platform.dist()
 
-def GetMyPatching(patching_class_name=''):
+def GetMyPatching():
     """
     Return MyPatching object.
     NOTE: Logging is not initialized at this point.
     """
-    if patching_class_name == '':
-        if 'Linux' in platform.system():
-            Distro = DistInfo()[0]
-        else: # I know this is not Linux!
-            if 'FreeBSD' in platform.system():
-                Distro = platform.system()
-        Distro = Distro.strip('"')
-        Distro = Distro.strip(' ')
-        patching_class_name = Distro + 'Patching'
-    else:
-        Distro = patching_class_name
+    if 'Linux' in platform.system():
+        Distro = DistInfo()[0]
+    else: # I know this is not Linux!
+        if 'FreeBSD' in platform.system():
+            Distro = platform.system()
+    Distro = Distro.strip('"')
+    Distro = Distro.strip(' ')
+    patching_class_name = Distro + 'Patching'
+
     if not globals().has_key(patching_class_name):
         print Distro + ' is not a supported distribution.'
         return None
-    return globals()[patching_class_name]()
+    patchingInstance = globals()[patching_class_name]()
+    patchingInstance.distro_info = Distro
+    return patchingInstance
