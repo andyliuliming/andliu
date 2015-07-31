@@ -27,10 +27,64 @@ from encryption import EncryptionError
 from common import CommonVariables
 
 class Mounter(object):
-    def __init__(self,hutil):
+    def __init__(self,logger,hutil):
         self.hutil = hutil
-        pass
-    
+
+    def get_mounts(self):
+        mounts = []
+        p = subprocess.Popen(['lsblk', '-l', '-n','-o','NAME,TYPE,FSTYPE,MOUNTPOINT'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out_lsblk_output, err = p.communicate()
+        out_lsblk_output = str(out_lsblk_output)
+        self.logger.log("out_lsblk_output:\n" + str(out_lsblk_output))
+        lines = out_lsblk_output.splitlines()
+        line_number = len(lines)
+        for i in range(0,line_number):
+            item_value_str=lines[i].strip()
+            if(item_value_str != null):
+                item_value = item_value_str.split()
+                if(len(item_value)>3):
+                    name = item_value[0]
+                    type = item_value[1]
+                    fstype = item_value[2]
+                    mountpoint = item_value[3]
+                    mount = Mount(name, type, fstype, mountpoint)
+                    
+#                2015/07/27 22:52:59 sda                    disk             
+#2015/07/27 22:52:59 sda1                   part xfs         /boot
+#2015/07/27 22:52:59 sda2                   part xfs         /
+#2015/07/27 22:52:59 sdb                    disk             
+#2015/07/27 22:52:59 sdb1                   part ext4        /tmp
+#2015/07/27 22:52:59 sdc                    disk LVM2_member 
+#2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm  xfs         /home
+#2015/07/27 22:52:59 sdd                    disk LVM2_member 
+#2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm  xfs         /home
+#2015/07/27 22:52:59 sde                    disk LVM2_member 
+#2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm  xfs         /home
+#2015/07/27 22:52:59 sdf                    disk LVM2_member 
+#2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm  xfs         /home
+
+
+#2015/07/16 21:11:58 fd0         disk                    
+#2015/07/16 21:11:58 sda         disk  linux_raid_member 
+#2015/07/16 21:11:58 md127       raid0 ext4              /data
+#2015/07/16 21:11:58 sdb         disk  LVM2_member       
+#2015/07/16 21:11:58 vg03-lv_app lvm   ext4              /app
+#2015/07/16 21:11:58 sdc         disk  linux_raid_member 
+#2015/07/16 21:11:58 md127       raid0 ext4              /data
+#2015/07/16 21:11:58 sdd         disk  linux_raid_member 
+#2015/07/16 21:11:58 md127       raid0 ext4              /data
+#2015/07/16 21:11:58 sde         disk                    
+#2015/07/16 21:11:58 sde1        part  ext4              /
+#2015/07/16 21:11:58 sdf         disk                    
+#2015/07/16 21:11:58 sdf1        part  ext3              /mnt/resource
+                    inserted=False
+                    for j in range(0,len(mounts)):
+                        if(mounts[j].name==name):
+                            inserted=True
+                    if(not inserted):
+                        mounts.append(mount)
+        return mounts
+
     """
     replace the mounts entry from the orign disk partition to the target_disk_partition
     """

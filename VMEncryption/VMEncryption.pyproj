@@ -34,6 +34,7 @@
     <Content Include="README.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="main\backuplogger.py" />
     <Compile Include="main\common.py" />
     <Compile Include="main\devmanager.py">
       <SubType>Code</SubType>

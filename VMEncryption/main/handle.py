@@ -46,10 +46,11 @@ from diskutil import DiskUtil
 from diskutil import DiskPartition
 #Main function is the only entrence to this extension handler
 def main():
-    global hutil,MyPatching
+    global hutil,MyPatching,backup_logger
     HandlerUtil.LoggerInit('/var/log/waagent.log','/dev/stdout')
     HandlerUtil.waagent.Log("%s started to handle." % (CommonVariables.extension_name)) 
     hutil = HandlerUtil.HandlerUtility(HandlerUtil.waagent.Log, HandlerUtil.waagent.Error, CommonVariables.extension_name)
+    backup_logger = Backuplogger(hutil)
     MyPatching = GetMyPatching()
     if MyPatching == None:
         hutil.do_exit(0, 'Enable','error', str(CommonVariables.os_not_supported), 'the os is not supported')
@@ -100,82 +101,109 @@ def daemon():
         if(para_validate_result != 0):
             hutil.do_exit(0, 'Enable', 'error', str(para_validate_result), "parameter not right")
         # install the required softwares.
-       
+
         hutil.log("trying to install the extras")
         MyPatching.install_extras(extension_parameter)
-    
+
+        luks_header_path = encryption.create_luks_header()
         dev_manager = DevManager(hutil)
+        mounter = Mounter(backup_logger,hutil)
+        disk_util = DiskUtil(hutil, MyPatching)
+
         ########### the existing scenario starts ###################
-        
+        # we do not support the backup version policy
         # {"command":"enableencryption","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
+        # {"command":"enableencryption_inplace","query":[{"source_scsi_number":"[5:0:0:0]","in-place":"true"}"}],
+        # {"command":"enableencryption_format","query":[{"source_scsi_number":"[5:0:0:0]","filesystem":"ext4"},"mount_point":"/mnt/"}],
+        # this is the encryption in place
+        # {"command":"enableencryption_all_inplace"}],
         # "force":"true", "passphrase":"User@123"}
+
         hutil.log("executing the existingdisk command.")
-        disk_util = DiskUtil(hutil,MyPatching)
-        # scsi_host,channel,target_number,LUN
-        # find the scsi using the filter
-        encryption_keypair_len = len(extension_parameter.query)
-
-        # save the mounts info down.
-
-        encryption_items = []
-        # check the scsi
-        for i in range(0, encryption_keypair_len):
-            hutil.log("checking the encryptoin_keypair parameter")
-            current_mapping = extension_parameter.query[i]
-            hutil.log("scsi_number to query is " + str(current_mapping["source_scsi_number"]))
-            exist_disk_path = dev_manager.query_dev_sdx_path(current_mapping["source_scsi_number"])#dev_manager.query_dev_uuid_path(current_mapping["source_scsi_number"])
-
-            hutil.log("exist_disk_path is " + str(exist_disk_path))
-            if(exist_disk_path == None):
-                raise Exception("the scsi number is not found")
-
-            hutil.log("scsi_number to query is " + str(current_mapping["target_scsi_number"]))
-            encryption_dev_root_path = dev_manager.query_dev_sdx_path(current_mapping["target_scsi_number"])#dev_manager.query_dev_uuid_path(current_mapping["target_scsi_number"])
-
+        if(extension_parameter.command == "enableencryption_format"):
+            # check whether the current is stripped disk
+            # we need to change the uuid after the encryption.
+            # http://www.sudo-juice.com/how-to-change-the-uuid-of-a-linux-partition/
+            encryption_keypair_len = len(extension_parameter.query)
+            for i in range(0, encryption_keypair_len):
+                mapper_name = str(uuid.uuid4())
+                exist_disk_path = dev_manager.query_dev_sdx_path(current_mapping["source_scsi_number"])
+                encryption.encrypt_disk(exist_disk_path, extension_parameter.passphrase, mapper_name, luks_header_path)
+                # mount
+        elif(extension_parameter.command == "enableencryption_all_inplace"):
+            mounts = mounter.get_mounts()
+            for i in range(0,len(mounts)):
+                mount_item = mounts[i]
+                mapper_name = str(uuid.uuid4())
+                # how to create raid?
+                # sudo mdadm --create /dev/md128 --level 0 --raid-devices 2 /dev/sde /dev/sdf
+                # double check it, because we will have data loss if we do it twice it's not a crypt device
+                encryption.encrypt_disk("/dev/"+mount_item.name, extension_parameter.passphrase, mapper_name, luks_header_path)
+                disk_util.copy("/dev/"+mount_item.name, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
+                pass
+            pass
+        else:
             # scsi_host,channel,target_number,LUN
             # find the scsi using the filter
+            encryption_keypair_len = len(extension_parameter.query)
 
-            hutil.log("encryption_dev_root_path is " + str(encryption_dev_root_path))
-            if(encryption_dev_root_path == None):
-                raise Exception("the scsi number is not found")
+            # save the mounts info down.
 
-            encryption_item = EncryptionItem()
-            encryption_item.exist_disk_path = exist_disk_path
-            encryption_item.encryption_dev_root_path = encryption_dev_root_path
-            encryption_item.origin_disk_partitions = disk_util.get_disk_partitions(encryption_item.exist_disk_path)
-            encryption_items.append(encryption_item)
+            encryption_items = []
+            # check the scsi
+            for i in range(0, encryption_keypair_len):
+                hutil.log("checking the encryptoin_keypair parameter")
+                current_mapping = extension_parameter.query[i]
+                hutil.log("scsi_number to query is " + str(current_mapping["source_scsi_number"]))
+                exist_disk_path = dev_manager.query_dev_sdx_path(current_mapping["source_scsi_number"])#dev_manager.query_dev_uuid_path(current_mapping["source_scsi_number"])
 
-        mounter = Mounter(hutil)
-        # find the existing mapping, both by uuid and the sdx path
+                hutil.log("exist_disk_path is " + str(exist_disk_path))
+                if(exist_disk_path == None):
+                    raise Exception("the scsi number is not found")
 
-        for i in range(0, encryption_keypair_len):
-            print ("################" + str(encryption_items))
-            encryption_item = encryption_items[i]
+                hutil.log("scsi_number to query is " + str(current_mapping["target_scsi_number"]))
+                encryption_dev_root_path = dev_manager.query_dev_sdx_path(current_mapping["target_scsi_number"])#dev_manager.query_dev_uuid_path(current_mapping["target_scsi_number"])
 
-            ################### device is a blank one ###################
+                # scsi_host,channel,target_number,LUN
+                # find the scsi using the filter
 
-            disk_util.clone_partition_table(encryption_item.encryption_dev_root_path,encryption_item.exist_disk_path)
-            encryption_item.target_disk_partitions = disk_util.get_disk_partitions(encryption_item.encryption_dev_root_path)
+                hutil.log("encryption_dev_root_path is " + str(encryption_dev_root_path))
+                if(encryption_dev_root_path == None):
+                    raise Exception("the scsi number is not found")
 
-            encryption = Encryption(hutil)
-            luks_header_path = encryption.create_luks_header()
-            #TODO: make the source/target pair matches exactly
-            for partition_index in range(len(encryption_item.origin_disk_partitions)):
-                origin_disk_partition = encryption_item.origin_disk_partitions[partition_index]
-                target_disk_partition = encryption_item.target_disk_partitions[partition_index]
-                mapper_name = str(uuid.uuid4())
-                encryption_result = encryption.encrypt_disk(target_disk_partition.dev_path, extension_parameter.passphrase, mapper_name, luks_header_path)
+                encryption_item = EncryptionItem()
+                encryption_item.exist_disk_path = exist_disk_path
+                encryption_item.encryption_dev_root_path = encryption_dev_root_path
+                encryption_item.origin_disk_partitions = disk_util.get_disk_partitions(encryption_item.exist_disk_path)
+                encryption_items.append(encryption_item)
 
-                if(encryption_result.code == CommonVariables.success):
-                    disk_util.copy(origin_disk_partition.dev_path, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
-                else:
-                    hutil.log("encrypt disk result: " + str(encryption_result))
-        # TODO:change the fstab to do the mounting
+            # find the existing mapping, both by uuid and the sdx path
 
-        # mounter.replace_mounts_in_fs_tab(encryption_item.origin_disk_partitions,
-        # encryption_item.target_disk_partitions)
-        mounter.update_mount_info(encryption_items)
-        mounter.mount_all()
+            for i in range(0, encryption_keypair_len):
+                print ("################" + str(encryption_items))
+                encryption_item = encryption_items[i]
+
+                ################### device is a blank one ###################
+                disk_util.clone_partition_table(encryption_item.encryption_dev_root_path,encryption_item.exist_disk_path)
+                encryption_item.target_disk_partitions = disk_util.get_disk_partitions(encryption_item.encryption_dev_root_path)
+                encryption = Encryption(hutil)
+                #TODO: make the source/target pair matches exactly
+                for partition_index in range(len(encryption_item.origin_disk_partitions)):
+                    origin_disk_partition = encryption_item.origin_disk_partitions[partition_index]
+                    target_disk_partition = encryption_item.target_disk_partitions[partition_index]
+                    mapper_name = str(uuid.uuid4())
+                    encryption_result = encryption.encrypt_disk(target_disk_partition.dev_path, extension_parameter.passphrase, mapper_name, luks_header_path)
+
+                    if(encryption_result.code == CommonVariables.success):
+                        disk_util.copy(origin_disk_partition.dev_path, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
+                    else:
+                        hutil.log("encrypt disk result: " + str(encryption_result))
+            # TODO:change the fstab to do the mounting
+
+            # mounter.replace_mounts_in_fs_tab(encryption_item.origin_disk_partitions,
+            # encryption_item.target_disk_partitions)
+            mounter.update_mount_info(encryption_items)
+            mounter.mount_all()
 
     except Exception, e:
         # mount the file systems back.
