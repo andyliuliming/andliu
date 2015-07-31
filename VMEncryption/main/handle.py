@@ -144,7 +144,14 @@ def daemon():
                 # double check it, because we will have data loss if we do it
                 # twice it's not a crypt device
                 backup_logger.log("mount_item.mount_point == " + str(mount_item.mount_point))
-                if(mount_item.mount_point != None and mount_item.mount_point.strip() != "/"):
+                #TODO skip the resource disk
+                if(mount_item.name=="sdb1"):
+                    pass
+                elif(mount_item.mount_point != None and mount_item.mount_point.strip() == "/"):
+                    pass
+                    #encryption.encrypt_disk("/dev/" + mount_item.name, extension_parameter.passphrase, mapper_name, luks_header_path)
+                    #disk_util.copy("/dev/" + mount_item.name, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
+                else:
                     encryption.encrypt_disk("/dev/" + mount_item.name, extension_parameter.passphrase, mapper_name, luks_header_path)
                     disk_util.copy("/dev/" + mount_item.name, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
 
