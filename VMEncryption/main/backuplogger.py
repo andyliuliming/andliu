@@ -31,7 +31,7 @@ class Backuplogger(object):
         self.__StorageVersion = "2014-02-14"
 
     """description of class"""
-    def log(self, msg, local=False, level='Info'):
+    def log(self, msg, local=True, level='Info'):
         log_msg = (str(datetime.datetime.now()) + '   ' + level + '   ' + msg + '\n')
         self.msg += log_msg
         if(local):

@@ -41,8 +41,6 @@ class ExtensionParameter(object):
 
 
     def validate_parameter_format(self):
-        if(self.query is None):
-            return CommonVariables.parameter_error
         if(self.passphrase is None):
             self.hutil.log("passphrase is none")
             return CommonVariables.parameter_error
@@ -54,6 +52,8 @@ class ExtensionParameter(object):
             if(self.force != "true" and self.force != "false"):
                 self.hutil.log("parameter 'force' should be 'true' or 'false'")
                 return CommonVariables.parameter_error
+        #if(self.query is None):
+        #    return CommonVariables.parameter_error
         return CommonVariables.success
 
 class EncryptionItem(object):

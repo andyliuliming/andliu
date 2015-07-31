@@ -26,9 +26,17 @@ import uuid
 from encryption import EncryptionError
 from common import CommonVariables
 
+class Mount:
+    def __init__(self, name, type, fstype, mount_point):
+        self.name = name
+        self.type = type
+        self.fstype = fstype
+        self.mount_point = mount_point
+
 class Mounter(object):
     def __init__(self,logger,hutil):
         self.hutil = hutil
+        self.logger = logger
 
     def get_mounts(self):
         mounts = []
@@ -39,48 +47,48 @@ class Mounter(object):
         lines = out_lsblk_output.splitlines()
         line_number = len(lines)
         for i in range(0,line_number):
-            item_value_str=lines[i].strip()
-            if(item_value_str != null):
+            item_value_str = lines[i].strip()
+            if(item_value_str != ""):
                 item_value = item_value_str.split()
-                if(len(item_value)>3):
+                if(len(item_value) > 3):
                     name = item_value[0]
                     type = item_value[1]
                     fstype = item_value[2]
                     mountpoint = item_value[3]
                     mount = Mount(name, type, fstype, mountpoint)
                     
-#                2015/07/27 22:52:59 sda                    disk             
-#2015/07/27 22:52:59 sda1                   part xfs         /boot
-#2015/07/27 22:52:59 sda2                   part xfs         /
-#2015/07/27 22:52:59 sdb                    disk             
-#2015/07/27 22:52:59 sdb1                   part ext4        /tmp
-#2015/07/27 22:52:59 sdc                    disk LVM2_member 
-#2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm  xfs         /home
-#2015/07/27 22:52:59 sdd                    disk LVM2_member 
-#2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm  xfs         /home
-#2015/07/27 22:52:59 sde                    disk LVM2_member 
-#2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm  xfs         /home
-#2015/07/27 22:52:59 sdf                    disk LVM2_member 
-#2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm  xfs         /home
+#                2015/07/27 22:52:59 sda disk
+#2015/07/27 22:52:59 sda1 part xfs /boot
+#2015/07/27 22:52:59 sda2 part xfs /
+#2015/07/27 22:52:59 sdb disk
+#2015/07/27 22:52:59 sdb1 part ext4 /tmp
+#2015/07/27 22:52:59 sdc disk LVM2_member
+#2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm xfs /home
+#2015/07/27 22:52:59 sdd disk LVM2_member
+#2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm xfs /home
+#2015/07/27 22:52:59 sde disk LVM2_member
+#2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm xfs /home
+#2015/07/27 22:52:59 sdf disk LVM2_member
+#2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm xfs /home
 
 
-#2015/07/16 21:11:58 fd0         disk                    
-#2015/07/16 21:11:58 sda         disk  linux_raid_member 
-#2015/07/16 21:11:58 md127       raid0 ext4              /data
-#2015/07/16 21:11:58 sdb         disk  LVM2_member       
-#2015/07/16 21:11:58 vg03-lv_app lvm   ext4              /app
-#2015/07/16 21:11:58 sdc         disk  linux_raid_member 
-#2015/07/16 21:11:58 md127       raid0 ext4              /data
-#2015/07/16 21:11:58 sdd         disk  linux_raid_member 
-#2015/07/16 21:11:58 md127       raid0 ext4              /data
-#2015/07/16 21:11:58 sde         disk                    
-#2015/07/16 21:11:58 sde1        part  ext4              /
-#2015/07/16 21:11:58 sdf         disk                    
-#2015/07/16 21:11:58 sdf1        part  ext3              /mnt/resource
-                    inserted=False
+#2015/07/16 21:11:58 fd0 disk
+#2015/07/16 21:11:58 sda disk linux_raid_member
+#2015/07/16 21:11:58 md127 raid0 ext4 /data
+#2015/07/16 21:11:58 sdb disk LVM2_member
+#2015/07/16 21:11:58 vg03-lv_app lvm ext4 /app
+#2015/07/16 21:11:58 sdc disk linux_raid_member
+#2015/07/16 21:11:58 md127 raid0 ext4 /data
+#2015/07/16 21:11:58 sdd disk linux_raid_member
+#2015/07/16 21:11:58 md127 raid0 ext4 /data
+#2015/07/16 21:11:58 sde disk
+#2015/07/16 21:11:58 sde1 part ext4 /
+#2015/07/16 21:11:58 sdf disk
+#2015/07/16 21:11:58 sdf1 part ext3 /mnt/resource
+                    inserted = False
                     for j in range(0,len(mounts)):
-                        if(mounts[j].name==name):
-                            inserted=True
+                        if(mounts[j].name == name):
+                            inserted = True
                     if(not inserted):
                         mounts.append(mount)
         return mounts
@@ -95,7 +103,7 @@ class Mounter(object):
         # backup the /etc/fstab file
         # TODO Handle exception
 
-        shutil.copy2('/etc/fstab', '/etc/fstab.backup'+str(str(uuid.uuid4())))
+        shutil.copy2('/etc/fstab', '/etc/fstab.backup' + str(str(uuid.uuid4())))
 
         new_mount_content = ""
         with open("/etc/fstab",'r') as f:

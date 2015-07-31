@@ -44,6 +44,7 @@ from devmanager import DevManager
 from rebootmanager import RebootManager
 from diskutil import DiskUtil
 from diskutil import DiskPartition
+from backuplogger import Backuplogger
 #Main function is the only entrence to this extension handler
 def main():
     global hutil,MyPatching,backup_logger
@@ -77,7 +78,7 @@ def enable():
     hutil.do_parse_context('Enable')
     # we need to start another subprocess to do it, because the initial process
     # would be killed by the wala in 5 minutes.
-    hutil.log("")
+    backup_logger.log("")
     start_daemon()
 
 def daemon():
@@ -102,14 +103,15 @@ def daemon():
             hutil.do_exit(0, 'Enable', 'error', str(para_validate_result), "parameter not right")
         # install the required softwares.
 
-        hutil.log("trying to install the extras")
+        backup_logger.log("trying to install the extras")
         MyPatching.install_extras(extension_parameter)
 
-        luks_header_path = encryption.create_luks_header()
         dev_manager = DevManager(hutil)
         mounter = Mounter(backup_logger,hutil)
         disk_util = DiskUtil(hutil, MyPatching)
+        encryption = Encryption(hutil)
 
+        luks_header_path = encryption.create_luks_header()
         ########### the existing scenario starts ###################
         # we do not support the backup version policy
         # {"command":"enableencryption","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
@@ -119,8 +121,8 @@ def daemon():
         # {"command":"enableencryption_all_inplace"}],
         # "force":"true", "passphrase":"User@123"}
 
-        hutil.log("executing the existingdisk command.")
         if(extension_parameter.command == "enableencryption_format"):
+            backup_logger.log("executing the enableencryption_format command.")
             # check whether the current is stripped disk
             # we need to change the uuid after the encryption.
             # http://www.sudo-juice.com/how-to-change-the-uuid-of-a-linux-partition/
@@ -131,18 +133,23 @@ def daemon():
                 encryption.encrypt_disk(exist_disk_path, extension_parameter.passphrase, mapper_name, luks_header_path)
                 # mount
         elif(extension_parameter.command == "enableencryption_all_inplace"):
+            backup_logger.log("executing the enableencryption_all_inplace command.")
             mounts = mounter.get_mounts()
             for i in range(0,len(mounts)):
                 mount_item = mounts[i]
                 mapper_name = str(uuid.uuid4())
                 # how to create raid?
-                # sudo mdadm --create /dev/md128 --level 0 --raid-devices 2 /dev/sde /dev/sdf
-                # double check it, because we will have data loss if we do it twice it's not a crypt device
-                encryption.encrypt_disk("/dev/"+mount_item.name, extension_parameter.passphrase, mapper_name, luks_header_path)
-                disk_util.copy("/dev/"+mount_item.name, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
-                pass
-            pass
-        else:
+                # sudo mdadm --create /dev/md128 --level 0 --raid-devices 2
+                # /dev/sde /dev/sdf
+                # double check it, because we will have data loss if we do it
+                # twice it's not a crypt device
+                backup_logger.log("mount_item.mount_point == " + str(mount_item.mount_point))
+                if(mount_item.mount_point != None and mount_item.mount_point.strip() != "/"):
+                    encryption.encrypt_disk("/dev/" + mount_item.name, extension_parameter.passphrase, mapper_name, luks_header_path)
+                    disk_util.copy("/dev/" + mount_item.name, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
+
+        elif(extension_parameter.command=="enableencryption"):
+            backup_logger.log("executing the enableencryption_all_inplace command.")
             # scsi_host,channel,target_number,LUN
             # find the scsi using the filter
             encryption_keypair_len = len(extension_parameter.query)
@@ -152,22 +159,22 @@ def daemon():
             encryption_items = []
             # check the scsi
             for i in range(0, encryption_keypair_len):
-                hutil.log("checking the encryptoin_keypair parameter")
+                backup_logger.log("checking the encryptoin_keypair parameter")
                 current_mapping = extension_parameter.query[i]
-                hutil.log("scsi_number to query is " + str(current_mapping["source_scsi_number"]))
+                backup_logger.log("scsi_number to query is " + str(current_mapping["source_scsi_number"]))
                 exist_disk_path = dev_manager.query_dev_sdx_path(current_mapping["source_scsi_number"])#dev_manager.query_dev_uuid_path(current_mapping["source_scsi_number"])
 
-                hutil.log("exist_disk_path is " + str(exist_disk_path))
+                backup_logger.log("exist_disk_path is " + str(exist_disk_path))
                 if(exist_disk_path == None):
                     raise Exception("the scsi number is not found")
 
-                hutil.log("scsi_number to query is " + str(current_mapping["target_scsi_number"]))
+                backup_logger.log("scsi_number to query is " + str(current_mapping["target_scsi_number"]))
                 encryption_dev_root_path = dev_manager.query_dev_sdx_path(current_mapping["target_scsi_number"])#dev_manager.query_dev_uuid_path(current_mapping["target_scsi_number"])
 
                 # scsi_host,channel,target_number,LUN
                 # find the scsi using the filter
 
-                hutil.log("encryption_dev_root_path is " + str(encryption_dev_root_path))
+                backup_logger.log("encryption_dev_root_path is " + str(encryption_dev_root_path))
                 if(encryption_dev_root_path == None):
                     raise Exception("the scsi number is not found")
 
@@ -186,7 +193,6 @@ def daemon():
                 ################### device is a blank one ###################
                 disk_util.clone_partition_table(encryption_item.encryption_dev_root_path,encryption_item.exist_disk_path)
                 encryption_item.target_disk_partitions = disk_util.get_disk_partitions(encryption_item.encryption_dev_root_path)
-                encryption = Encryption(hutil)
                 #TODO: make the source/target pair matches exactly
                 for partition_index in range(len(encryption_item.origin_disk_partitions)):
                     origin_disk_partition = encryption_item.origin_disk_partitions[partition_index]
@@ -197,14 +203,15 @@ def daemon():
                     if(encryption_result.code == CommonVariables.success):
                         disk_util.copy(origin_disk_partition.dev_path, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
                     else:
-                        hutil.log("encrypt disk result: " + str(encryption_result))
+                        backup_logger.log("encrypt disk result: " + str(encryption_result))
             # TODO:change the fstab to do the mounting
 
             # mounter.replace_mounts_in_fs_tab(encryption_item.origin_disk_partitions,
             # encryption_item.target_disk_partitions)
             mounter.update_mount_info(encryption_items)
             mounter.mount_all()
-
+        else:
+            hutil.do_exit(1, 'Enable','error','1', 'Enable failed. wrong parameter command')
     except Exception, e:
         # mount the file systems back.
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
