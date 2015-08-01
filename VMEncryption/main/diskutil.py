@@ -173,8 +173,8 @@ class DiskUtil(object):
         blk_items = self.get_lsblk(None)
         for i in range(0,len(blk_items)):
             blk_item = blk_items[i]
+            inserted = False
             for j in range(0,len(mounts)):
-                inserted = False
                 if(blk_item.mountpoint == mounts[i].mountpoint):
                     inserted = True
             if(not inserted):
