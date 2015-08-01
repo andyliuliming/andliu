@@ -49,9 +49,10 @@ class DiskPartition(object):
         self.uuid_path = ""
 
 class DiskUtil(object):
-    def __init__(self,hutil,patching):
+    def __init__(self,hutil,patching,logger):
         self.hutil = hutil
         self.patching = patching
+        self.logger = logger
 
     def copy_using_cp(self,from_device,to_device):
         error = EncryptionError()
@@ -216,7 +217,6 @@ class DiskUtil(object):
         # [Device] [Mount Point] [File System Type] [Options] [Dump] [Pass]
         # backup the /etc/fstab file
         # TODO Handle exception
-
         shutil.copy2('/etc/fstab', '/etc/fstab.backup' + str(str(uuid.uuid4())))
         new_mount_content = ""
         with open("/etc/fstab",'r') as f:
@@ -300,6 +300,7 @@ class DiskUtil(object):
         return query_dev_uuid_by_sdx_path(sdx_path)
     
     def get_lsblk(self, dev_path):
+        self.logger.log("getting the blk info from " + str(dev_path))
         blk_items = []
         if(dev_path is None):
             p = subprocess.Popen(['lsblk', '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)

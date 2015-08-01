@@ -106,7 +106,7 @@ def daemon():
 
         #dev_manager = DevManager(hutil)
         #disk_util = Mounter(backup_logger,hutil)
-        disk_util = DiskUtil(hutil, MyPatching)
+        disk_util = DiskUtil(hutil, MyPatching,backup_logger)
         encryption = Encryption(hutil)
 
         luks_header_path = encryption.create_luks_header()
