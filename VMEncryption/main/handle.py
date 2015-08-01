@@ -143,14 +143,16 @@ def daemon():
                 # /dev/sde /dev/sdf
                 # double check it, because we will have data loss if we do it
                 # twice it's not a crypt device
-                backup_logger.log("mount_item.mount_point == " + str(mount_item.mount_point))
+                backup_logger.log("mount_item.mount_point == " + str(mount_item))
                 #TODO skip the resource disk
                 should_skip = False
                 for j in range(0,len(azure_blk_items)):
                     if(azure_blk_items[j].name == mount_item.name):
+                        backup_logger.log("the mount_point is the azure disk root or resource, so skip it.")
                         should_skip = True
-                if(mount_item.mount_point =="/"):
-                    should_skip=True
+                if(mount_item.mount_point == "/"):
+                    backup_logger.log("the mount_point is root, so skip." + str(mount_item))
+                    should_skip = True
                 if(should_skip):
                     pass
                 else:
