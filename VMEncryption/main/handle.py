@@ -143,7 +143,7 @@ def daemon():
                 # /dev/sde /dev/sdf
                 # double check it, because we will have data loss if we do it
                 # twice it's not a crypt device
-                backup_logger.log("mount_item.mountpoint == " + str(mount_item))
+                backup_logger.log("mount_item == " + str(mount_item))
                 #TODO skip the resource disk
                 should_skip = False
                 for j in range(0,len(azure_blk_items)):
