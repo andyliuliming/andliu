@@ -182,6 +182,7 @@ class DiskUtil(object):
                     inserted = True
             if(not inserted):
                 mounts.append(blk_item)
+        return mounts
 
     """
     replace the mounts entry from the orign disk partition to the target_disk_partition

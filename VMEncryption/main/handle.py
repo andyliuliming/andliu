@@ -143,19 +143,20 @@ def daemon():
                 # /dev/sde /dev/sdf
                 # double check it, because we will have data loss if we do it
                 # twice it's not a crypt device
-                backup_logger.log("mount_item.mount_point == " + str(mount_item))
+                backup_logger.log("mount_item.mountpoint == " + str(mount_item))
                 #TODO skip the resource disk
                 should_skip = False
                 for j in range(0,len(azure_blk_items)):
                     if(azure_blk_items[j].name == mount_item.name):
-                        backup_logger.log("the mount_point is the azure disk root or resource, so skip it.")
+                        backup_logger.log("the mountpoint is the azure disk root or resource, so skip it.")
                         should_skip = True
-                if(mount_item.mount_point == "/"):
-                    backup_logger.log("the mount_point is root, so skip." + str(mount_item))
+                if(mount_item.mountpoint == "/"):
+                    backup_logger.log("the mountpoint is root, so skip." + str(mount_item))
                     should_skip = True
                 if(should_skip):
                     pass
                 else:
+                    backup_logger.log("encrypting " + str(mount_item))
                     encryption.encrypt_disk("/dev/" + mount_item.name, extension_parameter.passphrase, mapper_name, luks_header_path)
                     disk_util.copy("/dev/" + mount_item.name, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
 
