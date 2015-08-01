@@ -177,8 +177,8 @@ class DiskUtil(object):
                 inserted = False
                 if(blk_item.mountpoint == mounts[i].mountpoint):
                     inserted = True
-                if(not inserted):
-                    mounts.append(mount)
+            if(not inserted):
+                mounts.append(mount)
 ##                2015/07/27 22:52:59 sda disk
 ##2015/07/27 22:52:59 sda1 part xfs /boot
 ##2015/07/27 22:52:59 sda2 part xfs /
