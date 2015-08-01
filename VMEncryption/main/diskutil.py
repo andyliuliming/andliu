@@ -20,10 +20,23 @@
 #
 import subprocess
 import sys
-from subprocess import *  
+from subprocess import *
+import shutil
+import uuid
+from common import CommonVariables
 from encryption import EncryptionError
 from common import CommonVariables
-from devmanager import DevManager
+
+class LsblkItem(object):
+    def __init__(self):
+        #NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL
+        self.name = None
+        self.type = None
+        self.fstype = None
+        self.mountpoint = None
+        self.label = None
+        self.uuid = None
+        self.model = None
 
 class DiskPartition(object):
     def __init__(self):
@@ -55,9 +68,7 @@ class DiskUtil(object):
 
     def copy_using_dd(self,from_device,to_device):
         error = EncryptionError()
-
         commandToExecute = '/bin/bash -c "' + 'dd conv=sparse if=' + from_device + ' of=' + to_device + ' bs=512"'
-        
         self.hutil.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
@@ -82,45 +93,43 @@ class DiskUtil(object):
         # parted /dev/sdc print
         # and find for Partition Table: msdos
         # TODO: implement this
-        return "mbr"
+        # fdisk -l $1 |grep "Disklabel type:" |awk '{ print $3 }'
+        # parted -l
+        # udevadm info -q property -n /dev/md1
+        p = subprocess.Popen(['udevadm', 'info', '-q', 'property', '-n',devpath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        udevadm_output, err = p.communicate()
+        udevadm_output = str(udevadm_output)
+        property_info_lines = udevadm_output.splitlines()
+        for i in range(0,len(property_info_lines)):
+            property_name = property_info_lines[i].split("=")[0]
+            if(property_name == "ID_PART_TABLE_TYPE"):
+                return property_info_lines[i].split("=")[1]
+        return None
 
     def get_disk_partitions(self, devpath):
         #TODO check the dev path parameter
         disk_partitions = []
-        dev_manager = DevManager(self.hutil)
-        p = subprocess.Popen(['lsblk', '-b', '-n', '-P', '-o','NAME,TYPE,FSTYPE,SIZE,MOUNTPOINT', devpath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out_lsblk_output, err = p.communicate()
-        out_lsblk_output = str(out_lsblk_output)
-        self.hutil.log("out_lsblk_output:\n" + str(out_lsblk_output))
-        disk_info_lines = out_lsblk_output.splitlines()
-        line_number = len(disk_info_lines)
-        for i in range(0,line_number):
-            disk_info_item_value = disk_info_lines[i].strip()
-            disk_info_item_array = disk_info_item_value.split()
-            disk_info_item_array_length = len(disk_info_item_array)
-            partition = DiskPartition()
-            for j in range(0, disk_info_item_array_length):
-                disk_info_property = disk_info_item_array[j]
-                if(disk_info_property.startswith('SIZE')):
-                    partition.size = long(disk_info_property.split('=')[1].strip('"'))
-                if(disk_info_property.startswith('NAME')):
-                    partition.name = disk_info_property.split('=')[1].strip('"')
-                    partition.dev_path = "/dev/" + partition.name
-                if(disk_info_property.startswith('TYPE')):
-                    partition.type = disk_info_property.split('=')[1].strip('"')
-            # skip the disk, because we do not need
-            # TODO, if there's only disk?
-            if(partition.type == "part"):
-                partition.uuid_path = dev_manager.query_dev_uuid_path_by_sdx_path(partition.dev_path)
-                disk_partitions.append(partition)
+        blk_items = self.get_lsblk(devpath)
+        for i in range(0,len(blk_items)):
+            if(blk_items[i].type=="part"):
+                disk_partitions.append(blk_items[i])
         return disk_partitions
 
     def clone_partition_table(self, target_dev, source_dev):
         # partition it
         # http://superuser.com/questions/823922/dm-cryptluks-can-i-have-a-separate-header-without-storing-it-on-the-luks-encry
-        commandToExecute = '/bin/bash -c "' + 'sfdisk -d ' + source_dev + ' | sfdisk --force ' + target_dev + '"'
-        proc = Popen(commandToExecute, shell=True)
-        returnCode = proc.wait()
+        if(self.get_disk_partition_table_type(source_dev) == "dos"):
+            commandToExecute = '/bin/bash -c "' + 'sfdisk -d ' + source_dev + ' | sfdisk --force ' + target_dev + '"'
+            proc = Popen(commandToExecute, shell=True)
+            returnCode = proc.wait()
+            return returnCode
+        elif(self.get_disk_partition_table_type(target_dev) == "gpt"):
+            #sgdisk -R=/dev/sdb /dev/sda
+            commandToExecute = '/bin/bash -c "' + 'sgdisk -R=' + target_dev + ' ' + source_dev + + '"'
+            proc = Popen(commandToExecute, shell=True)
+            returnCode = proc.wait()
+            return returnCode
+        return None
 
     def format_disk(self, dev_path):
         error = EncryptionError()
@@ -144,3 +153,191 @@ class DiskUtil(object):
             error.info = "command to execute is " + commandToExecute
             self.hutil.log('mkfs_command returnCode is ' + str(returnCode))
         return error
+
+    def get_azure_devices(self):
+        #/dev/disk/azure/root
+        #/dev/disk/azure/resource
+        blk_items = []
+        root_blk_items = self.get_lsblk("/dev/disk/azure/root")
+        for i in range(0,len(root_blk_items)):
+            blk_items.append(root_blk_items[i])
+
+        resource_blk_items = self.get_lsblk("/dev/disk/azure/resource")
+        for i in range(0,len(resource_blk_items)):
+            blk_items.append(resource_blk_items[i])
+        return blk_items
+
+    def get_mounts(self):
+        mounts = []
+        blk_items = self.get_lsblk(None)
+        for i in range(0,len(blk_items)):
+            blk_item = blk_items[i]
+            for j in range(0,len(mounts)):
+                inserted = False
+                if(blk_item.mountpoint == mounts[i].mountpoint):
+                    inserted = True
+                if(not inserted):
+                    mounts.append(mount)
+##                2015/07/27 22:52:59 sda disk
+##2015/07/27 22:52:59 sda1 part xfs /boot
+##2015/07/27 22:52:59 sda2 part xfs /
+##2015/07/27 22:52:59 sdb disk
+##2015/07/27 22:52:59 sdb1 part ext4 /tmp
+##2015/07/27 22:52:59 sdc disk LVM2_member
+##2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm xfs /home
+##2015/07/27 22:52:59 sdd disk LVM2_member
+##2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm xfs /home
+##2015/07/27 22:52:59 sde disk LVM2_member
+##2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm xfs /home
+##2015/07/27 22:52:59 sdf disk LVM2_member
+##2015/07/27 22:52:59 VG_STRIPED-SDI_STRIPED lvm xfs /home
+
+
+##2015/07/16 21:11:58 fd0 disk
+##2015/07/16 21:11:58 sda disk linux_raid_member
+##2015/07/16 21:11:58 md127 raid0 ext4 /data
+##2015/07/16 21:11:58 sdb disk LVM2_member
+##2015/07/16 21:11:58 vg03-lv_app lvm ext4 /app
+##2015/07/16 21:11:58 sdc disk linux_raid_member
+##2015/07/16 21:11:58 md127 raid0 ext4 /data
+##2015/07/16 21:11:58 sdd disk linux_raid_member
+##2015/07/16 21:11:58 md127 raid0 ext4 /data
+##2015/07/16 21:11:58 sde disk
+##2015/07/16 21:11:58 sde1 part ext4 /
+##2015/07/16 21:11:58 sdf disk
+##2015/07/16 21:11:58 sdf1 part ext3 /mnt/resource
+
+    """
+    replace the mounts entry from the orign disk partition to the target_disk_partition
+    """
+    def update_mount_info(self, encryption_items):
+        # get the output of mount
+        # get the content of fstab
+        # [Device] [Mount Point] [File System Type] [Options] [Dump] [Pass]
+        # backup the /etc/fstab file
+        # TODO Handle exception
+
+        shutil.copy2('/etc/fstab', '/etc/fstab.backup' + str(str(uuid.uuid4())))
+        new_mount_content = ""
+        with open("/etc/fstab",'r') as f:
+            mount_lines = f.read().splitlines()
+            for i in range(len(mount_lines)):
+                line_stripped = mount_lines[i].strip()
+                if(not line_stripped.startswith("#") and not line_stripped == ""):
+                    """
+                    /dev/sdb1 /mnt auto defaults,nobootwait,comment=cloudconfig 0 2
+                    """
+                    print ("mount_lines[i] == " + str(mount_lines[i]))
+                    item_array = mount_lines[i].split()
+                    dev_path_in_mount = item_array[0]
+                    for j in range(len(encryption_items)):
+                        encryption_item = encryption_items[j]
+                        found = False
+                        for k in range(len(encryption_item.origin_disk_partitions)):
+                            if(dev_path_in_mount == encryption_item.origin_disk_partitions[k].dev_path):
+                                white_space = " "
+                                item_array[0] = encryption_item.target_disk_partitions[k].dev_path
+                                new_mount_content = new_mount_content + "\n" + white_space.join(item_array)
+                                found = True
+                                pass
+                            if (dev_path_in_mount == encryption_item.origin_disk_partitions[k].uuid_path):
+                                white_space = " "
+                                item_array[0] = encryption_item.target_disk_partitions[k].uuid_path
+                                new_mount_content = new_mount_content + "\n" + white_space.join(item_array)
+                                found = True
+                        if(not found):
+                            new_mount_content = new_mount_content + mount_lines[i]
+                else:
+                    new_mount_content = new_mount_content + "\n" + line_stripped
+        with open("/etc/fstab",'w') as wf:
+            wf.write(new_mount_content)
+
+    def mount_all(self):
+        error = EncryptionError()
+        commandToExecute = '/bin/bash -c "mount -a 2> /dev/null"'
+        self.hutil.log("command to execute :" + commandToExecute)
+        proc = Popen(commandToExecute, shell=True)
+        returnCode = proc.wait()
+        if(returnCode != 0):
+            error.errorcode = returnCode
+            error.code = CommonVariables.mount_error
+            error.info = "commandToExecute is " + commandToExecute
+            self.hutil.log('mount returnCode is ' + str(returnCode))
+        return error
+
+    def query_dev_sdx_path(self,scsi_number):
+        p = Popen(['lsscsi', scsi_number], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        identity, err = p.communicate()
+        # identity sample: [5:0:0:0] disk Msft Virtual Disk 1.0 /dev/sdc
+        self.hutil.log("lsscsi output is: \n" + identity)
+        vals = identity.split()
+        if(vals == None or len(vals) == 0):
+            return None
+        sdx_path = vals[len(vals) - 1]
+        return sdx_path
+
+    def query_dev_uuid_path_by_sdx_path(self,sdx_path):
+        p = Popen(['blkid',sdx_path],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        identity,err = p.communicate()
+        identity = identity.lower()
+        self.hutil.log("blkid output is: \n" + identity)
+        uuid_pattern = 'uuid="'
+        index_of_uuid = identity.find(uuid_pattern)
+        identity = identity[index_of_uuid + len(uuid_pattern):]
+        index_of_quote = identity.find('"')
+        uuid = identity[0:index_of_quote]
+        # output /dev/sdc: UUID="7a396578-5701-4ce6-8fc6-ff31316d5672"
+        # TYPE="crypto_LUKS"
+        #print("uuid=" + uuid)
+        if(uuid.strip() == ""):
+            return sdx_path
+        return os.path.join("/dev/disk/by-uuid/",uuid)
+
+    def query_dev_uuid_path_by_scsi_number(self,scsi_number):
+        # find the scsi using the filter
+        # TODO figure out why the disk formated using fdisk do not have uuid
+        sdx_path = self.query_dev_sdx_path(scsi_number)
+        return query_dev_uuid_by_sdx_path(sdx_path)
+    
+    def get_lsblk(self, dev_path):
+        blk_items = []
+        if(dev_path is None):
+            p = subprocess.Popen(['lsblk', '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        else:
+            p = subprocess.Popen(['lsblk', '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL',dev_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out_lsblk_output, err = p.communicate()
+        out_lsblk_output = str(out_lsblk_output)
+        self.logger.log("out_lsblk_output:\n" + str(out_lsblk_output))
+        lines = out_lsblk_output.splitlines()
+        for i in range(0,len(lines)):
+            item_value_str = lines[i].strip()
+            if(item_value_str != ""):
+                disk_info_item_array = item_value_str.split()
+                blk_item = LsblkItem()
+                disk_info_item_array_length = len(disk_info_item_array)
+                for j in range(0, disk_info_item_array_length):
+                    disk_info_property = disk_info_item_array[j]
+                    property_item_pair = disk_info_property.split('=')
+                    if(property_item_pair[0] == 'NAME'):
+                        blk_item.name = property_item_pair[1].strip('"')
+
+                    if(property_item_pair[0] == 'TYPE'):
+                        blk_item.type = property_item_pair[1].strip('"')
+
+                    if(property_item_pair[0] == 'FSTYPE'):
+                        blk_item.fstype = property_item_pair[1].strip('"')
+                        
+                    if(property_item_pair[0] == 'MOUNTPOINT'):
+                        blk_item.mountpoint = property_item_pair[1].strip('"')
+
+                    if(property_item_pair[0] == 'LABEL'):
+                        blk_item.label = property_item_pair[1].strip('"')
+
+                    if(property_item_pair[0] == 'UUID'):
+                        blk_item.uuid = property_item_pair[1].strip('"')
+
+                    if(property_item_pair[0] == 'MODEL'):
+                        blk_item.model = property_item_pair[1].strip('"')
+
+                blk_items.append(blk_item)
+        return blk_items

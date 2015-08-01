@@ -36,17 +36,11 @@
   <ItemGroup>
     <Compile Include="main\backuplogger.py" />
     <Compile Include="main\common.py" />
-    <Compile Include="main\devmanager.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="main\diskutil.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="main\encryption.py" />
     <Compile Include="main\handle.py" />
-    <Compile Include="main\mounter.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="main\extensionparameter.py" />
     <Compile Include="main\patch\AbstractPatching.py" />
     <Compile Include="main\patch\centosPatching.py" />

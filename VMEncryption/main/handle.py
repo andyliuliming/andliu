@@ -39,8 +39,6 @@ from common import CommonVariables
 from extensionparameter import ExtensionParameter
 from extensionparameter import EncryptionItem
 from encryption import *
-from mounter import Mounter
-from devmanager import DevManager
 from rebootmanager import RebootManager
 from diskutil import DiskUtil
 from diskutil import DiskPartition
@@ -106,8 +104,8 @@ def daemon():
         backup_logger.log("trying to install the extras")
         MyPatching.install_extras(extension_parameter)
 
-        dev_manager = DevManager(hutil)
-        mounter = Mounter(backup_logger,hutil)
+        #dev_manager = DevManager(hutil)
+        #disk_util = Mounter(backup_logger,hutil)
         disk_util = DiskUtil(hutil, MyPatching)
         encryption = Encryption(hutil)
 
@@ -116,7 +114,7 @@ def daemon():
         # we do not support the backup version policy
         # {"command":"enableencryption","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
         # {"command":"enableencryption_inplace","query":[{"source_scsi_number":"[5:0:0:0]","in-place":"true"}"}],
-        # {"command":"enableencryption_format","query":[{"source_scsi_number":"[5:0:0:0]","filesystem":"ext4"},"mount_point":"/mnt/"}],
+        # {"command":"enableencryption_format","query":[{"source_scsi_number":"[5:0:0:0]","filesystem":"ext4","mount_point":"/mnt/"}],
         # this is the encryption in place
         # {"command":"enableencryption_all_inplace"}],
         # "force":"true", "passphrase":"User@123"}
@@ -129,12 +127,14 @@ def daemon():
             encryption_keypair_len = len(extension_parameter.query)
             for i in range(0, encryption_keypair_len):
                 mapper_name = str(uuid.uuid4())
-                exist_disk_path = dev_manager.query_dev_sdx_path(current_mapping["source_scsi_number"])
+                exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])
                 encryption.encrypt_disk(exist_disk_path, extension_parameter.passphrase, mapper_name, luks_header_path)
-                # mount
         elif(extension_parameter.command == "enableencryption_all_inplace"):
             backup_logger.log("executing the enableencryption_all_inplace command.")
-            mounts = mounter.get_mounts()
+            mounts = disk_util.get_mounts()
+            
+            azure_blk_items = disk_util.get_azure_devices()
+
             for i in range(0,len(mounts)):
                 mount_item = mounts[i]
                 mapper_name = str(uuid.uuid4())
@@ -145,17 +145,19 @@ def daemon():
                 # twice it's not a crypt device
                 backup_logger.log("mount_item.mount_point == " + str(mount_item.mount_point))
                 #TODO skip the resource disk
-                if(mount_item.name=="sdb1"):
+                should_skip = False
+                for j in range(0,len(azure_blk_items)):
+                    if(azure_blk_items[j].name == mount_item.name):
+                        should_skip = True
+                if(mount_item.mount_point =="/"):
+                    should_skip=True
+                if(should_skip):
                     pass
-                elif(mount_item.mount_point != None and mount_item.mount_point.strip() == "/"):
-                    pass
-                    #encryption.encrypt_disk("/dev/" + mount_item.name, extension_parameter.passphrase, mapper_name, luks_header_path)
-                    #disk_util.copy("/dev/" + mount_item.name, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
                 else:
                     encryption.encrypt_disk("/dev/" + mount_item.name, extension_parameter.passphrase, mapper_name, luks_header_path)
                     disk_util.copy("/dev/" + mount_item.name, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
 
-        elif(extension_parameter.command=="enableencryption"):
+        elif(extension_parameter.command == "enableencryption"):
             backup_logger.log("executing the enableencryption_all_inplace command.")
             # scsi_host,channel,target_number,LUN
             # find the scsi using the filter
@@ -169,14 +171,14 @@ def daemon():
                 backup_logger.log("checking the encryptoin_keypair parameter")
                 current_mapping = extension_parameter.query[i]
                 backup_logger.log("scsi_number to query is " + str(current_mapping["source_scsi_number"]))
-                exist_disk_path = dev_manager.query_dev_sdx_path(current_mapping["source_scsi_number"])#dev_manager.query_dev_uuid_path(current_mapping["source_scsi_number"])
+                exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])#disk_util.query_dev_uuid_path(current_mapping["source_scsi_number"])
 
                 backup_logger.log("exist_disk_path is " + str(exist_disk_path))
                 if(exist_disk_path == None):
                     raise Exception("the scsi number is not found")
 
                 backup_logger.log("scsi_number to query is " + str(current_mapping["target_scsi_number"]))
-                encryption_dev_root_path = dev_manager.query_dev_sdx_path(current_mapping["target_scsi_number"])#dev_manager.query_dev_uuid_path(current_mapping["target_scsi_number"])
+                encryption_dev_root_path = disk_util.query_dev_sdx_path(current_mapping["target_scsi_number"])#disk_util.query_dev_uuid_path(current_mapping["target_scsi_number"])
 
                 # scsi_host,channel,target_number,LUN
                 # find the scsi using the filter
@@ -213,10 +215,10 @@ def daemon():
                         backup_logger.log("encrypt disk result: " + str(encryption_result))
             # TODO:change the fstab to do the mounting
 
-            # mounter.replace_mounts_in_fs_tab(encryption_item.origin_disk_partitions,
+            # disk_util.replace_mounts_in_fs_tab(encryption_item.origin_disk_partitions,
             # encryption_item.target_disk_partitions)
-            mounter.update_mount_info(encryption_items)
-            mounter.mount_all()
+            disk_util.update_mount_info(encryption_items)
+            disk_util.mount_all()
         else:
             hutil.do_exit(1, 'Enable','error','1', 'Enable failed. wrong parameter command')
     except Exception, e:

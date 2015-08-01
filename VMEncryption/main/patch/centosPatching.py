@@ -36,7 +36,7 @@ class centosPatching(redhatPatching):
     def __init__(self):
         super(centosPatching,self).__init__()
     def install_extras(self,paras):        
-        common_extras = ['cryptsetup','lsscsi','gdisk']
+        common_extras = ['cryptsetup','lsscsi','gdisk','udevadm']
         for extra in common_extras:
             print("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
 
