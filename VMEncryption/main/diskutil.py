@@ -184,6 +184,15 @@ class DiskUtil(object):
                 mounts.append(blk_item)
         return mounts
 
+    def append_mount_info(self,dev_path,mount_point):
+        shutil.copy2('/etc/fstab', '/etc/fstab.backup.' + str(str(uuid.uuid4())))
+        mount_content_item = dev_path + " " + mount_point + "  auto defaults 0 0"
+        new_mount_content = ""
+        with open("/etc/fstab",'r') as f:
+            existing_content = f.read()
+            new_mount_content = existing_content + "\n" + mount_content_item
+        with open("/etc/fstab",'w') as wf:
+            wf.write(new_mount_content)
     """
     replace the mounts entry from the orign disk partition to the target_disk_partition
     """
@@ -193,7 +202,7 @@ class DiskUtil(object):
         # [Device] [Mount Point] [File System Type] [Options] [Dump] [Pass]
         # backup the /etc/fstab file
         # TODO Handle exception
-        shutil.copy2('/etc/fstab', '/etc/fstab.backup' + str(str(uuid.uuid4())))
+        shutil.copy2('/etc/fstab', '/etc/fstab.backup.' + str(str(uuid.uuid4())))
         new_mount_content = ""
         with open("/etc/fstab",'r') as f:
             mount_lines = f.read().splitlines()
