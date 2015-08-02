@@ -134,18 +134,18 @@ class DiskUtil(object):
             return returnCode
         return None
 
-    def format_disk(self, dev_path):
+    def format_disk(self, dev_path, filesystem):
         error = EncryptionError()
         mkfs_command = ""
-        if(encryption_parameters.filesystem == "ext4"):
+        if(filesystem == "ext4"):
             mkfs_command = "mkfs.ext4"
-        elif(encryption_parameters.filesystem == "ext3"):
+        elif(filesystem == "ext3"):
             mkfs_command = "mkfs.ext3"
-        elif(encryption_parameters.filesystem == "xfs"):
+        elif(filesystem == "xfs"):
             mkfs_command = "mkfs.xfs"
-        elif(encryption_parameters.filesystem == "btrfs"):
+        elif(filesystem == "btrfs"):
             mkfs_command = "mkfs.btrfs"
-        #' <<< ' + encryption_parameters.mount_name +
+        #' <<< ' + mount_name +
         commandToExecute = '/bin/bash -c "' + mkfs_command + ' ' + dev_path + ' 2> /dev/null"'
         self.hutil.log("command to execute :" + commandToExecute)
         proc = Popen(commandToExecute, shell=True)

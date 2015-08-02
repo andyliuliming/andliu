@@ -129,6 +129,12 @@ def daemon():
                 mapper_name = str(uuid.uuid4())
                 exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])
                 encryption.encrypt_disk(exist_disk_path, extension_parameter.passphrase, mapper_name, luks_header_path)
+                disk_util.format_disk("/dev/mapper"+mapper_name,current_mapping["filesystem"])
+
+                #disk_util.update_mount_info(encryption_items)
+                #disk_util.mount_all()
+                #mount the file system
+
 
         elif(extension_parameter.command == "enableencryption_all_inplace"):
             backup_logger.log("executing the enableencryption_all_inplace command.")
