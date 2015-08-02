@@ -112,11 +112,11 @@ def daemon():
         luks_header_path = encryption.create_luks_header()
         ########### the existing scenario starts ###################
         # we do not support the backup version policy
+        # {"command":"enableencryption_format","query":[{"source_scsi_number":"[5:0:0:0]","filesystem":"ext4","mount_point":"/mnt/"}],
+        # {"command":"enableencryption_all_inplace"}],
         # {"command":"enableencryption","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
         # {"command":"enableencryption_inplace","query":[{"source_scsi_number":"[5:0:0:0]","in-place":"true"}"}],
-        # {"command":"enableencryption_format","query":[{"source_scsi_number":"[5:0:0:0]","filesystem":"ext4","mount_point":"/mnt/"}],
         # this is the encryption in place
-        # {"command":"enableencryption_all_inplace"}],
         # "force":"true", "passphrase":"User@123"}
 
         if(extension_parameter.command == "enableencryption_format"):
@@ -129,6 +129,7 @@ def daemon():
                 mapper_name = str(uuid.uuid4())
                 exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])
                 encryption.encrypt_disk(exist_disk_path, extension_parameter.passphrase, mapper_name, luks_header_path)
+
         elif(extension_parameter.command == "enableencryption_all_inplace"):
             backup_logger.log("executing the enableencryption_all_inplace command.")
             mounts = disk_util.get_mounts()
