@@ -112,11 +112,11 @@ def daemon():
         luks_header_path = encryption.create_luks_header()
         ########### the existing scenario starts ###################
         # we do not support the backup version policy
-        # {"command":"enableencryption","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
-        # {"command":"enableencryption_inplace","query":[{"source_scsi_number":"[5:0:0:0]","in-place":"true"}"}],
         # {"command":"enableencryption_format","query":[{"source_scsi_number":"[5:0:0:0]","filesystem":"ext4","mount_point":"/mnt/"}],
-        # this is the encryption in place
         # {"command":"enableencryption_all_inplace"}],
+        # {"command":"enableencryption_copy","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
+        # {"command":"enableencryption_inplace","query":[{"source_scsi_number":"[5:0:0:0]","in-place":"true"}"}],
+        # this is the encryption in place
         # "force":"true", "passphrase":"User@123"}
 
         if(extension_parameter.command == "enableencryption_format"):
@@ -129,19 +129,20 @@ def daemon():
                 mapper_name = str(uuid.uuid4())
                 exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])
                 encryption.encrypt_disk(exist_disk_path, extension_parameter.passphrase, mapper_name, luks_header_path)
+                disk_util.format_disk("/dev/mapper"+mapper_name,current_mapping["filesystem"])
+                disk_util.append_mount_info("/dev/mapper" + mapper_name, current_mapping["mount_point"] + mapper_name)
+
         elif(extension_parameter.command == "enableencryption_all_inplace"):
             backup_logger.log("executing the enableencryption_all_inplace command.")
-            mounts = disk_util.get_mounts()
-            
+            mounts = disk_util.get_mounts()            
             azure_blk_items = disk_util.get_azure_devices()
-
             for i in range(0,len(mounts)):
                 mount_item = mounts[i]
                 mapper_name = str(uuid.uuid4())
                 # how to create raid?
                 # sudo mdadm --create /dev/md128 --level 0 --raid-devices 2
                 # /dev/sde /dev/sdf
-                # double check it, because we will have data loss if we do it
+                # TODO: double check it, because we will have data loss if we do it
                 # twice it's not a crypt device
                 backup_logger.log("mount_item == " + str(mount_item))
                 #TODO skip the resource disk
