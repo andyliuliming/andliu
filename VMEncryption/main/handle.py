@@ -106,7 +106,7 @@ def daemon():
 
         #dev_manager = DevManager(hutil)
         #disk_util = Mounter(backup_logger,hutil)
-        disk_util = DiskUtil(hutil, MyPatching,backup_logger)
+        disk_util = DiskUtil(hutil, MyPatching, backup_logger)
         encryption = Encryption(hutil)
 
         luks_header_path = encryption.create_luks_header()
@@ -129,37 +129,44 @@ def daemon():
                 mapper_name = str(uuid.uuid4())
                 exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])
                 encryption.encrypt_disk(exist_disk_path, extension_parameter.passphrase, mapper_name, luks_header_path)
-                disk_util.format_disk("/dev/mapper"+mapper_name,current_mapping["filesystem"])
+                disk_util.format_disk("/dev/mapper" + mapper_name,current_mapping["filesystem"])
                 disk_util.append_mount_info("/dev/mapper" + mapper_name, current_mapping["mount_point"] + mapper_name)
 
         elif(extension_parameter.command == "enableencryption_all_inplace"):
             backup_logger.log("executing the enableencryption_all_inplace command.")
-            mounts = disk_util.get_mounts()            
+            devices = disk_util.get_lsblk(None)
+
             azure_blk_items = disk_util.get_azure_devices()
-            for i in range(0,len(mounts)):
-                mount_item = mounts[i]
-                mapper_name = str(uuid.uuid4())
-                # how to create raid?
-                # sudo mdadm --create /dev/md128 --level 0 --raid-devices 2
-                # /dev/sde /dev/sdf
-                # TODO: double check it, because we will have data loss if we do it
-                # twice it's not a crypt device
-                backup_logger.log("mount_item == " + str(mount_item))
-                #TODO skip the resource disk
-                should_skip = False
-                for j in range(0,len(azure_blk_items)):
-                    if(azure_blk_items[j].name == mount_item.name):
-                        backup_logger.log("the mountpoint is the azure disk root or resource, so skip it.")
-                        should_skip = True
-                if(mount_item.mountpoint == "/"):
-                    backup_logger.log("the mountpoint is root, so skip." + str(mount_item))
-                    should_skip = True
-                if(should_skip):
-                    pass
+
+            for i in range(0,len(devices)):
+                device_item = devices[i]
+                backup_logger.log("device_item == " + str(device_item))
+                if(device_item.fstype==None or device_item.fstype==""):
+                    backup_logger.log("device_item have no file system, so skip it")
+                    continue
                 else:
-                    backup_logger.log("encrypting " + str(mount_item))
-                    encryption.encrypt_disk("/dev/" + mount_item.name, extension_parameter.passphrase, mapper_name, luks_header_path)
-                    disk_util.copy("/dev/" + mount_item.name, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
+                    # check whether this is already a crypt one
+                    if(device_item.type=="crypt"):
+                        backup_logger.log("device_item already a crypted disk, so skip it")
+                        continue
+                    # twice it's not a crypt device
+                    #TODO skip the resource disk
+                    should_skip = False
+                    for j in range(0,len(azure_blk_items)):
+                        if(azure_blk_items[j].name == device_item.name):
+                            backup_logger.log("the mountpoint is the azure disk root or resource, so skip it.")
+                            should_skip = True
+                    if(device_item.mountpoint == "/"):
+                        backup_logger.log("the mountpoint is root, so skip." + str(device_item))
+                        should_skip = True
+                    if(should_skip):
+                        pass
+                    else:
+                        mapper_name = str(uuid.uuid4())
+                        backup_logger.log("encrypting " + str(device_item))
+                        #encryption.encrypt_disk("/dev/" + device_item.name, extension_parameter.passphrase, mapper_name, luks_header_path)
+                        backup_logger.log("copying data " + str(device_item))
+                        #disk_util.copy("/dev/" + device_item.name, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
 
         elif(extension_parameter.command == "enableencryption"):
             backup_logger.log("executing the enableencryption_all_inplace command.")

@@ -79,7 +79,7 @@ class Encryption(object):
         if(os.path.exists(luks_header_path)):
             return luks_header_path
         else:
-            # 8M
+            # dd if=/dev/zero bs=8388608 count=1 > /luks_header_path
             commandToExecute = '/bin/bash -c "' + 'dd if=/dev/zero bs=8388608 count=1 > ' + luks_header_path + '"'
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()

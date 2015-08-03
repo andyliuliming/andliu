@@ -19,6 +19,7 @@
 # Requires Python 2.7+
 #
 import subprocess
+import os
 import sys
 from subprocess import *
 import shutil
@@ -114,7 +115,7 @@ class DiskUtil(object):
         disk_partitions = []
         blk_items = self.get_lsblk(devpath)
         for i in range(0,len(blk_items)):
-            if(blk_items[i].type=="part"):
+            if(blk_items[i].type == "part"):
                 disk_partitions.append(blk_items[i])
         return disk_partitions
 
@@ -161,31 +162,37 @@ class DiskUtil(object):
         #/dev/disk/azure/root
         #/dev/disk/azure/resource
         ide0_device = self.DeviceForIdePort(0)
+        self.logger.log("ide 0 device is " + str(ide0_device))
+        if(ide0_device == None):
+            return None
         ide1_device = self.DeviceForIdePort(1)
+        self.logger.log("ide 1 device is " + str(ide1_device))
+        if(ide1_device == None):
+            return None
 
         blk_items = []
-        root_blk_items = self.get_lsblk(ide0_device)#"/dev/disk/azure/root")
+        root_blk_items = self.get_lsblk("/dev/" + ide0_device)#"/dev/disk/azure/root")
         for i in range(0,len(root_blk_items)):
             blk_items.append(root_blk_items[i])
 
-        resource_blk_items = self.get_lsblk(ide1_device)#"/dev/disk/azure/resource")
+        resource_blk_items = self.get_lsblk("/dev/" + ide1_device)#"/dev/disk/azure/resource")
         for i in range(0,len(resource_blk_items)):
             blk_items.append(resource_blk_items[i])
         return blk_items
 
-    def get_mounts(self):
-        mounts = []
-        blk_items = self.get_lsblk(None)
-        for i in range(0,len(blk_items)):
-            blk_item = blk_items[i]
-            inserted = False
-            print("mounts"+str(len(mounts)))
-            for j in range(0,len(mounts)):
-                if(blk_item.mountpoint == mounts[j].mountpoint):
-                    inserted = True
-            if(not inserted):
-                mounts.append(blk_item)
-        return mounts
+    #def get_devices(self):
+    #    mounts = []
+    #    blk_items = self.get_lsblk(None)
+    #    for i in range(0,len(blk_items)):
+    #        blk_item = blk_items[i]
+    #        inserted = False
+    #        print("mounts" + str(len(mounts)))
+    #        for j in range(0,len(mounts)):
+    #            if(blk_item.mountpoint == mounts[j].mountpoint):
+    #                inserted = True
+    #        if(not inserted):
+    #            mounts.append(blk_item)
+    #    return mounts
 
     def append_mount_info(self,dev_path,mount_point):
         shutil.copy2('/etc/fstab', '/etc/fstab.backup.' + str(str(uuid.uuid4())))
@@ -331,7 +338,7 @@ class DiskUtil(object):
                 blk_items.append(blk_item)
         return blk_items
 
-    def DeviceForIdePort(n):
+    def DeviceForIdePort(self,n):
         """
         Return device name attached to ide port 'n'.
         """
@@ -347,17 +354,16 @@ class DiskUtil(object):
             """
             Read and return contents of 'filepath'.
             """
-            mode='r'
-            c=None
+            mode = 'r'
+            c = None
             filepath = path + vmbus + "/device_id"
             try:
                 with open(filepath) as F :
-                    c=F.read()
+                    c = F.read()
             except IOError, e:
-                ErrorWithPrefix('GetFileContents','Reading from file ' + filepath + ' Exception is ' + str(e))
+                self.logger.log('reading from file ' + filepath + ' exception is ' + str(e))
                 return None
-            return c
-            guid = GetFileContents(c).lstrip('{').split('-')
+            guid = (c).lstrip('{').split('-')
             if guid[0] == g0 and guid[1] == "000" + str(n):
                 for root, dirs, files in os.walk(path + vmbus):
                     if root.endswith("/block"):
