@@ -39,7 +39,7 @@ class LsblkItem(object):
         self.uuid = None
         self.model = None
     def __str__(self):
-        return "name:" + str(self.name) + "type:" + str(self.type) + "fstype:" + str(self.fstype) + "mountpoint:" + str(self.mountpoint) + "label" + str(self.label) + "model:" + str(self.model)
+        return "name:" + str(self.name) + " type:" + str(self.type) + " fstype:" + str(self.fstype) + " mountpoint:" + str(self.mountpoint) + " label" + str(self.label) + " model:" + str(self.model)
 
 class DiskPartition(object):
     def __init__(self):
@@ -246,6 +246,9 @@ class DiskUtil(object):
                     new_mount_content = new_mount_content + "\n" + line_stripped
         with open("/etc/fstab",'w') as wf:
             wf.write(new_mount_content)
+
+    def umount(self,path):
+        self.logger.log("umount "+str(path))
 
     def mount_all(self):
         error = EncryptionError()

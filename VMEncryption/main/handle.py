@@ -141,12 +141,12 @@ def daemon():
             for i in range(0,len(devices)):
                 device_item = devices[i]
                 backup_logger.log("device_item == " + str(device_item))
-                if(device_item.fstype==None or device_item.fstype==""):
+                if(device_item.fstype == None or device_item.fstype == ""):
                     backup_logger.log("device_item have no file system, so skip it")
                     continue
                 else:
                     # check whether this is already a crypt one
-                    if(device_item.type=="crypt"):
+                    if(device_item.type == "crypt"):
                         backup_logger.log("device_item already a crypted disk, so skip it")
                         continue
                     # twice it's not a crypt device
@@ -162,11 +162,14 @@ def daemon():
                     if(should_skip):
                         pass
                     else:
+                        if(device_item.mountpoint !=""):
+                            disk_util.umount(device_item.mountpoint)
                         mapper_name = str(uuid.uuid4())
                         backup_logger.log("encrypting " + str(device_item))
-                        #encryption.encrypt_disk("/dev/" + device_item.name, extension_parameter.passphrase, mapper_name, luks_header_path)
+                        encryption.encrypt_disk("/dev/" + device_item.name,extension_parameter.passphrase, mapper_name,luks_header_path)
                         backup_logger.log("copying data " + str(device_item))
-                        #disk_util.copy("/dev/" + device_item.name, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
+                        disk_util.copy("/dev/" + device_item.name,os.path.join(CommonVariables.dev_mapper_root,mapper_name))
+                        #TODO remount it.
 
         elif(extension_parameter.command == "enableencryption"):
             backup_logger.log("executing the enableencryption_all_inplace command.")
