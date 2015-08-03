@@ -160,12 +160,15 @@ class DiskUtil(object):
     def get_azure_devices(self):
         #/dev/disk/azure/root
         #/dev/disk/azure/resource
+        ide0_device = self.DeviceForIdePort(0)
+        ide1_device = self.DeviceForIdePort(1)
+
         blk_items = []
-        root_blk_items = self.get_lsblk("/dev/disk/azure/root")
+        root_blk_items = self.get_lsblk(ide0_device)#"/dev/disk/azure/root")
         for i in range(0,len(root_blk_items)):
             blk_items.append(root_blk_items[i])
 
-        resource_blk_items = self.get_lsblk("/dev/disk/azure/resource")
+        resource_blk_items = self.get_lsblk(ide1_device)#"/dev/disk/azure/resource")
         for i in range(0,len(resource_blk_items)):
             blk_items.append(resource_blk_items[i])
         return blk_items
@@ -318,3 +321,43 @@ class DiskUtil(object):
 
                 blk_items.append(blk_item)
         return blk_items
+
+    def DeviceForIdePort(n):
+        """
+        Return device name attached to ide port 'n'.
+        """
+        if n > 3:
+            return None
+        g0 = "00000000"
+        if n > 1:
+            g0 = "00000001"
+            n = n - 2
+        device = None
+        path = "/sys/bus/vmbus/devices/"
+        for vmbus in os.listdir(path):
+            """
+            Read and return contents of 'filepath'.
+            """
+            mode='r'
+            c=None
+            filepath = path + vmbus + "/device_id"
+            try:
+                with open(filepath) as F :
+                    c=F.read()
+            except IOError, e:
+                ErrorWithPrefix('GetFileContents','Reading from file ' + filepath + ' Exception is ' + str(e))
+                return None
+            return c
+            guid = GetFileContents(c).lstrip('{').split('-')
+            if guid[0] == g0 and guid[1] == "000" + str(n):
+                for root, dirs, files in os.walk(path + vmbus):
+                    if root.endswith("/block"):
+                        device = dirs[0]
+                        break
+                    else : #older distros
+                        for d in dirs:
+                            if ':' in d and "block" == d.split(':')[0]:
+                                device = d.split(':')[1]
+                                break
+                break
+        return device
