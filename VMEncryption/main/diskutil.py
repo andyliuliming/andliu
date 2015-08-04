@@ -20,6 +20,7 @@
 #
 import subprocess
 import os
+import os.path
 import sys
 from subprocess import *
 import shutil
@@ -40,6 +41,9 @@ class LsblkItem(object):
         self.model = None
     def __str__(self):
         return "name:" + str(self.name) + " type:" + str(self.type) + " fstype:" + str(self.fstype) + " mountpoint:" + str(self.mountpoint) + " label" + str(self.label) + " model:" + str(self.model)
+class CryptItem(object):
+    def __init__(self):
+        pass
 
 class DiskPartition(object):
     def __init__(self):
@@ -93,14 +97,8 @@ class DiskUtil(object):
         else:
             return self.copy_using_dd(from_device,to_device)
 
-    def get_disk_partition_table_type(self,devpath):
-        # parted /dev/sdc print
-        # and find for Partition Table: msdos
-        # TODO: implement this
-        # fdisk -l $1 |grep "Disklabel type:" |awk '{ print $3 }'
-        # parted -l
-        # udevadm info -q property -n /dev/md1
-        p = subprocess.Popen(['udevadm', 'info', '-q', 'property', '-n',devpath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    def get_disk_partition_table_type(self, dev_path):
+        p = subprocess.Popen(['udevadm', 'info', '-q', 'property', '-n',dev_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         udevadm_output, err = p.communicate()
         udevadm_output = str(udevadm_output)
         property_info_lines = udevadm_output.splitlines()
@@ -110,10 +108,10 @@ class DiskUtil(object):
                 return property_info_lines[i].split("=")[1]
         return None
 
-    def get_disk_partitions(self, devpath):
+    def get_disk_partitions(self, dev_path):
         #TODO check the dev path parameter
         disk_partitions = []
-        blk_items = self.get_lsblk(devpath)
+        blk_items = self.get_lsblk(dev_path)
         for i in range(0,len(blk_items)):
             if(blk_items[i].type == "part"):
                 disk_partitions.append(blk_items[i])
@@ -247,8 +245,32 @@ class DiskUtil(object):
         with open("/etc/fstab",'w') as wf:
             wf.write(new_mount_content)
 
+    def update_crypt_item(self,mapper_name,dev_path, options,luks_header_path):
+        #externaldrive UUID=2f9a8428-ac69-478a-88a2-4aa458565431 none
+        #luks,timeout=180
+        #shutil.copy2('/etc/crypttab', '/etc/crypttab.backup.' +
+        #str(str(uuid.uuid4())))
+        azure_crypt_mount = '/etc/azure_crypt_mount'
+        if not os.path.exists(azure_crypt_mount):
+            with open(azure_crypt_mount,'w') as wf:
+                wf.write("")
+
+        mount_content_item = mapper_name + " " + dev_path + " " + options + " " + luks_header_path
+        with open("/etc/fstab",'r') as f:
+            existing_content = f.read()
+            new_mount_content = existing_content + "\n" + mount_content_item
+        with open("/etc/fstab",'w') as wf:
+            existing_content+="\n" + mount_content_item
+            wf.write(new_mount_content)
+
+        # <target name> <source device> <key file> <options>
+
+    def get_crypt_item(self):
+
+        pass
+
     def umount(self,path):
-        self.logger.log("umount "+str(path))
+        self.logger.log("umount " + str(path))
 
     def mount_all(self):
         error = EncryptionError()
@@ -297,6 +319,55 @@ class DiskUtil(object):
         sdx_path = self.query_dev_sdx_path(scsi_number)
         return query_dev_uuid_by_sdx_path(sdx_path)
     
+    def get_blkid(self,dev_path):
+        #self.logger.log("getting the blk info from " + str(dev_path))
+        #blk_items = []
+        #if(dev_path is None):
+        #    p = subprocess.Popen(['lsblk', '-b',
+        #    '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL'],
+        #    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #else:
+        #    p = subprocess.Popen(['lsblk', '-b',
+        #    '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL',dev_path],
+        #    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #out_lsblk_output, err = p.communicate()
+        #out_lsblk_output = str(out_lsblk_output)
+        #self.logger.log("out_lsblk_output:\n" + str(out_lsblk_output))
+        #lines = out_lsblk_output.splitlines()
+        #for i in range(0,len(lines)):
+        #    item_value_str = lines[i].strip()
+        #    if(item_value_str != ""):
+        #        disk_info_item_array = item_value_str.split()
+        #        blk_item = LsblkItem()
+        #        disk_info_item_array_length = len(disk_info_item_array)
+        #        for j in range(0, disk_info_item_array_length):
+        #            disk_info_property = disk_info_item_array[j]
+        #            property_item_pair = disk_info_property.split('=')
+        #            if(property_item_pair[0] == 'NAME'):
+        #                blk_item.name = property_item_pair[1].strip('"')
+
+        #            if(property_item_pair[0] == 'TYPE'):
+        #                blk_item.type = property_item_pair[1].strip('"')
+
+        #            if(property_item_pair[0] == 'FSTYPE'):
+        #                blk_item.fstype = property_item_pair[1].strip('"')
+                        
+        #            if(property_item_pair[0] == 'MOUNTPOINT'):
+        #                blk_item.mountpoint = property_item_pair[1].strip('"')
+
+        #            if(property_item_pair[0] == 'LABEL'):
+        #                blk_item.label = property_item_pair[1].strip('"')
+
+        #            if(property_item_pair[0] == 'UUID'):
+        #                blk_item.uuid = property_item_pair[1].strip('"')
+
+        #            if(property_item_pair[0] == 'MODEL'):
+        #                blk_item.model = property_item_pair[1].strip('"')
+
+        #        blk_items.append(blk_item)
+        #return blk_items
+        pass
+
     def get_lsblk(self, dev_path):
         self.logger.log("getting the blk info from " + str(dev_path))
         blk_items = []

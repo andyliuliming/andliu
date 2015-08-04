@@ -84,6 +84,7 @@ def daemon():
     try:
         # Ensure the same configuration is executed only once
         # If the previous enable failed, we do not have retry logic here.
+        # TODO Remount all
         hutil.exit_if_enabled()
 
         """
@@ -114,7 +115,7 @@ def daemon():
         # we do not support the backup version policy
         # {"command":"enableencryption_format","query":[{"source_scsi_number":"[5:0:0:0]","filesystem":"ext4","mount_point":"/mnt/"}],
         # {"command":"enableencryption_all_inplace"}],
-        # {"command":"enableencryption_copy","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
+        # {"command":"enableencryption_clone","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
         # {"command":"enableencryption_inplace","query":[{"source_scsi_number":"[5:0:0:0]","in-place":"true"}"}],
         # this is the encryption in place
         # "force":"true", "passphrase":"User@123"}
@@ -128,9 +129,13 @@ def daemon():
             for i in range(0, encryption_keypair_len):
                 mapper_name = str(uuid.uuid4())
                 exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])
+
                 encryption.encrypt_disk(exist_disk_path, extension_parameter.passphrase, mapper_name, luks_header_path)
-                disk_util.format_disk("/dev/mapper" + mapper_name,current_mapping["filesystem"])
-                disk_util.append_mount_info("/dev/mapper" + mapper_name, current_mapping["mount_point"] + mapper_name)
+                disk_util.format_disk("/dev/mapper/" + mapper_name, current_mapping["filesystem"])
+                disk_util.append_mount_info("/dev/mapper/" + mapper_name, current_mapping["mount_point"] + mapper_name)
+
+                #externaldrive         UUID=2f9a8428-ac69-478a-88a2-4aa458565431        none    luks,timeout=180
+                disk_util.update_crypt_item(mapper_name, exist_disk_path ,"none luks", luks_header_path)
 
         elif(extension_parameter.command == "enableencryption_all_inplace"):
             backup_logger.log("executing the enableencryption_all_inplace command.")
@@ -171,7 +176,7 @@ def daemon():
                         disk_util.copy("/dev/" + device_item.name,os.path.join(CommonVariables.dev_mapper_root,mapper_name))
                         #TODO remount it.
 
-        elif(extension_parameter.command == "enableencryption"):
+        elif(extension_parameter.command == "enableencryption_clone"):
             backup_logger.log("executing the enableencryption_all_inplace command.")
             # scsi_host,channel,target_number,LUN
             # find the scsi using the filter
