@@ -42,6 +42,8 @@ from encryption import *
 from rebootmanager import RebootManager
 from diskutil import DiskUtil
 from diskutil import DiskPartition
+from diskutil import CryptItem
+from diskutil import LsblkItem
 from backuplogger import Backuplogger
 #Main function is the only entrence to this extension handler
 def main():
@@ -85,6 +87,14 @@ def daemon():
         # Ensure the same configuration is executed only once
         # If the previous enable failed, we do not have retry logic here.
         # TODO Remount all
+
+        disk_util = DiskUtil(hutil, MyPatching, backup_logger)
+        encryption = Encryption(hutil)
+        crypt_mount_items = get_crypt_items()
+        for i in range(0,len(crypt_mount_items)):
+            crypt_mount_item = crypt_mount_items[i]
+            disk_util.mount_crypt_item(crypt_mount_item)
+
         hutil.exit_if_enabled()
 
         """
@@ -107,8 +117,6 @@ def daemon():
 
         #dev_manager = DevManager(hutil)
         #disk_util = Mounter(backup_logger,hutil)
-        disk_util = DiskUtil(hutil, MyPatching, backup_logger)
-        encryption = Encryption(hutil)
 
         luks_header_path = encryption.create_luks_header()
         ########### the existing scenario starts ###################
@@ -135,7 +143,12 @@ def daemon():
                 disk_util.append_mount_info("/dev/mapper/" + mapper_name, current_mapping["mount_point"] + mapper_name)
 
                 #externaldrive         UUID=2f9a8428-ac69-478a-88a2-4aa458565431        none    luks,timeout=180
-                disk_util.update_crypt_item(mapper_name, exist_disk_path ,"none luks", luks_header_path)
+                crypt_item = CryptItem()
+                crypt_item.name=mapper_name
+                crypt_item.dev_path=exist_disk_path
+                #crypt_item.options="luks"
+                crypt_item.luks_header_path=luks_header_path
+                disk_util.update_crypt_item(crypt_item)#mapper_name, exist_disk_path ,"luks", luks_header_path)
 
         elif(extension_parameter.command == "enableencryption_all_inplace"):
             backup_logger.log("executing the enableencryption_all_inplace command.")
@@ -151,8 +164,8 @@ def daemon():
                     continue
                 else:
                     # check whether this is already a crypt one
-                    if(device_item.type == "crypt"):
-                        backup_logger.log("device_item already a crypted disk, so skip it")
+                    if(device_item.type == "crypt" or device_item.type == "disk"):
+                        backup_logger.log("device_item.type is " + str(device_item.type) + " so skip it")
                         continue
                     # twice it's not a crypt device
                     #TODO skip the resource disk

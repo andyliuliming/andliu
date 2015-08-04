@@ -41,9 +41,13 @@ class LsblkItem(object):
         self.model = None
     def __str__(self):
         return "name:" + str(self.name) + " type:" + str(self.type) + " fstype:" + str(self.fstype) + " mountpoint:" + str(self.mountpoint) + " label" + str(self.label) + " model:" + str(self.model)
+
 class CryptItem(object):
     def __init__(self):
-        pass
+        self.name = None
+        self.dev_path = None
+        self.options = None
+        self.luks_header_path = None
 
 class DiskPartition(object):
     def __init__(self):
@@ -245,7 +249,29 @@ class DiskUtil(object):
         with open("/etc/fstab",'w') as wf:
             wf.write(new_mount_content)
 
-    def update_crypt_item(self,mapper_name,dev_path, options,luks_header_path):
+    def get_crypt_items(self):
+        crypt_items=[]
+        azure_crypt_mount = '/etc/azure_crypt_mount'
+        if not os.path.exists(azure_crypt_mount):
+            self.logger.log(azure_crypt_mount + " not exists")
+            return None
+        else:
+            with open("/etc/fstab",'r') as f:
+                existing_content = f.read()
+                crypt_mount_items = existing_content.splitlines()
+                for i in range(0,crypt_mount_items):
+                    crypt_mount_item = crypt_mount_items[i]
+                    if(crypt_mount_item.strip() != ""):
+                        crypt_mount_item_properties = crypt_mount_item.strip().split()
+                        crypt_item = CryptItem()
+                        crypt_item.name=crypt_mount_item_properties[0]
+                        crypt_item.dev_path=crypt_mount_item_properties[0]
+                        crypt_item.options=crypt_mount_item_properties[0]
+                        crypt_item.luks_header_path=crypt_mount_item_properties[0]
+                        crypt_items.append(crypt_item)
+        return crypt_items
+
+    def update_crypt_item(self,crypt_item):
         #externaldrive UUID=2f9a8428-ac69-478a-88a2-4aa458565431 none
         #luks,timeout=180
         #shutil.copy2('/etc/crypttab', '/etc/crypttab.backup.' +
@@ -255,7 +281,7 @@ class DiskUtil(object):
             with open(azure_crypt_mount,'w') as wf:
                 wf.write("")
 
-        mount_content_item = mapper_name + " " + dev_path + " " + options + " " + luks_header_path
+        mount_content_item = crypt_item.name + " " + crypt_item.dev_path + " " + crypt_item.options + " " + crypt_item.luks_header_path
         with open("/etc/fstab",'r') as f:
             existing_content = f.read()
             new_mount_content = existing_content + "\n" + mount_content_item
@@ -264,9 +290,7 @@ class DiskUtil(object):
             wf.write(new_mount_content)
 
         # <target name> <source device> <key file> <options>
-
-    def get_crypt_item(self):
-
+    def mount_crypt_item(self,mount_item):
         pass
 
     def umount(self,path):
