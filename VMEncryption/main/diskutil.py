@@ -69,27 +69,27 @@ class DiskUtil(object):
     def copy_using_cp(self,from_device,to_device):
         error = EncryptionError()
         commandToExecute = '/bin/bash -c "' + 'sg_dd oflag=sparse if=' + from_device + ' of=' + to_device
-        self.logger("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
+        self.logger.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
         if(returnCode != 0):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_open_error
             error.info = "from_device is " + str(from_device) + " to_device is " + str(to_device)
-            self.logger(str(commandToExecute) + ' is ' + str(returnCode))
+            self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
         return error
 
     def copy_using_dd(self,from_device,to_device):
         error = EncryptionError()
         commandToExecute = '/bin/bash -c "' + 'dd conv=sparse if=' + from_device + ' of=' + to_device + ' bs=512"'
-        self.logger("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
+        self.logger.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
         if(returnCode != 0):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_open_error
             error.info = "from_device is " + str(from_device) + " to_device is " + str(to_device)
-            self.logger(str(commandToExecute) + ' is ' + str(returnCode))
+            self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
         return error
 
     def copy(self,from_device,to_device):
@@ -150,14 +150,14 @@ class DiskUtil(object):
         elif(filesystem == "btrfs"):
             mkfs_command = "mkfs.btrfs"
         commandToExecute = '/bin/bash -c "' + mkfs_command + ' ' + dev_path + ' 2> /dev/null"'
-        self.logger("command to execute :" + commandToExecute)
+        self.logger.log("command to execute :" + commandToExecute)
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
         if(returnCode != 0):
             error.errorcode = returnCode
             error.code = CommonVariables.mkfs_error
             error.info = "command to execute is " + commandToExecute
-            self.logger('mkfs_command returnCode is ' + str(returnCode))
+            self.logger.log('mkfs_command returnCode is ' + str(returnCode))
         return error
 
     def get_azure_devices(self):
@@ -197,7 +197,15 @@ class DiskUtil(object):
     """
     def mount_filesystem(self,dev_path,mount_point):
         commandToExecute = '/bin/bash -c "mount ' + dev_path + ' ' + mount_point + '"'
-        self.logger("mount file system, execute :" + commandToExecute)
+        self.logger.log("mount file system, execute :" + commandToExecute)
+        proc = Popen(commandToExecute, shell=True)
+        returnCode = proc.wait()
+        return returnCode
+
+    def make_sure_disk_exists(self,path):
+        #mkdir -p foo/bar/baz
+        commandToExecute = '/bin/bash -c "mkdir -p ' + path + '"'
+        self.logger.log("make sure path exists, execute :" + commandToExecute)
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
         return returnCode
@@ -256,38 +264,33 @@ class DiskUtil(object):
             with open("/etc/fstab",'r') as f:
                 existing_content = f.read()
                 crypt_mount_items = existing_content.splitlines()
-                for i in range(0,crypt_mount_items):
+                for i in range(0,len(crypt_mount_items)):
                     crypt_mount_item = crypt_mount_items[i]
                     if(crypt_mount_item.strip() != ""):
                         crypt_mount_item_properties = crypt_mount_item.strip().split()
                         crypt_item = CryptItem()
                         crypt_item.name = crypt_mount_item_properties[0]
-                        crypt_item.dev_path = crypt_mount_item_properties[0]
-                        crypt_item.options = crypt_mount_item_properties[0]
-                        crypt_item.luks_header_path = crypt_mount_item_properties[0]
+                        crypt_item.dev_path = crypt_mount_item_properties[1]
+                        crypt_item.luks_header_path = crypt_mount_item_properties[2]
+                        crypt_item.mount_point=crypt_mount_item_properties[3]
                         crypt_items.append(crypt_item)
         return crypt_items
 
     def update_crypt_item(self,crypt_item):
-        #externaldrive UUID=2f9a8428-ac69-478a-88a2-4aa458565431 none
-        #luks,timeout=180
-        #shutil.copy2('/etc/crypttab', '/etc/crypttab.backup.' +
-        #str(str(uuid.uuid4())))
         azure_crypt_mount = '/etc/azure_crypt_mount'
         if not os.path.exists(azure_crypt_mount):
             with open(azure_crypt_mount,'w') as wf:
                 wf.write("")
 
-        mount_content_item = crypt_item.name + " " + crypt_item.dev_path + " " + crypt_item.options + " " + crypt_item.luks_header_path
-        with open("/etc/fstab",'r') as f:
+        mount_content_item = crypt_item.name + " " + crypt_item.dev_path + " " + crypt_item.luks_header_path + " " + crypt_item.mount_point
+        with open("/etc/azure_crypt_mount",'r') as f:
             existing_content = f.read()
             new_mount_content = existing_content + "\n" + mount_content_item
-        with open("/etc/fstab",'w') as wf:
+        with open("/etc/azure_crypt_mount",'w') as wf:
             existing_content+="\n" + mount_content_item
             wf.write(new_mount_content)
-
-    
         # <target name> <source device> <key file> <options>
+
     def mount_crypt_item(self,mount_item):
 
         pass
@@ -298,21 +301,21 @@ class DiskUtil(object):
     def mount_all(self):
         error = EncryptionError()
         commandToExecute = '/bin/bash -c "mount -a 2> /dev/null"'
-        self.logger("command to execute :" + commandToExecute)
+        self.logger.log("command to execute :" + commandToExecute)
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
         if(returnCode != 0):
             error.errorcode = returnCode
             error.code = CommonVariables.mount_error
             error.info = "commandToExecute is " + commandToExecute
-            self.logger('mount returnCode is ' + str(returnCode))
+            self.logger.log('mount returnCode is ' + str(returnCode))
         return error
 
     def query_dev_sdx_path(self,scsi_number):
         p = Popen(['lsscsi', scsi_number], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         identity, err = p.communicate()
         # identity sample: [5:0:0:0] disk Msft Virtual Disk 1.0 /dev/sdc
-        self.logger("lsscsi output is: \n" + identity)
+        self.logger.log("lsscsi output is: \n" + identity)
         vals = identity.split()
         if(vals == None or len(vals) == 0):
             return None
@@ -323,7 +326,7 @@ class DiskUtil(object):
         p = Popen(['blkid',sdx_path],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         identity,err = p.communicate()
         identity = identity.lower()
-        self.logger("blkid output is: \n" + identity)
+        self.logger.log("blkid output is: \n" + identity)
         uuid_pattern = 'uuid="'
         index_of_uuid = identity.find(uuid_pattern)
         identity = identity[index_of_uuid + len(uuid_pattern):]

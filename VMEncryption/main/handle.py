@@ -90,10 +90,11 @@ def daemon():
 
         disk_util = DiskUtil(hutil, MyPatching, backup_logger)
         encryption = Encryption(hutil)
-        crypt_mount_items = get_crypt_items()
-        for i in range(0,len(crypt_mount_items)):
-            crypt_mount_item = crypt_mount_items[i]
-            disk_util.mount_crypt_item(crypt_mount_item)
+        crypt_mount_items = disk_util.get_crypt_items()
+        if(crypt_mount_items is not None):
+            for i in range(0,len(crypt_mount_items)):
+                crypt_mount_item = crypt_mount_items[i]
+                disk_util.mount_crypt_item(crypt_mount_item)
 
         hutil.exit_if_enabled()
 
@@ -137,6 +138,7 @@ def daemon():
 
             # check the disk is plank
             for i in range(0, encryption_keypair_len):
+                current_mapping = extension_parameter.query[i]
                 exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])
                 blk_items = disk_util.get_lsblk(exist_disk_path)
                 for i in range(0,len(blk_items)):
@@ -146,18 +148,22 @@ def daemon():
                         hutil.do_exit(1, 'Enable','error',CommonVariables.device_not_blank, 'Enable failed. enableencryption_format called on an not blank device')
 
             for i in range(0, encryption_keypair_len):
+                current_mapping = extension_parameter.query[i]
                 mapper_name = str(uuid.uuid4())
                 exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])
 
                 encryption.encrypt_disk(exist_disk_path, extension_parameter.passphrase, mapper_name, luks_header_path)
                 disk_util.format_disk(os.path.join("/dev/mapper/", mapper_name), current_mapping["filesystem"])
+                disk_util.make_sure_disk_exists(os.path.join(current_mapping["mount_point"], mapper_name))
+                #TODO make the mount name better.
                 disk_util.mount_filesystem(os.path.join("/dev/mapper/", mapper_name), os.path.join(current_mapping["mount_point"], mapper_name))
-                disk_util.append_mount_info(os.path.join("/dev/mapper/", mapper_name), os.path.join(current_mapping["mount_point"], mapper_name))
+                #disk_util.append_mount_info(os.path.join("/dev/mapper/", mapper_name), os.path.join(current_mapping["mount_point"], mapper_name))
 
                 crypt_item = CryptItem()
                 crypt_item.name = mapper_name
                 crypt_item.dev_path = exist_disk_path
                 crypt_item.luks_header_path = luks_header_path
+                crypt_item.mount_point = os.path.join(current_mapping["mount_point"], mapper_name)
                 disk_util.update_crypt_item(crypt_item)#mapper_name, exist_disk_path ,"luks", luks_header_path)
 
         elif(extension_parameter.command == "enableencryption_all_inplace"):
@@ -187,11 +193,10 @@ def daemon():
                     if(device_item.mountpoint == "/"):
                         backup_logger.log("the mountpoint is root, so skip." + str(device_item))
                         should_skip = True
-                    if(should_skip):
-                        pass
-                    else:
+                    if(not should_skip):
                         if(device_item.mountpoint != ""):
                             disk_util.umount(device_item.mountpoint)
+                            #TODO if the umount failed then we should error it.
                         mapper_name = str(uuid.uuid4())
                         backup_logger.log("encrypting " + str(device_item))
                         encryption.encrypt_disk("/dev/" + device_item.name,extension_parameter.passphrase, mapper_name,luks_header_path)
