@@ -291,12 +291,16 @@ class DiskUtil(object):
             wf.write(new_mount_content)
         # <target name> <source device> <key file> <options>
 
-    def mount_crypt_item(self,mount_item):
+    def mount_crypt_item(self,crypt_item):
 
         pass
 
-    def umount(self,path):
-        self.logger.log("umount " + str(path))
+    def umount(self, path):
+        commandToExecute = '/bin/bash -c "umount ' + path + ' 2> /dev/null"'
+        self.logger.log("umount, execute :" + commandToExecute)
+        proc = Popen(commandToExecute, shell=True)
+        returnCode = proc.wait()
+        return returnCode
 
     def mount_all(self):
         error = EncryptionError()
@@ -437,6 +441,25 @@ class DiskUtil(object):
 
                 blk_items.append(blk_item)
         return blk_items
+
+    def should_skip_for_inplace_encryption(self,device_item):
+        #device_item = self.get_lsblk(device_item)
+        #TODO we should get the freshest information.
+        should_skip = False
+        azure_blk_items = self.get_azure_devices()
+
+        for j in range(0,len(azure_blk_items)):
+            if(device_item.type == "crypt" or device_item.type == "disk"):
+                self.logger.log("device_item.type is " + str(device_item.type) + " so skip it")
+                should_skip = True
+            if(azure_blk_items[j].name == device_item.name):
+                self.logger.log("the mountpoint is the azure disk root or resource, so skip it.")
+                should_skip = True
+            if(device_item.mountpoint == "/"):
+                self.logger.log("the mountpoint is root, so skip." + str(device_item))
+                should_skip = True
+            pass
+        return should_skip
 
     def DeviceForIdePort(self,n):
         """

@@ -90,11 +90,11 @@ def daemon():
 
         disk_util = DiskUtil(hutil, MyPatching, backup_logger)
         encryption = Encryption(hutil)
-        crypt_mount_items = disk_util.get_crypt_items()
-        if(crypt_mount_items is not None):
-            for i in range(0,len(crypt_mount_items)):
-                crypt_mount_item = crypt_mount_items[i]
-                disk_util.mount_crypt_item(crypt_mount_item)
+        crypt_items = disk_util.get_crypt_items()
+        if(crypt_items is not None):
+            for i in range(0,len(crypt_items)):
+                crypt_item = crypt_items[i]
+                disk_util.mount_crypt_item(crypt_item)
 
         hutil.exit_if_enabled()
 
@@ -157,7 +157,9 @@ def daemon():
                 disk_util.make_sure_disk_exists(os.path.join(current_mapping["mount_point"], mapper_name))
                 #TODO make the mount name better.
                 disk_util.mount_filesystem(os.path.join("/dev/mapper/", mapper_name), os.path.join(current_mapping["mount_point"], mapper_name))
-                #disk_util.append_mount_info(os.path.join("/dev/mapper/", mapper_name), os.path.join(current_mapping["mount_point"], mapper_name))
+                #disk_util.append_mount_info(os.path.join("/dev/mapper/",
+                #mapper_name), os.path.join(current_mapping["mount_point"],
+                #mapper_name))
 
                 crypt_item = CryptItem()
                 crypt_item.name = mapper_name
@@ -169,40 +171,29 @@ def daemon():
         elif(extension_parameter.command == "enableencryption_all_inplace"):
             backup_logger.log("executing the enableencryption_all_inplace command.")
             devices = disk_util.get_lsblk(None)
-
             azure_blk_items = disk_util.get_azure_devices()
-
+            encrypted_items = []
             for i in range(0,len(devices)):
                 device_item = devices[i]
                 backup_logger.log("device_item == " + str(device_item))
-                if(device_item.fstype == None or device_item.fstype == ""):
-                    backup_logger.log("device_item have no file system, so skip it")
-                    continue
-                else:
-                    # check whether this is already a crypt one
-                    if(device_item.type == "crypt" or device_item.type == "disk"):
-                        backup_logger.log("device_item.type is " + str(device_item.type) + " so skip it")
-                        continue
-                    # twice it's not a crypt device
-                    #TODO skip the resource disk
-                    should_skip = False
-                    for j in range(0,len(azure_blk_items)):
-                        if(azure_blk_items[j].name == device_item.name):
-                            backup_logger.log("the mountpoint is the azure disk root or resource, so skip it.")
-                            should_skip = True
-                    if(device_item.mountpoint == "/"):
-                        backup_logger.log("the mountpoint is root, so skip." + str(device_item))
-                        should_skip = True
-                    if(not should_skip):
-                        if(device_item.mountpoint != ""):
-                            disk_util.umount(device_item.mountpoint)
-                            #TODO if the umount failed then we should error it.
-                        mapper_name = str(uuid.uuid4())
-                        backup_logger.log("encrypting " + str(device_item))
-                        encryption.encrypt_disk("/dev/" + device_item.name,extension_parameter.passphrase, mapper_name,luks_header_path)
-                        backup_logger.log("copying data " + str(device_item))
-                        disk_util.copy("/dev/" + device_item.name,os.path.join(CommonVariables.dev_mapper_root,mapper_name))
-                        #TODO remount it.
+
+                should_skip = disk_util.should_skip_for_inplace_encryption(device_item)
+
+                if(device_item.name in encrypted_items):
+                    backup_logger.log("")
+                    should_skip = True
+
+                if(not should_skip):
+                    if(device_item.mountpoint != ""):
+                        disk_util.umount(device_item.mountpoint)
+                    encrypted_items.append(device_item.name)
+                    mapper_name = str(uuid.uuid4())
+                    backup_logger.log("encrypting " + str(device_item))
+                    encryption.encrypt_disk(os.path.join("/dev/", device_item.name),extension_parameter.passphrase, mapper_name,luks_header_path)
+                    backup_logger.log("copying data " + str(device_item))
+                    disk_util.copy(os.path.join("/dev/" ,device_item.name),os.path.join(CommonVariables.dev_mapper_root,mapper_name))
+                    if(device_item.mountpoint != ""):
+                        disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
 
         elif(extension_parameter.command == "enableencryption_clone"):
             backup_logger.log("executing the enableencryption_all_inplace command.")
