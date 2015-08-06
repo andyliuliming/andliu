@@ -180,7 +180,7 @@ def daemon():
                 should_skip = disk_util.should_skip_for_inplace_encryption(device_item)
 
                 if(device_item.name in encrypted_items):
-                    backup_logger.log("")
+                    backup_logger.log("already did a operation "+str(device_item))
                     should_skip = True
 
                 if(not should_skip):
@@ -192,6 +192,13 @@ def daemon():
                     encryption.encrypt_disk(os.path.join("/dev/", device_item.name),extension_parameter.passphrase, mapper_name,luks_header_path)
                     backup_logger.log("copying data " + str(device_item))
                     disk_util.copy(os.path.join("/dev/" ,device_item.name),os.path.join(CommonVariables.dev_mapper_root,mapper_name))
+
+                    crypt_item_to_update = CryptItem()
+                    crypt_item_to_update.name = mapper_name
+                    crypt_item_to_update.dev_path = os.path.join("/dev/" ,device_item.name)
+                    crypt_item_to_update.luks_header_path = luks_header_path
+                    crypt_item_to_update.mount_point = device_item.mountpoint
+                    disk_util.update_crypt_item(crypt_item_to_update)
                     if(device_item.mountpoint != ""):
                         disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
 
