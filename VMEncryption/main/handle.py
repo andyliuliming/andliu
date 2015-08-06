@@ -134,20 +134,30 @@ def daemon():
             # we need to change the uuid after the encryption.
             # http://www.sudo-juice.com/how-to-change-the-uuid-of-a-linux-partition/
             encryption_keypair_len = len(extension_parameter.query)
+
+            # check the disk is plank
+            for i in range(0, encryption_keypair_len):
+                exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])
+                blk_items = disk_util.get_lsblk(exist_disk_path)
+                for i in range(0,len(blk_items)):
+                    blk_item = blk_items[i]
+                    if(blk_item.fstype != "" or blk_item.type != "disk"):
+                        backup_logger.log("the blk item is " + str(blk_item))
+                        hutil.do_exit(1, 'Enable','error',CommonVariables.device_not_blank, 'Enable failed. enableencryption_format called on an not blank device')
+
             for i in range(0, encryption_keypair_len):
                 mapper_name = str(uuid.uuid4())
                 exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])
 
                 encryption.encrypt_disk(exist_disk_path, extension_parameter.passphrase, mapper_name, luks_header_path)
-                disk_util.format_disk("/dev/mapper/" + mapper_name, current_mapping["filesystem"])
-                disk_util.append_mount_info("/dev/mapper/" + mapper_name, current_mapping["mount_point"] + mapper_name)
+                disk_util.format_disk(os.path.join("/dev/mapper/", mapper_name), current_mapping["filesystem"])
+                disk_util.mount_filesystem(os.path.join("/dev/mapper/", mapper_name), os.path.join(current_mapping["mount_point"], mapper_name))
+                disk_util.append_mount_info(os.path.join("/dev/mapper/", mapper_name), os.path.join(current_mapping["mount_point"], mapper_name))
 
-                #externaldrive         UUID=2f9a8428-ac69-478a-88a2-4aa458565431        none    luks,timeout=180
                 crypt_item = CryptItem()
-                crypt_item.name=mapper_name
-                crypt_item.dev_path=exist_disk_path
-                #crypt_item.options="luks"
-                crypt_item.luks_header_path=luks_header_path
+                crypt_item.name = mapper_name
+                crypt_item.dev_path = exist_disk_path
+                crypt_item.luks_header_path = luks_header_path
                 disk_util.update_crypt_item(crypt_item)#mapper_name, exist_disk_path ,"luks", luks_header_path)
 
         elif(extension_parameter.command == "enableencryption_all_inplace"):
@@ -180,7 +190,7 @@ def daemon():
                     if(should_skip):
                         pass
                     else:
-                        if(device_item.mountpoint !=""):
+                        if(device_item.mountpoint != ""):
                             disk_util.umount(device_item.mountpoint)
                         mapper_name = str(uuid.uuid4())
                         backup_logger.log("encrypting " + str(device_item))
