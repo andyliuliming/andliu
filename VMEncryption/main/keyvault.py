@@ -58,9 +58,9 @@ class KeyVaultUtil(object):
         keyvault_resource_name = "https://vault.azure.net"
         # https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/token
         # get the access token
-        sasuri_obj = urlparse.urlparse(authorize_uri+"/oauth2/token")
+        sasuri_obj = urlparse.urlparse(authorize_uri + "/oauth2/token")
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
-        request_content = "resource="+urllib.quote(keyvault_resource_name) + "&client_id=" + client_id + "&client_secret=" + urllib.quote(client_secret) + "&grant_type=client_credentials"
+        request_content = "resource=" + urllib.quote(keyvault_resource_name) + "&client_id=" + client_id + "&client_secret=" + urllib.quote(client_secret) + "&grant_type=client_credentials"
         headers = {}
         connection.request('POST', sasuri_obj.path  , (request_content), headers = headers)
         result = connection.getresponse()
@@ -68,8 +68,9 @@ class KeyVaultUtil(object):
         result_content = result.read()
         result_json = json.loads(result_content)
         access_token = result_json["access_token"]
-        #WWW-Authenticate: Bearer authorization="https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47", resource="https://vault.azure.net"
-
+        #WWW-Authenticate: Bearer
+        #authorization="https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47",
+        #resource="https://vault.azure.net"
 
 
         """
@@ -80,13 +81,13 @@ class KeyVaultUtil(object):
         sasuri_obj = urlparse.urlparse(encryption_keyvault_uri)
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
         headers = {}
-        headers["Authorization"] = "Bearer "+access_token
-        #Authorization: Bearer 
-        connection.request('GET', sasuri_obj.path + '?' + sasuri_obj.query, headers = headers)
+        headers["Authorization"] = "Bearer " + access_token
+        #Authorization: Bearer
+        connection.request('GET', sasuri_obj.path + '?api-version=' + self.api_version, headers = headers)
         result = connection.getresponse()
         result_content = result.read()
         result_json = json.loads(result_content)
-        key_id=result_json["key"]["kid"]
+        key_id = result_json["key"]["kid"]
 
 
         """
@@ -97,20 +98,26 @@ class KeyVaultUtil(object):
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
         request_content = '{"alg":"' + alg_name + '","value":"' + passphrase + '"}'
         headers = {}
-        headers["Authorization"] = "Bearer "+access_token
-        #Authorization: Bearer 
-        connection.request('POST', key_id + "/encrypt" + '?' + sasuri_obj.query , request_content, headers = headers)
+        headers["Content-Type"] = "application/json"
+        headers["Authorization"] = "Bearer " + access_token
+        #Authorization: Bearer
+        connection.request('POST', key_id + "/encrypt" + '?api-version=' + self.api_version , request_content, headers = headers)
         result = connection.getresponse()
-
+        result_content = result.read()
+        result_json = json.loads(result_content)
+        
         """
         create secret api https://msdn.microsoft.com/en-us/library/azure/dn903618.aspx
         https://mykeyvault.vault.azure.net/secrets/{secret-name}?api-version={api-version}
         """
         sasuri_obj = urlparse.urlparse(secret_keyvault_uri)
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
-        request_content = '{"value":' + alg_name + ',"value":' + client_secret + ',"attributes":{"enabled":"true"}' + '}'
+        request_content = '{"value":"' + result_json["value"] + '","attributes":{"enabled":"true"}' + '}'
         headers = {}
-        #headers["x-ms-date"] = timestamp
-        #headers["x-ms-version"] = self.__StorageVersion
-        connection.request('PUT', sasuri_obj.path + '?' + sasuri_obj.query , request_content, headers = headers)
+        headers["Content-Type"] = "application/json"
+        headers["Authorization"] = "Bearer " + access_token
+        connection.request('PUT', sasuri_obj.path + '?api-version='+self.api_version , request_content, headers = headers)
         result = connection.getresponse()
+        
+        result_content = result.read()
+        result_json = json.loads(result_content)
