@@ -80,7 +80,7 @@ def main():
 #{"expires_in":"3599","token_type":"Bearer","expires_on":"1438921595","not_before":"1438917695","resource":"https://vault.azure.net","access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ik1uQ19WWmNBVGZNNXBPWWlKSE1iYTlnb0VLWSIsImtpZCI6Ik1uQ19WWmNBVGZNNXBPWWlKSE1iYTlnb0VLWSJ9.eyJhdWQiOiJodHRwczovL3ZhdWx0LmF6dXJlLm5ldCIsImlzcyI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0LzcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0Ny8iLCJpYXQiOjE0Mzg5MTc2OTUsIm5iZiI6MTQzODkxNzY5NSwiZXhwIjoxNDM4OTIxNTk1LCJ2ZXIiOiIxLjAiLCJ0aWQiOiI3MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDciLCJvaWQiOiJjYjNjNjllMi0xMmM2LTRjZTctYTk3Yy0zZDc2ZWRhMmZiOTgiLCJzdWIiOiJjYjNjNjllMi0xMmM2LTRjZTctYTk3Yy0zZDc2ZWRhMmZiOTgiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiYXBwaWQiOiIwYzQ2ZTI4Yy1lOGNiLTQ5MGQtYmQ0Zi0yMTYyNmI2NjAxZjYiLCJhcHBpZGFjciI6IjEifQ.VDK0o-PhI_sPlhQLyA4X-rAbx6Kcl2S6ioV5MTh9-kzMJvftjXYIXB2Dc88rbCHO8D7v_dToH8_Ub4WV7-5uLYbUuN78L_7KtKU5k-YPZy9UDeH6_cTXlF9qj1JIzss2y3xzZII10YcRxO0KG4xt0jJ1uOae9RSDgUWACZshC1pgMUXBVfrrlM-zbjr8Ttg2-BVxNLnIlBhGs7s7qVpvHQ2Ahig5j1SFMoOw0vQcsLXW_0k3sIugoRNilOys2wwlS6EQ9TbH3ZlKJl_q8FJBRvN28LgzyqBTJ-_jScUUHTEbMJQZALtguZntIu90ffkHcgcRkliRTycjdbBtIgAYlA"}
 
     util.create_key("MicrosoftLoveLinuxBecausVeWeHaveCCIC@123","https://andliukeyvault.vault.azure.net/secrets/security1?api-version=2015-06-01"\
-        ,"https://andliukeyvault.vault.azure.net/keys/mykey/encrypt?api-version=2015-06-01","0c46e28c-e8cb-490d-bd4f-21626b6601f6","RSA1_5","q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s=")
+        ,"https://andliukeyvault.vault.azure.net/keys/mykey?api-version=2015-06-01","0c46e28c-e8cb-490d-bd4f-21626b6601f6","RSA1_5","q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s=")
     pass
 
 if __name__ == '__main__' :

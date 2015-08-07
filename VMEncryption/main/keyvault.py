@@ -20,7 +20,8 @@
 #
 import httplib
 import urlparse
-
+import urllib
+import json
 class KeyVaultUtil(object):
     """description of class"""
     def __init__(self,logger):
@@ -49,19 +50,56 @@ class KeyVaultUtil(object):
         connection.request('POST', sasuri_obj.path + '?' + sasuri_obj.query , request_content, headers = headers)
         result = connection.getresponse()
 
-
+        
         # get the WWW-Authenticate headers
         bearerHeader = result.getheader("www-authenticate")
 
+        authorize_uri = "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47"
+        keyvault_resource_name = "https://vault.azure.net"
+        # https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/token
+        # get the access token
+        sasuri_obj = urlparse.urlparse(authorize_uri+"/oauth2/token")
+        connection = httplib.HTTPSConnection(sasuri_obj.hostname)
+        request_content = "resource="+urllib.quote(keyvault_resource_name) + "&client_id=" + client_id + "&client_secret=" + urllib.quote(client_secret) + "&grant_type=client_credentials"
+        headers = {}
+        connection.request('POST', sasuri_obj.path  , (request_content), headers = headers)
+        result = connection.getresponse()
+
+        result_content = result.read()
+        result_json = json.loads(result_content)
+        access_token = result_json["access_token"]
         #WWW-Authenticate: Bearer authorization="https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47", resource="https://vault.azure.net"
+
+
+
         """
-        api for encrypt use key is https://msdn.microsoft.com/en-us/library/azure/dn878060.aspx
+        get the key information, to get the key id, so we can use that key to do encryption
+        https://mykeyvault.vault.azure.net/keys/{key-name}?api-version={api-version}
+        https://msdn.microsoft.com/en-us/library/azure/dn878080.aspx
         """
         sasuri_obj = urlparse.urlparse(encryption_keyvault_uri)
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
-        request_content = '{"alg":' + alg_name + ',"value":' + client_secret + '}'
         headers = {}
-        connection.request('POST', sasuri_obj.path + '?' + sasuri_obj.query , request_content, headers = headers)
+        headers["Authorization"] = "Bearer "+access_token
+        #Authorization: Bearer 
+        connection.request('GET', sasuri_obj.path + '?' + sasuri_obj.query, headers = headers)
+        result = connection.getresponse()
+        result_content = result.read()
+        result_json = json.loads(result_content)
+        key_id=result_json["key"]["kid"]
+
+
+        """
+        encrypt our passphrase using the encryption key
+        api for encrypt use key is https://msdn.microsoft.com/en-us/library/azure/dn878060.aspx
+        """
+        sasuri_obj = urlparse.urlparse(key_id)
+        connection = httplib.HTTPSConnection(sasuri_obj.hostname)
+        request_content = '{"alg":"' + alg_name + '","value":"' + passphrase + '"}'
+        headers = {}
+        headers["Authorization"] = "Bearer "+access_token
+        #Authorization: Bearer 
+        connection.request('POST', key_id + "/encrypt" + '?' + sasuri_obj.query , request_content, headers = headers)
         result = connection.getresponse()
 
         """
