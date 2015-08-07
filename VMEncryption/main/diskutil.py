@@ -46,7 +46,6 @@ class CryptItem(object):
     def __init__(self):
         self.name = None
         self.dev_path = None
-        self.options = None
         self.mount_point = None
         self.luks_header_path = None
 

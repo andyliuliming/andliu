@@ -201,7 +201,8 @@ def daemon():
                     disk_util.update_crypt_item(crypt_item_to_update)
                     if(device_item.mountpoint != ""):
                         disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
-
+        
+        # {"command":"enableencryption_clone","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
         elif(extension_parameter.command == "enableencryption_clone"):
             backup_logger.log("executing the enableencryption_all_inplace command.")
             # scsi_host,channel,target_number,LUN

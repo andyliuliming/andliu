@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>334deedb-1c9a-40c8-89f2-a4ae042c18aa</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>test.py</StartupFile>
+    <StartupFile>main\test.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -36,6 +36,9 @@
     <Content Include="README.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="main\keyvault.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="main\backuplogger.py" />
     <Compile Include="main\common.py" />
     <Compile Include="main\diskutil.py">
@@ -57,7 +60,7 @@
     <Compile Include="main\__init__.py" />
     <Compile Include="mkstub.py" />
     <Compile Include="setup.py" />
-    <Compile Include="test.py">
+    <Compile Include="main\test.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
