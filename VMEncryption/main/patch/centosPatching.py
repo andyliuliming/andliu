@@ -30,7 +30,7 @@ import traceback
 import datetime
 import subprocess
 from redhatPatching import redhatPatching
-from common import CommonVariables
+from common import *
 
 class centosPatching(redhatPatching):
     def __init__(self):

@@ -30,7 +30,7 @@ import traceback
 import datetime
 import subprocess
 from AbstractPatching import AbstractPatching
-from common import CommonVariables
+from common import *
 
 
 class UbuntuPatching(AbstractPatching):

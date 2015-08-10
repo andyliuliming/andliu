@@ -35,7 +35,7 @@ import urllib2
 import urlparse
 import httplib
 from Utils import HandlerUtil
-from common import CommonVariables
+from common import *
 from extensionparameter import ExtensionParameter
 from extensionparameter import EncryptionItem
 from encryption import *

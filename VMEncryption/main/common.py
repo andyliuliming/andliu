@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -55,3 +55,13 @@ class CommonVariables:
     mount_point_not_exists = 10
     passphrase_too_long_or_none = 11
     parameter_error = 12
+
+
+class EncryptionError(object):
+    def __init__(self):
+        self.errorcode = CommonVariables.success
+        self.state = None
+        self.code = CommonVariables.success
+        self.info = None
+    def __str__(self):
+        return "errorcode: " + str(self.errorcode) + " state:" + str(self.state) + " code:" + str(self.code) + " info:" + str(self.info)

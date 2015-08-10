@@ -20,7 +20,7 @@
 #
 import xml.parsers.expat
 from Utils import HandlerUtil
-from common import CommonVariables
+from common import *
 
 
 # parameter format should be like this:

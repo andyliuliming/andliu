@@ -25,7 +25,7 @@ import sys
 from subprocess import *
 import shutil
 import uuid
-from common import CommonVariables
+from common import *
 from encryption import *
 
 class LsblkItem(object):

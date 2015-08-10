@@ -45,7 +45,6 @@
     <Compile Include="main\diskutil.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="main\encryption.py" />
     <Compile Include="main\handle.py" />
     <Compile Include="main\extensionparameter.py" />
     <Compile Include="main\patch\AbstractPatching.py" />

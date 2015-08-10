@@ -21,7 +21,7 @@
 from encryption import EncryptionError
 import os
 import os.path
-from common import CommonVariables
+from common import *
 class RebootManager(object):
     def __init__(self, hutil):
         self.hutil = hutil
