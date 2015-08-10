@@ -164,9 +164,6 @@ def daemon():
                 disk_util.make_sure_disk_exists(os.path.join(current_mapping["mount_point"], mapper_name))
                 #TODO make the mount name better.
                 disk_util.mount_filesystem(os.path.join("/dev/mapper/", mapper_name), os.path.join(current_mapping["mount_point"], mapper_name))
-                #disk_util.append_mount_info(os.path.join("/dev/mapper/",
-                #mapper_name), os.path.join(current_mapping["mount_point"],
-                #mapper_name))
 
                 crypt_item = CryptItem()
                 crypt_item.name = mapper_name

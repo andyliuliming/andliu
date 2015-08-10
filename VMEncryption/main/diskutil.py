@@ -303,59 +303,11 @@ class DiskUtil(object):
         # TODO figure out why the disk formated using fdisk do not have uuid
         sdx_path = self.query_dev_sdx_path(scsi_number)
         return query_dev_uuid_by_sdx_path(sdx_path)
-    
-    def get_blkid(self,dev_path):
-        #self.logger.log("getting the blk info from " + str(dev_path))
-        #blk_items = []
-        #if(dev_path is None):
-        #    p = subprocess.Popen(['lsblk', '-b',
-        #    '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL'],
-        #    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #else:
-        #    p = subprocess.Popen(['lsblk', '-b',
-        #    '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL',dev_path],
-        #    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #out_lsblk_output, err = p.communicate()
-        #out_lsblk_output = str(out_lsblk_output)
-        #self.logger.log("out_lsblk_output:\n" + str(out_lsblk_output))
-        #lines = out_lsblk_output.splitlines()
-        #for i in range(0,len(lines)):
-        #    item_value_str = lines[i].strip()
-        #    if(item_value_str != ""):
-        #        disk_info_item_array = item_value_str.split()
-        #        blk_item = LsblkItem()
-        #        disk_info_item_array_length = len(disk_info_item_array)
-        #        for j in range(0, disk_info_item_array_length):
-        #            disk_info_property = disk_info_item_array[j]
-        #            property_item_pair = disk_info_property.split('=')
-        #            if(property_item_pair[0] == 'NAME'):
-        #                blk_item.name = property_item_pair[1].strip('"')
-
-        #            if(property_item_pair[0] == 'TYPE'):
-        #                blk_item.type = property_item_pair[1].strip('"')
-
-        #            if(property_item_pair[0] == 'FSTYPE'):
-        #                blk_item.fstype = property_item_pair[1].strip('"')
-                        
-        #            if(property_item_pair[0] == 'MOUNTPOINT'):
-        #                blk_item.mountpoint = property_item_pair[1].strip('"')
-
-        #            if(property_item_pair[0] == 'LABEL'):
-        #                blk_item.label = property_item_pair[1].strip('"')
-
-        #            if(property_item_pair[0] == 'UUID'):
-        #                blk_item.uuid = property_item_pair[1].strip('"')
-
-        #            if(property_item_pair[0] == 'MODEL'):
-        #                blk_item.model = property_item_pair[1].strip('"')
-
-        #        blk_items.append(blk_item)
-        #return blk_items
-        pass
 
     def get_lsblk(self, dev_path):
         self.logger.log("getting the blk info from " + str(dev_path))
         blk_items = []
+        # lsblk -b -n -P -o NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL
         if(dev_path is None):
             p = subprocess.Popen(['lsblk', '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         else:
@@ -397,24 +349,39 @@ class DiskUtil(object):
                 blk_items.append(blk_item)
         return blk_items
 
-    def should_skip_for_inplace_encryption(self,device_item):
-        #device_item = self.get_lsblk(device_item)
-        #TODO we should get the freshest information.
-        should_skip = False
-        azure_blk_items = self.get_azure_devices()
+    def should_skip_for_inplace_encryption(self, device_item):
+        """
+        TYPE="raid0"
+        TYPE="partition"
+        TYPE="crypt"
 
-        for j in range(0,len(azure_blk_items)):
-            if(device_item.type == "crypt" or device_item.type == "disk"):
+        first check whether there's one file system on it.
+        if the type is disk, then to check whether it have child-items, say the partition, lvm or crypt luks.
+        if the answer is yes, then skip it.
+        """
+        if(device_item.fstype == None or device_item.fstype == ""):
+            return True
+        else:
+            sub_items = self.get_lsblk("/dev/" + device_item.name)
+            if(len(sub_items) > 1):
+                self.logger.log("there's sub items for the device" + str(device_item.name) + ", so skip it")
+                return True
+
+            azure_blk_items = self.get_azure_devices()
+            if(device_item.type == "crypt"):
                 self.logger.log("device_item.type is " + str(device_item.type) + " so skip it")
-                should_skip = True
-            if(azure_blk_items[j].name == device_item.name):
-                self.logger.log("the mountpoint is the azure disk root or resource, so skip it.")
-                should_skip = True
+                return True
+
             if(device_item.mountpoint == "/"):
                 self.logger.log("the mountpoint is root, so skip." + str(device_item))
-                should_skip = True
-            pass
-        return should_skip
+                return True
+
+            for j in range(0,len(azure_blk_items)):
+                if(azure_blk_items[j].name == device_item.name):
+                    self.logger.log("the mountpoint is the azure disk root or resource, so skip it.")
+                    return True
+
+            return False
 
     def DeviceForIdePort(self,n):
         """
