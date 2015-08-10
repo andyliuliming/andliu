@@ -90,7 +90,6 @@ def daemon():
         # TODO Remount all
 
         disk_util = DiskUtil(hutil, MyPatching, backup_logger)
-        encryption = Encryption(hutil)
         crypt_items = disk_util.get_crypt_items()
         if(crypt_items is not None):
             for i in range(0,len(crypt_items)):
@@ -126,7 +125,7 @@ def daemon():
             extension_parameter.client_id,\
             extension_parameter.alg_name,extension_parameter.client_secret)
 
-        luks_header_path = encryption.create_luks_header()
+        luks_header_path = disk_util.create_luks_header()
         ########### the existing scenario starts ###################
         # we do not support the backup version policy
         # {"command":"enableencryption_format","query":[{"source_scsi_number":"[5:0:0:0]","filesystem":"ext4","mount_point":"/mnt/"}],
@@ -159,7 +158,7 @@ def daemon():
                 mapper_name = str(uuid.uuid4())
                 exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])
 
-                encryption.encrypt_disk(exist_disk_path, extension_parameter.passphrase, mapper_name, luks_header_path)
+                disk_util.encrypt_disk(exist_disk_path, extension_parameter.passphrase, mapper_name, luks_header_path)
                 disk_util.format_disk(os.path.join("/dev/mapper/", mapper_name), current_mapping["filesystem"])
                 disk_util.make_sure_disk_exists(os.path.join(current_mapping["mount_point"], mapper_name))
                 #TODO make the mount name better.
@@ -193,7 +192,7 @@ def daemon():
                     encrypted_items.append(device_item.name)
                     mapper_name = str(uuid.uuid4())
                     backup_logger.log("encrypting " + str(device_item))
-                    encryption.encrypt_disk(os.path.join("/dev/", device_item.name),extension_parameter.passphrase, mapper_name,luks_header_path)
+                    disk_util.encrypt_disk(os.path.join("/dev/", device_item.name),extension_parameter.passphrase, mapper_name,luks_header_path)
                     backup_logger.log("copying data " + str(device_item))
                     disk_util.copy(os.path.join("/dev/" ,device_item.name),os.path.join(CommonVariables.dev_mapper_root,mapper_name))
 
@@ -257,7 +256,7 @@ def daemon():
                     origin_disk_partition = encryption_item.origin_disk_partitions[partition_index]
                     target_disk_partition = encryption_item.target_disk_partitions[partition_index]
                     mapper_name = str(uuid.uuid4())
-                    encryption_result = encryption.encrypt_disk(target_disk_partition.dev_path, extension_parameter.passphrase, mapper_name, luks_header_path)
+                    encryption_result = disk_util.encrypt_disk(target_disk_partition.dev_path, extension_parameter.passphrase, mapper_name, luks_header_path)
 
                     if(encryption_result.code == CommonVariables.success):
                         disk_util.copy(origin_disk_partition.dev_path, os.path.join(CommonVariables.dev_mapper_root,mapper_name))

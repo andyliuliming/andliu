@@ -26,8 +26,7 @@ from subprocess import *
 import shutil
 import uuid
 from common import CommonVariables
-from encryption import EncryptionError
-from common import CommonVariables
+from encryption import *
 
 class LsblkItem(object):
     def __init__(self):
@@ -246,8 +245,52 @@ class DiskUtil(object):
             wf.write(new_mount_content)
         # <target name> <source device> <key file> <options>
 
-    def mount_crypt_item(self,crypt_item):
+    def create_luks_header(self):
+        luks_header_path = "/azureluksheader"
+        if(os.path.exists(luks_header_path)):
+            return luks_header_path
+        else:
+            # dd if=/dev/zero bs=8388608 count=1 > /luks_header_path
+            commandToExecute = '/bin/bash -c "' + 'dd if=/dev/zero bs=8388608 count=1 > ' + luks_header_path + '"'
+            proc = Popen(commandToExecute, shell=True)
+            returnCode = proc.wait()
+            self.logger.log("result of make luks header result is " + str(returnCode))
+            return luks_header_path
 
+    def encrypt_disk(self, devpath, passphrase, mappername, headerfile):
+        error = EncryptionError()
+        self.hutil.log("dev path to cryptsetup luksFormat " + str(devpath))
+        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksFormat ' + devpath + ' --header ' + headerfile + '"'
+
+        proc = Popen(commandToExecute, shell=True)
+        returnCode = proc.wait()
+        if(returnCode != 0):
+            error.errorcode = returnCode
+            error.code = CommonVariables.luks_format_error
+            error.info = "devpath is " + str(devpath)
+            self.logger.log('cryptsetup -y luksFormat returnCode is ' + str(returnCode))
+            return error
+
+        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + '"'
+        self.hutil.log("dev mapper name to cryptsetup luksFormat " + (mappername))
+        proc = Popen(commandToExecute, shell=True)
+        returnCode = proc.wait()
+        if(returnCode != 0):
+            error.errorcode = returnCode
+            error.code = CommonVariables.luks_open_error
+            error.info = "devpath is " + str(devpath) + " dev_mapper_name is " + str(mappername)
+            self.logger.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
+            return error
+        return error
+
+    def get_passphrase_from_bek(self):
+
+        pass
+
+    def mount_crypt_item(self, crypt_item):
+        """
+
+        """
         pass
 
     def umount(self, path):
@@ -291,9 +334,6 @@ class DiskUtil(object):
         identity = identity[index_of_uuid + len(uuid_pattern):]
         index_of_quote = identity.find('"')
         uuid = identity[0:index_of_quote]
-        # output /dev/sdc: UUID="7a396578-5701-4ce6-8fc6-ff31316d5672"
-        # TYPE="crypto_LUKS"
-        #print("uuid=" + uuid)
         if(uuid.strip() == ""):
             return sdx_path
         return os.path.join("/dev/disk/by-uuid/",uuid)
