@@ -45,6 +45,7 @@ from diskutil import DiskPartition
 from diskutil import CryptItem
 from diskutil import LsblkItem
 from backuplogger import Backuplogger
+from keyvault import *
 #Main function is the only entrence to this extension handler
 def main():
     global hutil,MyPatching,backup_logger
@@ -116,8 +117,14 @@ def daemon():
         backup_logger.log("trying to install the extras")
         MyPatching.install_extras(extension_parameter)
 
-        #dev_manager = DevManager(hutil)
-        #disk_util = Mounter(backup_logger,hutil)
+        #store the luks passphrase in the secret.
+        keyVaultUtil = KeyVaultUtil(backup_logger)
+        passphraseEncoded = base64.standard_b64decode(extension_parameter.passphrase)
+
+        keyVaultUtil.create_key(passphraseEncoded,extension_parameter.keyvault_uri,\
+            extension_parameter.encryption_keyvault_uri,\
+            extension_parameter.client_id,\
+            extension_parameter.alg_name,extension_parameter.client_secret)
 
         luks_header_path = encryption.create_luks_header()
         ########### the existing scenario starts ###################

@@ -37,6 +37,11 @@ class ExtensionParameter(object):
         self.devpath = None
         self.query = protected_settings.get('query')
         self.passphrase = protected_settings.get('passphrase')
+        self.encryption_keyvault_uri = protected_settings.get('encryption_keyvault_uri')
+        self.keyvault_uri = protected_settings.get('keyvault_uri')
+        self.client_id = protected_settings.get('client_id')
+        self.client_secret = protected_settings.get('client_secret')
+        self.alg_name = protected_settings.get('alg_name')
         # parse the query from the array
 
 
