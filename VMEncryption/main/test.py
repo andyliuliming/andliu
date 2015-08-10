@@ -50,6 +50,8 @@ def main():
     #0c46e28c-e8cb-490d-bd4f-21626b6601f6
     #q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s=
     #passphrase, secret_keyvault_uri, encryption_keyvault_uri, client_id, alg_name, client_secret
+    key_id="https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/token"
+    sasuri_obj = urlparse.urlparse(key_id)
     xxxww=urljoin("https://login.microsoftonline.com/","secrets","secret1")
 #    POST https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/token HTTP/1.1
 #Content-Type: application/x-www-form-urlencoded

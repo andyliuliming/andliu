@@ -119,7 +119,7 @@ def daemon():
 
         #store the luks passphrase in the secret.
         keyVaultUtil = KeyVaultUtil(backup_logger)
-        passphraseEncoded = base64.standard_b64decode(extension_parameter.passphrase)
+        passphraseEncoded = base64.standard_b64encode(extension_parameter.passphrase)
 
         keyVaultUtil.create_key(passphraseEncoded,extension_parameter.keyvault_uri,\
             extension_parameter.encryption_keyvault_uri,\
@@ -284,7 +284,7 @@ def daemon():
 def start_daemon():
     public_settings = hutil.get_public_settings()
     args = [os.path.join(os.getcwd(), __file__), "-daemon"]
-
+    backup_logger.log("start_daemon with args:" + str(args))
     #This process will start a new background process by calling
     #    handle.py -daemon
     #to run the script and will exit itself immediatelly.

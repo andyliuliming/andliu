@@ -34,11 +34,20 @@ function Encrypt-Disk
     #$lun+=1
     #Write-Output "the lun of your newly attached disk is "+$lun
     #Add-AzureDataDisk -CreateNew -DiskSizeInGB 3 -DiskLabel "disklabel$lun" -VM $vm -LUN $lun -MediaLocation $destinationKeyDiskPath| update-azurevm
-
+    # $encryption_keyvault_uri="https://andliukeyvault.vault.azure.net/keys/mykey"
+    #$keyvault_uri="https://andliukeyvault.vault.azure.net/"
+    #$client_id="0c46e28c-e8cb-490d-bd4f-21626b6601f6"
+    #$client_secret="q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s="
+    #$alg_name="RSA1_5"
     $privateConfig='
     {
         "command":"enableencryption_all_inplace",
-        "passphrase":"MicrosoftLoveLinuxBecausVeWeHaveCCIC@123"
+        "passphrase":"MicrosoftLoveLinuxBecausVeWeHaveCCIC@123",
+        "encryption_keyvault_uri":"https://andliukeyvault.vault.azure.net/keys/mykey",
+        "keyvault_uri":"https://andliukeyvault.vault.azure.net/",
+        "client_id":"0c46e28c-e8cb-490d-bd4f-21626b6601f6",
+        "client_secret":"q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s=",
+        "alg_name":"RSA1_5"
     }
     '
 

@@ -36,32 +36,37 @@ class KeyVaultUtil(object):
         #https://andliukeyvault.vault.azure.net/keys/mykey/create?api-version=2015-06-01
         pass
 
-    def urljoin(*args):
+    def urljoin(self,*args):
         """
         Joins given arguments into a url. Trailing but not leading slashes are
         stripped for each argument.
         """
         return "/".join(map(lambda x: str(x).rstrip('/'), args))
 
-    """
-    secret_keyvault_uri should be https://andliukeyvault.vault.azure.net/secrets/security1
-    encryption_keyvault_uri should be https://andliukeyvault.vault.azure.net/keys/mykey/encrypt?api-version=2015-06-01
-    """
     def create_key(self, passphrase, keyvault_uri, encryption_keyvault_uri, client_id, alg_name, client_secret):
+        """
+        secret_keyvault_uri should be https://andliukeyvault.vault.azure.net/secrets/security1
+        encryption_keyvault_uri should be https://andliukeyvault.vault.azure.net/keys/mykey/encrypt?api-version=2015-06-01
+        """
         """
         api for encrypt use key is https://msdn.microsoft.com/en-us/library/azure/dn878060.aspx
         """
-        self.logger.log("encryption_keyvault_uri==" + str(encryption_keyvault_uri))
+        #self.logger.log("encryption_keyvault_uri==" + str(encryption_keyvault_uri))
         sasuri_obj = urlparse.urlparse(encryption_keyvault_uri)
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
         request_content = '{"alg":' + alg_name + ',"value":' + passphrase + '}'
         headers = {}
         connection.request('POST', sasuri_obj.path + '?api-version=' + self.api_version , request_content, headers = headers)
         result = connection.getresponse()
+        self.logger.log(str(result.status) +" "+ str(result.getheaders()))
+        connection.close()
 
         # get the WWW-Authenticate headers
+        """
+        get the access token 
+        """
+        self.logger.log("getting the access token.")
         bearerHeader = result.getheader("www-authenticate")
-
         authorize_uri = "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47"
         keyvault_resource_name = "https://vault.azure.net"
         # https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/token
@@ -72,8 +77,9 @@ class KeyVaultUtil(object):
         headers = {}
         connection.request('POST', sasuri_obj.path  , (request_content), headers = headers)
         result = connection.getresponse()
-
+        self.logger.log(str(result.status) +" "+ str(result.getheaders()))
         result_content = result.read()
+        connection.close()
         result_json = json.loads(result_content)
         access_token = result_json["access_token"]
         #WWW-Authenticate: Bearer
@@ -86,6 +92,7 @@ class KeyVaultUtil(object):
         https://mykeyvault.vault.azure.net/keys/{key-name}?api-version={api-version}
         https://msdn.microsoft.com/en-us/library/azure/dn878080.aspx
         """
+        self.logger.log("getting the info of the key.")
         sasuri_obj = urlparse.urlparse(encryption_keyvault_uri)
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
         headers = {}
@@ -93,7 +100,10 @@ class KeyVaultUtil(object):
         #Authorization: Bearer
         connection.request('GET', sasuri_obj.path + '?api-version=' + self.api_version, headers = headers)
         result = connection.getresponse()
+        self.logger.log(str(result.status) +" "+ str(result.getheaders()))
+
         result_content = result.read()
+        connection.close()
         result_json = json.loads(result_content)
         key_id = result_json["key"]["kid"]
 
@@ -102,24 +112,33 @@ class KeyVaultUtil(object):
         encrypt our passphrase using the encryption key
         api for encrypt use key is https://msdn.microsoft.com/en-us/library/azure/dn878060.aspx
         """
+        self.logger.log("encrypting the secret using key." + str(key_id) + " " + str(passphrase) + " " + str(access_token))
         sasuri_obj = urlparse.urlparse(key_id)
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
         request_content = '{"alg":"' + alg_name + '","value":"' + passphrase + '"}'
         headers = {}
         headers["Content-Type"] = "application/json"
-        headers["Authorization"] = "Bearer " + access_token
+        headers["Authorization"] = "Bearer " + str(access_token)
         #Authorization: Bearer
-        connection.request('POST', key_id + "/encrypt" + '?api-version=' + self.api_version , request_content, headers = headers)
+        relative_path = sasuri_obj.path + "/encrypt" + '?api-version=' + self.api_version
+        self.logger.log("crypt path to post is " + str(relative_path))
+        connection.request('POST', relative_path , request_content, headers = headers)
         result = connection.getresponse()
+        self.logger.log(str(result.status) + " " + str(result.getheaders()))
+
         result_content = result.read()
+        connection.close()
         result_json = json.loads(result_content)
         
         """
         create secret api https://msdn.microsoft.com/en-us/library/azure/dn903618.aspx
         https://mykeyvault.vault.azure.net/secrets/{secret-name}?api-version={api-version}
         """
+        self.logger.log("creating the secret.")
         secret_name = str(uuid.uuid4())
+
         secret_keyvault_uri = self.urljoin(keyvault_uri,"secrets",secret_name)
+        self.logger.log("secret_keyvault_uri is :" + str(secret_keyvault_uri) + " and keyvault_uri is :" + str(keyvault_uri))
         sasuri_obj = urlparse.urlparse(secret_keyvault_uri)
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
         request_content = '{"value":"' + result_json["value"] + '","attributes":{"enabled":"true"}' + '}'
@@ -128,6 +147,8 @@ class KeyVaultUtil(object):
         headers["Authorization"] = "Bearer " + access_token
         connection.request('PUT', sasuri_obj.path + '?api-version='+self.api_version , request_content, headers = headers)
         result = connection.getresponse()
-        
+        self.logger.log(str(result.status) +" "+ str(result.getheaders()))
+
         result_content = result.read()
+        connection.close()
         result_json = json.loads(result_content)
