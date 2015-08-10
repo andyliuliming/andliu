@@ -60,13 +60,3 @@ class ExtensionParameter(object):
         #if(self.query is None):
         #    return CommonVariables.parameter_error
         return CommonVariables.success
-
-class EncryptionItem(object):
-    def __init__(self):
-        self.exist_disk_path = None
-        """
-        flag whether we just format it
-        """
-        self.encryption_dev_root_path = None
-        self.origin_disk_partitions = None
-        self.target_disk_partitions = None

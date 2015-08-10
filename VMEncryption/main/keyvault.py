@@ -54,7 +54,7 @@ class KeyVaultUtil(object):
         #self.logger.log("encryption_keyvault_uri==" + str(encryption_keyvault_uri))
         sasuri_obj = urlparse.urlparse(encryption_keyvault_uri)
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
-        request_content = '{"alg":' + alg_name + ',"value":' + passphrase + '}'
+        request_content = '{"alg":"' + alg_name + '","value":"' + passphrase + '"}'
         headers = {}
         connection.request('POST', sasuri_obj.path + '?api-version=' + self.api_version , request_content, headers = headers)
         result = connection.getresponse()

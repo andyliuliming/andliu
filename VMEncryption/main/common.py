@@ -56,7 +56,6 @@ class CommonVariables:
     passphrase_too_long_or_none = 11
     parameter_error = 12
 
-
 class EncryptionError(object):
     def __init__(self):
         self.errorcode = CommonVariables.success
@@ -65,3 +64,43 @@ class EncryptionError(object):
         self.info = None
     def __str__(self):
         return "errorcode: " + str(self.errorcode) + " state:" + str(self.state) + " code:" + str(self.code) + " info:" + str(self.info)
+
+class LsblkItem(object):
+    def __init__(self):
+        #NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL
+        self.name = None
+        self.type = None
+        self.fstype = None
+        self.mountpoint = None
+        self.label = None
+        self.uuid = None
+        self.model = None
+    def __str__(self):
+        return "name:" + str(self.name) + " type:" + str(self.type) + " fstype:" + str(self.fstype) + " mountpoint:" + str(self.mountpoint) + " label" + str(self.label) + " model:" + str(self.model)
+
+class CryptItem(object):
+    def __init__(self):
+        self.name = None
+        self.dev_path = None
+        self.mount_point = None
+        self.luks_header_path = None
+
+class DiskPartition(object):
+    def __init__(self):
+        self.dev_path = ""
+        self.start = 0
+        self.end = 0
+        self.size = 0
+        self.name = ""
+        self.type = ""
+        self.uuid_path = ""
+
+class EncryptionItem(object):
+    def __init__(self):
+        self.exist_disk_path = None
+        """
+        flag whether we just format it
+        """
+        self.encryption_dev_root_path = None
+        self.origin_disk_partitions = None
+        self.target_disk_partitions = None

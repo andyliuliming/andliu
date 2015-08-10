@@ -38,12 +38,8 @@ from Utils import HandlerUtil
 from common import *
 from extensionparameter import ExtensionParameter
 from extensionparameter import EncryptionItem
-from encryption import *
 from rebootmanager import RebootManager
-from diskutil import DiskUtil
-from diskutil import DiskPartition
-from diskutil import CryptItem
-from diskutil import LsblkItem
+from diskutil import *
 from backuplogger import Backuplogger
 from keyvault import *
 #Main function is the only entrence to this extension handler

@@ -26,37 +26,8 @@ from subprocess import *
 import shutil
 import uuid
 from common import *
-from encryption import *
 
-class LsblkItem(object):
-    def __init__(self):
-        #NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL
-        self.name = None
-        self.type = None
-        self.fstype = None
-        self.mountpoint = None
-        self.label = None
-        self.uuid = None
-        self.model = None
-    def __str__(self):
-        return "name:" + str(self.name) + " type:" + str(self.type) + " fstype:" + str(self.fstype) + " mountpoint:" + str(self.mountpoint) + " label" + str(self.label) + " model:" + str(self.model)
 
-class CryptItem(object):
-    def __init__(self):
-        self.name = None
-        self.dev_path = None
-        self.mount_point = None
-        self.luks_header_path = None
-
-class DiskPartition(object):
-    def __init__(self):
-        self.dev_path = ""
-        self.start = 0
-        self.end = 0
-        self.size = 0
-        self.name = ""
-        self.type = ""
-        self.uuid_path = ""
 
 class DiskUtil(object):
     def __init__(self,hutil,patching,logger):
