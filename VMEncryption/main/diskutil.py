@@ -227,7 +227,7 @@ class DiskUtil(object):
                         crypt_item.name = crypt_mount_item_properties[0]
                         crypt_item.dev_path = crypt_mount_item_properties[1]
                         crypt_item.luks_header_path = crypt_mount_item_properties[2]
-                        crypt_item.mount_point=crypt_mount_item_properties[3]
+                        crypt_item.mount_point = crypt_mount_item_properties[3]
                         crypt_items.append(crypt_item)
         return crypt_items
 
@@ -362,9 +362,14 @@ class DiskUtil(object):
         if(device_item.fstype == None or device_item.fstype == ""):
             return True
         else:
+            supported_device_type = ["disk","part","raid0","raid1","raid5","raid10"]
+            if(device_item.type not in supported_device_type):
+                self.logger.log("the device type: " + str(device_item.type) + " is not supported yet")
+                return True
+
             sub_items = self.get_lsblk("/dev/" + device_item.name)
             if(len(sub_items) > 1):
-                self.logger.log("there's sub items for the device" + str(device_item.name) + ", so skip it")
+                self.logger.log("there's sub items for the device: " + str(device_item.name) + ", so skip it")
                 return True
 
             azure_blk_items = self.get_azure_devices()
@@ -373,7 +378,7 @@ class DiskUtil(object):
                 return True
 
             if(device_item.mountpoint == "/"):
-                self.logger.log("the mountpoint is root, so skip." + str(device_item))
+                self.logger.log("the mountpoint is root, so skip. " + str(device_item))
                 return True
 
             for j in range(0,len(azure_blk_items)):
