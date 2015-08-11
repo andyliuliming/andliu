@@ -43,6 +43,7 @@ from diskutil import *
 from backuplogger import Backuplogger
 from keyvault import *
 from encryptionconfig import *
+from patch import *
 #Main function is the only entrence to this extension handler
 
 def main():
@@ -93,8 +94,8 @@ def daemon():
         disk_util = DiskUtil(hutil, MyPatching, encryption_logger)
         encryptionconfig = EncryptionConfig()
 
-        bek_filename = encryptionconfig.get_passphrase_filename()
-        bek_filesystem = encryptionconfig.get_filesystem()
+        bek_filename = encryptionconfig.get_bek_filename()
+        bek_filesystem = encryptionconfig.get_bek_filesystem()
         if(bek_filename != None and bek_filesystem != None):
             azure_devices = disk_util.get_azure_devices()
             #TODO find the passphrase volume, and get the passphrase for mounting the encrypted volumes.
@@ -118,8 +119,8 @@ def daemon():
         if there's bek file name/bek file system in the parameter, then update the encryption config
         """
         encryptionconfig.update_config(extension_parameter)
-        bek_filename = encryptionconfig.get_passphrase_filename()
-        bek_filesystem = encryptionconfig.get_filesystem()
+        bek_filename = encryptionconfig.get_bek_filename()
+        bek_filesystem = encryptionconfig.get_bek_filesystem()
 
         # validate the parameters format
         para_validate_result = extension_parameter.validate_parameter_format()

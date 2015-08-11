@@ -18,21 +18,21 @@
 #
 # Requires Python 2.7+
 #
-
+import os.path
 from ConfigParser import ConfigParser
 class EncryptionConfig(object):
     def __init__(self):
         self.config_file_path = '/etc/azure_crypt_config.ini'
 
     def update_config(self, extension_parameter):
-        bek_filename = self.get_passphrase_filename()
-        bek_filesystem = self.get_filesystem()
+        bek_filename = self.get_bek_filename()
+        bek_filesystem = self.get_bek_filesystem()
         if(extension_parameter.bek_filename != None):
             if(bek_filename != extension_parameter.bek_filename):
-                self.save_passphrase_filename(extension_parameter.bek_filename)
+                self.save_bek_filename(extension_parameter.bek_filename)
         if(extension_parameter.bek_filesystem != None):
             if(bek_filename != extension_parameter.bek_filesystem):
-                self.save_filesystem(extension_parameter.bek_filesystem)
+                self.save_bek_filesystem(extension_parameter.bek_filesystem)
 
     def save_config(self, prop_name, prop_value):
         #TODO make the operation an transaction.
@@ -54,14 +54,14 @@ class EncryptionConfig(object):
         else:
             return None
 
-    def save_passphrase_filename(self, passphrase_file_name):
+    def save_bek_filename(self, passphrase_file_name):
         self.save_config('BekFileName', passphrase_file_name)
 
-    def get_passphrase_filename():
-        return get_config('BekFileName')
+    def get_bek_filename(self):
+        return self.get_config('BekFileName')
 
-    def save_filesystem(self, bek_filesystem):
+    def save_bek_filesystem(self, bek_filesystem):
         self.save_config('BekFileSystem', bek_filesystem)
 
-    def get_filesystem():
-        return get_config('BekFileSystem')
+    def get_bek_filesystem(self):
+        return self.get_config('BekFileSystem')
