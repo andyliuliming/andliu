@@ -42,13 +42,15 @@ from rebootmanager import RebootManager
 from diskutil import *
 from backuplogger import Backuplogger
 from keyvault import *
+from encryptionconfig import *
 #Main function is the only entrence to this extension handler
+
 def main():
-    global hutil,MyPatching,backup_logger
+    global hutil,MyPatching,encryption_logger
     HandlerUtil.LoggerInit('/var/log/waagent.log','/dev/stdout')
     HandlerUtil.waagent.Log("%s started to handle." % (CommonVariables.extension_name)) 
     hutil = HandlerUtil.HandlerUtility(HandlerUtil.waagent.Log, HandlerUtil.waagent.Error, CommonVariables.extension_name)
-    backup_logger = Backuplogger(hutil)
+    encryption_logger = Backuplogger(hutil)
     MyPatching = GetMyPatching()
     if MyPatching == None:
         hutil.do_exit(0, 'Enable','error', str(CommonVariables.os_not_supported), 'the os is not supported')
@@ -75,7 +77,7 @@ def enable():
     hutil.do_parse_context('Enable')
     # we need to start another subprocess to do it, because the initial process
     # would be killed by the wala in 5 minutes.
-    backup_logger.log("")
+    encryption_logger.log("")
     start_daemon()
 
 def daemon():
@@ -85,7 +87,18 @@ def daemon():
         # If the previous enable failed, we do not have retry logic here.
         # TODO Remount all
 
-        disk_util = DiskUtil(hutil, MyPatching, backup_logger)
+        """
+        search for the bek volume, then mount it:)
+        """
+        disk_util = DiskUtil(hutil, MyPatching, encryption_logger)
+        encryptionconfig = EncryptionConfig()
+
+        bek_filename = encryptionconfig.get_passphrase_filename()
+        bek_filesystem = encryptionconfig.get_filesystem()
+        if(bek_filename != None and bek_filesystem != None):
+            azure_devices = disk_util.get_azure_devices()
+            #TODO find the passphrase volume, and get the passphrase for mounting the encrypted volumes.
+
         crypt_items = disk_util.get_crypt_items()
         if(crypt_items is not None):
             for i in range(0,len(crypt_items)):
@@ -99,8 +112,14 @@ def daemon():
         """
         protected_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('protectedSettings')
         public_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('publicSettings')
-
         extension_parameter = ExtensionParameter(hutil, protected_settings, public_settings)
+
+        """
+        if there's bek file name/bek file system in the parameter, then update the encryption config
+        """
+        encryptionconfig.update_config(extension_parameter)
+        bek_filename = encryptionconfig.get_passphrase_filename()
+        bek_filesystem = encryptionconfig.get_filesystem()
 
         # validate the parameters format
         para_validate_result = extension_parameter.validate_parameter_format()
@@ -109,11 +128,11 @@ def daemon():
             hutil.do_exit(0, 'Enable', 'error', str(para_validate_result), "parameter not right")
         # install the required softwares.
 
-        backup_logger.log("trying to install the extras")
+        encryption_logger.log("trying to install the extras")
         MyPatching.install_extras(extension_parameter)
 
         #store the luks passphrase in the secret.
-        keyVaultUtil = KeyVaultUtil(backup_logger)
+        keyVaultUtil = KeyVaultUtil(encryption_logger)
         passphraseEncoded = base64.standard_b64encode(extension_parameter.passphrase)
 
         keyVaultUtil.create_key(passphraseEncoded,extension_parameter.keyvault_uri,\
@@ -132,13 +151,13 @@ def daemon():
         # "force":"true", "passphrase":"User@123"}
 
         if(extension_parameter.command == "enableencryption_format"):
-            backup_logger.log("executing the enableencryption_format command.")
+            encryption_logger.log("executing the enableencryption_format command.")
             # check whether the current is stripped disk
             # we need to change the uuid after the encryption.
             # http://www.sudo-juice.com/how-to-change-the-uuid-of-a-linux-partition/
             encryption_keypair_len = len(extension_parameter.query)
 
-            # check the disk is plank
+            # check the disk is blank
             for i in range(0, encryption_keypair_len):
                 current_mapping = extension_parameter.query[i]
                 exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])
@@ -146,7 +165,7 @@ def daemon():
                 for i in range(0,len(blk_items)):
                     blk_item = blk_items[i]
                     if(blk_item.fstype != "" or blk_item.type != "disk"):
-                        backup_logger.log("the blk item is " + str(blk_item))
+                        encryption_logger.log("the blk item is " + str(blk_item))
                         hutil.do_exit(1, 'Enable','error',CommonVariables.device_not_blank, 'Enable failed. enableencryption_format called on an not blank device')
 
             for i in range(0, encryption_keypair_len):
@@ -165,21 +184,21 @@ def daemon():
                 crypt_item.dev_path = exist_disk_path
                 crypt_item.luks_header_path = luks_header_path
                 crypt_item.mount_point = os.path.join(current_mapping["mount_point"], mapper_name)
-                disk_util.update_crypt_item(crypt_item)#mapper_name, exist_disk_path ,"luks", luks_header_path)
+                disk_util.update_crypt_item(crypt_item)
 
         elif(extension_parameter.command == "enableencryption_all_inplace"):
-            backup_logger.log("executing the enableencryption_all_inplace command.")
+            encryption_logger.log("executing the enableencryption_all_inplace command.")
             devices = disk_util.get_lsblk(None)
             azure_blk_items = disk_util.get_azure_devices()
             encrypted_items = []
             for i in range(0,len(devices)):
                 device_item = devices[i]
-                backup_logger.log("device_item == " + str(device_item))
+                encryption_logger.log("device_item == " + str(device_item))
 
                 should_skip = disk_util.should_skip_for_inplace_encryption(device_item)
 
                 if(device_item.name in encrypted_items):
-                    backup_logger.log("already did a operation "+str(device_item))
+                    encryption_logger.log("already did a operation "+str(device_item))
                     should_skip = True
 
                 if(not should_skip):
@@ -187,9 +206,9 @@ def daemon():
                         disk_util.umount(device_item.mountpoint)
                     encrypted_items.append(device_item.name)
                     mapper_name = str(uuid.uuid4())
-                    backup_logger.log("encrypting " + str(device_item))
+                    encryption_logger.log("encrypting " + str(device_item))
                     disk_util.encrypt_disk(os.path.join("/dev/", device_item.name),extension_parameter.passphrase, mapper_name,luks_header_path)
-                    backup_logger.log("copying data " + str(device_item))
+                    encryption_logger.log("copying data " + str(device_item))
                     disk_util.copy(os.path.join("/dev/" ,device_item.name),os.path.join(CommonVariables.dev_mapper_root,mapper_name))
 
                     crypt_item_to_update = CryptItem()
@@ -203,7 +222,7 @@ def daemon():
         
         # {"command":"enableencryption_clone","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
         elif(extension_parameter.command == "enableencryption_clone"):
-            backup_logger.log("executing the enableencryption_all_inplace command.")
+            encryption_logger.log("executing the enableencryption_all_inplace command.")
             # scsi_host,channel,target_number,LUN
             # find the scsi using the filter
             encryption_keypair_len = len(extension_parameter.query)
@@ -213,22 +232,22 @@ def daemon():
             encryption_items = []
             # check the scsi
             for i in range(0, encryption_keypair_len):
-                backup_logger.log("checking the encryptoin_keypair parameter")
+                encryption_logger.log("checking the encryptoin_keypair parameter")
                 current_mapping = extension_parameter.query[i]
-                backup_logger.log("scsi_number to query is " + str(current_mapping["source_scsi_number"]))
+                encryption_logger.log("scsi_number to query is " + str(current_mapping["source_scsi_number"]))
                 exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])#disk_util.query_dev_uuid_path(current_mapping["source_scsi_number"])
 
-                backup_logger.log("exist_disk_path is " + str(exist_disk_path))
+                encryption_logger.log("exist_disk_path is " + str(exist_disk_path))
                 if(exist_disk_path == None):
                     raise Exception("the scsi number is not found")
 
-                backup_logger.log("scsi_number to query is " + str(current_mapping["target_scsi_number"]))
+                encryption_logger.log("scsi_number to query is " + str(current_mapping["target_scsi_number"]))
                 encryption_dev_root_path = disk_util.query_dev_sdx_path(current_mapping["target_scsi_number"])#disk_util.query_dev_uuid_path(current_mapping["target_scsi_number"])
 
                 # scsi_host,channel,target_number,LUN
                 # find the scsi using the filter
 
-                backup_logger.log("encryption_dev_root_path is " + str(encryption_dev_root_path))
+                encryption_logger.log("encryption_dev_root_path is " + str(encryption_dev_root_path))
                 if(encryption_dev_root_path == None):
                     raise Exception("the scsi number is not found")
 
@@ -257,7 +276,7 @@ def daemon():
                     if(encryption_result.code == CommonVariables.success):
                         disk_util.copy(origin_disk_partition.dev_path, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
                     else:
-                        backup_logger.log("encrypt disk result: " + str(encryption_result))
+                        encryption_logger.log("encrypt disk result: " + str(encryption_result))
             # TODO:change the fstab to do the mounting
 
             # disk_util.replace_mounts_in_fs_tab(encryption_item.origin_disk_partitions,
@@ -276,7 +295,7 @@ def daemon():
 def start_daemon():
     public_settings = hutil.get_public_settings()
     args = [os.path.join(os.getcwd(), __file__), "-daemon"]
-    backup_logger.log("start_daemon with args:" + str(args))
+    encryption_logger.log("start_daemon with args:" + str(args))
     #This process will start a new background process by calling
     #    handle.py -daemon
     #to run the script and will exit itself immediatelly.

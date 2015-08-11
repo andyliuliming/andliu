@@ -37,6 +37,12 @@
     <Content Include="README.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="main\bekutil.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="main\encryptionconfig.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="main\keyvault.py">
       <SubType>Code</SubType>
     </Compile>

@@ -22,7 +22,6 @@ import xml.parsers.expat
 from Utils import HandlerUtil
 from common import *
 
-
 # parameter format should be like this:
 #{"command":"enableencryption","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
 #"force":"true", "passphrase":"User@123"}
@@ -42,6 +41,8 @@ class ExtensionParameter(object):
         self.client_id = protected_settings.get('client_id')
         self.client_secret = protected_settings.get('client_secret')
         self.alg_name = protected_settings.get('alg_name')
+        self.bek_file_name = protected_settings.get('BekFileName')
+        self.bek_filesystem = protected_settings.get('BekFileSystem')
         # parse the query from the array
 
 
