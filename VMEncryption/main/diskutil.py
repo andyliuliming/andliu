@@ -34,7 +34,7 @@ class DiskUtil(object):
         self.hutil = hutil
         self.patching = patching
         self.logger = logger
-        self.ide_class_id="{32412632-86cb-44a2-9b5c-50d1417354f5}"
+        self.ide_class_id = "{32412632-86cb-44a2-9b5c-50d1417354f5}"
         self.vmbus_sys_path = '/sys/bus/vmbus/devices'
 
     def copy_using_cp(self,from_device,to_device):
@@ -234,10 +234,6 @@ class DiskUtil(object):
             return error
         return error
 
-    def get_passphrase_from_bek(self):
-
-        pass
-
     def mount_crypt_item(self, crypt_item):
         """
 
@@ -382,7 +378,7 @@ class DiskUtil(object):
         ide_devices = self.get_ide_devices()
         blk_items = []
         for i in range(0,len(ide_devices)):
-            ide_device=ide_devices[i]
+            ide_device = ide_devices[i]
             current_blk_items = self.get_lsblk("/dev/" + ide_device)
             for j in range(0,len(current_blk_items)):
                 blk_items.append(current_blk_items[i])
@@ -399,6 +395,7 @@ class DiskUtil(object):
             f.close()
             if(class_id.strip() == self.ide_class_id):
                 device_sdx_path = self.find_block_sdx_path(vmbus)
+                self.logger.log("found one ide with vmbus:" + str(vmbus) + "and the sdx path is: " + str(device_sdx_path))
                 ide_devices.append(device_sdx_path)
         return ide_devices
 
@@ -406,5 +403,5 @@ class DiskUtil(object):
         for root, dirs, files in os.walk(self.vmbus_sys_path + vmbus):
             if root.endswith("/block"):
                 device = dirs[0]
-                break
+                return device
         return None
