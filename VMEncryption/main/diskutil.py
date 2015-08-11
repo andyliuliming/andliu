@@ -393,8 +393,8 @@ class DiskUtil(object):
         this only return the device names of the ide.
         """
         ide_devices = []
-        for vmbus in os.listdir(vmbus_sys_path):
-            f = open('%s/%s/%s' % (vmbus_sys_path, vmbus, 'class_id'), 'r')
+        for vmbus in os.listdir(self.vmbus_sys_path):
+            f = open('%s/%s/%s' % (self.vmbus_sys_path, vmbus, 'class_id'), 'r')
             class_id = f.read()
             f.close()
             if(class_id.strip() == self.ide_class_id):
