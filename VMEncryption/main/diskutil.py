@@ -395,13 +395,18 @@ class DiskUtil(object):
             f.close()
             if(class_id.strip() == self.ide_class_id):
                 device_sdx_path = self.find_block_sdx_path(vmbus)
-                self.logger.log("found one ide with vmbus:" + str(vmbus) + "and the sdx path is: " + str(device_sdx_path))
+                self.logger.log("found one ide with vmbus:" + str(vmbus) + " and the sdx path is: " + str(device_sdx_path))
                 ide_devices.append(device_sdx_path)
         return ide_devices
 
     def find_block_sdx_path(self,vmbus):
-        for root, dirs, files in os.walk(self.vmbus_sys_path + vmbus):
+        device = None
+        for root, dirs, files in os.walk(os.path.join(self.vmbus_sys_path ,vmbus)):
             if root.endswith("/block"):
                 device = dirs[0]
-                return device
-        return None
+            else : #older distros
+                        for d in dirs:
+                            if ':' in d and "block" == d.split(':')[0]:
+                                device = d.split(':')[1]
+                                break
+        return device

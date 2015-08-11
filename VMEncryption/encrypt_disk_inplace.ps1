@@ -23,9 +23,9 @@ function Encrypt-Disk
 
     # get the max lun of the vm
     #$dataDisks = $vm | Get-AzureDataDisk
-   # $lun = -1
-   # Foreach($disk in $dataDisks)
-   # {
+    # $lun = -1
+    # Foreach($disk in $dataDisks)
+    # {
     #    if($disk.lun -gt $lun)
     #    {
     #        $lun=$disk.lun
@@ -47,7 +47,9 @@ function Encrypt-Disk
         "keyvault_uri":"https://andliukeyvault.vault.azure.net/",
         "client_id":"0c46e28c-e8cb-490d-bd4f-21626b6601f6",
         "client_secret":"q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s=",
-        "alg_name":"RSA1_5"
+        "alg_name":"RSA1_5",
+        "BekFileName":"097FD904-D387-4A53-827F-378E475D810A.BEK",
+        "BekFileSystem":"FAT32"
     }
     '
 
