@@ -21,6 +21,7 @@
 from diskutil import *
 from common import *
 import os.path
+
 class BekUtil(object):
     """description of class"""
     def __init__(self,disk_util,logger):
@@ -31,6 +32,7 @@ class BekUtil(object):
     def get_bek_passphrase(self, bek_filename, bek_filesystem):
         pass_phrase = None
         if TestHooks.search_not_only_ide:
+            self.logger.log("TESTHOOK: search not only ide set")
             azure_devices = self.disk_util.get_lsblk(None)
         else:
             azure_devices = self.disk_util.get_azure_devices()

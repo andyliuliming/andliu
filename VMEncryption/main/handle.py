@@ -98,7 +98,7 @@ def daemon():
         bek_filename = encryptionconfig.get_bek_filename()
         bek_filesystem = encryptionconfig.get_bek_filesystem()
         passphrase = bek_util.get_bek_passphrase(bek_filename,bek_filesystem)
-        if(passphrase!=None):
+        if(passphrase != None):
             crypt_items = disk_util.get_crypt_items()
             if(crypt_items is not None):
                 for i in range(0,len(crypt_items)):
