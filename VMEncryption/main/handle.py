@@ -94,7 +94,7 @@ def daemon():
         """
         disk_util = DiskUtil(hutil, MyPatching, encryption_logger)
         encryptionconfig = EncryptionConfig()
-        bek_util = BekUtil(disk_util)
+        bek_util = BekUtil(disk_util,encryption_logger)
         bek_filename = encryptionconfig.get_bek_filename()
         bek_filesystem = encryptionconfig.get_bek_filesystem()
         passphrase = bek_util.get_bek_passphrase(bek_filename,bek_filesystem)

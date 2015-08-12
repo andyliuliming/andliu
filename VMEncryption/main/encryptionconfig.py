@@ -23,6 +23,7 @@ from ConfigParser import ConfigParser
 class EncryptionConfig(object):
     def __init__(self):
         self.config_file_path = '/etc/azure_crypt_config.ini'
+        self.azure_crypt_config_section = 'azure_crypt_config'
 
     def update_config(self, extension_parameter):
         bek_filename = self.get_bek_filename()
@@ -30,6 +31,7 @@ class EncryptionConfig(object):
         if(extension_parameter.bek_filename != None):
             if(bek_filename != extension_parameter.bek_filename):
                 self.save_bek_filename(extension_parameter.bek_filename)
+
         if(extension_parameter.bek_filesystem != None):
             if(bek_filename != extension_parameter.bek_filesystem):
                 self.save_bek_filesystem(extension_parameter.bek_filesystem)
@@ -40,8 +42,11 @@ class EncryptionConfig(object):
         if(os.path.exists(self.config_file_path)):
             config.read(self.config_file_path)
         # read values from a section
-        config.set('azure_crypt_config', prop_name, prop_value)
-        config.save(self.config_file_path)
+        if(not config.has_section(self.azure_crypt_config_section)):
+            config.add_section(self.azure_crypt_config_section)
+        config.set(self.azure_crypt_config_section, prop_name, prop_value)
+        with open(self.config_file_path, 'wb') as configfile:
+            config.write(configfile)
 
     def get_config(self,prop_name):
         # write the configs, the bek file name and so on.
@@ -49,7 +54,7 @@ class EncryptionConfig(object):
             config = ConfigParser()
             config.read(self.config_file_path)
             # read values from a section
-            prop_value = config.get('azure_crypt_config', prop_name)
+            prop_value = config.get(self.azure_crypt_config_section, prop_name)
             return prop_value
         else:
             return None

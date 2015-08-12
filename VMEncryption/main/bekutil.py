@@ -23,8 +23,9 @@ from common import *
 import os.path
 class BekUtil(object):
     """description of class"""
-    def __init__(self,disk_util):
+    def __init__(self,disk_util,logger):
         self.disk_util = disk_util
+        self.logger = logger
         self.bek_filesystem_mount_point = '/mnt/azure_passphrase'
 
     def get_bek_passphrase(self, bek_filename, bek_filesystem):
@@ -39,10 +40,11 @@ class BekUtil(object):
             if(azure_device.fstype == bek_filesystem):
                 #TODO handle the failure case
                 disk_util.make_sure_disk_exists(self.bek_filesystem_mount_point)
-                disk_util.mount_filesystem(os.path.join('/dev/' + azure_device.name), "/mnt/azure_passphrase", bek_filesystem)
+                disk_util.mount_filesystem(os.path.join('/dev/' + azure_device.name), '/mnt/azure_passphrase', bek_filesystem)
                 #search for the passphrase file.
                 if(os.path.exists(os.path.join(self.bek_filesystem_mount_point,bek_filename))):
                     with open("/etc/fstab",'r') as f:
                         pass_phrase = f.read()
+                        self.logger.log("got the passphrase from"+str(azure_device.name))
                 disk_util.umount(self.bek_filesystem_mount_point)
         return pass_phrase
