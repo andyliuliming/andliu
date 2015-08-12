@@ -255,8 +255,8 @@ class DiskUtil(object):
         self.file_system = None
         self.luks_header_path = None
         """
-
-        pass
+        self.luks_open(passphrase,crypt_item.dev_path,crypt_item.name,crypt_item.luks_header_path)
+        self.mount_filesystem(os.path.join('/dev/mapper',crypt_item.name),crypt_item.mount_point,crypt_item.file_system)
 
     def umount(self, path):
         commandToExecute = '/bin/bash -c "umount ' + path + ' 2> /dev/null"'
@@ -278,7 +278,7 @@ class DiskUtil(object):
             self.logger.log('mount returnCode is ' + str(returnCode))
         return error
 
-    def query_dev_sdx_path(self,scsi_number):
+    def query_dev_sdx_path(self,scsi_number): 
         p = Popen(['lsscsi', scsi_number], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         identity, err = p.communicate()
         # identity sample: [5:0:0:0] disk Msft Virtual Disk 1.0 /dev/sdc

@@ -19,6 +19,7 @@
 # Requires Python 2.7+
 #
 from diskutil import *
+from common import *
 import os.path
 class BekUtil(object):
     """description of class"""
@@ -26,15 +27,19 @@ class BekUtil(object):
         self.disk_util = disk_util
         self.bek_filesystem_mount_point = '/mnt/azure_passphrase'
 
-    def get_bek_passphrase(self,bek_filename,bek_filesystem):
-        azure_devices = self.disk_util.get_azure_devices()
-        pass_phrase=None
+    def get_bek_passphrase(self, bek_filename, bek_filesystem):
+        pass_phrase = None
+        if TestHooks.search_not_only_ide:
+            azure_devices = self.disk_util.get_lsblk(None)
+        else:
+            azure_devices = self.disk_util.get_azure_devices()
+        
         for i in range(0,len(azure_devices)):
             azure_device = azure_devices[i]
             if(azure_device.fstype == bek_filesystem):
                 #TODO handle the failure case
                 disk_util.make_sure_disk_exists(self.bek_filesystem_mount_point)
-                disk_util.mount_filesystem(os.path.join('/dev/' + azure_device.name),"/mnt/azure_passphrase",bek_filesystem)
+                disk_util.mount_filesystem(os.path.join('/dev/' + azure_device.name), "/mnt/azure_passphrase", bek_filesystem)
                 #search for the passphrase file.
                 if(os.path.exists(os.path.join(self.bek_filesystem_mount_point,bek_filename))):
                     with open("/etc/fstab",'r') as f:

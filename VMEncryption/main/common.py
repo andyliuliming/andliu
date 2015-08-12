@@ -56,6 +56,9 @@ class CommonVariables:
     passphrase_too_long_or_none = 11
     parameter_error = 12
 
+class TestHooks:
+    search_not_only_ide = False
+
 class EncryptionError(object):
     def __init__(self):
         self.errorcode = CommonVariables.success
