@@ -48,7 +48,7 @@ class DiskUtil(object):
             self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
         return error
 
-    def copy_using_dd(self,from_device,to_device):
+    def copy_using_dd(self, from_device, to_device):
         error = EncryptionError()
         commandToExecute = '/bin/bash -c "' + 'dd conv=sparse if=' + from_device + ' of=' + to_device + ' bs=512"'
         self.logger.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
@@ -61,7 +61,7 @@ class DiskUtil(object):
             self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
         return error
 
-    def copy(self,from_device,to_device):
+    def copy(self, from_device, to_device):
         """
         if the os is ubuntu 12.04, then ues the cp --sparse instead.
         """
@@ -189,11 +189,7 @@ class DiskUtil(object):
 
     def encrypt_disk(self, devpath, passphrase, mappername, headerfile):
         error = EncryptionError()
-        self.hutil.log("dev path to cryptsetup luksFormat " + str(devpath))
-        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksFormat ' + devpath + ' --header ' + headerfile + '"'
-
-        proc = Popen(commandToExecute, shell=True)
-        returnCode = proc.wait()
+        returnCode = self.luks_format(passphrase,devpath,headerfile)
         if(returnCode != 0):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_format_error
@@ -201,17 +197,27 @@ class DiskUtil(object):
             self.logger.log('cryptsetup -y luksFormat returnCode is ' + str(returnCode))
             return error
 
-        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + '"'
-        self.hutil.log("dev mapper name to cryptsetup luksFormat " + (mappername))
-        proc = Popen(commandToExecute, shell=True)
-        returnCode = proc.wait()
+        returnCode = self.luks_open(passphrase, devpath, mappername, headerfile)
         if(returnCode != 0):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_open_error
             error.info = "devpath is " + str(devpath) + " dev_mapper_name is " + str(mappername)
             self.logger.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
-            return error
         return error
+
+    def luks_format(self,passphrase,devpath,headerfile):
+        self.hutil.log("dev path to cryptsetup luksFormat " + str(devpath))
+        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksFormat ' + devpath + ' --header ' + headerfile + '"'
+        proc = Popen(commandToExecute, shell=True)
+        returnCode = proc.wait()
+        return returnCode
+
+    def luks_open(self,passphrase,devpath,mappername,headerfile):
+        self.hutil.log("dev mapper name to cryptsetup luksFormat " + (mappername))
+        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + '"'
+        proc = Popen(commandToExecute, shell=True)
+        returnCode = proc.wait()
+        return returnCode
 
     def append_mount_info(self, dev_path, mount_point):
         shutil.copy2('/etc/fstab', '/etc/fstab.backup.' + str(str(uuid.uuid4())))
@@ -243,7 +249,13 @@ class DiskUtil(object):
     def mount_crypt_item(self, crypt_item,passphrase):
         """
         dangerous if the disk is formated by the customer again.
+        self.name = None
+        self.dev_path = None
+        self.mount_point = None
+        self.file_system = None
+        self.luks_header_path = None
         """
+
         pass
 
     def umount(self, path):
