@@ -246,7 +246,7 @@ class DiskUtil(object):
             returnCode = proc.wait()
         return returnCode
 
-    def mount_crypt_item(self, crypt_item,passphrase):
+    def mount_crypt_item(self, crypt_item, passphrase):
         """
         dangerous if the disk is formated by the customer again.
         self.name = None
@@ -255,6 +255,7 @@ class DiskUtil(object):
         self.file_system = None
         self.luks_header_path = None
         """
+        self.logger.log("trying to mount the crypt item:" + str(crypt_item))
         self.luks_open(passphrase,crypt_item.dev_path,crypt_item.name,crypt_item.luks_header_path)
         self.mount_filesystem(os.path.join('/dev/mapper',crypt_item.name),crypt_item.mount_point,crypt_item.file_system)
 
@@ -278,7 +279,7 @@ class DiskUtil(object):
             self.logger.log('mount returnCode is ' + str(returnCode))
         return error
 
-    def query_dev_sdx_path(self,scsi_number): 
+    def query_dev_sdx_path_by_scsi_id(self,scsi_number): 
         p = Popen(['lsscsi', scsi_number], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         identity, err = p.communicate()
         # identity sample: [5:0:0:0] disk Msft Virtual Disk 1.0 /dev/sdc
@@ -290,6 +291,7 @@ class DiskUtil(object):
         return sdx_path
 
     def query_dev_uuid_path_by_sdx_path(self,sdx_path):
+        self.logger.log("querying the sdx path of:" + str(sdx_path))
         p = Popen(['blkid',sdx_path],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         identity,err = p.communicate()
         identity = identity.lower()
@@ -306,7 +308,7 @@ class DiskUtil(object):
     def query_dev_uuid_path_by_scsi_number(self,scsi_number):
         # find the scsi using the filter
         # TODO figure out why the disk formated using fdisk do not have uuid
-        sdx_path = self.query_dev_sdx_path(scsi_number)
+        sdx_path = self.query_dev_sdx_path_by_scsi_id(scsi_number)
         return query_dev_uuid_by_sdx_path(sdx_path)
 
     def get_lsblk(self, dev_path):

@@ -88,6 +88,9 @@ class CryptItem(object):
         self.mount_point = None
         self.file_system = None
         self.luks_header_path = None
+        
+    def __str__(self):
+        return "name: " + str(self.name) + " dev_path:" + str(self.dev_path) + " mount_point:" + str(self.mount_point) + " file_system:" + str(self.file_system) + " luks_header_path:" + str(self.luks_header_path)
 
 class DiskPartition(object):
     def __init__(self):

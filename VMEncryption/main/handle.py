@@ -79,7 +79,7 @@ def enable():
     hutil.do_parse_context('Enable')
     # we need to start another subprocess to do it, because the initial process
     # would be killed by the wala in 5 minutes.
-    encryption_logger.log("")
+    encryption_logger.log("enabling...")
     start_daemon()
 
 def daemon():
@@ -160,7 +160,7 @@ def daemon():
             # check the disk is blank
             for i in range(0, encryption_keypair_len):
                 current_mapping = extension_parameter.query[i]
-                exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])
+                exist_disk_path = disk_util.query_dev_sdx_path_by_scsi_id(current_mapping["source_scsi_number"])
                 blk_items = disk_util.get_lsblk(exist_disk_path)
                 for i in range(0,len(blk_items)):
                     blk_item = blk_items[i]
@@ -171,7 +171,7 @@ def daemon():
             for i in range(0, encryption_keypair_len):
                 current_mapping = extension_parameter.query[i]
                 mapper_name = str(uuid.uuid4())
-                exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])
+                exist_disk_path = disk_util.query_dev_sdx_path_by_scsi_id(current_mapping["source_scsi_number"])
 
                 disk_util.encrypt_disk(exist_disk_path, extension_parameter.passphrase, mapper_name, luks_header_path)
                 disk_util.format_disk(os.path.join("/dev/mapper/", mapper_name), current_mapping["filesystem"])
@@ -236,14 +236,14 @@ def daemon():
                 encryption_logger.log("checking the encryptoin_keypair parameter")
                 current_mapping = extension_parameter.query[i]
                 encryption_logger.log("scsi_number to query is " + str(current_mapping["source_scsi_number"]))
-                exist_disk_path = disk_util.query_dev_sdx_path(current_mapping["source_scsi_number"])#disk_util.query_dev_uuid_path(current_mapping["source_scsi_number"])
+                exist_disk_path = disk_util.query_dev_sdx_path_by_scsi_id(current_mapping["source_scsi_number"])#disk_util.query_dev_uuid_path(current_mapping["source_scsi_number"])
 
                 encryption_logger.log("exist_disk_path is " + str(exist_disk_path))
                 if(exist_disk_path == None):
                     raise Exception("the scsi number is not found")
 
                 encryption_logger.log("scsi_number to query is " + str(current_mapping["target_scsi_number"]))
-                encryption_dev_root_path = disk_util.query_dev_sdx_path(current_mapping["target_scsi_number"])#disk_util.query_dev_uuid_path(current_mapping["target_scsi_number"])
+                encryption_dev_root_path = disk_util.query_dev_sdx_path_by_scsi_id(current_mapping["target_scsi_number"])#disk_util.query_dev_uuid_path(current_mapping["target_scsi_number"])
 
                 # scsi_host,channel,target_number,LUN
                 # find the scsi using the filter
