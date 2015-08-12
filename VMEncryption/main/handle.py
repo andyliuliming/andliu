@@ -216,6 +216,7 @@ def daemon():
                     crypt_item_to_update.name = mapper_name
                     crypt_item_to_update.dev_path = os.path.join("/dev/" ,device_item.name)
                     crypt_item_to_update.luks_header_path = luks_header_path
+                    crypt_item_to_update.file_system = device_item.fstype
                     crypt_item_to_update.mount_point = device_item.mountpoint
                     disk_util.update_crypt_item(crypt_item_to_update)
                     if(device_item.mountpoint != ""):

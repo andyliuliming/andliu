@@ -27,8 +27,6 @@ import shutil
 import uuid
 from common import *
 
-
-
 class DiskUtil(object):
     def __init__(self,hutil,patching,logger):
         self.hutil = hutil
@@ -178,6 +176,7 @@ class DiskUtil(object):
                         crypt_item.dev_path = crypt_mount_item_properties[1]
                         crypt_item.luks_header_path = crypt_mount_item_properties[2]
                         crypt_item.mount_point = crypt_mount_item_properties[3]
+                        crypt_item.file_system = crypt_mount_item_properties[4]
                         crypt_items.append(crypt_item)
         return crypt_items
 
@@ -187,7 +186,7 @@ class DiskUtil(object):
             with open(azure_crypt_mount,'w') as wf:
                 wf.write("")
 
-        mount_content_item = crypt_item.name + " " + crypt_item.dev_path + " " + crypt_item.luks_header_path + " " + crypt_item.mount_point
+        mount_content_item = crypt_item.name + " " + crypt_item.dev_path + " " + crypt_item.luks_header_path + " " + crypt_item.mount_point + " " + crypt_item.file_system
         with open("/etc/azure_crypt_mount",'r') as f:
             existing_content = f.read()
             new_mount_content = existing_content + "\n" + mount_content_item
@@ -236,7 +235,7 @@ class DiskUtil(object):
 
     def mount_crypt_item(self, crypt_item):
         """
-
+        dangerous if the disk is formated by the customer again.
         """
         pass
 

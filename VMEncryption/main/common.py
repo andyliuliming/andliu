@@ -27,10 +27,10 @@ class CommonVariables:
     extension_media_link = 'https://andliu.blob.core.windows.net/extensions/' + extension_name + '-' + str(extension_version) + '.zip'
     extension_label = 'Windows Azure VMEncryption Extension for Linux IaaS'
     extension_description = extension_label
-    key_disk_label_path="/dev/dev/disk/by-label/KEYDISK"
+    key_disk_label_path = "/dev/dev/disk/by-label/KEYDISK"
     key_disk_mountname = 'azurekeydisk'
     key_disk_fs_type = 'vfat'
-    encrypted_disk_mountname='azureencrypteddisk'
+    encrypted_disk_mountname = 'azureencrypteddisk'
     folder_command = 'folder'
     newdisk_command = 'newdisk'
     existdisk_command = 'existdisk'
@@ -83,6 +83,7 @@ class CryptItem(object):
         self.name = None
         self.dev_path = None
         self.mount_point = None
+        self.file_system = None
         self.luks_header_path = None
 
 class DiskPartition(object):
