@@ -129,26 +129,6 @@ class DiskUtil(object):
             self.logger.log('mkfs_command returnCode is ' + str(returnCode))
         return error
 
-    def append_mount_info(self, dev_path, mount_point):
-        shutil.copy2('/etc/fstab', '/etc/fstab.backup.' + str(str(uuid.uuid4())))
-        mount_content_item = dev_path + " " + mount_point + "  auto defaults 0 0"
-        new_mount_content = ""
-        with open("/etc/fstab",'r') as f:
-            existing_content = f.read()
-            new_mount_content = existing_content + "\n" + mount_content_item
-        with open("/etc/fstab",'w') as wf:
-            wf.write(new_mount_content)
-
-    """
-    mount the file system.
-    """
-    def mount_filesystem(self,dev_path,mount_point):
-        commandToExecute = '/bin/bash -c "mount ' + dev_path + ' ' + mount_point + '"'
-        self.logger.log("mount file system, execute :" + commandToExecute)
-        proc = Popen(commandToExecute, shell=True)
-        returnCode = proc.wait()
-        return returnCode
-
     def make_sure_disk_exists(self,path):
         #mkdir -p foo/bar/baz
         commandToExecute = '/bin/bash -c "mkdir -p ' + path + '"'
@@ -233,7 +213,34 @@ class DiskUtil(object):
             return error
         return error
 
-    def mount_crypt_item(self, crypt_item):
+    def append_mount_info(self, dev_path, mount_point):
+        shutil.copy2('/etc/fstab', '/etc/fstab.backup.' + str(str(uuid.uuid4())))
+        mount_content_item = dev_path + " " + mount_point + "  auto defaults 0 0"
+        new_mount_content = ""
+        with open("/etc/fstab",'r') as f:
+            existing_content = f.read()
+            new_mount_content = existing_content + "\n" + mount_content_item
+        with open("/etc/fstab",'w') as wf:
+            wf.write(new_mount_content)
+
+    """
+    mount the file system.
+    """
+    def mount_filesystem(self,dev_path,mount_point,file_system=None):
+        returnCode = -1
+        if file_system == None:
+            commandToExecute = '/bin/bash -c "mount ' + dev_path + ' ' + mount_point + '"'
+            self.logger.log("mount file system, execute :" + commandToExecute)
+            proc = Popen(commandToExecute, shell=True)
+            returnCode = proc.wait()
+        else: 
+            commandToExecute = '/bin/bash -c "mount ' + dev_path + ' ' + mount_point + ' -t ' + file_system + '"'
+            self.logger.log("mount file system, execute :" + commandToExecute)
+            proc = Popen(commandToExecute, shell=True)
+            returnCode = proc.wait()
+        return returnCode
+
+    def mount_crypt_item(self, crypt_item,passphrase):
         """
         dangerous if the disk is formated by the customer again.
         """

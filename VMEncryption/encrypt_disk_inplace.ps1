@@ -49,7 +49,7 @@ function Encrypt-Disk
         "client_secret":"q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s=",
         "alg_name":"RSA1_5",
         "BekFileName":"097FD904-D387-4A53-827F-378E475D810A.BEK",
-        "BekFileSystem":"FAT32"
+        "BekFileSystem":"vfat"
     }
     '
 

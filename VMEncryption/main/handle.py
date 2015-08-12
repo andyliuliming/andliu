@@ -44,6 +44,7 @@ from backuplogger import Backuplogger
 from keyvault import *
 from encryptionconfig import *
 from patch import *
+from bekutil import *
 #Main function is the only entrence to this extension handler
 
 def main():
@@ -93,18 +94,16 @@ def daemon():
         """
         disk_util = DiskUtil(hutil, MyPatching, encryption_logger)
         encryptionconfig = EncryptionConfig()
-
+        bek_util = BekUtil(disk_util)
         bek_filename = encryptionconfig.get_bek_filename()
         bek_filesystem = encryptionconfig.get_bek_filesystem()
-        if(bek_filename != None and bek_filesystem != None):
-            azure_devices = disk_util.get_azure_devices()
-            #TODO find the passphrase volume, and get the passphrase for mounting the encrypted volumes.
-
-        crypt_items = disk_util.get_crypt_items()
-        if(crypt_items is not None):
-            for i in range(0,len(crypt_items)):
-                crypt_item = crypt_items[i]
-                disk_util.mount_crypt_item(crypt_item)
+        passphrase = bek_util.get_bek_passphrase(bek_filename,bek_filesystem)
+        if(passphrase!=None):
+            crypt_items = disk_util.get_crypt_items()
+            if(crypt_items is not None):
+                for i in range(0,len(crypt_items)):
+                    crypt_item = crypt_items[i]
+                    disk_util.mount_crypt_item(crypt_item,passphrase)
 
         hutil.exit_if_enabled()
 
@@ -208,9 +207,9 @@ def daemon():
                     encrypted_items.append(device_item.name)
                     mapper_name = str(uuid.uuid4())
                     encryption_logger.log("encrypting " + str(device_item))
-                    disk_util.encrypt_disk(os.path.join("/dev/", device_item.name),extension_parameter.passphrase, mapper_name,luks_header_path)
+                    disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), extension_parameter.passphrase, mapper_name,luks_header_path)
                     encryption_logger.log("copying data " + str(device_item))
-                    disk_util.copy(os.path.join("/dev/" ,device_item.name),os.path.join(CommonVariables.dev_mapper_root,mapper_name))
+                    disk_util.copy(os.path.join("/dev/" ,device_item.name), os.path.join(CommonVariables.dev_mapper_root, mapper_name))
 
                     crypt_item_to_update = CryptItem()
                     crypt_item_to_update.name = mapper_name
@@ -221,7 +220,7 @@ def daemon():
                     disk_util.update_crypt_item(crypt_item_to_update)
                     if(device_item.mountpoint != ""):
                         disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
-        
+
         # {"command":"enableencryption_clone","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
         elif(extension_parameter.command == "enableencryption_clone"):
             encryption_logger.log("executing the enableencryption_all_inplace command.")
