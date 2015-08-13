@@ -46,7 +46,6 @@ from encryptionconfig import *
 from patch import *
 from bekutil import *
 #Main function is the only entrence to this extension handler
-
 def main():
     global hutil,MyPatching,encryption_logger
     HandlerUtil.LoggerInit('/var/log/waagent.log','/dev/stdout')
@@ -155,35 +154,39 @@ def daemon():
             # check whether the current is stripped disk
             # we need to change the uuid after the encryption.
             # http://www.sudo-juice.com/how-to-change-the-uuid-of-a-linux-partition/
-            encryption_keypair_len = len(extension_parameter.query)
+            encryption_query_len = len(extension_parameter.query)
 
             # check the disk is blank
-            for i in range(0, encryption_keypair_len):
+            for i in range(0, encryption_query_len):
                 current_mapping = extension_parameter.query[i]
-                exist_disk_path = disk_util.query_dev_sdx_path_by_scsi_id(current_mapping["source_scsi_number"])
+                scsi_number_to_format = current_mapping["source_scsi_number"]
+                exist_disk_path = disk_util.query_dev_sdx_path_by_scsi_id(scsi_number_to_format)
                 blk_items = disk_util.get_lsblk(exist_disk_path)
                 for i in range(0,len(blk_items)):
                     blk_item = blk_items[i]
                     if(blk_item.fstype != "" or blk_item.type != "disk"):
-                        encryption_logger.log("the blk item is " + str(blk_item))
+                        encryption_logger.log("the device with scsi number " + str(scsi_number_to_format) + "is not blank blk item is " + str(blk_item))
                         hutil.do_exit(1, 'Enable','error',CommonVariables.device_not_blank, 'Enable failed. enableencryption_format called on an not blank device')
 
-            for i in range(0, encryption_keypair_len):
+            for i in range(0, encryption_query_len):
                 current_mapping = extension_parameter.query[i]
                 mapper_name = str(uuid.uuid4())
+                file_system = current_mapping["filesystem"]
+                mount_point = os.path.join(current_mapping["mount_point"], mapper_name)
                 exist_disk_path = disk_util.query_dev_sdx_path_by_scsi_id(current_mapping["source_scsi_number"])
 
                 disk_util.encrypt_disk(exist_disk_path, extension_parameter.passphrase, mapper_name, luks_header_path)
-                disk_util.format_disk(os.path.join("/dev/mapper/", mapper_name), current_mapping["filesystem"])
+                disk_util.format_disk(os.path.join("/dev/mapper/", mapper_name), file_system)
                 disk_util.make_sure_disk_exists(os.path.join(current_mapping["mount_point"], mapper_name))
                 #TODO make the mount name better.
-                disk_util.mount_filesystem(os.path.join("/dev/mapper/", mapper_name), os.path.join(current_mapping["mount_point"], mapper_name))
+                disk_util.mount_filesystem(os.path.join("/dev/mapper/", mapper_name), mount_point)
 
                 crypt_item = CryptItem()
-                crypt_item.name = mapper_name
+                crypt_item.mapper_name = mapper_name
+                crypt_item.file_system = file_system
                 crypt_item.dev_path = exist_disk_path
                 crypt_item.luks_header_path = luks_header_path
-                crypt_item.mount_point = os.path.join(current_mapping["mount_point"], mapper_name)
+                crypt_item.mount_point = mount_point
                 disk_util.update_crypt_item(crypt_item)
 
         elif(extension_parameter.command == "enableencryption_all_inplace"):
@@ -198,7 +201,7 @@ def daemon():
                 should_skip = disk_util.should_skip_for_inplace_encryption(device_item)
 
                 if(device_item.name in encrypted_items):
-                    encryption_logger.log("already did a operation "+str(device_item))
+                    encryption_logger.log("already did a operation " + str(device_item))
                     should_skip = True
 
                 if(not should_skip):
@@ -212,7 +215,7 @@ def daemon():
                     disk_util.copy(os.path.join("/dev/" ,device_item.name), os.path.join(CommonVariables.dev_mapper_root, mapper_name))
 
                     crypt_item_to_update = CryptItem()
-                    crypt_item_to_update.name = mapper_name
+                    crypt_item_to_update.mapper_name = mapper_name
                     crypt_item_to_update.dev_path = os.path.join("/dev/" ,device_item.name)
                     crypt_item_to_update.luks_header_path = luks_header_path
                     crypt_item_to_update.file_system = device_item.fstype
@@ -244,10 +247,8 @@ def daemon():
 
                 encryption_logger.log("scsi_number to query is " + str(current_mapping["target_scsi_number"]))
                 encryption_dev_root_path = disk_util.query_dev_sdx_path_by_scsi_id(current_mapping["target_scsi_number"])#disk_util.query_dev_uuid_path(current_mapping["target_scsi_number"])
-
                 # scsi_host,channel,target_number,LUN
                 # find the scsi using the filter
-
                 encryption_logger.log("encryption_dev_root_path is " + str(encryption_dev_root_path))
                 if(encryption_dev_root_path == None):
                     raise Exception("the scsi number is not found")
@@ -261,11 +262,9 @@ def daemon():
             # find the existing mapping, both by uuid and the sdx path
 
             for i in range(0, encryption_keypair_len):
-                print ("################" + str(encryption_items))
                 encryption_item = encryption_items[i]
-
                 ################### device is a blank one ###################
-                disk_util.clone_partition_table(encryption_item.encryption_dev_root_path,encryption_item.exist_disk_path)
+                disk_util.clone_partition_table(target_dev=encryption_item.encryption_dev_root_path,source_dev=encryption_item.exist_disk_path)
                 encryption_item.target_disk_partitions = disk_util.get_disk_partitions(encryption_item.encryption_dev_root_path)
                 #TODO: make the source/target pair matches exactly
                 for partition_index in range(len(encryption_item.origin_disk_partitions)):

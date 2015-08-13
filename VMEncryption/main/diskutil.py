@@ -152,7 +152,7 @@ class DiskUtil(object):
                     if(crypt_mount_item.strip() != ""):
                         crypt_mount_item_properties = crypt_mount_item.strip().split()
                         crypt_item = CryptItem()
-                        crypt_item.name = crypt_mount_item_properties[0]
+                        crypt_item.mapper_name = crypt_mount_item_properties[0]
                         crypt_item.dev_path = crypt_mount_item_properties[1]
                         crypt_item.luks_header_path = crypt_mount_item_properties[2]
                         crypt_item.mount_point = crypt_mount_item_properties[3]
@@ -166,7 +166,7 @@ class DiskUtil(object):
             with open(azure_crypt_mount,'w') as wf:
                 wf.write("")
 
-        mount_content_item = crypt_item.name + " " + crypt_item.dev_path + " " + crypt_item.luks_header_path + " " + crypt_item.mount_point + " " + crypt_item.file_system
+        mount_content_item = crypt_item.mapper_name + " " + crypt_item.dev_path + " " + crypt_item.luks_header_path + " " + crypt_item.mount_point + " " + crypt_item.file_system
         with open("/etc/azure_crypt_mount",'r') as f:
             existing_content = f.read()
             new_mount_content = existing_content + "\n" + mount_content_item
@@ -256,8 +256,8 @@ class DiskUtil(object):
         self.luks_header_path = None
         """
         self.logger.log("trying to mount the crypt item:" + str(crypt_item))
-        self.luks_open(passphrase,crypt_item.dev_path,crypt_item.name,crypt_item.luks_header_path)
-        self.mount_filesystem(os.path.join('/dev/mapper',crypt_item.name),crypt_item.mount_point,crypt_item.file_system)
+        self.luks_open(passphrase,crypt_item.dev_path,crypt_item.mapper_name,crypt_item.luks_header_path)
+        self.mount_filesystem(os.path.join('/dev/mapper',crypt_item.mapper_name),crypt_item.mount_point,crypt_item.file_system)
 
     def umount(self, path):
         commandToExecute = '/bin/bash -c "umount ' + path + ' 2> /dev/null"'
