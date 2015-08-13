@@ -290,7 +290,17 @@ class DiskUtil(object):
         sdx_path = vals[len(vals) - 1]
         return sdx_path
 
-    def query_dev_uuid_path_by_sdx_path(self,sdx_path):
+    def is_blank_disk(self,dev_path):
+        blk_items = disk_util.get_lsblk(dev_path)
+        for i in range(0,len(blk_items)):
+            blk_item = blk_items[i]
+            if(blk_item.fstype != "" or blk_item.type != "disk"):
+                encryption_logger.log("the device  " + str(dev_path) + "is not blank blk item is " + str(blk_item))
+                return False
+                #hutil.do_exit(1, 'Enable','error', CommonVariables.device_not_blank, 'Enable failed. enableencryption_format called on an not blank device')
+        return True
+
+    def query_dev_uuid_path_by_sdx_path(self, sdx_path):
         self.logger.log("querying the sdx path of:" + str(sdx_path))
         p = Popen(['blkid',sdx_path],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         identity,err = p.communicate()
@@ -309,7 +319,7 @@ class DiskUtil(object):
         # find the scsi using the filter
         # TODO figure out why the disk formated using fdisk do not have uuid
         sdx_path = self.query_dev_sdx_path_by_scsi_id(scsi_number)
-        return query_dev_uuid_by_sdx_path(sdx_path)
+        return self.query_dev_uuid_path_by_sdx_path(sdx_path)
 
     def get_lsblk(self, dev_path):
         self.logger.log("getting the blk info from " + str(dev_path))

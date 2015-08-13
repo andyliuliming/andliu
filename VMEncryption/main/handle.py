@@ -161,12 +161,9 @@ def daemon():
                 current_mapping = extension_parameter.query[i]
                 scsi_number_to_format = current_mapping["source_scsi_number"]
                 exist_disk_path = disk_util.query_dev_sdx_path_by_scsi_id(scsi_number_to_format)
-                blk_items = disk_util.get_lsblk(exist_disk_path)
-                for i in range(0,len(blk_items)):
-                    blk_item = blk_items[i]
-                    if(blk_item.fstype != "" or blk_item.type != "disk"):
-                        encryption_logger.log("the device with scsi number " + str(scsi_number_to_format) + "is not blank blk item is " + str(blk_item))
-                        hutil.do_exit(1, 'Enable','error',CommonVariables.device_not_blank, 'Enable failed. enableencryption_format called on an not blank device')
+                encryption_logger.log("checking the blank for scsi number: " + str(scsi_number_to_format))
+                if(not disk_util.is_blank_disk(exist_disk_path)):
+                    hutil.do_exit(1, 'Enable','error', CommonVariables.device_not_blank, 'Enable failed. enableencryption_format called on an not blank device'+str(scsi_number_to_format));
 
             for i in range(0, encryption_query_len):
                 current_mapping = extension_parameter.query[i]
@@ -181,6 +178,10 @@ def daemon():
                 #TODO make the mount name better.
                 disk_util.mount_filesystem(os.path.join("/dev/mapper/", mapper_name), mount_point)
 
+                """
+                TODO: watchout that we need to use the uuid instead of the sdx, because it would be changed after rebooting.
+                the reason we do not get it before the formating is before that, the uuid is not created.
+                """
                 crypt_item = CryptItem()
                 crypt_item.mapper_name = mapper_name
                 crypt_item.file_system = file_system
@@ -232,21 +233,26 @@ def daemon():
             encryption_keypair_len = len(extension_parameter.query)
 
             # save the mounts info down.
-
             encryption_items = []
             # check the scsi
             for i in range(0, encryption_keypair_len):
                 encryption_logger.log("checking the encryptoin_keypair parameter")
                 current_mapping = extension_parameter.query[i]
-                encryption_logger.log("scsi_number to query is " + str(current_mapping["source_scsi_number"]))
-                exist_disk_path = disk_util.query_dev_sdx_path_by_scsi_id(current_mapping["source_scsi_number"])#disk_util.query_dev_uuid_path(current_mapping["source_scsi_number"])
+                source_scsi_number = current_mapping["source_scsi_number"]
+                encryption_logger.log("scsi_number to query is " + str(source_scsi_number))
+                exist_disk_path = disk_util.query_dev_sdx_path_by_scsi_id(source_scsi_number)#disk_util.query_dev_uuid_path(current_mapping["source_scsi_number"])
 
                 encryption_logger.log("exist_disk_path is " + str(exist_disk_path))
                 if(exist_disk_path == None):
                     raise Exception("the scsi number is not found")
 
-                encryption_logger.log("scsi_number to query is " + str(current_mapping["target_scsi_number"]))
-                encryption_dev_root_path = disk_util.query_dev_sdx_path_by_scsi_id(current_mapping["target_scsi_number"])#disk_util.query_dev_uuid_path(current_mapping["target_scsi_number"])
+                target_scsi_number = current_mapping["target_scsi_number"]
+                encryption_logger.log("scsi_number to query is " + str(target_scsi_number))
+                encryption_dev_root_path = disk_util.query_dev_sdx_path_by_scsi_id(target_scsi_number)#disk_util.query_dev_uuid_path(current_mapping["target_scsi_number"])
+
+                if(not disk_util.is_blank_disk(encryption_dev_root_path)):
+                    hutil.do_exit(1, 'Enable','error', CommonVariables.device_not_blank, 'Enable failed. enableencryption_format called on an not blank device'+str(scsi_number_to_format));
+
                 # scsi_host,channel,target_number,LUN
                 # find the scsi using the filter
                 encryption_logger.log("encryption_dev_root_path is " + str(encryption_dev_root_path))
@@ -260,11 +266,14 @@ def daemon():
                 encryption_items.append(encryption_item)
 
             # find the existing mapping, both by uuid and the sdx path
-
             for i in range(0, encryption_keypair_len):
                 encryption_item = encryption_items[i]
+                """
+                check the target disk is blank
+                """
                 ################### device is a blank one ###################
                 disk_util.clone_partition_table(target_dev=encryption_item.encryption_dev_root_path,source_dev=encryption_item.exist_disk_path)
+
                 encryption_item.target_disk_partitions = disk_util.get_disk_partitions(encryption_item.encryption_dev_root_path)
                 #TODO: make the source/target pair matches exactly
                 for partition_index in range(len(encryption_item.origin_disk_partitions)):
