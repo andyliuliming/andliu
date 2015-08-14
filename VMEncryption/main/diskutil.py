@@ -92,8 +92,11 @@ class DiskUtil(object):
         return disk_partitions
 
     def clone_partition_table(self, target_dev, source_dev):
-        # partition it
-        # http://superuser.com/questions/823922/dm-cryptluks-can-i-have-a-separate-header-without-storing-it-on-the-luks-encry
+        """
+        partition it
+        http://superuser.com/questions/823922/dm-cryptluks-can-i-have-a-separate-header-without-storing-it-on-the-luks-encry
+        """
+        self.logger.log("cloning the partition table from " + str(source_dev) + " to " + str(target_dev))
         if(self.get_disk_partition_table_type(source_dev) == "dos"):
             commandToExecute = '/bin/bash -c "' + 'sfdisk -d ' + source_dev + ' | sfdisk --force ' + target_dev + '"'
             proc = Popen(commandToExecute, shell=True)
@@ -291,7 +294,7 @@ class DiskUtil(object):
         return sdx_path
 
     def is_blank_disk(self,dev_path):
-        blk_items = disk_util.get_lsblk(dev_path)
+        blk_items = self.get_lsblk(dev_path)
         for i in range(0,len(blk_items)):
             blk_item = blk_items[i]
             if(blk_item.fstype != "" or blk_item.type != "disk"):

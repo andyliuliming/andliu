@@ -227,20 +227,23 @@ def daemon():
 
         # {"command":"enableencryption_clone","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
         elif(extension_parameter.command == "enableencryption_clone"):
-            encryption_logger.log("executing the enableencryption_all_inplace command.")
+            encryption_logger.log("executing the enableencryption_clone command.")
             # scsi_host,channel,target_number,LUN
             # find the scsi using the filter
             encryption_keypair_len = len(extension_parameter.query)
 
             # save the mounts info down.
             encryption_items = []
-            # check the scsi
+
+            """
+            checking the scsi device.
+            """
             for i in range(0, encryption_keypair_len):
                 encryption_logger.log("checking the encryptoin_keypair parameter")
                 current_mapping = extension_parameter.query[i]
                 source_scsi_number = current_mapping["source_scsi_number"]
                 encryption_logger.log("scsi_number to query is " + str(source_scsi_number))
-                exist_disk_path = disk_util.query_dev_sdx_path_by_scsi_id(source_scsi_number)#disk_util.query_dev_uuid_path(current_mapping["source_scsi_number"])
+                exist_disk_path = disk_util.query_dev_sdx_path_by_scsi_id(source_scsi_number)
 
                 encryption_logger.log("exist_disk_path is " + str(exist_disk_path))
                 if(exist_disk_path == None):
@@ -248,10 +251,11 @@ def daemon():
 
                 target_scsi_number = current_mapping["target_scsi_number"]
                 encryption_logger.log("scsi_number to query is " + str(target_scsi_number))
-                encryption_dev_root_path = disk_util.query_dev_sdx_path_by_scsi_id(target_scsi_number)#disk_util.query_dev_uuid_path(current_mapping["target_scsi_number"])
+                encryption_dev_root_path = disk_util.query_dev_sdx_path_by_scsi_id(target_scsi_number)
 
                 if(not disk_util.is_blank_disk(encryption_dev_root_path)):
-                    hutil.do_exit(1, 'Enable','error', CommonVariables.device_not_blank, 'Enable failed. enableencryption_format called on an not blank device'+str(scsi_number_to_format));
+                    encryption_logger.log("the target device is not a blank disk.")
+                    hutil.do_exit(1, 'Enable','error', CommonVariables.device_not_blank, 'Enable failed. enableencryption_all_inplace called on an not blank device'+str(scsi_number_to_format));
 
                 # scsi_host,channel,target_number,LUN
                 # find the scsi using the filter
@@ -262,6 +266,9 @@ def daemon():
                 encryption_item = EncryptionItem()
                 encryption_item.exist_disk_path = exist_disk_path
                 encryption_item.encryption_dev_root_path = encryption_dev_root_path
+
+
+
                 encryption_item.origin_disk_partitions = disk_util.get_disk_partitions(encryption_item.exist_disk_path)
                 encryption_items.append(encryption_item)
 
@@ -275,7 +282,11 @@ def daemon():
                 disk_util.clone_partition_table(target_dev=encryption_item.encryption_dev_root_path,source_dev=encryption_item.exist_disk_path)
 
                 encryption_item.target_disk_partitions = disk_util.get_disk_partitions(encryption_item.encryption_dev_root_path)
-                #TODO: make the source/target pair matches exactly
+
+                encryption_item.origin_disk_partitions.sort(key=lambda x: x.size, reverse=True)
+                encryption_item.target_disk_partitions.sort(key=lambda x: x.size, reverse=True)
+
+                #TODO: make the source/target pair matches exactly using size
                 for partition_index in range(len(encryption_item.origin_disk_partitions)):
                     origin_disk_partition = encryption_item.origin_disk_partitions[partition_index]
                     target_disk_partition = encryption_item.target_disk_partitions[partition_index]
