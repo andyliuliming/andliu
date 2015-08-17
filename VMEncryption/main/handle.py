@@ -258,7 +258,7 @@ def daemon():
                     source_blk_item = source_blk_items[j]
                     if(source_blk_item.type != "disk" and source_blk_item.type != "part"):
                         encryption_logger.log("the device type " + str(source_blk_item) + " found, we do not support it yet.")
-                        hutil.do_exit(1, 'Enable','error', CommonVariables.device_not_blank, 'Enable failed. enableencryption_all_inplace called on an not blank device' + str(scsi_number_to_format))
+                        hutil.do_exit(1, 'Enable','error', CommonVariables.device_not_blank, 'Enable failed. source device have type: ' + str(source_blk_item.type))
                 """
                 check the target device is blank or not
                 """
@@ -274,7 +274,7 @@ def daemon():
 
                 if(not disk_util.is_blank_disk(encryption_dev_root_path)):
                     encryption_logger.log("the target device is not a blank disk.")
-                    hutil.do_exit(1, 'Enable','error', CommonVariables.device_not_blank, 'Enable failed. enableencryption_all_inplace called on an not blank device'+str(scsi_number_to_format));
+                    hutil.do_exit(1, 'Enable','error', CommonVariables.device_not_blank, 'Enable failed. enableencryption_all_inplace called on an not blank device'+str(target_scsi_number));
 
             for i in range(0, encryption_keypair_len):
                 current_mapping = extension_parameter.query[i]
@@ -291,10 +291,10 @@ def daemon():
                 if there's only one item and the item type is disk, then encrypt the whole disk.
                 """
                 if(len(source_blk_items) == 0):
-                    encryption_logger.log("")
+                    encryption_logger.log("no block device found on " + str(exist_disk_path))
                 elif(len(source_blk_items) == 1):
                     source_blk_item = source_blk_items[0]
-                    if(source_blk_item.type == "disk" and source_blk_item.fstype!=""):
+                    if(source_blk_item.type == "disk" and source_blk_item.fstype != ""):
                         mapper_name = str(uuid.uuid4())
                         encryption_result = disk_util.encrypt_disk(encryption_dev_root_path, extension_parameter.passphrase, mapper_name, luks_header_path)
                         if(encryption_result.code == CommonVariables.success):
@@ -307,8 +307,9 @@ def daemon():
                     target_blk_items = disk_util.get_lsblk(encryption_item.encryption_dev_root_path)
                     target_blk_items.sort(key=lambda x: x.size, reverse=True)
                     for j in range(0,len(source_blk_items)):
-                        if(source_blk_item.type=="part" and source_blk_item.fstype!=""):
+                        if(source_blk_item.type == "part" and source_blk_item.fstype != ""):
                             source_blk_item = source_blk_items[j]
+                            disk_util.umount(os.path.join("/dev/",source_blk_item.name))
                             target_blk_item = target_blk_items[j]
                             #skip those device without file system.
                             mapper_name = str(uuid.uuid4())
@@ -328,60 +329,6 @@ def daemon():
                                 encryption_logger.log("encrypt disk result: " + str(encryption_result))
                         else:
                             encryption_logger.log("skip item : " + str(source_blk_item))
-
-                #encryption_logger.log("checking the encryptoin_keypair parameter")
-                #current_mapping = extension_parameter.query[i]
-                #source_scsi_number = current_mapping["source_scsi_number"]
-                #encryption_logger.log("scsi_number to query is " + str(source_scsi_number))
-                #exist_disk_path = disk_util.query_dev_sdx_path_by_scsi_id(source_scsi_number)
-
-                #target_scsi_number = current_mapping["target_scsi_number"]
-                #encryption_logger.log("scsi_number to query is " + str(target_scsi_number))
-                #encryption_dev_root_path = disk_util.query_dev_sdx_path_by_scsi_id(target_scsi_number)
-
-
-                #encryption_item = EncryptionItem()
-                #encryption_item.exist_disk_path = exist_disk_path
-                #encryption_item.encryption_dev_root_path = encryption_dev_root_path
-
-                #"""
-                #if there's only one item returned and the type is disk with file system, then it's a whole disk with file system.
-                #"""
-
-                #encryption_item.origin_disk_partitions = disk_util.get_disk_partitions(encryption_item.exist_disk_path)
-                #encryption_items.append(encryption_item)
-
-            # find the existing mapping, both by uuid and the sdx path
-            #for i in range(0, encryption_keypair_len):
-            #    encryption_item = encryption_items[i]
-            #    """
-            #    check the target disk is blank
-            #    """
-            #    ################### device is a blank one ###################
-            #    disk_util.clone_partition_table(target_dev=encryption_item.encryption_dev_root_path,source_dev=encryption_item.exist_disk_path)
-
-            #    encryption_item.target_disk_partitions = disk_util.get_disk_partitions(encryption_item.encryption_dev_root_path)
-
-            #    encryption_item.origin_disk_partitions.sort(key=lambda x: x.size, reverse=True)
-            #    encryption_item.target_disk_partitions.sort(key=lambda x: x.size, reverse=True)
-
-            #    #TODO: make the source/target pair matches exactly using size
-            #    for partition_index in range(len(encryption_item.origin_disk_partitions)):
-            #        origin_disk_partition = encryption_item.origin_disk_partitions[partition_index]
-            #        target_disk_partition = encryption_item.target_disk_partitions[partition_index]
-            #        mapper_name = str(uuid.uuid4())
-            #        encryption_result = disk_util.encrypt_disk(target_disk_partition.dev_path, extension_parameter.passphrase, mapper_name, luks_header_path)
-
-            #        if(encryption_result.code == CommonVariables.success):
-            #            disk_util.copy(origin_disk_partition.dev_path, os.path.join(CommonVariables.dev_mapper_root,mapper_name))
-            #        else:
-            #            encryption_logger.log("encrypt disk result: " + str(encryption_result))
-            ## TODO:change the fstab to do the mounting
-
-            ## disk_util.replace_mounts_in_fs_tab(encryption_item.origin_disk_partitions,
-            ## encryption_item.target_disk_partitions)
-            #disk_util.update_mount_info(encryption_items)
-            #disk_util.mount_all()
         else:
             hutil.do_exit(1, 'Enable','error','1', 'Enable failed. wrong parameter command')
     except Exception, e:

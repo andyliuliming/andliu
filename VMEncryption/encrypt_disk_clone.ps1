@@ -9,30 +9,11 @@ function Encrypt-Disk
 	)
     $vm = (Get-AzureVM -ServiceName $cloudServiceName -Name $virtualMachineName)
 
-    #$osDisk = $vm | Get-AzureOSDisk 
-    #$osDiskMediaLink = $osDisk.MediaLink
-    #$destinationKeyDiskPath = $osDiskMediaLink.Scheme+"://"+$osDiskMediaLink.Host+$osDiskMediaLink.Segments[0]+$osDiskMediaLink.Segments[1]+"empty_disk_blob"+[guid]::NewGuid().ToString()+".vhd"
-    #prepare the keydisk
-
-    # get the max lun of the vm
-    #$dataDisks = $vm | Get-AzureDataDisk
-    #$lun = -1
-    #Foreach($disk in $dataDisks)
-    #{
-    #    if($disk.lun -gt $lun)
-    #    {
-    #        $lun=$disk.lun
-    #    }
-    #}
-    #$lun+=1
-    # get the max lun of the vm
-    #Write-Output "the lun of your newly attached disk is "+$lun
-    #Add-AzureDataDisk -CreateNew -DiskSizeInGB 2 -DiskLabel "disklabel$lun" -VM $vm -LUN $lun -MediaLocation $destinationKeyDiskPath| update-azurevm
 
     $privateConfig='
     {
         "command":"enableencryption_clone",
-        "query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:1]"}],
+        "query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:1]"},{"source_scsi_number":"[5:0:0:2]","target_scsi_number":"[5:0:0:3]"}],
         "passphrase":"MicrosoftLoveLinuxBecausVeWeHaveCCIC@123",
         "filesystem":"ext4",
         "mountpoint":"/mnt/",

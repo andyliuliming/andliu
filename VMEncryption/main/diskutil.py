@@ -298,7 +298,7 @@ class DiskUtil(object):
         for i in range(0,len(blk_items)):
             blk_item = blk_items[i]
             if(blk_item.fstype != "" or blk_item.type != "disk"):
-                encryption_logger.log("the device  " + str(dev_path) + "is not blank blk item is " + str(blk_item))
+                self.logger.log("the device  " + str(dev_path) + "is not blank blk item is " + str(blk_item))
                 return False
                 #hutil.do_exit(1, 'Enable','error', CommonVariables.device_not_blank, 'Enable failed. enableencryption_format called on an not blank device')
         return True
