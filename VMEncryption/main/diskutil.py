@@ -329,9 +329,9 @@ class DiskUtil(object):
         blk_items = []
         # lsblk -b -n -P -o NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL
         if(dev_path is None):
-            p = subprocess.Popen(['lsblk', '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen(['lsblk', '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         else:
-            p = subprocess.Popen(['lsblk', '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL',dev_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen(['lsblk', '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE',dev_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out_lsblk_output, err = p.communicate()
         out_lsblk_output = str(out_lsblk_output)
         self.logger.log("out_lsblk_output:\n" + str(out_lsblk_output))
@@ -345,6 +345,9 @@ class DiskUtil(object):
                 for j in range(0, disk_info_item_array_length):
                     disk_info_property = disk_info_item_array[j]
                     property_item_pair = disk_info_property.split('=')
+                    if(property_item_pair[0] == 'SIZE'):
+                        blk_item.size = property_item_pair[1].strip('"')
+
                     if(property_item_pair[0] == 'NAME'):
                         blk_item.name = property_item_pair[1].strip('"')
 
