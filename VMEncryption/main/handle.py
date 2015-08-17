@@ -304,11 +304,11 @@ def daemon():
                 else:
                     source_blk_items.sort(key=lambda x: x.size, reverse=True)
                     disk_util.clone_partition_table(target_dev=encryption_dev_root_path,source_dev=exist_disk_path)
-                    target_blk_items = disk_util.get_lsblk(encryption_item.encryption_dev_root_path)
+                    target_blk_items = disk_util.get_lsblk(encryption_dev_root_path)
                     target_blk_items.sort(key=lambda x: x.size, reverse=True)
                     for j in range(0,len(source_blk_items)):
+                        source_blk_item = source_blk_items[j]
                         if(source_blk_item.type == "part" and source_blk_item.fstype != ""):
-                            source_blk_item = source_blk_items[j]
                             disk_util.umount(os.path.join("/dev/",source_blk_item.name))
                             target_blk_item = target_blk_items[j]
                             #skip those device without file system.
