@@ -30,8 +30,6 @@ class KeyVaultUtil(object):
     def __init__(self,logger):
         self.api_version = "2015-06-01"
         self.logger = logger
-        self.DiskEncryptionKeyFileName = "LinuxPassPhraseFileName"
-        pass
 
     def get_token(self,client_id,client_secret):
         #https://andliukeyvault.vault.azure.net/keys/mykey/create?api-version=2015-06-01
@@ -44,7 +42,7 @@ class KeyVaultUtil(object):
         """
         return "/".join(map(lambda x: str(x).rstrip('/'), args))
 
-    def create_key(self, passphrase, keyvault_uri, encryption_keyvault_uri, client_id, alg_name, client_secret):
+    def create_key(self, passphrase, keyvault_uri, encryption_keyvault_uri, client_id, alg_name, client_secret,DiskEncryptionKeyFileName):
         """
         secret_keyvault_uri should be https://andliukeyvault.vault.azure.net/secrets/security1
         encryption_keyvault_uri should be https://andliukeyvault.vault.azure.net/keys/mykey/encrypt?api-version=2015-06-01
@@ -143,7 +141,7 @@ class KeyVaultUtil(object):
         sasuri_obj = urlparse.urlparse(secret_keyvault_uri)
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
         request_content='{"value":"{0}","attributes":{"enabled":"true"},"tags":{"DiskEncryptionKeyEncryptionAlgorithm":"{1}","DiskEncryptionKeyFileName","{2}"}}'\
-            .format(result_json["value"],alg_name,self.DiskEncryptionKeyFileName)
+            .format(result_json["value"],alg_name,DiskEncryptionKeyFileName)
 
         headers = {}
         headers["Content-Type"] = "application/json"

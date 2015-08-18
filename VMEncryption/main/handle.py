@@ -137,7 +137,7 @@ def daemon():
         keyVaultUtil.create_key(passphraseEncoded,extension_parameter.keyvault_uri,\
             extension_parameter.encryption_keyvault_uri,\
             extension_parameter.client_id,\
-            extension_parameter.alg_name,extension_parameter.client_secret)
+            extension_parameter.alg_name,extension_parameter.client_secret,extension_parameter.bek_filename)
 
         luks_header_path = disk_util.create_luks_header()
         ########### the existing scenario starts ###################
