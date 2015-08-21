@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -18,7 +18,7 @@
 #
 # Requires Python 2.7+
 #
-from encryption import EncryptionError
+from common import EncryptionError
 import os
 import os.path
 from common import *
