@@ -32,13 +32,13 @@ function Encrypt-Disk
     {
         "command":"enableencryption_format",
         "query":[{"source_scsi_number":"[5:0:0:2]","filesystem":"ext4","mount_point":"/mnt/"}],
-        "passphrase":"MicrosoftLoveLinuxBecausVeWeHaveCCIC@123",
+        "passphrase":"Quattro!",
         "encryption_keyvault_uri":"https://andliukeyvault.vault.azure.net/keys/mykey",
         "keyvault_uri":"https://andliukeyvault.vault.azure.net/",
         "client_id":"0c46e28c-e8cb-490d-bd4f-21626b6601f6",
         "client_secret":"q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s=",
         "alg_name":"RSA1_5",
-        "BekFileName":"097FD904-D387-4A53-827F-378E475D810A.BEK",
+        "BekFileName":"LinuxPassPhraseFileName",
         "BekFileSystem":"vfat"
     }
     '
@@ -47,7 +47,7 @@ function Encrypt-Disk
 
     $tempAzurevm = (Get-AzureVM -ServiceName $cloudServiceName -Name $virtualMachineName)
  
-    set-azurevmextension -extensionName "VMEncryption2" -Publisher "Microsoft.OSTCExtensions" -Version 0.1 -vm $tempAzurevm -PrivateConfiguration $privateConfig | update-azurevm
+    set-azurevmextension -extensionName "VMEncryption" -Publisher "Microsoft.OSTCExtensions" -Version 0.1 -vm $tempAzurevm -PrivateConfiguration $privateConfig | update-azurevm
 }
 
 #Add-AzureAccount

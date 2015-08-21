@@ -32,6 +32,7 @@ import imp
 import shlex
 import traceback
 import urllib2
+import time
 import urlparse
 import httplib
 from urlparse import urljoin
@@ -46,6 +47,7 @@ def urljoin(*args):
         return "/".join(map(lambda x: str(x).rstrip('/'), args))
 
 def main():
+    timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     util =  KeyVaultUtil(None)
     #0c46e28c-e8cb-490d-bd4f-21626b6601f6
     #q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s=
