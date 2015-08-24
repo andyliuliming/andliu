@@ -141,7 +141,7 @@ class KeyVaultUtil(object):
         sasuri_obj = urlparse.urlparse(secret_keyvault_uri)
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
         secret_value=result_json[u'value']
-        request_content='{{"value":"{0}","attributes":{{"enabled":"true"}},"tags":{{"DiskEncryptionKeyEncryptionAlgorithm":"{1}","DiskEncryptionKeyFileName","{2}"}}}}'\
+        request_content='{{"value":"{0}","attributes":{{"enabled":"true"}},"tags":{{"DiskEncryptionKeyEncryptionAlgorithm":"{1}","DiskEncryptionKeyFileName":"{2}"}}}}'\
             .format(str(secret_value),alg_name,DiskEncryptionKeyFileName)
 
         headers = {}
@@ -153,4 +153,5 @@ class KeyVaultUtil(object):
 
         result_content = result.read()
         connection.close()
+        self.logger.log("the result for creating secret is "+str(result_content))
         result_json = json.loads(result_content)
