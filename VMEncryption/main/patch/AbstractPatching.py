@@ -1,4 +1,4 @@
-﻿#!/usr/bin/python
+#!/usr/bin/python
 #
 # AbstractPatching is the base patching class of all the linux distros
 #
