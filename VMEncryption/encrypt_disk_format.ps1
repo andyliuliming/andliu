@@ -32,7 +32,7 @@ function Encrypt-Disk
     {
         "command":"enableencryption_format",
         "query":[{"source_scsi_number":"[5:0:0:2]","filesystem":"ext4","mount_point":"/mnt/"}],
-        "encryption_keyvault_uri":"https://andliukeyvault.vault.azure.net/keys/mykey",
+        "KeyEncryptionKeyURL":"https://andliukeyvault.vault.azure.net/keys/mykey",
         "KeyVaultURL":"https://andliukeyvault.vault.azure.net/",
         "AADClientID":"0c46e28c-e8cb-490d-bd4f-21626b6601f6",
         "KeyEncryptionAlgorithm":"RSA1_5",

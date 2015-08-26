@@ -16,17 +16,16 @@ function Encrypt-Disk
         "query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:1]"},{"source_scsi_number":"[5:0:0:2]","target_scsi_number":"[5:0:0:3]"}],
         "filesystem":"ext4",
         "mountpoint":"/mnt/",
-        "encryption_keyvault_uri":"https://andliukeyvault.vault.azure.net/keys/mykey",
+        "KeyEncryptionKeyURL":"https://andliukeyvault.vault.azure.net/keys/mykey",
         "KeyVaultURL":"https://andliukeyvault.vault.azure.net/",
         "AADClientID":"0c46e28c-e8cb-490d-bd4f-21626b6601f6",
-        "AADClientSecret":"q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s=",
         "KeyEncryptionAlgorithm":"RSA1_5",
         "BekFileSystem":"vfat"
     }'
 
     $privateConfig='
     {
-        ""
+        "AADClientSecret":"q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s="
     }
     '
     $tempAzurevm = (Get-AzureVM -ServiceName $cloudServiceName -Name $virtualMachineName)

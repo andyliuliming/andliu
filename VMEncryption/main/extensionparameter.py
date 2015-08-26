@@ -59,8 +59,8 @@ class ExtensionParameter(object):
 
 
     def validate_parameter_format(self):
-        if(self.passphrase is None):
-            self.hutil.log("passphrase is none")
+        if(self.AADClientID is None or self.AADClientSecret is None):
+            self.hutil.log("AADClientID or AADClientSecret is none")
             return CommonVariables.parameter_error
         if(self.command is None):
             return CommonVariables.parameter_error

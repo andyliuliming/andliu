@@ -42,7 +42,7 @@ function Encrypt-Disk
     $publicConfig='
     {
         "command":"enableencryption_all_inplace",
-        "encryption_keyvault_uri":"https://andliukeyvault.vault.azure.net/keys/mykey",
+        "KeyEncryptionKeyURL":"https://andliukeyvault.vault.azure.net/keys/mykey",
         "KeyVaultURL":"https://andliukeyvault.vault.azure.net/",
         "AADClientID":"0c46e28c-e8cb-490d-bd4f-21626b6601f6",
         "KeyEncryptionAlgorithm":"RSA1_5",

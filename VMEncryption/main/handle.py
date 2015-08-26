@@ -141,7 +141,6 @@ def daemon():
 
         #store the luks passphrase in the secret.
         keyVaultUtil = KeyVaultUtil(encryption_logger)
-        #passphraseEncoded = base64.standard_b64encode(extension_parameter.passphrase)
 
         keyVaultUtil.create_kek_secret(passphrase = extension_parameter.passphrase,\
             KeyVaultURL= extension_parameter.KeyVaultURL,\
