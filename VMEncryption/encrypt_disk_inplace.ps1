@@ -4,8 +4,8 @@
 #$passphrase="VGhpcyBpcyB0aGUgcGxhaW4gdGV4dCBtZXNzYWdlLg"
 #$encryption_keyvault_uri="https://andliukeyvault.vault.azure.net/keys/mykey"
 #$keyvault_uri="https://andliukeyvault.vault.azure.net/"
-#$client_id="0c46e28c-e8cb-490d-bd4f-21626b6601f6"
-#$client_secret="q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s="
+#$AADClientID="0c46e28c-e8cb-490d-bd4f-21626b6601f6"
+#$AADClientSecret="q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s="
 #$alg_name="RSA1_5"
 function Encrypt-Disk
 {
@@ -36,20 +36,23 @@ function Encrypt-Disk
     #Add-AzureDataDisk -CreateNew -DiskSizeInGB 3 -DiskLabel "disklabel$lun" -VM $vm -LUN $lun -MediaLocation $destinationKeyDiskPath| update-azurevm
     # $encryption_keyvault_uri="https://andliukeyvault.vault.azure.net/keys/mykey"
     #$keyvault_uri="https://andliukeyvault.vault.azure.net/"
-    #$client_id="0c46e28c-e8cb-490d-bd4f-21626b6601f6"
-    #$client_secret="q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s="
+    #$AADClientID="0c46e28c-e8cb-490d-bd4f-21626b6601f6"
+    #$AADClientSecret="q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s="
     #$alg_name="RSA1_5"
-    $privateConfig='
+    $publicConfig='
     {
         "command":"enableencryption_all_inplace",
-        "passphrase":"Quattro!",
         "encryption_keyvault_uri":"https://andliukeyvault.vault.azure.net/keys/mykey",
-        "keyvault_uri":"https://andliukeyvault.vault.azure.net/",
-        "client_id":"0c46e28c-e8cb-490d-bd4f-21626b6601f6",
-        "client_secret":"q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s=",
-        "alg_name":"RSA1_5",
-        "BekFileName":"LinuxPassPhraseFileName",
+        "KeyVaultURL":"https://andliukeyvault.vault.azure.net/",
+        "AADClientID":"0c46e28c-e8cb-490d-bd4f-21626b6601f6",
+        "KeyEncryptionAlgorithm":"RSA1_5",
         "BekFileSystem":"vfat"
+    }
+    '
+
+    $privateConfig='
+    {
+        "AADClientSecret":"q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s="
     }
     '
 
@@ -57,7 +60,7 @@ function Encrypt-Disk
 
     $tempAzurevm = (Get-AzureVM -ServiceName $cloudServiceName -Name $virtualMachineName)
  
-    set-azurevmextension -extensionName "VMEncryption" -Publisher "Microsoft.OSTCExtensions" -Version 0.1 -vm $tempAzurevm -PrivateConfiguration $privateConfig | update-azurevm
+    set-azurevmextension -extensionName "VMEncryption" -Publisher "Microsoft.OSTCExtensions" -Version 0.1 -vm $tempAzurevm -PrivateConfiguration $privateConfig -PublicConfiguration $publicConfig| update-azurevm
 }
 
 #Add-AzureAccount

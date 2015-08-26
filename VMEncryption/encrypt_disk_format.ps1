@@ -28,18 +28,20 @@ function Encrypt-Disk
     #Write-Output "the lun of your newly attached disk is "+$lun
     #Add-AzureDataDisk -CreateNew -DiskSizeInGB 3 -DiskLabel "disklabel$lun" -VM $vm -LUN $lun -MediaLocation $destinationKeyDiskPath| update-azurevm
 
-    $privateConfig='
+    $publicConfig='
     {
         "command":"enableencryption_format",
         "query":[{"source_scsi_number":"[5:0:0:2]","filesystem":"ext4","mount_point":"/mnt/"}],
-        "passphrase":"Quattro!",
         "encryption_keyvault_uri":"https://andliukeyvault.vault.azure.net/keys/mykey",
-        "keyvault_uri":"https://andliukeyvault.vault.azure.net/",
-        "client_id":"0c46e28c-e8cb-490d-bd4f-21626b6601f6",
-        "client_secret":"q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s=",
-        "alg_name":"RSA1_5",
-        "BekFileName":"LinuxPassPhraseFileName",
+        "KeyVaultURL":"https://andliukeyvault.vault.azure.net/",
+        "AADClientID":"0c46e28c-e8cb-490d-bd4f-21626b6601f6",
+        "KeyEncryptionAlgorithm":"RSA1_5",
         "BekFileSystem":"vfat"
+    }
+    '
+    $privateConfig='
+    {
+        "AADClientSecret":"q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s="
     }
     '
 
@@ -47,7 +49,7 @@ function Encrypt-Disk
 
     $tempAzurevm = (Get-AzureVM -ServiceName $cloudServiceName -Name $virtualMachineName)
  
-    set-azurevmextension -extensionName "VMEncryption" -Publisher "Microsoft.OSTCExtensions" -Version 0.1 -vm $tempAzurevm -PrivateConfiguration $privateConfig | update-azurevm
+    set-azurevmextension -extensionName "VMEncryption" -Publisher "Microsoft.OSTCExtensions" -Version 0.1 -vm $tempAzurevm -PrivateConfiguration $privateConfig -PublicConfiguration $publicConfig | update-azurevm
 }
 
 #Add-AzureAccount

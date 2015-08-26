@@ -29,6 +29,10 @@ class BekUtil(object):
         self.logger = logger
         self.bek_filesystem_mount_point = '/mnt/azure_passphrase'
 
+    def generate_passphrase(self):
+        #TODO genearete a better passphrase
+        return base64.standard_b64encode(str(uuid.uuid4()))
+
     def get_bek_passphrase(self, bek_filename, bek_filesystem):
         pass_phrase = None
         if TestHooks.search_not_only_ide:

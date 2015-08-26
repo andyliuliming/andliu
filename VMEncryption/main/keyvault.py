@@ -31,7 +31,7 @@ class KeyVaultUtil(object):
         self.api_version = "2015-06-01"
         self.logger = logger
 
-    def get_token(self,client_id,client_secret):
+    def get_token(self,AADClientID,AADClientSecret):
         #https://andliukeyvault.vault.azure.net/keys/mykey/create?api-version=2015-06-01
         pass
 
@@ -42,7 +42,7 @@ class KeyVaultUtil(object):
         """
         return "/".join(map(lambda x: str(x).rstrip('/'), args))
 
-    def create_key(self, passphrase, keyvault_uri, encryption_keyvault_uri, client_id, alg_name, client_secret,DiskEncryptionKeyFileName):
+    def create_kek_secret(self, passphrase, KeyVaultURL, KeyEncryptionKeyURL, AADClientID, KeyEncryptionAlgorithm, AADClientSecret,DiskEncryptionKeyFileName):
         """
         secret_keyvault_uri should be https://andliukeyvault.vault.azure.net/secrets/security1
         encryption_keyvault_uri should be https://andliukeyvault.vault.azure.net/keys/mykey/encrypt?api-version=2015-06-01
@@ -72,7 +72,7 @@ class KeyVaultUtil(object):
         # get the access token
         sasuri_obj = urlparse.urlparse(authorize_uri + "/oauth2/token")
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
-        request_content = "resource=" + urllib.quote(keyvault_resource_name) + "&client_id=" + client_id + "&client_secret=" + urllib.quote(client_secret) + "&grant_type=client_credentials"
+        request_content = "resource=" + urllib.quote(keyvault_resource_name) + "&client_id=" + AADClientID + "&client_secret=" + urllib.quote(AADClientSecret) + "&grant_type=client_credentials"
         headers = {}
         connection.request('POST', sasuri_obj.path  , (request_content), headers = headers)
         result = connection.getresponse()

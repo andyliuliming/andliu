@@ -92,17 +92,21 @@ def daemon():
         search for the bek volume, then mount it:)
         """
         disk_util = DiskUtil(hutil, MyPatching, encryption_logger)
-        encryptionconfig = EncryptionConfig()
-        bek_util = BekUtil(disk_util,encryption_logger)
-        bek_filename = encryptionconfig.get_bek_filename()
-        bek_filesystem = encryptionconfig.get_bek_filesystem()
-        passphrase = bek_util.get_bek_passphrase(bek_filename,bek_filesystem)
-        if(passphrase != None):
-            crypt_items = disk_util.get_crypt_items()
-            if(crypt_items is not None):
-                for i in range(0,len(crypt_items)):
-                    crypt_item = crypt_items[i]
-                    disk_util.mount_crypt_item(crypt_item,passphrase)
+
+        encryption_config = EncryptionConfig()
+        passphrase = None
+
+        if(encryptioncconfig.config_file_exists()):
+            bek_util = BekUtil(disk_util, encryption_logger)
+            bek_filename = encryption_config.get_bek_filename()
+            bek_filesystem = encryption_config.get_bek_filesystem()
+            passphrase = bek_util.get_bek_passphrase(bek_filename, bek_filesystem)
+            if(passphrase != None):
+                crypt_items = disk_util.get_crypt_items()
+                if(crypt_items is not None):
+                    for i in range(0,len(crypt_items)):
+                        crypt_item = crypt_items[i]
+                        disk_util.mount_crypt_item(crypt_item, passphrase)
 
         hutil.exit_if_enabled()
 
@@ -111,14 +115,19 @@ def daemon():
         """
         protected_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('protectedSettings')
         public_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('publicSettings')
+
         extension_parameter = ExtensionParameter(hutil, protected_settings, public_settings)
+        if(passphrase == None):
+            extension_parameter.passphrase = bek_util.generate_passphrase()
+        else:
+            extension_parameter.passphrase = passphrase
 
         """
         if there's bek file name/bek file system in the parameter, then update the encryption config
         """
-        encryptionconfig.update_config(extension_parameter)
-        bek_filename = encryptionconfig.get_bek_filename()
-        bek_filesystem = encryptionconfig.get_bek_filesystem()
+        encryption_config.update_config(extension_parameter)
+        bek_filename = encryption_config.get_bek_filename()
+        bek_filesystem = encryption_config.get_bek_filesystem()
 
         # validate the parameters format
         para_validate_result = extension_parameter.validate_parameter_format()
@@ -132,12 +141,15 @@ def daemon():
 
         #store the luks passphrase in the secret.
         keyVaultUtil = KeyVaultUtil(encryption_logger)
-        passphraseEncoded = base64.standard_b64encode(extension_parameter.passphrase)
+        #passphraseEncoded = base64.standard_b64encode(extension_parameter.passphrase)
 
-        keyVaultUtil.create_key(passphraseEncoded,extension_parameter.keyvault_uri,\
-            extension_parameter.encryption_keyvault_uri,\
-            extension_parameter.client_id,\
-            extension_parameter.alg_name,extension_parameter.client_secret,extension_parameter.bek_filename)
+        keyVaultUtil.create_kek_secret(passphrase = extension_parameter.passphrase,\
+            KeyVaultURL= extension_parameter.KeyVaultURL,\
+            KeyEncryptionKeyURL= extension_parameter.KeyEncryptionKeyURL,\
+            AADClientID= extension_parameter.AADClientID,\
+            KeyEncryptionAlgorithm= extension_parameter.KeyEncryptionAlgorithm,\
+            AADClientSecret= extension_parameter.AADClientSecret,\
+            BekFileName= extension_parameter.BekFileName)
 
         luks_header_path = disk_util.create_luks_header()
         ########### the existing scenario starts ###################

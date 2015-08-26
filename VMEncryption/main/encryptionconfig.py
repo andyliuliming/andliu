@@ -25,6 +25,9 @@ class EncryptionConfig(object):
         self.config_file_path = '/etc/azure_crypt_config.ini'
         self.azure_crypt_config_section = 'azure_crypt_config'
 
+    def config_file_exists(self):
+        return os.path.exists(self.config_file_path)
+
     def update_config(self, extension_parameter):
         bek_filename = self.get_bek_filename()
         bek_filesystem = self.get_bek_filesystem()
@@ -32,9 +35,9 @@ class EncryptionConfig(object):
             if(bek_filename != extension_parameter.bek_filename):
                 self.save_bek_filename(extension_parameter.bek_filename)
 
-        if(extension_parameter.bek_filesystem != None):
-            if(bek_filename != extension_parameter.bek_filesystem):
-                self.save_bek_filesystem(extension_parameter.bek_filesystem)
+        if(extension_parameter.VolumeType != None):
+            if(bek_filename != extension_parameter.VolumeType):
+                self.save_bek_filesystem(extension_parameter.VolumeType)
 
     def save_config(self, prop_name, prop_value):
         #TODO make the operation an transaction.

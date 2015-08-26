@@ -31,18 +31,30 @@ class ExtensionParameter(object):
         TODO: we should validate the parameter first
         """
         self.hutil = hutil
-        self.command = protected_settings.get('command')
-        self.force = protected_settings.get('force')
         self.devpath = None
         self.query = protected_settings.get('query')
-        self.passphrase = protected_settings.get('passphrase')
-        self.encryption_keyvault_uri = protected_settings.get('encryption_keyvault_uri')
-        self.keyvault_uri = protected_settings.get('keyvault_uri')
-        self.client_id = protected_settings.get('client_id')
-        self.client_secret = protected_settings.get('client_secret')
-        self.alg_name = protected_settings.get('alg_name')
-        self.bek_filename = protected_settings.get('BekFileName')
-        self.bek_filesystem = protected_settings.get('BekFileSystem')
+        """
+        public settings
+        public string AADClientID;
+        public string KeyVaultURL;
+        public string KeyEncryptionKeyURL;
+        public string KeyEncryptionAlgorithm;
+        public string VolumeType;
+        """
+        self.command = public_settings.get('command')
+        self.KeyEncryptionKeyURL = public_settings.get('KeyEncryptionKeyURL')
+        self.KeyVaultURL = public_settings.get('KeyVaultURL')
+        self.AADClientID = public_settings.get('AADClientID')
+        self.KeyEncryptionAlgorithm = public_settings.get('KeyEncryptionAlgorithm')
+        self.VolumeType = public_settings.get('VolumeType')
+        
+        """
+        private settings
+        """
+        self.AADClientSecret = protected_settings.get('AADClientSecret')
+
+        self.passphrase = None#protected_settings.get('passphrase')
+        self.BekFileName = "LinuxPassPhraseFileName"#protected_settings.get('BekFileName')
         # parse the query from the array
 
 
@@ -54,10 +66,6 @@ class ExtensionParameter(object):
             return CommonVariables.parameter_error
         elif(self.command == 'newdisk'):
             pass
-        if(self.force is not None):
-            if(self.force != "true" and self.force != "false"):
-                self.hutil.log("parameter 'force' should be 'true' or 'false'")
-                return CommonVariables.parameter_error
         #if(self.query is None):
         #    return CommonVariables.parameter_error
         return CommonVariables.success
