@@ -31,9 +31,9 @@ class EncryptionConfig(object):
     def update_config(self, extension_parameter):
         bek_filename = self.get_bek_filename()
         bek_filesystem = self.get_bek_filesystem()
-        if(extension_parameter.BekFileName != None):
-            if(bek_filename != extension_parameter.BekFileName):
-                self.save_bek_filename(extension_parameter.BekFileName)
+        if(extension_parameter.DiskEncryptionKeyFileName != None):
+            if(bek_filename != extension_parameter.DiskEncryptionKeyFileName):
+                self.save_bek_filename(extension_parameter.DiskEncryptionKeyFileName)
 
         if(extension_parameter.VolumeType != None):
             if(bek_filename != extension_parameter.VolumeType):

@@ -42,7 +42,7 @@ class KeyVaultUtil(object):
         """
         return "/".join(map(lambda x: str(x).rstrip('/'), args))
 
-    def create_kek_secret(self, passphrase, KeyVaultURL, KeyEncryptionKeyURL, AADClientID, KeyEncryptionAlgorithm, AADClientSecret,DiskEncryptionKeyFileName):
+    def create_kek_secret(self, Passphrase, KeyVaultURL, KeyEncryptionKeyURL, AADClientID, KeyEncryptionAlgorithm, AADClientSecret,DiskEncryptionKeyFileName):
         """
         secret_keyvault_uri should be https://andliukeyvault.vault.azure.net/secrets/security1
         encryption_keyvault_uri should be https://andliukeyvault.vault.azure.net/keys/mykey/encrypt?api-version=2015-06-01
@@ -50,14 +50,15 @@ class KeyVaultUtil(object):
         """
         api for encrypt use key is https://msdn.microsoft.com/en-us/library/azure/dn878060.aspx
         """
-        #self.logger.log("encryption_keyvault_uri==" + str(encryption_keyvault_uri))
+        #self.logger.log("encryption_keyvault_uri==" +
+        #str(encryption_keyvault_uri))
         sasuri_obj = urlparse.urlparse(encryption_keyvault_uri)
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
-        request_content = '{"alg":"' + alg_name + '","value":"' + passphrase + '"}'
+        request_content = '{"alg":"' + alg_name + '","value":"' + Passphrase + '"}'
         headers = {}
         connection.request('POST', sasuri_obj.path + '?api-version=' + self.api_version , request_content, headers = headers)
         result = connection.getresponse()
-        self.logger.log(str(result.status) +" "+ str(result.getheaders()))
+        self.logger.log(str(result.status) + " " + str(result.getheaders()))
         connection.close()
 
         # get the WWW-Authenticate headers
@@ -76,7 +77,7 @@ class KeyVaultUtil(object):
         headers = {}
         connection.request('POST', sasuri_obj.path  , (request_content), headers = headers)
         result = connection.getresponse()
-        self.logger.log(str(result.status) +" "+ str(result.getheaders()))
+        self.logger.log(str(result.status) + " " + str(result.getheaders()))
         result_content = result.read()
         connection.close()
         result_json = json.loads(result_content)
@@ -99,7 +100,7 @@ class KeyVaultUtil(object):
         #Authorization: Bearer
         connection.request('GET', sasuri_obj.path + '?api-version=' + self.api_version, headers = headers)
         result = connection.getresponse()
-        self.logger.log(str(result.status) +" "+ str(result.getheaders()))
+        self.logger.log(str(result.status) + " " + str(result.getheaders()))
 
         result_content = result.read()
         connection.close()
@@ -111,10 +112,10 @@ class KeyVaultUtil(object):
         encrypt our passphrase using the encryption key
         api for encrypt use key is https://msdn.microsoft.com/en-us/library/azure/dn878060.aspx
         """
-        self.logger.log("encrypting the secret using key." + str(key_id) + " " + str(passphrase) + " " + str(access_token))
+        self.logger.log("encrypting the secret using key." + str(key_id) + " " + str(Passphrase) + " " + str(access_token))
         sasuri_obj = urlparse.urlparse(key_id)
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
-        request_content = '{"alg":"' + alg_name + '","value":"' + passphrase + '"}'
+        request_content = '{"alg":"' + alg_name + '","value":"' + Passphrase + '"}'
         headers = {}
         headers["Content-Type"] = "application/json"
         headers["Authorization"] = "Bearer " + str(access_token)
@@ -140,18 +141,18 @@ class KeyVaultUtil(object):
         self.logger.log("secret_keyvault_uri is :" + str(secret_keyvault_uri) + " and keyvault_uri is :" + str(keyvault_uri))
         sasuri_obj = urlparse.urlparse(secret_keyvault_uri)
         connection = httplib.HTTPSConnection(sasuri_obj.hostname)
-        secret_value=result_json[u'value']
-        request_content='{{"value":"{0}","attributes":{{"enabled":"true"}},"tags":{{"DiskEncryptionKeyEncryptionAlgorithm":"{1}","DiskEncryptionKeyFileName":"{2}"}}}}'\
+        secret_value = result_json[u'value']
+        request_content = '{{"value":"{0}","attributes":{{"enabled":"true"}},"tags":{{"DiskEncryptionKeyEncryptionAlgorithm":"{1}","DiskEncryptionKeyFileName":"{2}"}}}}'\
             .format(str(secret_value),alg_name,DiskEncryptionKeyFileName)
 
         headers = {}
         headers["Content-Type"] = "application/json"
         headers["Authorization"] = "Bearer " + access_token
-        connection.request('PUT', sasuri_obj.path + '?api-version='+self.api_version , request_content, headers = headers)
+        connection.request('PUT', sasuri_obj.path + '?api-version=' + self.api_version , request_content, headers = headers)
         result = connection.getresponse()
-        self.logger.log(str(result.status) +" "+ str(result.getheaders()))
+        self.logger.log(str(result.status) + " " + str(result.getheaders()))
 
         result_content = result.read()
         connection.close()
-        self.logger.log("the result for creating secret is "+str(result_content))
+        self.logger.log("the result for creating secret is " + str(result_content))
         result_json = json.loads(result_content)

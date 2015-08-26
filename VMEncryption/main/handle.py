@@ -96,7 +96,7 @@ def daemon():
         encryption_config = EncryptionConfig()
         passphrase = None
 
-        if(encryptioncconfig.config_file_exists()):
+        if(encryption_config.config_file_exists()):
             bek_util = BekUtil(disk_util, encryption_logger)
             bek_filename = encryption_config.get_bek_filename()
             bek_filesystem = encryption_config.get_bek_filesystem()
@@ -142,13 +142,13 @@ def daemon():
         #store the luks passphrase in the secret.
         keyVaultUtil = KeyVaultUtil(encryption_logger)
 
-        keyVaultUtil.create_kek_secret(passphrase = extension_parameter.passphrase,\
+        keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
             KeyVaultURL= extension_parameter.KeyVaultURL,\
             KeyEncryptionKeyURL= extension_parameter.KeyEncryptionKeyURL,\
             AADClientID= extension_parameter.AADClientID,\
             KeyEncryptionAlgorithm= extension_parameter.KeyEncryptionAlgorithm,\
             AADClientSecret= extension_parameter.AADClientSecret,\
-            BekFileName= extension_parameter.BekFileName)
+            DiskEncryptionKeyFileName= extension_parameter.DiskEncryptionKeyFileName)
 
         luks_header_path = disk_util.create_luks_header()
         ########### the existing scenario starts ###################

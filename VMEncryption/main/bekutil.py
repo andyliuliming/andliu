@@ -20,6 +20,7 @@
 #
 from diskutil import *
 from common import *
+import base64
 import os.path
 
 class BekUtil(object):
