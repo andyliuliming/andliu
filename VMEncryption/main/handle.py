@@ -87,7 +87,6 @@ def daemon():
         # Ensure the same configuration is executed only once
         # If the previous enable failed, we do not have retry logic here.
         # TODO Remount all
-
         """
         search for the bek volume, then mount it:)
         """
@@ -95,6 +94,8 @@ def daemon():
 
         encryption_config = EncryptionConfig()
         passphrase = None
+        bek_filename = None
+        bek_filesystem = None
 
         if(encryption_config.config_file_exists()):
             bek_util = BekUtil(disk_util, encryption_logger)
@@ -149,7 +150,9 @@ def daemon():
             KeyEncryptionAlgorithm= extension_parameter.KeyEncryptionAlgorithm,\
             AADClientSecret= extension_parameter.AADClientSecret,\
             DiskEncryptionKeyFileName= extension_parameter.DiskEncryptionKeyFileName)
-
+        """
+        if the key is not created successfully, the encrypted file system should not 
+        """
         luks_header_path = disk_util.create_luks_header()
         ########### the existing scenario starts ###################
         # we do not support the backup version policy

@@ -55,6 +55,7 @@ class CommonVariables:
     mount_point_not_exists = 10
     passphrase_too_long_or_none = 11
     parameter_error = 12
+    create_encryption_secret_failed = 13
 
 class TestHooks:
     search_not_only_ide = False
