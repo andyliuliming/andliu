@@ -27,14 +27,9 @@ import base64
 from common import *
 
 class KeyVaultUtil(object):
-    """description of class"""
     def __init__(self,logger):
         self.api_version = "2015-06-01"
         self.logger = logger
-
-    def get_token(self,AADClientID,AADClientSecret):
-        #https://andliukeyvault.vault.azure.net/keys/mykey/create?api-version=2015-06-01
-        pass
 
     def urljoin(self,*args):
         """
@@ -43,19 +38,15 @@ class KeyVaultUtil(object):
         """
         return "/".join(map(lambda x: str(x).rstrip('/'), args))
 
+    """
+    The Passphrase is a plain encoded string. before the encryption it would be base64encoding.
+    """
     def create_kek_secret(self, Passphrase, KeyVaultURL, KeyEncryptionKeyURL, AADClientID, KeyEncryptionAlgorithm, AADClientSecret,DiskEncryptionKeyFileName):
-        
-        """
-        secret_keyvault_uri should be https://andliukeyvault.vault.azure.net/secrets/security1
-        KeyEncryptionKeyURL should be https://andliukeyvault.vault.azure.net/keys/mykey/encrypt?api-version=2015-06-01
-        """
-        """
-        api for encrypt use key is https://msdn.microsoft.com/en-us/library/azure/dn878060.aspx
-        """
         try:
+            passphrase_encoded = base64.standard_b64encode(Passphrase)
             sasuri_obj = urlparse.urlparse(KeyEncryptionKeyURL)
             connection = httplib.HTTPSConnection(sasuri_obj.hostname)
-            request_content = '{"alg":"' + KeyEncryptionAlgorithm + '","value":"' + Passphrase + '"}'
+            request_content = '{"alg":"' + KeyEncryptionAlgorithm + '","value":"' + passphrase_encoded + '"}'
             headers = {}
             connection.request('POST', sasuri_obj.path + '?api-version=' + self.api_version , request_content, headers = headers)
             result = connection.getresponse()
@@ -64,38 +55,61 @@ class KeyVaultUtil(object):
             if(result.status != httplib.OK and result.status != httplib.ACCEPTED):
                 return CommonVariables.create_encryption_secret_failed
 
-            # get the WWW-Authenticate headers
             """
             get the access token 
             """
             self.logger.log("getting the access token.")
             bearerHeader = result.getheader("www-authenticate")
-            authorize_uri = "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47"
-            keyvault_resource_name = "https://vault.azure.net"
-            # https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/token
-            # get the access token
-            sasuri_obj = urlparse.urlparse(authorize_uri + "/oauth2/token")
-            connection = httplib.HTTPSConnection(sasuri_obj.hostname)
-            request_content = "resource=" + urllib.quote(keyvault_resource_name) + "&client_id=" + AADClientID + "&client_secret=" + urllib.quote(AADClientSecret) + "&grant_type=client_credentials"
-            headers = {}
-            connection.request('POST', sasuri_obj.path  , (request_content), headers = headers)
-            result = connection.getresponse()
-            self.logger.log(str(result.status) + " " + str(result.getheaders()))
 
-            if(result.status != httplib.OK and result.status != httplib.ACCEPTED):
+            authorize_uri = self.get_authorize_uri(bearerHeader)
+            if(authorize_uri == None):
                 return CommonVariables.create_encryption_secret_failed
-            result_content = result.read()
-            connection.close()
-            
-
-            result_json = json.loads(result_content)
-            access_token = result_json["access_token"]
-            #WWW-Authenticate: Bearer
-            #authorization="https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47",
-            #resource="https://vault.azure.net"
-
+            access_token = self.get_access_token(authorize_uri,AADClientID,AADClientSecret)
+            if(access_token == None):
+                return CommonVariables.create_encryption_secret_failed
 
             """
+            we should skip encrypting the passphrase if the KeyVaultURL and KeyEncryptionKeyURL is empty
+            """
+            if(KeyVaultURL == None and KeyEncryptionKeyURL == None):
+                secret_value = passphrase_encoded
+            else:
+                secret_value = self.encrypt_passphrase(access_token,passphrase_encoded,KeyVaultURL,KeyEncryptionKeyURL,AADClientID,KeyEncryptionAlgorithm,AADClientSecret)
+            if(secret_value == None):
+                return CommonVariables.create_encryption_secret_failed
+            self.create_secret(access_token,KeyVaultURL,secret_value,KeyEncryptionAlgorithm,DiskEncryptionKeyFileName)
+
+            return CommonVariables.success
+        except Exception as e:
+            self.logger.log("Can't create_kek_secret: " + str(e))
+            return CommonVariables.create_encryption_secret_failed
+
+    def get_access_token(self,AuthorizeUri,AADClientID,AADClientSecret):
+        keyvault_resource_name = "https://vault.azure.net"
+        sasuri_obj = urlparse.urlparse(AuthorizeUri + "/oauth2/token")
+        connection = httplib.HTTPSConnection(sasuri_obj.hostname)
+        request_content = "resource=" + urllib.quote(keyvault_resource_name) + "&client_id=" + AADClientID + "&client_secret=" + urllib.quote(AADClientSecret) + "&grant_type=client_credentials"
+        headers = {}
+        connection.request('POST', sasuri_obj.path , (request_content), headers = headers)
+        result = connection.getresponse()
+        self.logger.log(str(result.status) + " " + str(result.getheaders()))
+
+        if(result.status != httplib.OK and result.status != httplib.ACCEPTED):
+            return CommonVariables.create_encryption_secret_failed
+        result_content = result.read()
+        connection.close()
+
+        result_json = json.loads(result_content)
+        access_token = result_json["access_token"]
+        return access_token
+
+    """
+    return the encrypted secret uri if success. else return None
+    """
+    def encrypt_passphrase(self,AccessToken,Passphrase, KeyVaultURL, KeyEncryptionKeyURL, AADClientID, KeyEncryptionAlgorithm, AADClientSecret):
+        try:
+            """
+            api for encrypt use key is https://msdn.microsoft.com/en-us/library/azure/dn878060.aspx
             get the key information, to get the key id, so we can use that key to do encryption
             https://mykeyvault.vault.azure.net/keys/{key-name}?api-version={api-version}
             https://msdn.microsoft.com/en-us/library/azure/dn878080.aspx
@@ -104,7 +118,7 @@ class KeyVaultUtil(object):
             sasuri_obj = urlparse.urlparse(KeyEncryptionKeyURL)
             connection = httplib.HTTPSConnection(sasuri_obj.hostname)
             headers = {}
-            headers["Authorization"] = "Bearer " + access_token
+            headers["Authorization"] = "Bearer " + AccessToken
             #Authorization: Bearer
             connection.request('GET', sasuri_obj.path + '?api-version=' + self.api_version, headers = headers)
             result = connection.getresponse()
@@ -115,7 +129,6 @@ class KeyVaultUtil(object):
             connection.close()
             result_json = json.loads(result_content)
             key_id = result_json["key"]["kid"]
-
 
             """
             encrypt our passphrase using the encryption key
@@ -139,34 +152,53 @@ class KeyVaultUtil(object):
             result_content = result.read()
             connection.close()
             result_json = json.loads(result_content)
-        
-            """
-            create secret api https://msdn.microsoft.com/en-us/library/azure/dn903618.aspx
-            https://mykeyvault.vault.azure.net/secrets/{secret-name}?api-version={api-version}
-            """
-            self.logger.log("creating the secret.")
-            secret_name = str(uuid.uuid4())
+            secret_value = result_json[u'value']
+            return secret_value
+        except Exception as e:
+            self.logger.log("Can't encrypt_passphrase: " + str(e))
+            return None
 
+    def create_secret(self,AccessToken,KeyVaultURL,secret_value,KeyEncryptionAlgorithm,DiskEncryptionKeyFileName):
+        """
+        create secret api https://msdn.microsoft.com/en-us/library/azure/dn903618.aspx
+        https://mykeyvault.vault.azure.net/secrets/{secret-name}?api-version={api-version}
+        """
+        try:
+            secret_name = str(uuid.uuid4())
             secret_keyvault_uri = self.urljoin(KeyVaultURL,"secrets",secret_name)
             self.logger.log("secret_keyvault_uri is :" + str(secret_keyvault_uri) + " and keyvault_uri is :" + str(KeyVaultURL))
             sasuri_obj = urlparse.urlparse(secret_keyvault_uri)
             connection = httplib.HTTPSConnection(sasuri_obj.hostname)
-            secret_value = result_json[u'value']
             request_content = '{{"value":"{0}","attributes":{{"enabled":"true"}},"tags":{{"DiskEncryptionKeyEncryptionAlgorithm":"{1}","DiskEncryptionKeyFileName":"{2}"}}}}'\
                 .format(str(secret_value),KeyEncryptionAlgorithm,DiskEncryptionKeyFileName)
 
             headers = {}
             headers["Content-Type"] = "application/json"
-            headers["Authorization"] = "Bearer " + access_token
+            headers["Authorization"] = "Bearer " + AccessToken
             connection.request('PUT', sasuri_obj.path + '?api-version=' + self.api_version , request_content, headers = headers)
             result = connection.getresponse()
             self.logger.log(str(result.status) + " " + str(result.getheaders()))
-            if(result.status != httplib.OK and result.status != httplib.ACCEPTED):
-                return CommonVariables.create_encryption_secret_failed
-            result_content = result.read()
             connection.close()
-            self.logger.log("the result for creating secret is " + str(result_content))
-            result_json = json.loads(result_content)
+            if(result.status != httplib.OK and result.status != httplib.ACCEPTED):
+                return False
+            return True
         except Exception as e:
-            self.log("Can't create_kek_secret: " + str(e))
-            return CommonVariables.create_encryption_secret_failed
+            self.logger.log("Can't create_secret: " + str(e))
+            return False
+
+    def get_authorize_uri(self,bearerHeader):
+        """
+        Bearer authorization="https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47", resource="https://vault.azure.net"
+        """
+        try:
+            self.logger.log("trying to get the authorize uri from " + str(bearerHeader))
+            bearerString = str(bearerHeader)
+            authoirzation_key = 'authorization="'
+            authoirzation_index = bearerString.index(authoirzation_key)
+            bearerString = bearerString[(authoirzation_index + len(authoirzation_key)):]
+            bearerString = bearerString[0:bearerString.index('"')]
+
+            return bearerString
+        except Exception as e:
+            self.logger.log("Can't the the authorize uri: " + str(e))
+            return None

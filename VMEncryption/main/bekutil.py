@@ -32,7 +32,7 @@ class BekUtil(object):
 
     def generate_passphrase(self):
         #TODO genearete a better passphrase
-        return base64.standard_b64encode(str(uuid.uuid4()))
+        return str(uuid.uuid4())
 
     def get_bek_passphrase(self, bek_filename, bek_filesystem):
         pass_phrase = None

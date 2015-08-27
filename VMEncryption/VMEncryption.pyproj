@@ -30,6 +30,7 @@
     <Content Include="encrypt_disk.ps1" />
     <Content Include="encrypt_disk_clone.ps1" />
     <Content Include="encrypt_disk_format.ps1" />
+    <Content Include="encrypt_disk_inplace_withoutbek.ps1" />
     <Content Include="keyvault_prepare.ps1" />
     <Content Include="encrypt_disk_inplace.ps1" />
     <Content Include="linuxencryption.pfx" />

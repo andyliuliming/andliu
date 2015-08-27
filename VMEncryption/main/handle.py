@@ -120,6 +120,15 @@ def daemon():
         extension_parameter = ExtensionParameter(hutil, protected_settings, public_settings)
         if(passphrase == None):
             extension_parameter.passphrase = bek_util.generate_passphrase()
+            create_kek_secret_result = keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
+                KeyVaultURL= extension_parameter.KeyVaultURL,\
+                KeyEncryptionKeyURL= extension_parameter.KeyEncryptionKeyURL,\
+                AADClientID= extension_parameter.AADClientID,\
+                KeyEncryptionAlgorithm= extension_parameter.KeyEncryptionAlgorithm,\
+                AADClientSecret= extension_parameter.AADClientSecret,\
+                DiskEncryptionKeyFileName= extension_parameter.DiskEncryptionKeyFileName)
+            if(create_kek_secret_result!=CommonVariables.success):
+                hutil.do_exit(1, 'Enable','error',str(create_kek_secret_result), 'Enable failed.')
         else:
             extension_parameter.passphrase = passphrase
 
@@ -143,13 +152,6 @@ def daemon():
         #store the luks passphrase in the secret.
         keyVaultUtil = KeyVaultUtil(encryption_logger)
 
-        keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
-            KeyVaultURL= extension_parameter.KeyVaultURL,\
-            KeyEncryptionKeyURL= extension_parameter.KeyEncryptionKeyURL,\
-            AADClientID= extension_parameter.AADClientID,\
-            KeyEncryptionAlgorithm= extension_parameter.KeyEncryptionAlgorithm,\
-            AADClientSecret= extension_parameter.AADClientSecret,\
-            DiskEncryptionKeyFileName= extension_parameter.DiskEncryptionKeyFileName)
         """
         if the key is not created successfully, the encrypted file system should not 
         """
