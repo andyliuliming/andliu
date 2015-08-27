@@ -24,6 +24,7 @@ import urllib
 import json
 import uuid
 import base64
+import traceback
 from common import *
 
 class KeyVaultUtil(object):
@@ -43,17 +44,15 @@ class KeyVaultUtil(object):
     """
     def create_kek_secret(self, Passphrase, KeyVaultURL, KeyEncryptionKeyURL, AADClientID, KeyEncryptionAlgorithm, AADClientSecret,DiskEncryptionKeyFileName):
         try:
+            self.logger.log("start creating kek secret")
             passphrase_encoded = base64.standard_b64encode(Passphrase)
-            sasuri_obj = urlparse.urlparse(KeyEncryptionKeyURL)
+            sasuri_obj = urlparse.urlparse(self.urljoin(KeyVaultURL,"keys"))
             connection = httplib.HTTPSConnection(sasuri_obj.hostname)
-            request_content = '{"alg":"' + KeyEncryptionAlgorithm + '","value":"' + passphrase_encoded + '"}'
             headers = {}
-            connection.request('POST', sasuri_obj.path + '?api-version=' + self.api_version , request_content, headers = headers)
+            connection.request('GET', sasuri_obj.path + '?api-version=' + self.api_version , headers = headers)
             result = connection.getresponse()
             self.logger.log(str(result.status) + " " + str(result.getheaders()))
             connection.close()
-            if(result.status != httplib.OK and result.status != httplib.ACCEPTED):
-                return CommonVariables.create_encryption_secret_failed
 
             """
             get the access token 
@@ -71,17 +70,18 @@ class KeyVaultUtil(object):
             """
             we should skip encrypting the passphrase if the KeyVaultURL and KeyEncryptionKeyURL is empty
             """
-            if(KeyVaultURL == None and KeyEncryptionKeyURL == None):
+            if(KeyEncryptionKeyURL == None):
                 secret_value = passphrase_encoded
             else:
                 secret_value = self.encrypt_passphrase(access_token,passphrase_encoded,KeyVaultURL,KeyEncryptionKeyURL,AADClientID,KeyEncryptionAlgorithm,AADClientSecret)
             if(secret_value == None):
                 return CommonVariables.create_encryption_secret_failed
+
             self.create_secret(access_token,KeyVaultURL,secret_value,KeyEncryptionAlgorithm,DiskEncryptionKeyFileName)
 
             return CommonVariables.success
         except Exception as e:
-            self.logger.log("Can't create_kek_secret: " + str(e))
+            self.logger.log("Failed to create_kek_secret with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
             return CommonVariables.create_encryption_secret_failed
 
     def get_access_token(self,AuthorizeUri,AADClientID,AADClientSecret):
@@ -155,7 +155,7 @@ class KeyVaultUtil(object):
             secret_value = result_json[u'value']
             return secret_value
         except Exception as e:
-            self.logger.log("Can't encrypt_passphrase: " + str(e))
+            self.logger.log("Failed to encrypt_passphrase with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
             return None
 
     def create_secret(self,AccessToken,KeyVaultURL,secret_value,KeyEncryptionAlgorithm,DiskEncryptionKeyFileName):
@@ -183,7 +183,7 @@ class KeyVaultUtil(object):
                 return False
             return True
         except Exception as e:
-            self.logger.log("Can't create_secret: " + str(e))
+            self.logger.log("Failed to create_secret with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
             return False
 
     def get_authorize_uri(self,bearerHeader):
@@ -200,5 +200,5 @@ class KeyVaultUtil(object):
 
             return bearerString
         except Exception as e:
-            self.logger.log("Can't the the authorize uri: " + str(e))
+            self.logger.log("Failed to get_authorize_uri with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
             return None

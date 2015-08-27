@@ -116,18 +116,21 @@ def daemon():
         """
         protected_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('protectedSettings')
         public_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('publicSettings')
+        
+        #store the luks passphrase in the secret.
+        keyVaultUtil = KeyVaultUtil(encryption_logger)
 
         extension_parameter = ExtensionParameter(hutil, protected_settings, public_settings)
         if(passphrase == None):
             extension_parameter.passphrase = bek_util.generate_passphrase()
             create_kek_secret_result = keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
-                KeyVaultURL= extension_parameter.KeyVaultURL,\
-                KeyEncryptionKeyURL= extension_parameter.KeyEncryptionKeyURL,\
-                AADClientID= extension_parameter.AADClientID,\
-                KeyEncryptionAlgorithm= extension_parameter.KeyEncryptionAlgorithm,\
-                AADClientSecret= extension_parameter.AADClientSecret,\
-                DiskEncryptionKeyFileName= extension_parameter.DiskEncryptionKeyFileName)
-            if(create_kek_secret_result!=CommonVariables.success):
+                KeyVaultURL = extension_parameter.KeyVaultURL,\
+                KeyEncryptionKeyURL = extension_parameter.KeyEncryptionKeyURL,\
+                AADClientID = extension_parameter.AADClientID,\
+                KeyEncryptionAlgorithm = extension_parameter.KeyEncryptionAlgorithm,\
+                AADClientSecret = extension_parameter.AADClientSecret,\
+                DiskEncryptionKeyFileName = extension_parameter.DiskEncryptionKeyFileName)
+            if(create_kek_secret_result != CommonVariables.success):
                 hutil.do_exit(1, 'Enable','error',str(create_kek_secret_result), 'Enable failed.')
         else:
             extension_parameter.passphrase = passphrase
@@ -149,8 +152,6 @@ def daemon():
         encryption_logger.log("trying to install the extras")
         MyPatching.install_extras(extension_parameter)
 
-        #store the luks passphrase in the secret.
-        keyVaultUtil = KeyVaultUtil(encryption_logger)
 
         """
         if the key is not created successfully, the encrypted file system should not 
