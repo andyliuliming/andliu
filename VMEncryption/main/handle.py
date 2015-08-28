@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -97,8 +97,8 @@ def daemon():
         bek_filename = None
         bek_filesystem = None
 
+        bek_util = BekUtil(disk_util, encryption_logger)
         if(encryption_config.config_file_exists()):
-            bek_util = BekUtil(disk_util, encryption_logger)
             bek_filename = encryption_config.get_bek_filename()
             bek_filesystem = encryption_config.get_bek_filesystem()
             passphrase = bek_util.get_bek_passphrase(bek_filename, bek_filesystem)

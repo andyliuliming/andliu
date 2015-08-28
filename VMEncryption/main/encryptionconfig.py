@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -69,7 +69,7 @@ class EncryptionConfig(object):
         return self.get_config('BekFileName')
 
     def save_bek_filesystem(self, bek_filesystem):
-        self.save_config('BekFileSystem', bek_filesystem)
+        self.save_config('VolumeType', bek_filesystem)
 
     def get_bek_filesystem(self):
-        return self.get_config('BekFileSystem')
+        return self.get_config('VolumeType')
