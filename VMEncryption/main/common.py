@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -37,9 +37,24 @@ class CommonVariables:
     default_file_system = 'ext4'
     default_mount_name = 'encrypted_disk'
     dev_mapper_root = '/dev/mapper/'
-    passphrase_file_name = 'keyfile2'
     extension_success_status = 'success'
     extension_error_status = 'error'
+    """
+    parameter key names
+    """
+    PassphraseFileNameKey = 'BekFileName'
+    KeyEncryptionKeyURLKey = 'KeyEncryptionKeyURL'
+    KeyVaultURLKey = 'KeyVaultURL'
+    AADClientIDKey = 'AADClientID'
+    KeyEncryptionAlgorithmKey = 'KeyEncryptionAlgorithm'
+    VolumeTypeKey = 'BitlockerVolumeType'
+    AADClientSecretKey = 'AADClientSecret'
+    SecretUriKey='SecretUri'
+
+    """
+    command types
+    """
+    enableencryption_all_inplace = 'enableencryption_all_inplace'
 
     # error code
     success = 0
@@ -56,9 +71,14 @@ class CommonVariables:
     passphrase_too_long_or_none = 11
     parameter_error = 12
     create_encryption_secret_failed = 13
+    encrypttion_already_enabled=14
+    passphrase_file_not_found=15
+    unknown_error=16
 
 class TestHooks:
     search_not_only_ide = False
+    use_hard_code_passphrase = False
+    hard_code_passphrase = "Quattro!"
 
 class EncryptionError(object):
     def __init__(self):

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+﻿#!/usr/bin/python
 #
 # Copyright 2015 Microsoft Corporation
 #
@@ -44,7 +44,7 @@ def DistInfo():
     else:
         return platform.dist()
 
-def GetMyPatching():
+def GetMyPatching(logger):
     """
     Return MyPatching object.
     NOTE: Logging is not initialized at this point.
@@ -62,6 +62,6 @@ def GetMyPatching():
     if not globals().has_key(patching_class_name):
         print Distro + ' is not a supported distribution.'
         return None
-    patchingInstance = globals()[patching_class_name]()
+    patchingInstance = globals()[patching_class_name](logger)
     patchingInstance.distro_info = dist_info
     return patchingInstance

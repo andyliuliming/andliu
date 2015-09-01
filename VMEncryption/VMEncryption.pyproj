@@ -44,6 +44,9 @@
     <Compile Include="main\encryptionconfig.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="main\EncryptionQueue.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="main\keyvault.py">
       <SubType>Code</SubType>
     </Compile>

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -34,7 +34,12 @@ class BekUtil(object):
         #TODO genearete a better passphrase
         return str(uuid.uuid4())
 
-    def get_bek_passphrase(self, bek_filename, bek_filesystem):
+    def get_bek_passphrase(self,encryption_config):
+        if(TestHooks.use_hard_code_passphrase):
+            return TestHooks.hard_code_passphrase
+        bek_filename = encryption_config.get_bek_filename()
+        bek_filesystem = encryption_config.get_bek_filesystem()
+        passphrase = bek_util.get_bek_passphrase(bek_filename=bek_filename, bek_filesystem=bek_filesystem)
         pass_phrase = None
         if TestHooks.search_not_only_ide:
             self.logger.log("TESTHOOK: search not only ide set")

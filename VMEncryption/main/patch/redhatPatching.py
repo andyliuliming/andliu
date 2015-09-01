@@ -1,4 +1,4 @@
-#!/usr/bin/python
+﻿#!/usr/bin/python
 #
 # Copyright 2015 Microsoft Corporation
 #
@@ -34,15 +34,16 @@ from common import *
 
 
 class redhatPatching(AbstractPatching):
-    def __init__(self):
+    def __init__(self,logger):
         super(redhatPatching,self).__init__()
+        self.logger=logger
     def install_extras(self,paras):
         common_extras = ['cryptsetup','lsscsi','gdisk','udevadm']
         for extra in common_extras:
-            print("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
+            self.logger.log("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
 
         if(paras.filesystem == "btrfs"):
             extras = ['btrfs-tools']
             for extra in extras:
-                print("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
+                self.logger.log("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
         pass

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -33,28 +33,20 @@ class ExtensionParameter(object):
         self.hutil = hutil
         self.devpath = None
         self.query = protected_settings.get('query')
-        """
-        public settings
-        public string AADClientID;
-        public string KeyVaultURL;
-        public string KeyEncryptionKeyURL;
-        public string KeyEncryptionAlgorithm;
-        public string VolumeType;
-        """
         self.command = public_settings.get('command')
-        self.KeyEncryptionKeyURL = public_settings.get('KeyEncryptionKeyURL')
-        self.KeyVaultURL = public_settings.get('KeyVaultURL')
-        self.AADClientID = public_settings.get('AADClientID')
-        self.KeyEncryptionAlgorithm = public_settings.get('KeyEncryptionAlgorithm')
-        self.VolumeType = public_settings.get('VolumeType')
+        self.KeyEncryptionKeyURL = public_settings.get(CommonVariables.KeyEncryptionKeyURLKey)
+        self.KeyVaultURL = public_settings.get(CommonVariables.KeyVaultURLKey)
+        self.AADClientID = public_settings.get(CommonVariables.AADClientIDKey)
+        self.KeyEncryptionAlgorithm = public_settings.get(CommonVariables.KeyEncryptionAlgorithm)
+        self.VolumeType = public_settings.get(CommonVariables.VolumeTypeKey)
         
         """
         private settings
         """
-        self.AADClientSecret = protected_settings.get('AADClientSecret')
+        self.AADClientSecret = protected_settings.get(CommonVariables.AADClientSecretKey)
 
-        self.passphrase = None#protected_settings.get('passphrase')
-        self.DiskEncryptionKeyFileName = "LinuxPassPhraseFileName"#protected_settings.get('BekFileName')
+        self.passphrase = None
+        self.DiskEncryptionKeyFileName = "LinuxPassPhraseFileName"
         # parse the query from the array
 
 

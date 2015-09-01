@@ -19,6 +19,7 @@
 # Requires Python 2.7+
 #
 import os.path
+from common import *
 from ConfigParser import ConfigParser
 class EncryptionConfig(object):
     def __init__(self):
@@ -28,16 +29,23 @@ class EncryptionConfig(object):
     def config_file_exists(self):
         return os.path.exists(self.config_file_path)
 
-    def update_config(self, extension_parameter):
-        bek_filename = self.get_bek_filename()
-        bek_filesystem = self.get_bek_filesystem()
-        if(extension_parameter.DiskEncryptionKeyFileName != None):
-            if(bek_filename != extension_parameter.DiskEncryptionKeyFileName):
-                self.save_bek_filename(extension_parameter.DiskEncryptionKeyFileName)
+    def save_bek_filename(self, passphrase_file_name):
+        self.save_config(CommonVariables.PassphraseFileNameKey, passphrase_file_name)
 
-        if(extension_parameter.VolumeType != None):
-            if(bek_filename != extension_parameter.VolumeType):
-                self.save_bek_filesystem(extension_parameter.VolumeType)
+    def get_bek_filename(self):
+        return self.get_config(CommonVariables.PassphraseFileNameKey)
+
+    def save_bek_filesystem(self, bek_filesystem):
+        self.save_config(CommonVariables.VolumeTypeKey, bek_filesystem)
+
+    def get_bek_filesystem(self):
+        return self.get_config(CommonVariables.VolumeTypeKey)
+
+    def save_secret_uri(self,secret_uri):
+        self.save_config(CommonVariables.SecretUriKey,secret_uri)
+
+    def get_secret_uri(self):
+        return self.get_config(CommonVariables.SecretUriKey)
 
     def save_config(self, prop_name, prop_value):
         #TODO make the operation an transaction.
@@ -61,15 +69,3 @@ class EncryptionConfig(object):
             return prop_value
         else:
             return None
-
-    def save_bek_filename(self, passphrase_file_name):
-        self.save_config('BekFileName', passphrase_file_name)
-
-    def get_bek_filename(self):
-        return self.get_config('BekFileName')
-
-    def save_bek_filesystem(self, bek_filesystem):
-        self.save_config('VolumeType', bek_filesystem)
-
-    def get_bek_filesystem(self):
-        return self.get_config('VolumeType')

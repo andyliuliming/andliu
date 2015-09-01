@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -41,6 +41,7 @@ class KeyVaultUtil(object):
 
     """
     The Passphrase is a plain encoded string. before the encryption it would be base64encoding.
+    return the secret uri if creation successfully.
     """
     def create_kek_secret(self, Passphrase, KeyVaultURL, KeyEncryptionKeyURL, AADClientID, KeyEncryptionAlgorithm, AADClientSecret,DiskEncryptionKeyFileName):
         try:
@@ -62,10 +63,10 @@ class KeyVaultUtil(object):
 
             authorize_uri = self.get_authorize_uri(bearerHeader)
             if(authorize_uri == None):
-                return CommonVariables.create_encryption_secret_failed
+                return None
             access_token = self.get_access_token(authorize_uri,AADClientID,AADClientSecret)
             if(access_token == None):
-                return CommonVariables.create_encryption_secret_failed
+                return None
 
             """
             we should skip encrypting the passphrase if the KeyVaultURL and KeyEncryptionKeyURL is empty
@@ -75,14 +76,14 @@ class KeyVaultUtil(object):
             else:
                 secret_value = self.encrypt_passphrase(access_token,passphrase_encoded,KeyVaultURL,KeyEncryptionKeyURL,AADClientID,KeyEncryptionAlgorithm,AADClientSecret)
             if(secret_value == None):
-                return CommonVariables.create_encryption_secret_failed
+                return None
 
-            self.create_secret(access_token,KeyVaultURL,secret_value,KeyEncryptionAlgorithm,DiskEncryptionKeyFileName)
+            secret_keyvault_uri = self.create_secret(access_token,KeyVaultURL,secret_value,KeyEncryptionAlgorithm,DiskEncryptionKeyFileName)
 
-            return CommonVariables.success
+            return secret_keyvault_uri
         except Exception as e:
             self.logger.log("Failed to create_kek_secret with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
-            return CommonVariables.create_encryption_secret_failed
+            return None
 
     def get_access_token(self,AuthorizeUri,AADClientID,AADClientSecret):
         keyvault_resource_name = "https://vault.azure.net"
@@ -180,11 +181,11 @@ class KeyVaultUtil(object):
             self.logger.log(str(result.status) + " " + str(result.getheaders()))
             connection.close()
             if(result.status != httplib.OK and result.status != httplib.ACCEPTED):
-                return False
-            return True
+                return None
+            return secret_keyvault_uri
         except Exception as e:
             self.logger.log("Failed to create_secret with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
-            return False
+            return None
 
     def get_authorize_uri(self,bearerHeader):
         """
