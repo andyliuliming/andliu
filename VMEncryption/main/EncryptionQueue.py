@@ -20,18 +20,22 @@
 #
 import os
 import os.path
+from ConfigUtil import *
+
 class EncryptionRequest(object):
     def __init__(self):
         self.command = None
 
 class EncryptionQueue(object):
     def __init__(self):
-        self.queue_file_path='/etc/azure_crypt_request_queue'
+        self.queue_file_path = '/etc/azure_crypt_request_queue.ini'
+        self.encryption_config = ConfigUtil(self.queue_file_path,'encryption_request_queue')
 
     def mark_encryption(self,encryption_request):
         file = open(self.queue_file_path,'w')
         file.write("")
         file.close()
+        # use the ini config to save.
 
     def pop_request(self):
 
@@ -46,8 +50,3 @@ class EncryptionQueue(object):
         if not match (in 30 minutes, then should skip the file)
         """
         return os.path.exists(self.queue_file_path)
-        #file = open(self.store_identity_file,'w')
-        #machine_identity = self.current_identity()
-        #print(machine_identity)
-        #file.write(machine_identity)
-        #file.close()

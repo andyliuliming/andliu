@@ -41,6 +41,9 @@
     <Compile Include="main\bekutil.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="main\ConfigUtil.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="main\encryptionconfig.py">
       <SubType>Code</SubType>
     </Compile>

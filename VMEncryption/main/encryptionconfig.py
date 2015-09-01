@@ -21,51 +21,28 @@
 import os.path
 from common import *
 from ConfigParser import ConfigParser
+from ConfigUtil import *
 class EncryptionConfig(object):
     def __init__(self):
-        self.config_file_path = '/etc/azure_crypt_config.ini'
-        self.azure_crypt_config_section = 'azure_crypt_config'
+        self.encryption_config = ConfigUtil('/etc/azure_crypt_config.ini','azure_crypt_config')
 
     def config_file_exists(self):
         return os.path.exists(self.config_file_path)
 
     def save_bek_filename(self, passphrase_file_name):
-        self.save_config(CommonVariables.PassphraseFileNameKey, passphrase_file_name)
+        self.encryption_config.save_config(CommonVariables.PassphraseFileNameKey, passphrase_file_name)
 
     def get_bek_filename(self):
-        return self.get_config(CommonVariables.PassphraseFileNameKey)
+        return self.encryption_config.get_config(CommonVariables.PassphraseFileNameKey)
 
     def save_bek_filesystem(self, bek_filesystem):
-        self.save_config(CommonVariables.VolumeTypeKey, bek_filesystem)
+        self.encryption_config.save_config(CommonVariables.VolumeTypeKey, bek_filesystem)
 
     def get_bek_filesystem(self):
-        return self.get_config(CommonVariables.VolumeTypeKey)
+        return self.encryption_config.get_config(CommonVariables.VolumeTypeKey)
 
     def save_secret_uri(self,secret_uri):
-        self.save_config(CommonVariables.SecretUriKey,secret_uri)
+        self.encryption_config.save_config(CommonVariables.SecretUriKey,secret_uri)
 
     def get_secret_uri(self):
-        return self.get_config(CommonVariables.SecretUriKey)
-
-    def save_config(self, prop_name, prop_value):
-        #TODO make the operation an transaction.
-        config = ConfigParser()
-        if(os.path.exists(self.config_file_path)):
-            config.read(self.config_file_path)
-        # read values from a section
-        if(not config.has_section(self.azure_crypt_config_section)):
-            config.add_section(self.azure_crypt_config_section)
-        config.set(self.azure_crypt_config_section, prop_name, prop_value)
-        with open(self.config_file_path, 'wb') as configfile:
-            config.write(configfile)
-
-    def get_config(self,prop_name):
-        # write the configs, the bek file name and so on.
-        if(os.path.exists(self.config_file_path)):
-            config = ConfigParser()
-            config.read(self.config_file_path)
-            # read values from a section
-            prop_value = config.get(self.azure_crypt_config_section, prop_name)
-            return prop_value
-        else:
-            return None
+        return self.encryption_config.get_config(CommonVariables.SecretUriKey)

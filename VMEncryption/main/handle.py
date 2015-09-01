@@ -56,7 +56,7 @@ def main():
     logger = Backuplogger(hutil)
     MyPatching = GetMyPatching(logger)
     if MyPatching == None:
-        hutil.do_exit(0, 'Enable','error', str(CommonVariables.os_not_supported), 'the os is not supported')
+        hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status, str(CommonVariables.os_not_supported), 'the os is not supported')
 
     for a in sys.argv[1:]:
         if re.match("^([-/]*)(disable)", a):
@@ -74,7 +74,7 @@ def main():
 
 def install():
     hutil.do_parse_context('Install')
-    hutil.do_exit(0, 'Install','success','0', 'Install Succeeded')
+    hutil.do_exit(0, 'Install',CommonVariables.extension_success_status,'0', 'Install Succeeded')
 
 def enable():
     hutil.do_parse_context('Enable')
@@ -128,7 +128,7 @@ def enable():
                     AADClientSecret = extension_parameter.AADClientSecret,\
                     DiskEncryptionKeyFileName = extension_parameter.DiskEncryptionKeyFileName)
                 if(created_kek_secret_uri == None):
-                    hutil.do_exit(0, 'Enable', 'error', str(CommonVariables.create_encryption_secret_failed), 'Enable failed.')
+                    hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.create_encryption_secret_failed), 'Enable failed.')
                 else:
                     encryption_config.save_bek_filename(extension_parameter.DiskEncryptionKeyFileName)
                     encryption_config.save_bek_filesystem(extension_parameter.VolumeType)
@@ -137,7 +137,7 @@ def enable():
                     encryption_request = EncryptionRequest()
                     encryption_request.command = CommonVariables.enableencryption_all_inplace
                     encryption_queue.mark_encryption(encryption_request)
-                    hutil.do_exit(0, 'Enable', 'success', str(CommonVariables.success), str(created_kek_secret_uri))
+                    hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.success), str(created_kek_secret_uri))
             else:
                 """
                 the enabling called again.
@@ -146,11 +146,11 @@ def enable():
                 encryption_request.command = CommonVariables.enableencryption_all_inplace
                 encryption_queue.mark_encryption(encryption_request)
                 start_daemon()
-                hutil.do_exit(0, 'Enable', 'success', str(CommonVariables.encrypttion_already_enabled), str(created_kek_secret_uri))
+                hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.encrypttion_already_enabled), str(created_kek_secret_uri))
 
     except Exception as e:
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
-        hutil.do_exit(0, 'Enable','error',str(CommonVariables.unknown_error), 'Enable failed.')
+        hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,str(CommonVariables.unknown_error), 'Enable failed.')
 
 def daemon():
     hutil.do_parse_context('Executing')
@@ -174,7 +174,7 @@ def daemon():
             passphrase = bek_util.get_bek_passphrase(encryption_config)
 
         if(passphrase == None):
-            hutil.do_exit(0, 'Enable','error', CommonVariables.passphrase_file_not_found, 'Passphrase file not found.')
+            hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status, CommonVariables.passphrase_file_not_found, 'Passphrase file not found.')
         else:
             """
             check whether there's a scheduled encryption task
@@ -237,7 +237,7 @@ def daemon():
     except Exception as e:
         # mount the file systems back.
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
-        hutil.do_exit(0, 'Enable','error','1', 'Enable failed.')
+        hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,'1', 'Enable failed.')
     finally:
         encryption_queue = EncryptionQueue()
         encryption_queue.clear_queue()
@@ -258,15 +258,15 @@ def start_daemon():
 
 def uninstall():
     hutil.do_parse_context('Uninstall')
-    hutil.do_exit(0,'Uninstall','success','0', 'Uninstall succeeded')
+    hutil.do_exit(0,'Uninstall',CommonVariables.extension_success_status,'0', 'Uninstall succeeded')
 
 def disable():
     hutil.do_parse_context('Disable')
-    hutil.do_exit(0,'Disable','success','0', 'Disable Succeeded')
+    hutil.do_exit(0,'Disable',CommonVariables.extension_success_status,'0', 'Disable Succeeded')
 
 def update():
     hutil.do_parse_context('Upadate')
-    hutil.do_exit(0,'Update','success','0', 'Update Succeeded')
+    hutil.do_exit(0,'Update',CommonVariables.extension_success_status,'0', 'Update Succeeded')
 
 if __name__ == '__main__' :
     main()

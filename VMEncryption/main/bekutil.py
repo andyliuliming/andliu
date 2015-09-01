@@ -22,6 +22,7 @@ from diskutil import *
 from common import *
 import base64
 import os.path
+import os
 
 class BekUtil(object):
     """description of class"""
@@ -35,7 +36,10 @@ class BekUtil(object):
         if(TestHooks.use_hard_code_passphrase):
             return TestHooks.hard_code_passphrase
         else:
-            return str(uuid.uuid4())
+            with open("/dev/random", "rb") as _random_source:
+                bytes = _random_source.read(1024)
+                passphrase_generated = base64.b64encode(bytes)
+            return passphrase_generated
 
     def get_bek_passphrase(self,encryption_config):
         #if(TestHooks.use_hard_code_passphrase):

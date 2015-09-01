@@ -27,13 +27,6 @@ class CommonVariables:
     extension_media_link = 'https://andliu.blob.core.windows.net/extensions/' + extension_name + '-' + str(extension_version) + '.zip'
     extension_label = 'Windows Azure VMEncryption Extension for Linux IaaS'
     extension_description = extension_label
-    key_disk_label_path = "/dev/dev/disk/by-label/KEYDISK"
-    key_disk_mountname = 'azurekeydisk'
-    key_disk_fs_type = 'vfat'
-    encrypted_disk_mountname = 'azureencrypteddisk'
-    folder_command = 'folder'
-    newdisk_command = 'newdisk'
-    existdisk_command = 'existdisk'
     default_file_system = 'ext4'
     default_mount_name = 'encrypted_disk'
     dev_mapper_root = '/dev/mapper/'
