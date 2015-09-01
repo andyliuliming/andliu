@@ -99,6 +99,8 @@ def enable():
                         #None is the placeholder if the file system is not mounted
                         if(crypt_item.mount_point!="None"):
                             disk_util.mount_crypt_item(crypt_item, passphrase)
+                        else:
+                            logger.log("skipping mount for the item " + str(crypt_item))
 
         encryption_queue = EncryptionQueue()
         if encryption_queue.is_encryption_marked():

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -37,6 +37,7 @@ import shutil
 import tempfile
 import json
 import sys
+import subprocess
 from subprocess import call
 from zipfile import ZipFile
 from main.common import CommonVariables
@@ -155,12 +156,19 @@ target_zip_file_path = target_zip_file_location + target_folder_name + '.zip'
 target_zip_file = ZipFile(target_zip_file_path)
 target_zip_file.extractall(target_zip_file_location)
 
+def dos2unix(src):
+    args = ["dos2unix",src]
+    devnull = open(os.devnull, 'w')
+    child = subprocess.Popen(args, stdout=devnull, stderr=devnull)
+    child.wait()
+
 def zip(src, dst):
     zf = ZipFile("%s" % (dst), "w")
     abs_src = os.path.abspath(src)
     for dirname, subdirs, files in os.walk(src):
         for filename in files:
             absname = os.path.abspath(os.path.join(dirname, filename))
+            dos2unix(absname)
             arcname = absname[len(abs_src) + 1:]
             print 'zipping %s as %s' % (os.path.join(dirname, filename),
                                         arcname)
