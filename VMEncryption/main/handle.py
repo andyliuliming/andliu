@@ -85,8 +85,6 @@ def enable():
     try:
         encryption_config = EncryptionConfig()
         passphrase = None
-        bek_filename = None
-        bek_filesystem = None
         created_kek_secret_uri = None
         
         disk_util = DiskUtil(hutil, MyPatching, logger)
@@ -98,8 +96,10 @@ def enable():
                 if(crypt_items is not None):
                     for i in range(0, len(crypt_items)):
                         crypt_item = crypt_items[i]
-                        disk_util.mount_crypt_item(crypt_item, passphrase)
-        
+                        #None is the placeholder if the file system is not mounted
+                        if(crypt_item.mount_point!="None"):
+                            disk_util.mount_crypt_item(crypt_item, passphrase)
+
         encryption_queue = EncryptionQueue()
         if encryption_queue.is_encryption_marked():
             start_daemon()
@@ -163,8 +163,6 @@ def daemon():
 
         encryption_config = EncryptionConfig()
         passphrase = None
-        bek_filename = None
-        bek_filesystem = None
         """
         try to find the attached bek volume, and use the file to mount the crypted volumes,
         and if the passphrase file is found, then we will re-use it for the future.
@@ -174,13 +172,8 @@ def daemon():
             passphrase = bek_util.get_bek_passphrase(encryption_config)
 
         if(passphrase == None):
-            hutil.do_exit(0, 'Enable','error',CommonVariables.passphrase_file_not_found, 'Passphrase file not found.')
+            hutil.do_exit(0, 'Enable','error', CommonVariables.passphrase_file_not_found, 'Passphrase file not found.')
         else:
-            #bek_util = BekUtil(disk_util, logger)
-            #passphrase =
-            #bek_util.get_bek_passphrase(bek_filename=bek_filename,
-            #bek_filesystem=bek_filesystem)
-            
             """
             check whether there's a scheduled encryption task
             """
@@ -229,15 +222,23 @@ def daemon():
                     crypt_item_to_update.dev_path = os.path.join("/dev/" ,device_item.name)
                     crypt_item_to_update.luks_header_path = luks_header_path
                     crypt_item_to_update.file_system = device_item.fstype
-                    crypt_item_to_update.mount_point = device_item.mountpoint
+                    # if the original mountpoint is empty, then leave it as
+                    # None
+                    if device_item.mountpoint=="" or device_item.mountpoint==None:
+                        crypt_item_to_update.mount_point = "None"
+                    else:
+                        crypt_item_to_update.mount_point = device_item.mountpoint
                     disk_util.update_crypt_item(crypt_item_to_update)
-                    if(device_item.mountpoint != ""):
+
+                    if(crypt_item_to_update.mount_point != "None"):
                         disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
     except Exception as e:
         # mount the file systems back.
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
         hutil.do_exit(0, 'Enable','error','1', 'Enable failed.')
     finally:
+        encryption_queue = EncryptionQueue()
+        encryption_queue.clear_queue()
         logger.log("finally in daemon")
 
 def start_daemon():

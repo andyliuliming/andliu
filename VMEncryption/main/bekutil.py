@@ -59,6 +59,6 @@ class BekUtil(object):
                 if(os.path.exists(os.path.join(self.bek_filesystem_mount_point,bek_filename))):
                     with open("/etc/fstab",'r') as f:
                         pass_phrase = f.read()
-                        self.logger.log("got the passphrase from"+str(azure_device.name))
+                        self.logger.log("got the passphrase from " + str(azure_device.name))
                 self.disk_util.umount(self.bek_filesystem_mount_point)
         return pass_phrase

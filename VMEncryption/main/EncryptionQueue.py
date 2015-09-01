@@ -36,6 +36,10 @@ class EncryptionQueue(object):
     def pop_request(self):
 
         pass
+
+    def clear_queue(self):
+        os.remove(self.queue_file_path)
+
     def is_encryption_marked(self):
         """
         we should compare the timestamp of the file with the current system time

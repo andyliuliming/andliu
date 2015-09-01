@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -147,7 +147,7 @@ class DiskUtil(object):
             self.logger.log(azure_crypt_mount + " not exists")
             return None
         else:
-            with open("/etc/fstab",'r') as f:
+            with open("/etc/azure_crypt_mount",'r') as f:
                 existing_content = f.read()
                 crypt_mount_items = existing_content.splitlines()
                 for i in range(0,len(crypt_mount_items)):
