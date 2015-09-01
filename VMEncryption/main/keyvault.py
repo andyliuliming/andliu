@@ -135,13 +135,13 @@ class KeyVaultUtil(object):
             encrypt our passphrase using the encryption key
             api for encrypt use key is https://msdn.microsoft.com/en-us/library/azure/dn878060.aspx
             """
-            self.logger.log("encrypting the secret using key." + str(key_id) + " " + str(Passphrase) + " " + str(access_token))
+            self.logger.log("encrypting the secret using key." + str(key_id) + " " + str(Passphrase) + " " + str(AccessToken))
             sasuri_obj = urlparse.urlparse(key_id)
             connection = httplib.HTTPSConnection(sasuri_obj.hostname)
             request_content = '{"alg":"' + KeyEncryptionAlgorithm + '","value":"' + Passphrase + '"}'
             headers = {}
             headers["Content-Type"] = "application/json"
-            headers["Authorization"] = "Bearer " + str(access_token)
+            headers["Authorization"] = "Bearer " + str(AccessToken)
             #Authorization: Bearer
             relative_path = sasuri_obj.path + "/encrypt" + '?api-version=' + self.api_version
             self.logger.log("crypt path to post is " + str(relative_path))

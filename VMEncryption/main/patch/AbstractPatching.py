@@ -38,5 +38,5 @@ class AbstractPatching(object):
     def __init__(self):
         self.distro_info = None
         pass
-    def install_extras(self,paras):
+    def install_extras(self):
         pass

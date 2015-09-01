@@ -88,6 +88,8 @@ def enable():
         bek_filename = None
         bek_filesystem = None
         created_kek_secret_uri = None
+        
+        disk_util = DiskUtil(hutil, MyPatching, logger)
         bek_util = BekUtil(disk_util, logger)
         if(encryption_config.config_file_exists()):
             passphrase = bek_util.get_bek_passphrase(encryption_config)
@@ -97,7 +99,8 @@ def enable():
                     for i in range(0, len(crypt_items)):
                         crypt_item = crypt_items[i]
                         disk_util.mount_crypt_item(crypt_item, passphrase)
-
+        
+        encryption_queue = EncryptionQueue()
         if encryption_queue.is_encryption_marked():
             start_daemon()
         else:
@@ -128,8 +131,7 @@ def enable():
                     encryption_config.save_bek_filename(extension_parameter.DiskEncryptionKeyFileName)
                     encryption_config.save_bek_filesystem(extension_parameter.VolumeType)
                     encryption_config.save_secret_uri(created_kek_secret_uri)
-
-                    encryption_queue = EncryptionQueue()
+                    
                     encryption_request = EncryptionRequest()
                     encryption_request.command = CommonVariables.enableencryption_all_inplace
                     encryption_queue.mark_encryption(encryption_request)
@@ -138,7 +140,6 @@ def enable():
                 """
                 the enabling called again.
                 """
-                encryption_queue = EncryptionQueue()
                 encryption_request = EncryptionRequest()
                 encryption_request.command = CommonVariables.enableencryption_all_inplace
                 encryption_queue.mark_encryption(encryption_request)
@@ -185,7 +186,7 @@ def daemon():
             """
 
             logger.log("trying to install the extras")
-            MyPatching.install_extras(extension_parameter)
+            MyPatching.install_extras()
 
             """
             if the key is not created successfully, the encrypted file system should not 

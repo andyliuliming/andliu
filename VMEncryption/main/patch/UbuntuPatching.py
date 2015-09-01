@@ -38,7 +38,7 @@ class UbuntuPatching(AbstractPatching):
         super(UbuntuPatching,self).__init__()
         self.logger = logger
 
-    def install_extras(self, paras):
+    def install_extras(self):
         """
         install the sg_dd because the default dd do not support the sparse write
         """

@@ -44,7 +44,7 @@ function Encrypt-Disk
         "command":"enableencryption_all_inplace",
         "KeyVaultURL":"https://andliukeyvault.vault.azure.net/",
         "AADClientID":"0c46e28c-e8cb-490d-bd4f-21626b6601f6",
-        "VolumeType":"vfat"
+        "BitlockerVolumeType":"vfat"
     }
     '
 

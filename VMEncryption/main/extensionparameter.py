@@ -37,7 +37,7 @@ class ExtensionParameter(object):
         self.KeyEncryptionKeyURL = public_settings.get(CommonVariables.KeyEncryptionKeyURLKey)
         self.KeyVaultURL = public_settings.get(CommonVariables.KeyVaultURLKey)
         self.AADClientID = public_settings.get(CommonVariables.AADClientIDKey)
-        self.KeyEncryptionAlgorithm = public_settings.get(CommonVariables.KeyEncryptionAlgorithm)
+        self.KeyEncryptionAlgorithm = public_settings.get(CommonVariables.KeyEncryptionAlgorithmKey)
         self.VolumeType = public_settings.get(CommonVariables.VolumeTypeKey)
         
         """

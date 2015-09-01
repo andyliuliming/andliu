@@ -32,14 +32,16 @@ class BekUtil(object):
 
     def generate_passphrase(self):
         #TODO genearete a better passphrase
-        return str(uuid.uuid4())
-
-    def get_bek_passphrase(self,encryption_config):
         if(TestHooks.use_hard_code_passphrase):
             return TestHooks.hard_code_passphrase
+        else:
+            return str(uuid.uuid4())
+
+    def get_bek_passphrase(self,encryption_config):
+        #if(TestHooks.use_hard_code_passphrase):
+        #    return TestHooks.hard_code_passphrase
         bek_filename = encryption_config.get_bek_filename()
         bek_filesystem = encryption_config.get_bek_filesystem()
-        passphrase = bek_util.get_bek_passphrase(bek_filename=bek_filename, bek_filesystem=bek_filesystem)
         pass_phrase = None
         if TestHooks.search_not_only_ide:
             self.logger.log("TESTHOOK: search not only ide set")
@@ -51,12 +53,12 @@ class BekUtil(object):
             azure_device = azure_devices[i]
             if(azure_device.fstype == bek_filesystem):
                 #TODO handle the failure case
-                disk_util.make_sure_disk_exists(self.bek_filesystem_mount_point)
-                disk_util.mount_filesystem(os.path.join('/dev/' + azure_device.name), '/mnt/azure_passphrase', bek_filesystem)
+                self.disk_util.make_sure_disk_exists(self.bek_filesystem_mount_point)
+                self.disk_util.mount_filesystem(os.path.join('/dev/' + azure_device.name), '/mnt/azure_passphrase', bek_filesystem)
                 #search for the passphrase file.
                 if(os.path.exists(os.path.join(self.bek_filesystem_mount_point,bek_filename))):
                     with open("/etc/fstab",'r') as f:
                         pass_phrase = f.read()
                         self.logger.log("got the passphrase from"+str(azure_device.name))
-                disk_util.umount(self.bek_filesystem_mount_point)
+                self.disk_util.umount(self.bek_filesystem_mount_point)
         return pass_phrase
