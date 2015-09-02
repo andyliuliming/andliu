@@ -36,7 +36,7 @@ class BekUtil(object):
         if(TestHooks.use_hard_code_passphrase):
             return TestHooks.hard_code_passphrase
         else:
-            with open("/dev/random", "rb") as _random_source:
+            with open("/dev/urandom", "rb") as _random_source:
                 bytes = _random_source.read(1024)
                 passphrase_generated = base64.b64encode(bytes)
             return passphrase_generated
