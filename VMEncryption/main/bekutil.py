@@ -42,9 +42,7 @@ class BekUtil(object):
                 passphrase_generated = base64.b64encode(bytes)
             return passphrase_generated
 
-    def get_bek_passphrase(self,encryption_config):
-        #if(TestHooks.use_hard_code_passphrase):
-        #    return TestHooks.hard_code_passphrase
+    def get_bek_passphrase(self, encryption_config):
         bek_filename = encryption_config.get_bek_filename()
         bek_filesystem = encryption_config.get_bek_filesystem()
         pass_phrase = None

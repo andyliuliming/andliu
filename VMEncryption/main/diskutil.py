@@ -208,13 +208,18 @@ class DiskUtil(object):
             self.logger.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
         return error
 
+    """
+    return the return code of the process for error handling.
+    """
     def luks_format(self,passphrase,devpath,headerfile):
         self.hutil.log("dev path to cryptsetup luksFormat " + str(devpath))
         commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksFormat ' + devpath + ' --header ' + headerfile + '"'
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
         return returnCode
-
+    """
+    return the return code of the process for error handling.
+    """
     def luks_open(self,passphrase,devpath,mappername,headerfile):
         self.hutil.log("dev mapper name to cryptsetup luksFormat " + (mappername))
         commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + '"'
@@ -222,6 +227,7 @@ class DiskUtil(object):
         returnCode = proc.wait()
         return returnCode
 
+    #TODO error handling.
     def append_mount_info(self, dev_path, mount_point):
         shutil.copy2('/etc/fstab', '/etc/fstab.backup.' + str(str(uuid.uuid4())))
         mount_content_item = dev_path + " " + mount_point + "  auto defaults 0 0"
@@ -250,17 +256,13 @@ class DiskUtil(object):
         return returnCode
 
     def mount_crypt_item(self, crypt_item, passphrase):
-        """
-        dangerous if the disk is formated by the customer again.
-        self.name = None
-        self.dev_path = None
-        self.mount_point = None
-        self.file_system = None
-        self.luks_header_path = None
-        """
         self.logger.log("trying to mount the crypt item:" + str(crypt_item))
-        self.luks_open(passphrase,crypt_item.dev_path,crypt_item.mapper_name,crypt_item.luks_header_path)
-        self.mount_filesystem(os.path.join('/dev/mapper',crypt_item.mapper_name),crypt_item.mount_point,crypt_item.file_system)
+        luks_open_result = self.luks_open(passphrase,crypt_item.dev_path,crypt_item.mapper_name,crypt_item.luks_header_path)
+        if(luks_open_result == CommonVariables.success):
+            mount_filesystem_result = self.mount_filesystem(os.path.join('/dev/mapper',crypt_item.mapper_name),crypt_item.mount_point,crypt_item.file_system)
+            self.logger.log("mount file system result: " + str(mount_filesystem_result))
+        else:
+            self.logger.log("luks open failed with " + str(luks_open_result))
 
     def umount(self, path):
         commandToExecute = '/bin/bash -c "umount ' + path + ' 2> /dev/null"'
