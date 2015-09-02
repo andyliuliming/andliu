@@ -97,7 +97,7 @@ def enable():
                     for i in range(0, len(crypt_items)):
                         crypt_item = crypt_items[i]
                         #None is the placeholder if the file system is not mounted
-                        if(crypt_item.mount_point!="None"):
+                        if(crypt_item.mount_point != "None"):
                             disk_util.mount_crypt_item(crypt_item, passphrase)
                         else:
                             logger.log("skipping mount for the item " + str(crypt_item))
@@ -210,7 +210,9 @@ def daemon():
                 logger.log("device_item == " + str(device_item))
 
                 should_skip = disk_util.should_skip_for_inplace_encryption(device_item)
-
+                if(device_item.name == bek_util.passphrase_device):
+                    logger.log("skip for the passphrase disk " + str(device_item))
+                    should_skip = True
                 if(device_item.name in encrypted_items):
                     logger.log("already did a operation " + str(device_item))
                     should_skip = True

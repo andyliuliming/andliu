@@ -29,6 +29,7 @@ class BekUtil(object):
     def __init__(self,disk_util,logger):
         self.disk_util = disk_util
         self.logger = logger
+        self.passphrase_device = None
         self.bek_filesystem_mount_point = '/mnt/azure_passphrase'
 
     def generate_passphrase(self):
@@ -63,6 +64,7 @@ class BekUtil(object):
                 if(os.path.exists(os.path.join(self.bek_filesystem_mount_point,bek_filename))):
                     with open("/etc/fstab",'r') as f:
                         pass_phrase = f.read()
+                        passphrase_device = azure_device.name
                         self.logger.log("got the passphrase from " + str(azure_device.name))
                 self.disk_util.umount(self.bek_filesystem_mount_point)
         return pass_phrase
