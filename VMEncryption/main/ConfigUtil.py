@@ -30,6 +30,8 @@ class ConfigUtil(object):
         self.config_file_path = config_file_path
         self.azure_crypt_config_section = section_name
     
+    def config_file_exists(self):
+        return os.path.exists(self.config_file_path)
     """
     save the config
     """

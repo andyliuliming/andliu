@@ -27,7 +27,7 @@ class EncryptionConfig(object):
         self.encryption_config = ConfigUtil('/etc/azure_crypt_config.ini','azure_crypt_config')
 
     def config_file_exists(self):
-        return os.path.exists(self.config_file_path)
+        return self.encryption_config.config_file_exists()
 
     def save_bek_filename(self, passphrase_file_name):
         self.encryption_config.save_config(CommonVariables.PassphraseFileNameKey, passphrase_file_name)
