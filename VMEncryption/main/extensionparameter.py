@@ -48,16 +48,3 @@ class ExtensionParameter(object):
         self.passphrase = None
         self.DiskEncryptionKeyFileName = "LinuxPassPhraseFileName"
         # parse the query from the array
-
-
-    def validate_parameter_format(self):
-        if(self.AADClientID is None or self.AADClientSecret is None):
-            self.hutil.log("AADClientID or AADClientSecret is none")
-            return CommonVariables.parameter_error
-        if(self.command is None):
-            return CommonVariables.parameter_error
-        elif(self.command == 'newdisk'):
-            pass
-        #if(self.query is None):
-        #    return CommonVariables.parameter_error
-        return CommonVariables.success

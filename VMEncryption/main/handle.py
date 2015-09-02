@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -74,7 +74,7 @@ def main():
 
 def install():
     hutil.do_parse_context('Install')
-    hutil.do_exit(0, 'Install',CommonVariables.extension_success_status,'0', 'Install Succeeded')
+    hutil.do_exit(0, 'Install',CommonVariables.extension_success_status,str(CommonVariables.success), 'Install Succeeded')
 
 def enable():
     hutil.do_parse_context('Enable')
@@ -86,7 +86,7 @@ def enable():
         encryption_config = EncryptionConfig()
         passphrase = None
         created_kek_secret_uri = None
-        
+
         disk_util = DiskUtil(hutil, MyPatching, logger)
         bek_util = BekUtil(disk_util, logger)
         if(encryption_config.config_file_exists()):
@@ -101,6 +101,12 @@ def enable():
                             disk_util.mount_crypt_item(crypt_item, passphrase)
                         else:
                             logger.log("skipping mount for the item " + str(crypt_item))
+            else:
+                """
+                the config exists, and the passphrase not get is a error case.
+                """
+                logger.log("the config file exists, but we could not get the passphrase according to it.")
+                hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.passphrase_file_not_found),'The passphrase could not get.')
 
         encryption_queue = EncryptionQueue()
         if encryption_queue.is_encryption_marked():
@@ -133,7 +139,7 @@ def enable():
                     encryption_config.save_bek_filename(extension_parameter.DiskEncryptionKeyFileName)
                     encryption_config.save_bek_filesystem(extension_parameter.VolumeType)
                     encryption_config.save_secret_uri(created_kek_secret_uri)
-                    
+
                     encryption_request = EncryptionRequest()
                     encryption_request.command = CommonVariables.enableencryption_all_inplace
                     encryption_queue.mark_encryption(encryption_request)
