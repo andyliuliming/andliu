@@ -38,7 +38,6 @@ from Utils import HandlerUtil
 from common import *
 from extensionparameter import ExtensionParameter
 from extensionparameter import EncryptionItem
-from rebootmanager import RebootManager
 from diskutil import *
 from backuplogger import Backuplogger
 from keyvault import *
@@ -119,11 +118,17 @@ def enable():
             """
             protected_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('protectedSettings')
             public_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('publicSettings')
-
+            
             #store the luks passphrase in the secret.
             keyVaultUtil = KeyVaultUtil(logger)
 
             extension_parameter = ExtensionParameter(hutil, protected_settings, public_settings)
+            """
+            validate the parameters
+            """
+            if(extension_parameter.VolumeType == "Data"):
+                hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.volue_type_not_support),'only VolumeType Data is supported.')
+
             if(passphrase == None):
                 extension_parameter.passphrase = bek_util.generate_passphrase()
                 created_kek_secret_uri = keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
@@ -133,23 +138,26 @@ def enable():
                     KeyEncryptionAlgorithm = extension_parameter.KeyEncryptionAlgorithm,\
                     AADClientSecret = extension_parameter.AADClientSecret,\
                     DiskEncryptionKeyFileName = extension_parameter.DiskEncryptionKeyFileName)
+
                 if(created_kek_secret_uri == None):
                     hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.create_encryption_secret_failed), 'Enable failed.')
                 else:
                     encryption_config.save_bek_filename(extension_parameter.DiskEncryptionKeyFileName)
-                    encryption_config.save_bek_filesystem(extension_parameter.VolumeType)
+                    encryption_config.save_bek_filesystem(CommonVariables.BekVolumeFileSystem)
                     encryption_config.save_secret_uri(created_kek_secret_uri)
 
                     encryption_request = EncryptionRequest()
                     encryption_request.command = CommonVariables.enableencryption_all_inplace
+                    encryption_request.volume_type = extension_parameter.VolumeType
                     encryption_queue.mark_encryption(encryption_request)
                     hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.success), str(created_kek_secret_uri))
             else:
                 """
-                the enabling called again.
+                the enabling called again. the passphrase would be re-used.
                 """
                 encryption_request = EncryptionRequest()
                 encryption_request.command = CommonVariables.enableencryption_all_inplace
+                encryption_request.volume_type = extension_parameter.VolumeType
                 encryption_queue.mark_encryption(encryption_request)
                 start_daemon()
                 hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.encrypttion_already_enabled), str(created_kek_secret_uri))

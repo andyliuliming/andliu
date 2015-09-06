@@ -25,17 +25,16 @@ from ConfigUtil import *
 class EncryptionRequest(object):
     def __init__(self):
         self.command = None
+        self.volume_type = None
 
 class EncryptionQueue(object):
     def __init__(self):
         self.queue_file_path = '/etc/azure_crypt_request_queue.ini'
         self.encryption_config = ConfigUtil(self.queue_file_path,'encryption_request_queue')
 
-    def mark_encryption(self,encryption_request):
-        file = open(self.queue_file_path,'w')
-        file.write("")
-        file.close()
-        # use the ini config to save.
+    def mark_encryption(self, encryption_request):
+        self.encryption_config.save_config("command",encryption_request.command)
+        self.encryption_config.save_config("volume_type",encryption_request.volume_type)
 
     def pop_request(self):
 

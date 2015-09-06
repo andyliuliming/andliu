@@ -32,6 +32,7 @@ class CommonVariables:
     dev_mapper_root = '/dev/mapper/'
     extension_success_status = 'success'
     extension_error_status = 'error'
+    BekVolumeFileSystem = 'vfat'
     """
     parameter key names
     """
@@ -40,6 +41,9 @@ class CommonVariables:
     KeyVaultURLKey = 'KeyVaultURL'
     AADClientIDKey = 'AADClientID'
     KeyEncryptionAlgorithmKey = 'KeyEncryptionAlgorithm'
+    """
+    value for VolumeTypeKey could be OS or Data
+    """
     VolumeTypeKey = 'BitlockerVolumeType'
     AADClientSecretKey = 'AADClientSecret'
     SecretUriKey='SecretUri'
@@ -64,8 +68,9 @@ class CommonVariables:
     passphrase_too_long_or_none = 11
     parameter_error = 12
     create_encryption_secret_failed = 13
-    encrypttion_already_enabled=14
-    passphrase_file_not_found=15
+    encrypttion_already_enabled = 14
+    passphrase_file_not_found = 15
+    volue_type_not_support = 16
     unknown_error=16
 
 class TestHooks:
