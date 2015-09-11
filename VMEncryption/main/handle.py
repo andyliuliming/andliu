@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -213,6 +213,7 @@ def daemon():
             devices = disk_util.get_lsblk(None)
             azure_blk_items = disk_util.get_azure_devices()
             encrypted_items = []
+            error_message=""
             for i in range(0,len(devices)):
                 device_item = devices[i]
                 logger.log("device_item == " + str(device_item))
@@ -226,30 +227,38 @@ def daemon():
                     should_skip = True
 
                 if(not should_skip):
+                    umount_status_code=CommonVariables.success
                     if(device_item.mountpoint != ""):
-                        disk_util.umount(device_item.mountpoint)
-                    encrypted_items.append(device_item.name)
-                    mapper_name = str(uuid.uuid4())
-                    logger.log("encrypting " + str(device_item))
-                    disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name,luks_header_path)
-                    logger.log("copying data " + str(device_item))
-                    disk_util.copy(os.path.join("/dev/" ,device_item.name), os.path.join(CommonVariables.dev_mapper_root, mapper_name))
-
-                    crypt_item_to_update = CryptItem()
-                    crypt_item_to_update.mapper_name = mapper_name
-                    crypt_item_to_update.dev_path = os.path.join("/dev/" ,device_item.name)
-                    crypt_item_to_update.luks_header_path = luks_header_path
-                    crypt_item_to_update.file_system = device_item.fstype
-                    # if the original mountpoint is empty, then leave it as
-                    # None
-                    if device_item.mountpoint=="" or device_item.mountpoint==None:
-                        crypt_item_to_update.mount_point = "None"
+                        umount_status_code = disk_util.umount(device_item.mountpoint)
+                    if(umount_status_code != CommonVariables.success ):
+                            logger.log("error occured when do the umount for " +device_item.mountpoint+ str(umount_status_code))
                     else:
-                        crypt_item_to_update.mount_point = device_item.mountpoint
-                    disk_util.update_crypt_item(crypt_item_to_update)
+                        encrypted_items.append(device_item.name)
+                        mapper_name = str(uuid.uuid4())
+                        logger.log("encrypting " + str(device_item))
+                        disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name,luks_header_path)
+                        logger.log("copying data " + str(device_item))
+                        copy_result = disk_util.copy(os.path.join("/dev/" ,device_item.name), os.path.join(CommonVariables.dev_mapper_root, mapper_name))
+                        if(copy_result!=0):
+                            error_message=error_message+"the copying result is "+copy_result+" so skip the mounting"
+                            logger.log("the copying result is "+copy_result+" so skip the mounting");
+                            hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.copy_data_error),error_message)
+                        else:
+                            crypt_item_to_update = CryptItem()
+                            crypt_item_to_update.mapper_name = mapper_name
+                            crypt_item_to_update.dev_path = os.path.join("/dev/" ,device_item.name)
+                            crypt_item_to_update.luks_header_path = luks_header_path
+                            crypt_item_to_update.file_system = device_item.fstype
+                            # if the original mountpoint is empty, then leave it as
+                            # None
+                            if device_item.mountpoint=="" or device_item.mountpoint==None:
+                                crypt_item_to_update.mount_point = "None"
+                            else:
+                                crypt_item_to_update.mount_point = device_item.mountpoint
+                            disk_util.update_crypt_item(crypt_item_to_update)
 
-                    if(crypt_item_to_update.mount_point != "None"):
-                        disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
+                            if(crypt_item_to_update.mount_point != "None"):
+                                disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
     except Exception as e:
         # mount the file systems back.
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))

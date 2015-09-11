@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -71,7 +71,8 @@ class CommonVariables:
     encrypttion_already_enabled = 14
     passphrase_file_not_found = 15
     volue_type_not_support = 16
-    unknown_error=16
+    copy_data_error=17
+    unknown_error=18
 
 class TestHooks:
     search_not_only_ide = False

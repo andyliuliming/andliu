@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -42,11 +42,8 @@ class DiskUtil(object):
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
         if(returnCode != 0):
-            error.errorcode = returnCode
-            error.code = CommonVariables.luks_open_error
-            error.info = "from_device is " + str(from_device) + " to_device is " + str(to_device)
             self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
-        return error
+        return returnCode
 
     def copy_using_dd(self, from_device, to_device):
         error = EncryptionError()
@@ -55,11 +52,8 @@ class DiskUtil(object):
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
         if(returnCode != 0):
-            error.errorcode = returnCode
-            error.code = CommonVariables.luks_open_error
-            error.info = "from_device is " + str(from_device) + " to_device is " + str(to_device)
             self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
-        return error
+        return returnCode
 
     def copy(self, from_device, to_device):
         """
