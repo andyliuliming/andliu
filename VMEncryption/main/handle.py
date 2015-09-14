@@ -126,8 +126,8 @@ def enable():
             """
             validate the parameters
             """
-            if(extension_parameter.VolumeType == "Data"):
-                hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.volue_type_not_support),'only VolumeType Data is supported.')
+            if(extension_parameter.VolumeType != "Data"):
+                hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.volue_type_not_support),'VolumeType ' + str(extension_parameter.VolumeType) + ' is not supported.')
 
             if(passphrase == None):
                 extension_parameter.passphrase = bek_util.generate_passphrase()
