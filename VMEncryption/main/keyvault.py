@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -43,7 +43,7 @@ class KeyVaultUtil(object):
     The Passphrase is a plain encoded string. before the encryption it would be base64encoding.
     return the secret uri if creation successfully.
     """
-    def create_kek_secret(self, Passphrase, KeyVaultURL, KeyEncryptionKeyURL, AADClientID, KeyEncryptionAlgorithm, AADClientSecret,DiskEncryptionKeyFileName):
+    def create_kek_secret(self, Passphrase, KeyVaultURL, KeyEncryptionKeyURL, AADClientID, KeyEncryptionAlgorithm, AADClientSecret, DiskEncryptionKeyFileName):
         try:
             self.logger.log("start creating kek secret")
             passphrase_encoded = base64.standard_b64encode(Passphrase)
@@ -74,7 +74,7 @@ class KeyVaultUtil(object):
             if(KeyEncryptionKeyURL == None):
                 secret_value = passphrase_encoded
             else:
-                secret_value = self.encrypt_passphrase(access_token,passphrase_encoded,KeyVaultURL,KeyEncryptionKeyURL,AADClientID,KeyEncryptionAlgorithm,AADClientSecret)
+                secret_value = self.encrypt_passphrase(access_token, passphrase_encoded,KeyVaultURL, KeyEncryptionKeyURL, AADClientID, KeyEncryptionAlgorithm, AADClientSecret)
             if(secret_value == None):
                 return None
 

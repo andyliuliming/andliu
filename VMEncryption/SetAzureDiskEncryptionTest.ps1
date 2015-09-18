@@ -9,4 +9,4 @@ Select-AzureSubscription "OSTC Shanghai Dev"
 #        "AADClientID":"0c46e28c-e8cb-490d-bd4f-21626b6601f6",
 #        "KeyEncryptionAlgorithm":"RSA1_5",
 #        "BitlockerVolumeType":"Data"
-Set-AzureDiskEncryptionExtension -ResourceGroupName "andliuresourcegroup" -Name "VMEncryption" -Location "eastasia" -VMName "andliu-ubuntu2" -AadClientID "0c46e28c-e8cb-490d-bd4f-21626b6601f6" -AadClientSecret "q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s=" -KeyVaultURL "https://andliukeyvault.vault.azure.net/" -KeyEncryptionKeyURL "https://andliukeyvault.vault.azure.net/keys/mykey" -KeyEncryptionAlgorithm "RSA1_5" -VolumeType "Data"
+Set-AzureDiskEncryptionExtension -ResourceGroupName "andliuresourcegroup" -Name "VMEncryption" -Location "eastasia" -VMName "andliu-ubuntu2" -AadClientID "0c46e28c-e8cb-490d-bd4f-21626b6601f6" -AadClientSecret "q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s=" -KeyVaultURL "https://andliukeyvault.vault.azure.net/" -KeyEncryptionKeyURL "https://andliukeyvault.vault.azure.net/keys/mykey" -KeyEncryptionAlgorithm "RSA1_5" -VolumeType "Data" -Tag vmencryptiontag

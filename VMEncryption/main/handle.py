@@ -238,6 +238,22 @@ def daemon():
                         logger.log("encrypting " + str(device_item))
                         disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name,luks_header_path)
                         logger.log("copying data " + str(device_item))
+                        """
+                        If you read man dd, it refers you to info coreutils 'dd invocation' which says, in part,
+
+Sending an INFO signal to a running dd process makes it print I/O statistics to standard error and then resume copying. In the example below, dd is run in the background to copy 10 million blocks. The kill command makes it output intermediate I/O statistics, and when dd completes normally or is killed by the SIGINT signal, it outputs the final statistics.
+
+ $ dd if=/dev/zero of=/dev/null count=10MB & pid=$!
+ $ kill -s INFO $pid; wait $pid
+ 3385223+0 records in
+ 3385223+0 records out
+ 1733234176 bytes (1.7 GB) copied, 6.42173 seconds, 270 MB/s
+ 10000000+0 records in
+ 10000000+0 records out
+ 5120000000 bytes (5.1 GB) copied, 18.913 seconds, 271 MB/s
+On systems lacking the INFO signal dd responds to the USR1 signal instead, unless the POSIXLY_CORRECT environment variable is set.
+
+                        """
                         copy_result = disk_util.copy(os.path.join("/dev/" ,device_item.name), os.path.join(CommonVariables.dev_mapper_root, mapper_name))
                         if(copy_result!=0):
                             error_message=error_message+"the copying result is "+copy_result+" so skip the mounting"
