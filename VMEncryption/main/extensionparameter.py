@@ -32,14 +32,14 @@ class ExtensionParameter(object):
         """
         self.hutil = hutil
         self.devpath = None
-        self.query = protected_settings.get('query')
         self.command = public_settings.get('command')
         self.KeyEncryptionKeyURL = public_settings.get(CommonVariables.KeyEncryptionKeyURLKey)
         self.KeyVaultURL = public_settings.get(CommonVariables.KeyVaultURLKey)
         self.AADClientID = public_settings.get(CommonVariables.AADClientIDKey)
         self.KeyEncryptionAlgorithm = public_settings.get(CommonVariables.KeyEncryptionAlgorithmKey)
         self.VolumeType = public_settings.get(CommonVariables.VolumeTypeKey)
-        
+        self.DiskFormatQuerykey = public_settings.get(CommonVariables.DiskFormatQuerykey)
+
         """
         private settings
         """

@@ -41,6 +41,7 @@ class CommonVariables:
     KeyVaultURLKey = 'KeyVaultURL'
     AADClientIDKey = 'AADClientID'
     KeyEncryptionAlgorithmKey = 'KeyEncryptionAlgorithm'
+    DiskFormatQuerykey = "DiskFormatQuery"
     """
     value for VolumeTypeKey could be OS or Data
     """
@@ -52,6 +53,7 @@ class CommonVariables:
     command types
     """
     enableencryption_all_inplace = 'enableencryption_all_inplace'
+    format_encryption = 'format_encryption'
 
     # error code
     success = 0

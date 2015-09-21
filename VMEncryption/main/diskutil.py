@@ -68,6 +68,7 @@ class DiskUtil(object):
     def get_disk_partition_table_type(self, dev_path):
         p = subprocess.Popen(['udevadm', 'info', '-q', 'property', '-n',dev_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         udevadm_output, err = p.communicate()
+        # todo handle this error case.
         udevadm_output = str(udevadm_output)
         property_info_lines = udevadm_output.splitlines()
         for i in range(0,len(property_info_lines)):

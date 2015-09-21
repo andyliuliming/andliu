@@ -83,21 +83,21 @@ def enable():
 
     try:
         encryption_config = EncryptionConfig()
-        passphrase = None
-        created_kek_secret_uri = None
+        passphrase_existed = None
+        kek_secret_uri_created = None
 
         disk_util = DiskUtil(hutil, MyPatching, logger)
         bek_util = BekUtil(disk_util, logger)
         if(encryption_config.config_file_exists()):
-            passphrase = bek_util.get_bek_passphrase(encryption_config)
-            if(passphrase != None):
+            passphrase_existed = bek_util.get_bek_passphrase(encryption_config)
+            if(passphrase_existed != None):
                 crypt_items = disk_util.get_crypt_items()
                 if(crypt_items is not None):
                     for i in range(0, len(crypt_items)):
                         crypt_item = crypt_items[i]
                         #None is the placeholder if the file system is not mounted
                         if(crypt_item.mount_point != "None"):
-                            disk_util.mount_crypt_item(crypt_item, passphrase)
+                            disk_util.mount_crypt_item(crypt_item, passphrase_existed)
                         else:
                             logger.log("skipping mount for the item " + str(crypt_item))
             else:
@@ -109,6 +109,8 @@ def enable():
 
         encryption_queue = EncryptionQueue()
         if encryption_queue.is_encryption_marked():
+            # verify the encryption mark
+            encryption_queue.clear_queue()
             start_daemon()
         else:
             hutil.exit_if_enabled()
@@ -129,9 +131,14 @@ def enable():
             if(extension_parameter.VolumeType != "Data"):
                 hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.volue_type_not_support),'VolumeType ' + str(extension_parameter.VolumeType) + ' is not supported.')
 
-            if(passphrase == None):
+            """
+            this is the fresh call case
+            """
+
+            #handle the passphrase related
+            if(passphrase_existed == None):
                 extension_parameter.passphrase = bek_util.generate_passphrase()
-                created_kek_secret_uri = keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
+                kek_secret_uri_created = keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
                     KeyVaultURL = extension_parameter.KeyVaultURL,\
                     KeyEncryptionKeyURL = extension_parameter.KeyEncryptionKeyURL,\
                     AADClientID = extension_parameter.AADClientID,\
@@ -139,28 +146,29 @@ def enable():
                     AADClientSecret = extension_parameter.AADClientSecret,\
                     DiskEncryptionKeyFileName = extension_parameter.DiskEncryptionKeyFileName)
 
-                if(created_kek_secret_uri == None):
+                if(kek_secret_uri_created == None):
                     hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.create_encryption_secret_failed), 'Enable failed.')
                 else:
                     encryption_config.save_bek_filename(extension_parameter.DiskEncryptionKeyFileName)
                     encryption_config.save_bek_filesystem(CommonVariables.BekVolumeFileSystem)
-                    encryption_config.save_secret_uri(created_kek_secret_uri)
+                    encryption_config.save_secret_uri(kek_secret_uri_created)
 
-                    encryption_request = EncryptionRequest()
-                    encryption_request.command = CommonVariables.enableencryption_all_inplace
-                    encryption_request.volume_type = extension_parameter.VolumeType
-                    encryption_queue.mark_encryption(encryption_request)
-                    hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.success), str(created_kek_secret_uri))
+
+            encryption_request = EncryptionRequest(logger)
+            encryption_request.command = CommonVariables.enableencryption_all_inplace
+            encryption_request.volume_type = extension_parameter.VolumeType
+            encryption_queue.mark_encryption(encryption_request)
+
+            # TODO check the encryption request is marked at the very beginning.
+            # TODO implement the format encryption 
+            if(kek_secret_uri_created != None):
+                hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.success), str(kek_secret_uri_created))
             else:
                 """
                 the enabling called again. the passphrase would be re-used.
                 """
-                encryption_request = EncryptionRequest()
-                encryption_request.command = CommonVariables.enableencryption_all_inplace
-                encryption_request.volume_type = extension_parameter.VolumeType
-                encryption_queue.mark_encryption(encryption_request)
                 start_daemon()
-                hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.encrypttion_already_enabled), str(created_kek_secret_uri))
+                hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.encrypttion_already_enabled), str(kek_secret_uri_created))
 
     except Exception as e:
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
@@ -256,7 +264,7 @@ On systems lacking the INFO signal dd responds to the USR1 signal instead, unles
                         """
                         copy_result = disk_util.copy(os.path.join("/dev/" ,device_item.name), os.path.join(CommonVariables.dev_mapper_root, mapper_name))
                         if(copy_result!=0):
-                            error_message=error_message+"the copying result is "+copy_result+" so skip the mounting"
+                            error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
                             logger.log("the copying result is "+copy_result+" so skip the mounting");
                             hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.copy_data_error),error_message)
                         else:

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -20,12 +20,15 @@
 #
 import os
 import os.path
+import traceback
 from ConfigUtil import *
 
 class EncryptionRequest(object):
-    def __init__(self):
+    def __init__(self,logger):
         self.command = None
         self.volume_type = None
+        self.parameters = None
+        self.logger = logger
 
 class EncryptionQueue(object):
     def __init__(self):
@@ -35,13 +38,16 @@ class EncryptionQueue(object):
     def mark_encryption(self, encryption_request):
         self.encryption_config.save_config("command",encryption_request.command)
         self.encryption_config.save_config("volume_type",encryption_request.volume_type)
-
-    def pop_request(self):
-
-        pass
+        self.encryption_config.save_config("parameters",encryption_request.parameters)
 
     def clear_queue(self):
-        os.remove(self.queue_file_path)
+        try:
+            os.remove(self.queue_file_path)
+            return True
+        except OSError as e:
+            self.logger.log("Failed to clear_queue with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
+            return False
+        
 
     def is_encryption_marked(self):
         """
