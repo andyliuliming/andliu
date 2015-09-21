@@ -95,7 +95,8 @@ def enable():
                 if(crypt_items is not None):
                     for i in range(0, len(crypt_items)):
                         crypt_item = crypt_items[i]
-                        #None is the placeholder if the file system is not mounted
+                        #None is the placeholder if the file system is not
+                        #mounted
                         if(crypt_item.mount_point != "None"):
                             disk_util.mount_crypt_item(crypt_item, passphrase_existed)
                         else:
@@ -110,7 +111,6 @@ def enable():
         encryption_queue = EncryptionQueue()
         if encryption_queue.is_encryption_marked():
             # verify the encryption mark
-            encryption_queue.clear_queue()
             start_daemon()
         else:
             hutil.exit_if_enabled()
@@ -129,12 +129,15 @@ def enable():
             validate the parameters
             """
             if(extension_parameter.VolumeType != "Data"):
-                hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.volue_type_not_support),'VolumeType ' + str(extension_parameter.VolumeType) + ' is not supported.')
+                hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.volue_type_not_support), 'VolumeType ' + str(extension_parameter.VolumeType) + ' is not supported.')
+
+            if(extension_parameter.command not in [CommonVariables.enableencryption_all_inplace, CommonVariables.enableencryption_format]):
+                hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.command_not_support), 'Command ' + str(extension_parameter.command) + ' is not supported.')
+
 
             """
             this is the fresh call case
             """
-
             #handle the passphrase related
             if(passphrase_existed == None):
                 extension_parameter.passphrase = bek_util.generate_passphrase()
@@ -153,14 +156,14 @@ def enable():
                     encryption_config.save_bek_filesystem(CommonVariables.BekVolumeFileSystem)
                     encryption_config.save_secret_uri(kek_secret_uri_created)
 
-
             encryption_request = EncryptionRequest(logger)
-            encryption_request.command = CommonVariables.enableencryption_all_inplace
+            encryption_request.command = extension_parameter.command
             encryption_request.volume_type = extension_parameter.VolumeType
             encryption_queue.mark_encryption(encryption_request)
 
-            # TODO check the encryption request is marked at the very beginning.
-            # TODO implement the format encryption 
+            # TODO check the encryption request is marked at the very
+            # beginning.
+            # TODO implement the format encryption
             if(kek_secret_uri_created != None):
                 hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.success), str(kek_secret_uri_created))
             else:
@@ -174,123 +177,139 @@ def enable():
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
         hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,str(CommonVariables.unknown_error), 'Enable failed.')
 
+
+def enable_encryption_format():
+    pass
+
+def enable_encryption_all_in_pace():
+    pass
+
 def daemon():
     hutil.do_parse_context('Executing')
     try:
         # Ensure the same configuration is executed only once
         # If the previous enable failed, we do not have retry logic here.
         # TODO Remount all
-        """
-        search for the bek volume, then mount it:)
-        """
-        disk_util = DiskUtil(hutil, MyPatching, logger)
+        encryption_queue = EncryptionQueue()
+        if(encryption_queue.is_encryption_marked()):
+            encryption_queue.clear_queue()
+        else:
+            return
 
-        encryption_config = EncryptionConfig()
-        passphrase = None
-        """
-        try to find the attached bek volume, and use the file to mount the crypted volumes,
-        and if the passphrase file is found, then we will re-use it for the future.
-        """
-        bek_util = BekUtil(disk_util, logger)
-        if(encryption_config.config_file_exists()):
-            passphrase = bek_util.get_bek_passphrase(encryption_config)
-
-        if(passphrase == None):
-            hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status, CommonVariables.passphrase_file_not_found, 'Passphrase file not found.')
+        if(encryption_queue.current_command()==CommonVariables.enableencryption_format):
+            enable_encryption_format()
         else:
             """
-            check whether there's a scheduled encryption task
+            search for the bek volume, then mount it:)
             """
+            disk_util = DiskUtil(hutil, MyPatching, logger)
 
-            logger.log("trying to install the extras")
-            MyPatching.install_extras()
-
+            encryption_config = EncryptionConfig()
+            passphrase = None
             """
-            if the key is not created successfully, the encrypted file system should not 
+            try to find the attached bek volume, and use the file to mount the crypted volumes,
+            and if the passphrase file is found, then we will re-use it for the future.
             """
-            luks_header_path = disk_util.create_luks_header()
-            ########### the existing scenario starts ###################
-            # we do not support the backup version policy
-            # {"command":"enableencryption_format","query":[{"source_scsi_number":"[5:0:0:0]","filesystem":"ext4","mount_point":"/mnt/"}],
-            # {"command":"enableencryption_all_inplace"}],
-            # {"command":"enableencryption_clone","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
-            # {"command":"enableencryption_inplace","query":[{"source_scsi_number":"[5:0:0:0]","in-place":"true"}"}],
-            # this is the encryption in place
-            # "force":"true", "passphrase":"User@123"}
-            logger.log("executing the enableencryption_all_inplace command.")
-            devices = disk_util.get_lsblk(None)
-            azure_blk_items = disk_util.get_azure_devices()
-            encrypted_items = []
-            error_message=""
-            for i in range(0,len(devices)):
-                device_item = devices[i]
-                logger.log("device_item == " + str(device_item))
+            bek_util = BekUtil(disk_util, logger)
+            if(encryption_config.config_file_exists()):
+                passphrase = bek_util.get_bek_passphrase(encryption_config)
 
-                should_skip = disk_util.should_skip_for_inplace_encryption(device_item)
-                if(device_item.name == bek_util.passphrase_device):
-                    logger.log("skip for the passphrase disk " + str(device_item))
-                    should_skip = True
-                if(device_item.name in encrypted_items):
-                    logger.log("already did a operation " + str(device_item))
-                    should_skip = True
+            if(passphrase == None):
+                hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status, CommonVariables.passphrase_file_not_found, 'Passphrase file not found.')
+            else:
+                """
+                check whether there's a scheduled encryption task
+                """
 
-                if(not should_skip):
-                    umount_status_code=CommonVariables.success
-                    if(device_item.mountpoint != ""):
-                        umount_status_code = disk_util.umount(device_item.mountpoint)
-                    if(umount_status_code != CommonVariables.success ):
-                            logger.log("error occured when do the umount for " +device_item.mountpoint+ str(umount_status_code))
-                    else:
-                        encrypted_items.append(device_item.name)
-                        mapper_name = str(uuid.uuid4())
-                        logger.log("encrypting " + str(device_item))
-                        disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name,luks_header_path)
-                        logger.log("copying data " + str(device_item))
-                        """
-                        If you read man dd, it refers you to info coreutils 'dd invocation' which says, in part,
+                logger.log("trying to install the extras")
+                MyPatching.install_extras()
 
-Sending an INFO signal to a running dd process makes it print I/O statistics to standard error and then resume copying. In the example below, dd is run in the background to copy 10 million blocks. The kill command makes it output intermediate I/O statistics, and when dd completes normally or is killed by the SIGINT signal, it outputs the final statistics.
+                """
+                if the key is not created successfully, the encrypted file system should not 
+                """
+                luks_header_path = disk_util.create_luks_header()
+                ########### the existing scenario starts ###################
+                # we do not support the backup version policy
+                # {"command":"enableencryption_format","query":[{"source_scsi_number":"[5:0:0:0]","filesystem":"ext4","mount_point":"/mnt/"}],
+                # {"command":"enableencryption_all_inplace"}],
+                # {"command":"enableencryption_clone","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
+                # {"command":"enableencryption_inplace","query":[{"source_scsi_number":"[5:0:0:0]","in-place":"true"}"}],
+                # this is the encryption in place
+                # "force":"true", "passphrase":"User@123"}
+                logger.log("executing the enableencryption_all_inplace command.")
+                devices = disk_util.get_lsblk(None)
+                azure_blk_items = disk_util.get_azure_devices()
+                encrypted_items = []
+                error_message = ""
+                for i in range(0,len(devices)):
+                    device_item = devices[i]
+                    logger.log("device_item == " + str(device_item))
 
- $ dd if=/dev/zero of=/dev/null count=10MB & pid=$!
- $ kill -s INFO $pid; wait $pid
- 3385223+0 records in
- 3385223+0 records out
- 1733234176 bytes (1.7 GB) copied, 6.42173 seconds, 270 MB/s
- 10000000+0 records in
- 10000000+0 records out
- 5120000000 bytes (5.1 GB) copied, 18.913 seconds, 271 MB/s
-On systems lacking the INFO signal dd responds to the USR1 signal instead, unless the POSIXLY_CORRECT environment variable is set.
+                    should_skip = disk_util.should_skip_for_inplace_encryption(device_item)
+                    if(device_item.name == bek_util.passphrase_device):
+                        logger.log("skip for the passphrase disk " + str(device_item))
+                        should_skip = True
+                    if(device_item.name in encrypted_items):
+                        logger.log("already did a operation " + str(device_item))
+                        should_skip = True
 
-                        """
-                        copy_result = disk_util.copy(os.path.join("/dev/" ,device_item.name), os.path.join(CommonVariables.dev_mapper_root, mapper_name))
-                        if(copy_result!=0):
-                            error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
-                            logger.log("the copying result is "+copy_result+" so skip the mounting");
-                            hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.copy_data_error),error_message)
+                    if(not should_skip):
+                        umount_status_code = CommonVariables.success
+                        if(device_item.mountpoint != ""):
+                            umount_status_code = disk_util.umount(device_item.mountpoint)
+                        if(umount_status_code != CommonVariables.success):
+                                logger.log("error occured when do the umount for " + device_item.mountpoint + str(umount_status_code))
                         else:
-                            crypt_item_to_update = CryptItem()
-                            crypt_item_to_update.mapper_name = mapper_name
-                            crypt_item_to_update.dev_path = os.path.join("/dev/" ,device_item.name)
-                            crypt_item_to_update.luks_header_path = luks_header_path
-                            crypt_item_to_update.file_system = device_item.fstype
-                            # if the original mountpoint is empty, then leave it as
-                            # None
-                            if device_item.mountpoint=="" or device_item.mountpoint==None:
-                                crypt_item_to_update.mount_point = "None"
-                            else:
-                                crypt_item_to_update.mount_point = device_item.mountpoint
-                            disk_util.update_crypt_item(crypt_item_to_update)
+                            encrypted_items.append(device_item.name)
+                            mapper_name = str(uuid.uuid4())
+                            logger.log("encrypting " + str(device_item))
+                            disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name,luks_header_path)
+                            logger.log("copying data " + str(device_item))
+                            """
+                            If you read man dd, it refers you to info coreutils 'dd invocation' which says, in part,
+                            Sending an INFO signal to a running dd process makes it print I/O statistics to standard error and then resume copying. In the example below, dd is run in the background to copy 10 million blocks. The kill command makes it output intermediate I/O statistics, and when dd completes normally or is killed by the SIGINT signal, it outputs the final statistics.
 
-                            if(crypt_item_to_update.mount_point != "None"):
-                                disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
-    except Exception as e:
-        # mount the file systems back.
-        hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
-        hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,'1', 'Enable failed.')
-    finally:
-        encryption_queue = EncryptionQueue()
-        encryption_queue.clear_queue()
-        logger.log("finally in daemon")
+                             $ dd if=/dev/zero of=/dev/null count=10MB & pid=$!
+                             $ kill -s INFO $pid; wait $pid
+                             3385223+0 records in
+                             3385223+0 records out
+                             1733234176 bytes (1.7 GB) copied, 6.42173 seconds, 270 MB/s
+                             10000000+0 records in
+                             10000000+0 records out
+                             5120000000 bytes (5.1 GB) copied, 18.913 seconds, 271 MB/s
+                            On systems lacking the INFO signal dd responds to the USR1 signal instead, unless the POSIXLY_CORRECT environment variable is set.
+
+                            """
+                            copy_result = disk_util.copy(os.path.join("/dev/" ,device_item.name), os.path.join(CommonVariables.dev_mapper_root, mapper_name))
+                            if(copy_result != 0):
+                                error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
+                                logger.log("the copying result is " + copy_result + " so skip the mounting")
+                                hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.copy_data_error),error_message)
+                            else:
+                                crypt_item_to_update = CryptItem()
+                                crypt_item_to_update.mapper_name = mapper_name
+                                crypt_item_to_update.dev_path = os.path.join("/dev/" ,device_item.name)
+                                crypt_item_to_update.luks_header_path = luks_header_path
+                                crypt_item_to_update.file_system = device_item.fstype
+                                # if the original mountpoint is empty, then leave
+                                # it as
+                                # None
+                                if device_item.mountpoint == "" or device_item.mountpoint == None:
+                                    crypt_item_to_update.mount_point = "None"
+                                else:
+                                    crypt_item_to_update.mount_point = device_item.mountpoint
+                                disk_util.update_crypt_item(crypt_item_to_update)
+
+                                if(crypt_item_to_update.mount_point != "None"):
+                                    disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
+        except Exception as e:
+            # mount the file systems back.
+            hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
+            hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,'1', 'Enable failed.')
+        finally:
+            encryption_queue = EncryptionQueue()
+            encryption_queue.clear_queue()
+            logger.log("finally in daemon")
 
 def start_daemon():
     args = [os.path.join(os.getcwd(), __file__), "-daemon"]

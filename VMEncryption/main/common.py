@@ -53,7 +53,7 @@ class CommonVariables:
     command types
     """
     enableencryption_all_inplace = 'enableencryption_all_inplace'
-    format_encryption = 'format_encryption'
+    enableencryption_format = 'enableencryption_format'
 
     # error code
     success = 0
@@ -72,9 +72,10 @@ class CommonVariables:
     create_encryption_secret_failed = 13
     encrypttion_already_enabled = 14
     passphrase_file_not_found = 15
-    volue_type_not_support = 16
-    copy_data_error=17
-    unknown_error=18
+    command_not_support = 16
+    volue_type_not_support = 17
+    copy_data_error = 18
+    unknown_error = 100
 
 class TestHooks:
     search_not_only_ide = False
