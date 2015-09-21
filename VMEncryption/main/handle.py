@@ -178,10 +178,13 @@ def enable():
         hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,str(CommonVariables.unknown_error), 'Enable failed.')
 
 
-def enable_encryption_format():
+def enable_encryption_format(encryption_queue,disk_util):
+    # get the disks to format."["5:0:0:1":"5:0:0:2"]"
+    encryption_parameters = encryption_queue.current_parameters()
+
     pass
 
-def enable_encryption_all_in_pace():
+def enable_encryption_all_in_place():
     pass
 
 def daemon():
@@ -196,7 +199,7 @@ def daemon():
         else:
             return
 
-        if(encryption_queue.current_command()==CommonVariables.enableencryption_format):
+        if(encryption_queue.current_command() == CommonVariables.enableencryption_format):
             enable_encryption_format()
         else:
             """
@@ -238,7 +241,6 @@ def daemon():
                 # "force":"true", "passphrase":"User@123"}
                 logger.log("executing the enableencryption_all_inplace command.")
                 devices = disk_util.get_lsblk(None)
-                azure_blk_items = disk_util.get_azure_devices()
                 encrypted_items = []
                 error_message = ""
                 for i in range(0,len(devices)):
@@ -263,7 +265,7 @@ def daemon():
                             encrypted_items.append(device_item.name)
                             mapper_name = str(uuid.uuid4())
                             logger.log("encrypting " + str(device_item))
-                            disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name,luks_header_path)
+                            disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name, luks_header_path)
                             logger.log("copying data " + str(device_item))
                             """
                             If you read man dd, it refers you to info coreutils 'dd invocation' which says, in part,
@@ -302,14 +304,14 @@ def daemon():
 
                                 if(crypt_item_to_update.mount_point != "None"):
                                     disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
-        except Exception as e:
-            # mount the file systems back.
-            hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
-            hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,'1', 'Enable failed.')
-        finally:
-            encryption_queue = EncryptionQueue()
-            encryption_queue.clear_queue()
-            logger.log("finally in daemon")
+    except Exception as e:
+        # mount the file systems back.
+        hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
+        hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,'1', 'Enable failed.')
+    finally:
+        encryption_queue = EncryptionQueue()
+        encryption_queue.clear_queue()
+        logger.log("finally in daemon")
 
 def start_daemon():
     args = [os.path.join(os.getcwd(), __file__), "-daemon"]

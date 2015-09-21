@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -56,7 +56,7 @@ class BekUtil(object):
             azure_device = azure_devices[i]
             if(azure_device.fstype == bek_filesystem):
                 #TODO handle the failure case
-                self.disk_util.make_sure_disk_exists(self.bek_filesystem_mount_point)
+                self.disk_util.make_sure_path_exists(self.bek_filesystem_mount_point)
                 self.disk_util.mount_filesystem(os.path.join('/dev/' + azure_device.name), '/mnt/azure_passphrase', bek_filesystem)
                 #search for the passphrase file.
                 if(os.path.exists(os.path.join(self.bek_filesystem_mount_point,bek_filename))):

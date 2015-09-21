@@ -51,6 +51,9 @@ class EncryptionQueue(object):
     def current_command(self):
         self.encryption_config.get_config("command")
 
+    def current_parameters(self):
+        self.encryption_config.get_config("parameters")
+
     def is_encryption_marked(self):
         """
         we should compare the timestamp of the file with the current system time

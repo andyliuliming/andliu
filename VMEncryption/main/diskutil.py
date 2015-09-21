@@ -127,7 +127,7 @@ class DiskUtil(object):
             self.logger.log('mkfs_command returnCode is ' + str(returnCode))
         return error
 
-    def make_sure_disk_exists(self,path):
+    def make_sure_path_exists(self,path):
         #mkdir -p foo/bar/baz
         commandToExecute = '/bin/bash -c "mkdir -p ' + path + '"'
         self.logger.log("make sure path exists, execute :" + commandToExecute)
