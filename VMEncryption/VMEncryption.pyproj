@@ -48,6 +48,9 @@
     <Compile Include="main\encryptionconfig.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="main\EncryptionProgress.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="main\EncryptionQueue.py">
       <SubType>Code</SubType>
     </Compile>
