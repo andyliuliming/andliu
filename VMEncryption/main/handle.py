@@ -250,7 +250,7 @@ def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queu
                 encrypt_error = disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name, luks_header_path)
                 if(encrypt_error.errorcode == CommonVariables.success):
                     logger.log("copying data " + str(device_item))
-                    copy_result = disk_util.copy(os.path.join("/dev/" ,device_item.name), os.path.join(CommonVariables.dev_mapper_root, mapper_name))
+                    copy_result = disk_util.copy(device_item, os.path.join(CommonVariables.dev_mapper_root, mapper_name))
                     if(copy_result != 0):
                         error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
                         logger.log("the copying result is " + copy_result + " so skip the mounting")

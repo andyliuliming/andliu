@@ -25,6 +25,7 @@ import sys
 from subprocess import *
 import shutil
 import uuid
+from TransactionalCopyTask import TransactionalCopyTask
 from common import *
 
 class DiskUtil(object):
@@ -35,35 +36,12 @@ class DiskUtil(object):
         self.ide_class_id = "{32412632-86cb-44a2-9b5c-50d1417354f5}"
         self.vmbus_sys_path = '/sys/bus/vmbus/devices'
 
-    def copy_using_cp(self,from_device,to_device):
-        error = EncryptionError()
-        commandToExecute = '/bin/bash -c "' + 'sg_dd oflag=sparse if=' + from_device + ' of=' + to_device
-        self.logger.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
-        proc = Popen(commandToExecute, shell=True)
-        returnCode = proc.wait()
-        if(returnCode != 0):
-            self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
-        return returnCode
-
-    def copy_using_dd(self, from_device, to_device):
-        error = EncryptionError()
-        commandToExecute = '/bin/bash -c "' + 'dd conv=sparse if=' + from_device + ' of=' + to_device + ' bs=512"'
-        self.logger.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
-        proc = Popen(commandToExecute, shell=True)
-        returnCode = proc.wait()
-        if(returnCode != 0):
-            self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
-        return returnCode
-
-    def copy(self, from_device, to_device):
+    def copy(self, device_item, destination):
         """
         if the os is ubuntu 12.04, then ues the cp --sparse instead.
         """
-        print(self.patching.distro_info)
-        if(self.patching.distro_info[0].lower() == "ubuntu" and self.patching.distro_info[1] == "12.04"):
-            return self.copy_using_cp(from_device,to_device)
-        else:
-            return self.copy_using_dd(from_device,to_device)
+        copy_task = TransactionalCopyTask(device_item,destination)
+        return copy_task.begin_copy()
 
     def get_disk_partition_table_type(self, dev_path):
         p = subprocess.Popen(['udevadm', 'info', '-q', 'property', '-n',dev_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
