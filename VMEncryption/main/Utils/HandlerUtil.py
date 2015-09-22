@@ -1,4 +1,4 @@
-#
+﻿#
 # Handler library for Linux IaaS
 #
 # Copyright 2015 Microsoft Corporation

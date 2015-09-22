@@ -302,6 +302,9 @@ class DiskUtil(object):
                 #enableencryption_format called on an not blank device')
         return True
 
+    """
+    the behaviour is if we could get the uuid, then return, if not, just return the sdx.
+    """
     def query_dev_uuid_path_by_sdx_path(self, sdx_path):
         self.logger.log("querying the sdx path of:" + str(sdx_path))
         p = Popen(['blkid',sdx_path],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -314,6 +317,7 @@ class DiskUtil(object):
         index_of_quote = identity.find('"')
         uuid = identity[0:index_of_quote]
         if(uuid.strip() == ""):
+            #TODO this is strange? BUGBUG
             return sdx_path
         return os.path.join("/dev/disk/by-uuid/",uuid)
 
@@ -370,7 +374,7 @@ class DiskUtil(object):
 
                 blk_items.append(blk_item)
         return blk_items
-
+    
     def should_skip_for_inplace_encryption(self, device_item):
         """
         TYPE="raid0"

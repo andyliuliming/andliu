@@ -38,7 +38,7 @@ class ExtensionParameter(object):
         self.AADClientID = public_settings.get(CommonVariables.AADClientIDKey)
         self.KeyEncryptionAlgorithm = public_settings.get(CommonVariables.KeyEncryptionAlgorithmKey)
         self.VolumeType = public_settings.get(CommonVariables.VolumeTypeKey)
-        self.DiskFormatQuerykey = public_settings.get(CommonVariables.DiskFormatQuerykey)
+        self.DiskFormatQuery= public_settings.get(CommonVariables.DiskFormatQuerykey)
 
         """
         private settings

@@ -159,6 +159,7 @@ def enable():
             encryption_request = EncryptionRequest(logger)
             encryption_request.command = extension_parameter.command
             encryption_request.volume_type = extension_parameter.VolumeType
+            encryption_request.parameters = extension_parameter.DiskFormatQuery
             encryption_queue.mark_encryption(encryption_request)
 
             # TODO check the encryption request is marked at the very
@@ -178,14 +179,123 @@ def enable():
         hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,str(CommonVariables.unknown_error), 'Enable failed.')
 
 
-def enable_encryption_format(encryption_queue,disk_util):
+def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_util, bek_util):
     # get the disks to format."["5:0:0:1":"5:0:0:2"]"
     encryption_parameters = encryption_queue.current_parameters()
+    encryption_parameters_obj = json.loads(encryption_parameters)
+    for scsi_num in encryption_parameters_obj:
+        sdx_path = disk_util.query_dev_sdx_path_by_scsi_id(scsi_num)
+        devices = disk_util.get_lsblk(sdx_path)
+        """
+        """
+        if(len(devices) != 1):
+            logger.log("the device with scsi number:" + scsi_num + " have more than one sub device. so skip it.")
+            continue
+        else:
+            device_item = devices[0]
+            if(device_item.fstype == "" and device_item.type == "disk"):
+                mapper_name = str(uuid.uuid4())
+                logger.log("encrypting " + str(device_item))
+                disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name, luks_header_path)
+                file_system="ext4"
+                disk_util.format_disk("/dev/mapper/"+mapper_name,file_system)
+                crypt_item_to_update = CryptItem()
+                crypt_item_to_update.mapper_name = mapper_name
+                crypt_item_to_update.dev_path = os.path.join("/dev/" ,device_item.name)
+                crypt_item_to_update.luks_header_path = luks_header_path
+                crypt_item_to_update.file_system = file_system
+                crypt_item_to_update.mount_point="/mnt/mapper_name";
 
-    pass
+                disk_util.make_sure_path_exists(crypt_item_to_update.mount_point)
+                disk_util.update_crypt_item(crypt_item_to_update)
+                disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
+                ## if the original mountpoint is empty, then leave
+                ## it as
+                ## None
+                #if device_item.mountpoint == "" or device_item.mountpoint == None:
+                #    crypt_item_to_update.mount_point = "None"
+                #else:
+                #    crypt_item_to_update.mount_point = device_item.mountpoint
+                #disk_util.update_crypt_item(crypt_item_to_update)
 
-def enable_encryption_all_in_place():
-    pass
+                #if(crypt_item_to_update.mount_point != "None"):
+                #    disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
+            pass
+
+def enable_encryption_all_in_place(passphrase, luks_header_path,encryption_queue, disk_util):
+    ########### the existing scenario starts ###################
+    # we do not support the backup version policy
+    # {"command":"enableencryption_format","query":[{"source_scsi_number":"[5:0:0:0]","filesystem":"ext4","mount_point":"/mnt/"}],
+    # {"command":"enableencryption_all_inplace"}],
+    # {"command":"enableencryption_clone","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
+    # {"command":"enableencryption_inplace","query":[{"source_scsi_number":"[5:0:0:0]","in-place":"true"}"}],
+    # this is the encryption in place
+    # "force":"true", "passphrase":"User@123"}
+    logger.log("executing the enableencryption_all_inplace command.")
+    devices = disk_util.get_lsblk(None)
+    encrypted_items = []
+    error_message = ""
+    for device_item in devices:
+        logger.log("device_item == " + str(device_item))
+
+        should_skip = disk_util.should_skip_for_inplace_encryption(device_item)
+        if(device_item.name == bek_util.passphrase_device):
+            logger.log("skip for the passphrase disk " + str(device_item))
+            should_skip = True
+        if(device_item.name in encrypted_items):
+            logger.log("already did a operation " + str(device_item))
+            should_skip = True
+
+        if(not should_skip):
+            umount_status_code = CommonVariables.success
+            if(device_item.mountpoint != ""):
+                umount_status_code = disk_util.umount(device_item.mountpoint)
+            if(umount_status_code != CommonVariables.success):
+                    logger.log("error occured when do the umount for " + device_item.mountpoint + str(umount_status_code))
+            else:
+                encrypted_items.append(device_item.name)
+                mapper_name = str(uuid.uuid4())
+                logger.log("encrypting " + str(device_item))
+                #TODO handle the return code of encrypt_disk
+                disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name, luks_header_path)
+                logger.log("copying data " + str(device_item))
+                """
+                If you read man dd, it refers you to info coreutils 'dd invocation' which says, in part,
+                Sending an INFO signal to a running dd process makes it print I/O statistics to standard error and then resume copying. In the example below, dd is run in the background to copy 10 million blocks. The kill command makes it output intermediate I/O statistics, and when dd completes normally or is killed by the SIGINT signal, it outputs the final statistics.
+
+                    $ dd if=/dev/zero of=/dev/null count=10MB & pid=$!
+                    $ kill -s INFO $pid; wait $pid
+                    3385223+0 records in
+                    3385223+0 records out
+                    1733234176 bytes (1.7 GB) copied, 6.42173 seconds, 270 MB/s
+                    10000000+0 records in
+                    10000000+0 records out
+                    5120000000 bytes (5.1 GB) copied, 18.913 seconds, 271 MB/s
+                On systems lacking the INFO signal dd responds to the USR1 signal instead, unless the POSIXLY_CORRECT environment variable is set.
+
+                """
+                copy_result = disk_util.copy(os.path.join("/dev/" ,device_item.name), os.path.join(CommonVariables.dev_mapper_root, mapper_name))
+                if(copy_result != 0):
+                    error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
+                    logger.log("the copying result is " + copy_result + " so skip the mounting")
+                    hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.copy_data_error),error_message)
+                else:
+                    crypt_item_to_update = CryptItem()
+                    crypt_item_to_update.mapper_name = mapper_name
+                    crypt_item_to_update.dev_path = os.path.join("/dev/" ,device_item.name)
+                    crypt_item_to_update.luks_header_path = luks_header_path
+                    crypt_item_to_update.file_system = device_item.fstype
+                    # if the original mountpoint is empty, then leave
+                    # it as
+                    # None
+                    if device_item.mountpoint == "" or device_item.mountpoint == None:
+                        crypt_item_to_update.mount_point = "None"
+                    else:
+                        crypt_item_to_update.mount_point = device_item.mountpoint
+                    disk_util.update_crypt_item(crypt_item_to_update)
+
+                    if(crypt_item_to_update.mount_point != "None"):
+                        disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
 
 def daemon():
     hutil.do_parse_context('Executing')
@@ -223,7 +333,6 @@ def daemon():
                 """
                 check whether there's a scheduled encryption task
                 """
-
                 logger.log("trying to install the extras")
                 MyPatching.install_extras()
 
@@ -231,79 +340,12 @@ def daemon():
                 if the key is not created successfully, the encrypted file system should not 
                 """
                 luks_header_path = disk_util.create_luks_header()
-                ########### the existing scenario starts ###################
-                # we do not support the backup version policy
-                # {"command":"enableencryption_format","query":[{"source_scsi_number":"[5:0:0:0]","filesystem":"ext4","mount_point":"/mnt/"}],
-                # {"command":"enableencryption_all_inplace"}],
-                # {"command":"enableencryption_clone","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
-                # {"command":"enableencryption_inplace","query":[{"source_scsi_number":"[5:0:0:0]","in-place":"true"}"}],
-                # this is the encryption in place
-                # "force":"true", "passphrase":"User@123"}
-                logger.log("executing the enableencryption_all_inplace command.")
-                devices = disk_util.get_lsblk(None)
-                encrypted_items = []
-                error_message = ""
-                for i in range(0,len(devices)):
-                    device_item = devices[i]
-                    logger.log("device_item == " + str(device_item))
 
-                    should_skip = disk_util.should_skip_for_inplace_encryption(device_item)
-                    if(device_item.name == bek_util.passphrase_device):
-                        logger.log("skip for the passphrase disk " + str(device_item))
-                        should_skip = True
-                    if(device_item.name in encrypted_items):
-                        logger.log("already did a operation " + str(device_item))
-                        should_skip = True
+                if(encryption_queue.current_command() == CommonVariables.enableencryption_all_inplace):
+                    enable_encryption_all_in_place(passphrase,luks_header_path,encryption_queue, disk_util, bek_util)
+                elif(encryption_queue.current_command() == CommonVariables.enableencryption_format):
+                    enable_encryption_format(passphrase,luks_header_path,encryption_queue,disk_util)
 
-                    if(not should_skip):
-                        umount_status_code = CommonVariables.success
-                        if(device_item.mountpoint != ""):
-                            umount_status_code = disk_util.umount(device_item.mountpoint)
-                        if(umount_status_code != CommonVariables.success):
-                                logger.log("error occured when do the umount for " + device_item.mountpoint + str(umount_status_code))
-                        else:
-                            encrypted_items.append(device_item.name)
-                            mapper_name = str(uuid.uuid4())
-                            logger.log("encrypting " + str(device_item))
-                            disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name, luks_header_path)
-                            logger.log("copying data " + str(device_item))
-                            """
-                            If you read man dd, it refers you to info coreutils 'dd invocation' which says, in part,
-                            Sending an INFO signal to a running dd process makes it print I/O statistics to standard error and then resume copying. In the example below, dd is run in the background to copy 10 million blocks. The kill command makes it output intermediate I/O statistics, and when dd completes normally or is killed by the SIGINT signal, it outputs the final statistics.
-
-                             $ dd if=/dev/zero of=/dev/null count=10MB & pid=$!
-                             $ kill -s INFO $pid; wait $pid
-                             3385223+0 records in
-                             3385223+0 records out
-                             1733234176 bytes (1.7 GB) copied, 6.42173 seconds, 270 MB/s
-                             10000000+0 records in
-                             10000000+0 records out
-                             5120000000 bytes (5.1 GB) copied, 18.913 seconds, 271 MB/s
-                            On systems lacking the INFO signal dd responds to the USR1 signal instead, unless the POSIXLY_CORRECT environment variable is set.
-
-                            """
-                            copy_result = disk_util.copy(os.path.join("/dev/" ,device_item.name), os.path.join(CommonVariables.dev_mapper_root, mapper_name))
-                            if(copy_result != 0):
-                                error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
-                                logger.log("the copying result is " + copy_result + " so skip the mounting")
-                                hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.copy_data_error),error_message)
-                            else:
-                                crypt_item_to_update = CryptItem()
-                                crypt_item_to_update.mapper_name = mapper_name
-                                crypt_item_to_update.dev_path = os.path.join("/dev/" ,device_item.name)
-                                crypt_item_to_update.luks_header_path = luks_header_path
-                                crypt_item_to_update.file_system = device_item.fstype
-                                # if the original mountpoint is empty, then leave
-                                # it as
-                                # None
-                                if device_item.mountpoint == "" or device_item.mountpoint == None:
-                                    crypt_item_to_update.mount_point = "None"
-                                else:
-                                    crypt_item_to_update.mount_point = device_item.mountpoint
-                                disk_util.update_crypt_item(crypt_item_to_update)
-
-                                if(crypt_item_to_update.mount_point != "None"):
-                                    disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
     except Exception as e:
         # mount the file systems back.
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
