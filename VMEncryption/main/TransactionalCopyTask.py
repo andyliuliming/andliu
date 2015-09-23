@@ -29,16 +29,18 @@ class CopyTask(object):
         pass
 
 class TransactionalCopyTask(object):
-    def __init__(self,device_item,destination,patching):
+    def __init__(self, device_item, destination, patching, encryptionEnvironment):
+        self.encryptionEnvironment = encryptionEnvironment
         self.device_item = device_item
         self.destination = destination
         self.patching = patching
+        self.slice_size = 512 * 1000# this is in byte
         pass
 
     def copying_tasks(self):
         pass
 
-    def copy_using_cp(self,from_device,to_device):
+    def copy_using_cp(self, from_device, to_device):
         error = EncryptionError()
         commandToExecute = '/bin/bash -c "' + 'sg_dd oflag=sparse if=' + from_device + ' of=' + to_device
         self.logger.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
@@ -58,10 +60,10 @@ class TransactionalCopyTask(object):
             self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
         return returnCode
 
-    """
-    make a stamp that the encryption is started. with identity of the device.
-    """
     def begin_copy(self):
+        """
+        check the device_item size first, cut it 
+        """
         if(self.patching.distro_info[0].lower() == "ubuntu" and self.patching.distro_info[1] == "12.04"):
             return self.copy_using_cp(from_device,to_device)
         else:
@@ -72,6 +74,7 @@ class TransactionalCopyTask(object):
     """
     def resume_copy(self):
         pass
+
     def current_progress(self):
         """
         If you read man dd, it refers you to info coreutils 'dd invocation' which says, in part,

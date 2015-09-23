@@ -29,7 +29,7 @@ from TransactionalCopyTask import TransactionalCopyTask
 from common import *
 
 class DiskUtil(object):
-    def __init__(self,hutil,patching,logger,encryptionEnvironment):
+    def __init__(self, hutil, patching, logger, encryptionEnvironment):
         self.encryptionEnvironment = encryptionEnvironment
         self.hutil = hutil
         self.patching = patching
@@ -41,7 +41,7 @@ class DiskUtil(object):
         """
         if the os is ubuntu 12.04, then ues the cp --sparse instead.
         """
-        copy_task = TransactionalCopyTask(device_item,destination)
+        copy_task = TransactionalCopyTask(device_item, destination, self.patching, self.encryptionEnvironment)
         return copy_task.begin_copy()
 
     def get_disk_partition_table_type(self, dev_path):

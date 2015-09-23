@@ -252,7 +252,7 @@ def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queu
                 if(encrypt_error.errorcode == CommonVariables.success):
                     logger.log("copying data " + str(device_item))
                     copy_result = disk_util.copy(device_item, os.path.join(CommonVariables.dev_mapper_root, mapper_name))
-                    if(copy_result != 0):
+                    if(copy_result != CommonVariables.success):
                         error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
                         logger.log("the copying result is " + copy_result + " so skip the mounting")
                         hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.copy_data_error),error_message)
