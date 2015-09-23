@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -19,9 +19,9 @@
 # Requires Python 2.7+
 #
 import os.path
-from common import *
+from common import CommonVariables
 from ConfigParser import ConfigParser
-from ConfigUtil import *
+from ConfigUtil import ConfigUtil
 class EncryptionConfig(object):
     def __init__(self):
         self.encryption_config = ConfigUtil('/etc/azure_crypt_config.ini','azure_crypt_config')

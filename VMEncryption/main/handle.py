@@ -39,7 +39,7 @@ from common import *
 from extensionparameter import ExtensionParameter
 from extensionparameter import EncryptionItem
 from diskutil import *
-from backuplogger import Backuplogger
+from backuplogger import BackupLogger
 from keyvault import *
 from encryptionconfig import *
 from patch import *
@@ -52,7 +52,7 @@ def main():
     HandlerUtil.LoggerInit('/var/log/waagent.log','/dev/stdout')
     HandlerUtil.waagent.Log("%s started to handle." % (CommonVariables.extension_name)) 
     hutil = HandlerUtil.HandlerUtility(HandlerUtil.waagent.Log, HandlerUtil.waagent.Error, CommonVariables.extension_name)
-    logger = Backuplogger(hutil)
+    logger = BackupLogger(hutil)
     MyPatching = GetMyPatching(logger)
     if MyPatching == None:
         hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status, str(CommonVariables.os_not_supported), 'the os is not supported')

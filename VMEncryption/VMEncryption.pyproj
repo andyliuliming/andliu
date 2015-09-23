@@ -39,13 +39,16 @@
     <Content Include="SetAzureDiskEncryptionTest.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="main\bekutil.py">
+    <Compile Include="main\BekUtil.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="main\ConfigUtil.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="main\encryptionconfig.py">
+    <Compile Include="main\EncryptionConfig.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="main\EncryptionEnvironment.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="main\TransactionalCopyTask.py">
@@ -54,16 +57,16 @@
     <Compile Include="main\EncryptionQueue.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="main\keyvault.py">
+    <Compile Include="main\KeyVaultUtil.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="main\backuplogger.py" />
+    <Compile Include="main\BackupLogger.py" />
     <Compile Include="main\common.py" />
-    <Compile Include="main\diskutil.py">
+    <Compile Include="main\DiskUtil.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="main\handle.py" />
-    <Compile Include="main\extensionparameter.py" />
+    <Compile Include="main\ExtensionParameter.py" />
     <Compile Include="main\patch\AbstractPatching.py" />
     <Compile Include="main\patch\centosPatching.py" />
     <Compile Include="main\patch\OraclePatching.py" />

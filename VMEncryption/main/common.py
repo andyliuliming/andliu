@@ -47,7 +47,7 @@ class CommonVariables:
     """
     VolumeTypeKey = 'BitlockerVolumeType'
     AADClientSecretKey = 'AADClientSecret'
-    SecretUriKey='SecretUri'
+    SecretUriKey = 'SecretUri'
 
     """
     command types

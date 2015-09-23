@@ -295,7 +295,7 @@ class DiskUtil(object):
         index_of_quote = identity.find('"')
         uuid = identity[0:index_of_quote]
         if(uuid.strip() == ""):
-            #TODO this is strange? BUGBUG
+            #TODO this is strange?  BUGBUG
             return sdx_path
         return os.path.join("/dev/disk/by-uuid/",uuid)
 

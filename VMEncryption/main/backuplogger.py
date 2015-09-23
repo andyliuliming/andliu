@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -24,7 +24,7 @@ import traceback
 import urlparse
 import httplib
 
-class Backuplogger(object):
+class BackupLogger(object):
     def __init__(self, hutil):
         self.msg = ''
         self.hutil = hutil
