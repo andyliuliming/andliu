@@ -31,8 +31,9 @@ class EncryptionRequest(object):
         self.logger = logger
 
 class EncryptionQueue(object):
-    def __init__(self):
-        self.queue_file_path = '/etc/azure_crypt_request_queue.ini'
+    def __init__(self,encryptionEnvironment):
+        self.encryptionEnvironment = encryptionEnvironment
+        self.queue_file_path = encryptionEnvironment.azure_crypt_request_queue_path
         self.encryption_config = ConfigUtil(self.queue_file_path,'encryption_request_queue')
 
     def mark_encryption(self, encryption_request):

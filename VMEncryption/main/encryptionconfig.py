@@ -22,9 +22,11 @@ import os.path
 from common import CommonVariables
 from ConfigParser import ConfigParser
 from ConfigUtil import ConfigUtil
+
 class EncryptionConfig(object):
-    def __init__(self):
-        self.encryption_config = ConfigUtil('/etc/azure_crypt_config.ini','azure_crypt_config')
+    def __init__(self, encryptionEnvironment):
+        self.encryptionEnvironment = encryptionEnvironment
+        self.encryption_config = ConfigUtil(encryptionEnvironment.encryptio_config_path,'azure_crypt_config')
 
     def config_file_exists(self):
         return self.encryption_config.config_file_exists()

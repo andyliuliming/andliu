@@ -29,7 +29,8 @@ from TransactionalCopyTask import TransactionalCopyTask
 from common import *
 
 class DiskUtil(object):
-    def __init__(self,hutil,patching,logger):
+    def __init__(self,hutil,patching,logger,encryptionEnvironment):
+        self.encryptionEnvironment = encryptionEnvironment
         self.hutil = hutil
         self.patching = patching
         self.logger = logger
@@ -115,12 +116,11 @@ class DiskUtil(object):
 
     def get_crypt_items(self):
         crypt_items = []
-        azure_crypt_mount = '/etc/azure_crypt_mount'
-        if not os.path.exists(azure_crypt_mount):
-            self.logger.log(azure_crypt_mount + " not exists")
+        if not os.path.exists(self.encryptionEnvironment.azure_crypt_mount_config_path):
+            self.logger.log(self.encryptionEnvironment.azure_crypt_mount_config_path + " not exists")
             return None
         else:
-            with open("/etc/azure_crypt_mount",'r') as f:
+            with open(self.encryptionEnvironment.azure_crypt_mount_config_path,'r') as f:
                 existing_content = f.read()
                 crypt_mount_items = existing_content.splitlines()
                 for i in range(0,len(crypt_mount_items)):
@@ -137,23 +137,21 @@ class DiskUtil(object):
         return crypt_items
 
     def update_crypt_item(self,crypt_item):
-        azure_crypt_mount = '/etc/azure_crypt_mount'
-        if not os.path.exists(azure_crypt_mount):
-            with open(azure_crypt_mount,'w') as wf:
+        if not os.path.exists(self.encryptionEnvironment.azure_crypt_mount_config_path):
+            with open(self.encryptionEnvironment.azure_crypt_mount_config_path,'w') as wf:
                 wf.write("")
 
         mount_content_item = crypt_item.mapper_name + " " + crypt_item.dev_path + " " + crypt_item.luks_header_path + " " + crypt_item.mount_point + " " + crypt_item.file_system
-        with open("/etc/azure_crypt_mount",'r') as f:
+        with open(self.encryptionEnvironment.azure_crypt_mount_config_path,'r') as f:
             existing_content = f.read()
             new_mount_content = existing_content + "\n" + mount_content_item
-        with open("/etc/azure_crypt_mount",'w') as wf:
+        with open(self.encryptionEnvironment.azure_crypt_mount_config_path,'w') as wf:
             existing_content+="\n" + mount_content_item
             wf.write(new_mount_content)
         # <target name> <source device> <key file> <options>
 
     def create_luks_header(self):
-        luks_header_path = "/azureluksheader"
-        if(os.path.exists(luks_header_path)):
+        if(os.path.exists(self.encryptionEnvironment.luks_header_path)):
             return luks_header_path
         else:
             # dd if=/dev/zero bs=8388608 count=1 > /luks_header_path

@@ -36,26 +36,27 @@ import urlparse
 import httplib
 from Utils import HandlerUtil
 from common import *
-from extensionparameter import ExtensionParameter
-from extensionparameter import EncryptionItem
-from diskutil import *
+from ExtensionParameter import ExtensionParameter
+from ExtensionParameter import EncryptionItem
+from DiskUtil import DiskUtil
 from backuplogger import BackupLogger
-from keyvault import *
+from KeyVaultUtil import KeyVaultUtil
 from encryptionconfig import *
 from patch import *
 from bekutil import *
-from EncryptionQueue import *
-
+from EncryptionQueue import EncryptionQueue
+from EncryptionEnvironment import EncryptionEnvironment
 #Main function is the only entrence to this extension handler
 def main():
-    global hutil,MyPatching,logger
+    global hutil,MyPatching,logger,encryptionEnvironment
     HandlerUtil.LoggerInit('/var/log/waagent.log','/dev/stdout')
     HandlerUtil.waagent.Log("%s started to handle." % (CommonVariables.extension_name)) 
     hutil = HandlerUtil.HandlerUtility(HandlerUtil.waagent.Log, HandlerUtil.waagent.Error, CommonVariables.extension_name)
     logger = BackupLogger(hutil)
+    encryptionEnvironment = EncryptionEnvironment()
     MyPatching = GetMyPatching(logger)
     if MyPatching == None:
-        hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status, str(CommonVariables.os_not_supported), 'the os is not supported')
+        hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.os_not_supported), 'the os is not supported')
 
     for a in sys.argv[1:]:
         if re.match("^([-/]*)(disable)", a):
@@ -82,7 +83,7 @@ def enable():
     logger.log("enabling...")
 
     try:
-        encryption_config = EncryptionConfig()
+        encryption_config = EncryptionConfig(encryptionEnvironment)
         passphrase_existed = None
         kek_secret_uri_created = None
 
@@ -108,7 +109,7 @@ def enable():
                 logger.log("the config file exists, but we could not get the passphrase according to it.")
                 hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.passphrase_file_not_found),'The passphrase could not get.')
 
-        encryption_queue = EncryptionQueue()
+        encryption_queue = EncryptionQueue(encryptionEnvironment)
         if encryption_queue.is_encryption_marked():
             # verify the encryption mark
             start_daemon()
