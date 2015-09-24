@@ -171,7 +171,7 @@ class KeyVaultUtil(object):
             sasuri_obj = urlparse.urlparse(secret_keyvault_uri)
             connection = httplib.HTTPSConnection(sasuri_obj.hostname)
             if(KeyEncryptionAlgorithm == None):
-                request_content = '{{"value":"{0}","attributes":{{"enabled":"true"}},"tags":{"DiskEncryptionKeyFileName":"{1}"}}}}'\
+                request_content = '{{"value":"{0}","attributes":{{"enabled":"true"}},"tags":{{"DiskEncryptionKeyFileName":"{1}"}}}}'\
                     .format(str(secret_value),DiskEncryptionKeyFileName)
             else:
                 request_content = '{{"value":"{0}","attributes":{{"enabled":"true"}},"tags":{{"DiskEncryptionKeyEncryptionAlgorithm":"{1}","DiskEncryptionKeyFileName":"{2}"}}}}'\
