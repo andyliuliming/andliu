@@ -170,8 +170,12 @@ class KeyVaultUtil(object):
             self.logger.log("secret_keyvault_uri is :" + str(secret_keyvault_uri) + " and keyvault_uri is :" + str(KeyVaultURL))
             sasuri_obj = urlparse.urlparse(secret_keyvault_uri)
             connection = httplib.HTTPSConnection(sasuri_obj.hostname)
-            request_content = '{{"value":"{0}","attributes":{{"enabled":"true"}},"tags":{{"DiskEncryptionKeyEncryptionAlgorithm":"{1}","DiskEncryptionKeyFileName":"{2}"}}}}'\
-                .format(str(secret_value),KeyEncryptionAlgorithm,DiskEncryptionKeyFileName)
+            if(KeyEncryptionAlgorithm == None):
+                request_content = '{{"value":"{0}","attributes":{{"enabled":"true"}},"tags":{"DiskEncryptionKeyFileName":"{1}"}}}}'\
+                    .format(str(secret_value),DiskEncryptionKeyFileName)
+            else:
+                request_content = '{{"value":"{0}","attributes":{{"enabled":"true"}},"tags":{{"DiskEncryptionKeyEncryptionAlgorithm":"{1}","DiskEncryptionKeyFileName":"{2}"}}}}'\
+                    .format(str(secret_value),KeyEncryptionAlgorithm,DiskEncryptionKeyFileName)
 
             headers = {}
             headers["Content-Type"] = "application/json"
