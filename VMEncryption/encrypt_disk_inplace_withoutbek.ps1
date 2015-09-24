@@ -4,8 +4,8 @@
 #$passphrase="VGhpcyBpcyB0aGUgcGxhaW4gdGV4dCBtZXNzYWdlLg"
 #$encryption_keyvault_uri="https://andliukeyvault.vault.azure.net/keys/mykey"
 #$keyvault_uri="https://andliukeyvault.vault.azure.net/"
-#$AADClientID="0c46e28c-e8cb-490d-bd4f-21626b6601f6"
-#$AADClientSecret="q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s="
+#$AADClientID="b7b48143-6c58-4cd4-a9e0-0a15cbda0614"
+#$AADClientSecret="/XazYdJ9XaMBbiQ0dwSoyue7LbkQ1OJOePGGcrG3dkA="
 #$alg_name="RSA1_5"
 function Encrypt-Disk
 {
@@ -36,21 +36,21 @@ function Encrypt-Disk
     #Add-AzureDataDisk -CreateNew -DiskSizeInGB 3 -DiskLabel "disklabel$lun" -VM $vm -LUN $lun -MediaLocation $destinationKeyDiskPath| update-azurevm
     # $encryption_keyvault_uri="https://andliukeyvault.vault.azure.net/keys/mykey"
     #$keyvault_uri="https://andliukeyvault.vault.azure.net/"
-    #$AADClientID="0c46e28c-e8cb-490d-bd4f-21626b6601f6"
-    #$AADClientSecret="q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s="
+    #$AADClientID="b7b48143-6c58-4cd4-a9e0-0a15cbda0614"
+    #$AADClientSecret="/XazYdJ9XaMBbiQ0dwSoyue7LbkQ1OJOePGGcrG3dkA="
     #$alg_name="RSA1_5"
     $publicConfig='
     {
         "command":"enableencryption_all_inplace",
         "KeyVaultURL":"https://andliukeyvault.vault.azure.net/",
-        "AADClientID":"0c46e28c-e8cb-490d-bd4f-21626b6601f6",
+        "AADClientID":"b7b48143-6c58-4cd4-a9e0-0a15cbda0614",
         "BitlockerVolumeType":"Data"
     }
     '
 
     $privateConfig='
     {
-        "AADClientSecret":"q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s="
+        "AADClientSecret":"/XazYdJ9XaMBbiQ0dwSoyue7LbkQ1OJOePGGcrG3dkA="
     }
     '
 
@@ -62,5 +62,5 @@ function Encrypt-Disk
 }
 
 #Add-AzureAccount
-Select-AzureSubscription "OSTC Shanghai Dev"
+Select-AzureSubscription "CRP TiP Sub 001"
 Encrypt-Disk -cloudServiceName "andliu-ubuntu14" -virtualMachineName "andliu-ubuntu14"

@@ -34,5 +34,5 @@
 }
 
 Add-AzureAccount
-Select-AzureSubscription "OSTC Shanghai Dev"
+Select-AzureSubscription "CRP TiP Sub 001"
 Create-Key-Disk -cloudServiceName "fareast-andliu" -virtualMachineName "fareast-andliu" -localFile "d:\fat32key.vhd"

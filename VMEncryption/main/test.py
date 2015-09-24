@@ -60,7 +60,7 @@ def main():
     #Passphrase, KeyVaultURL, KeyEncryptionKeyURL, AADClientID, KeyEncryptionAlgorithm, AADClientSecret,DiskEncryptionKeyFileName):
     #keyVaultUtil.create_kek_secret("VGhpcyBpcyB0aGUgcGxhaW4gdGV4dCBtZXNzYWdlLg" \
     #    ,"https://andliukeyvault.vault.azure.net/secrets/"\
-    #    ,"https://andliukeyvault.vault.azure.net/keys/mykey","0c46e28c-e8cb-490d-bd4f-21626b6601f6","RSA1_5","q01ejLCpGd+ObJDA6meuZD+CiU72uxU7U4LcaRSd60s=")
+    #    ,"https://andliukeyvault.vault.azure.net/keys/mykey","b7b48143-6c58-4cd4-a9e0-0a15cbda0614","RSA1_5","/XazYdJ9XaMBbiQ0dwSoyue7LbkQ1OJOePGGcrG3dkA=")
     keyVaultUtil.create_kek_secret("Quattro!",\
                                    "https://diskencryptionkeyvault.vault.azure.net/",\
                                    "https://diskencryptionkeyvault.vault.azure.net/keys/DiskEncryption-Kek",\

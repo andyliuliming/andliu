@@ -44,5 +44,5 @@ function Encrypt-Disk
 }
 
 #Add-AzureAccount
-Select-AzureSubscription "OSTC Shanghai Dev"
+Select-AzureSubscription "CRP TiP Sub 001"
 Encrypt-Disk -cloudServiceName "andliu-ubuntu14" -virtualMachineName "andliu-ubuntu14"
