@@ -295,7 +295,7 @@ def daemon():
             """
             search for the bek volume, then mount it:)
             """
-            disk_util = DiskUtil(hutil, MyPatching, logger)
+            disk_util = DiskUtil(hutil, MyPatching, logger, encryptionEnvironment)
 
             encryption_config = EncryptionConfig()
             passphrase = None
