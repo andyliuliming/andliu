@@ -45,6 +45,7 @@ from EncryptionConfig import *
 from patch import *
 from BekUtil import *
 from EncryptionQueue import EncryptionQueue
+from EncryptionQueue import EncryptionRequest
 from EncryptionEnvironment import EncryptionEnvironment
 #Main function is the only entrence to this extension handler
 def main():
