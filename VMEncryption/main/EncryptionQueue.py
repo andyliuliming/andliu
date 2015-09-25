@@ -51,7 +51,7 @@ class EncryptionQueue(object):
             return False
 
     def current_command(self):
-        self.encryption_config.get_config('command')
+        return self.encryption_config.get_config('command')
 
     def current_parameters(self):
         self.encryption_config.get_config('parameters')
