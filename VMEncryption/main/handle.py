@@ -39,11 +39,11 @@ from common import *
 from ExtensionParameter import ExtensionParameter
 from ExtensionParameter import EncryptionItem
 from DiskUtil import DiskUtil
-from backuplogger import BackupLogger
+from BackupLogger import BackupLogger
 from KeyVaultUtil import KeyVaultUtil
-from encryptionconfig import *
+from EncryptionConfig import *
 from patch import *
-from bekutil import *
+from BekUtil import *
 from EncryptionQueue import EncryptionQueue
 from EncryptionEnvironment import EncryptionEnvironment
 #Main function is the only entrence to this extension handler

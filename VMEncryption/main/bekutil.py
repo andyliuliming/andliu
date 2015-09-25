@@ -18,7 +18,7 @@
 #
 # Requires Python 2.7+
 #
-from diskutil import *
+from DiskUtil import *
 from common import *
 import base64
 import os.path
