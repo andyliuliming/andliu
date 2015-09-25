@@ -26,8 +26,9 @@ class ConfigUtil(object):
     """
     this should not create the config file with path: config_file_path
     """
-    def __init__(self, config_file_path, section_name):
+    def __init__(self, config_file_path, section_name,logger):
         self.config_file_path = config_file_path
+        self.logger=logger
         self.azure_crypt_config_section = section_name
     
     def config_file_exists(self):
@@ -59,4 +60,5 @@ class ConfigUtil(object):
             prop_value = config.get(self.azure_crypt_config_section, prop_name)
             return prop_value
         else:
+            self.logger.log("the config file " + str(self.config_file_path) + " not exists.")
             return None

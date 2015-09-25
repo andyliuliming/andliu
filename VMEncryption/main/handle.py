@@ -328,7 +328,7 @@ def daemon():
                     enable_encryption_format(passphrase,luks_header_path,encryption_queue,disk_util)
                 else:
                     #TODO we should exit.
-                    logger.log("command "+encryption_queue.current_command()+" not supported")
+                    logger.log("command "+str(encryption_queue.current_command())+" not supported")
 
     except Exception as e:
         # mount the file systems back.
