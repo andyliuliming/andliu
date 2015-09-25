@@ -44,7 +44,8 @@ class EncryptionQueue(object):
 
     def clear_queue(self):
         try:
-            os.remove(self.queue_file_path)
+            if(os.path.exists(self.queue_file_path)):
+                os.remove(self.queue_file_path)
             return True
         except OSError as e:
             self.logger.log("Failed to clear_queue with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
