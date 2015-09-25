@@ -87,7 +87,7 @@ def enable():
         passphrase_existed = None
         kek_secret_uri_created = None
 
-        disk_util = DiskUtil(hutil, MyPatching, logger)
+        disk_util = DiskUtil(hutil, MyPatching, logger, encryptionEnvironment)
         bek_util = BekUtil(disk_util, logger)
         if(encryption_config.config_file_exists()):
             passphrase_existed = bek_util.get_bek_passphrase(encryption_config)
