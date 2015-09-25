@@ -336,6 +336,7 @@ def daemon():
         hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,'1', 'Enable failed.')
     finally:
         encryption_queue = EncryptionQueue(logger, encryptionEnvironment)
+        #TODO not remove it, backed it up.
         encryption_queue.clear_queue()
         logger.log("finally in daemon")
 
