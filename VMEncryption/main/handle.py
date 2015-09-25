@@ -285,7 +285,7 @@ def daemon():
         # TODO Remount all
         encryption_queue = EncryptionQueue(logger, encryptionEnvironment)
         if(encryption_queue.is_encryption_marked()):
-            encryption_queue.clear_queue()
+            logger.log(" encryption is marked.")
         else:
             return
 
