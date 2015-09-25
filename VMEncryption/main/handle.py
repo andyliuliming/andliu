@@ -319,12 +319,16 @@ def daemon():
                 """
                 if the key is not created successfully, the encrypted file system should not 
                 """
+                logger.log("creating luks header")
                 luks_header_path = disk_util.create_luks_header()
 
                 if(encryption_queue.current_command() == CommonVariables.enableencryption_all_inplace):
                     enable_encryption_all_in_place(passphrase,luks_header_path,encryption_queue, disk_util, bek_util)
                 elif(encryption_queue.current_command() == CommonVariables.enableencryption_format):
                     enable_encryption_format(passphrase,luks_header_path,encryption_queue,disk_util)
+                else:
+                    #TODO we should exit.
+                    logger.log("command "+encryption_queue.current_command()+" not supported")
 
     except Exception as e:
         # mount the file systems back.
