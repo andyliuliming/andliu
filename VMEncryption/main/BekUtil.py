@@ -60,7 +60,7 @@ class BekUtil(object):
                 self.disk_util.mount_filesystem(os.path.join('/dev/' + azure_device.name), '/mnt/azure_passphrase', bek_filesystem)
                 #search for the passphrase file.
                 if(os.path.exists(os.path.join(self.bek_filesystem_mount_point,bek_filename))):
-                    with open("/etc/fstab",'r') as f:
+                    with open(os.path.join(self.bek_filesystem_mount_point,bek_filename),'r') as f:
                         pass_phrase = f.read()
                         passphrase_device = azure_device.name
                         self.logger.log("got the passphrase from " + str(azure_device.name))
