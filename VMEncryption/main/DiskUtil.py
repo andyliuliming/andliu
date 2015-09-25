@@ -159,7 +159,7 @@ class DiskUtil(object):
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()
             self.logger.log("result of make luks header result is " + str(returnCode))
-            return luks_header_path
+            return self.encryptionEnvironment.luks_header_path
 
     def encrypt_disk(self, devpath, passphrase, mappername, headerfile):
         error = EncryptionError()
