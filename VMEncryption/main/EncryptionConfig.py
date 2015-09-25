@@ -24,9 +24,9 @@ from ConfigParser import ConfigParser
 from ConfigUtil import ConfigUtil
 
 class EncryptionConfig(object):
-    def __init__(self, encryptionEnvironment):
+    def __init__(self, encryptionEnvironment,logger):
         self.encryptionEnvironment = encryptionEnvironment
-        self.encryption_config = ConfigUtil(encryptionEnvironment.encryptio_config_path,'azure_crypt_config')
+        self.encryption_config = ConfigUtil(encryptionEnvironment.encryptio_config_path,'azure_crypt_config',logger)
 
     def config_file_exists(self):
         return self.encryption_config.config_file_exists()

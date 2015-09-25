@@ -84,7 +84,7 @@ def enable():
     logger.log("enabling...")
 
     try:
-        encryption_config = EncryptionConfig(encryptionEnvironment)
+        encryption_config = EncryptionConfig(encryptionEnvironment,logger)
         passphrase_existed = None
         kek_secret_uri_created = None
 
@@ -297,7 +297,7 @@ def daemon():
             """
             disk_util = DiskUtil(hutil, MyPatching, logger, encryptionEnvironment)
 
-            encryption_config = EncryptionConfig(encryptionEnvironment)
+            encryption_config = EncryptionConfig(encryptionEnvironment,logger)
             passphrase = None
             """
             try to find the attached bek volume, and use the file to mount the crypted volumes,
