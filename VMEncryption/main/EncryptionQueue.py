@@ -31,7 +31,8 @@ class EncryptionRequest(object):
         self.logger = logger
 
 class EncryptionQueue(object):
-    def __init__(self,encryptionEnvironment):
+    def __init__(self,logger,encryptionEnvironment):
+        self.logger = logger
         self.encryptionEnvironment = encryptionEnvironment
         self.queue_file_path = encryptionEnvironment.azure_crypt_request_queue_path
         self.encryption_config = ConfigUtil(self.queue_file_path,'encryption_request_queue')

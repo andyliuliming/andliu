@@ -110,7 +110,7 @@ def enable():
                 logger.log("the config file exists, but we could not get the passphrase according to it.")
                 hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.passphrase_file_not_found),'The passphrase could not get.')
 
-        encryption_queue = EncryptionQueue(encryptionEnvironment)
+        encryption_queue = EncryptionQueue(logger, encryptionEnvironment)
         if encryption_queue.is_encryption_marked():
             # verify the encryption mark
             start_daemon()
@@ -283,7 +283,7 @@ def daemon():
         # Ensure the same configuration is executed only once
         # If the previous enable failed, we do not have retry logic here.
         # TODO Remount all
-        encryption_queue = EncryptionQueue(encryptionEnvironment)
+        encryption_queue = EncryptionQueue(logger, encryptionEnvironment)
         if(encryption_queue.is_encryption_marked()):
             encryption_queue.clear_queue()
         else:
@@ -331,7 +331,7 @@ def daemon():
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
         hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,'1', 'Enable failed.')
     finally:
-        encryption_queue = EncryptionQueue(encryptionEnvironment)
+        encryption_queue = EncryptionQueue(logger, encryptionEnvironment)
         encryption_queue.clear_queue()
         logger.log("finally in daemon")
 
