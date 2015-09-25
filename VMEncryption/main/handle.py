@@ -215,7 +215,7 @@ def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_
                 else:
                     hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(encrypt_error.code),encrypt_error.info)
 
-def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queue, disk_util):
+def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queue, disk_util,bek_util):
     ########### the existing scenario starts ###################
     # we do not support the backup version policy
     # {"command":"enableencryption_format","query":[{"source_scsi_number":"[5:0:0:0]","filesystem":"ext4","mount_point":"/mnt/"}],
@@ -323,7 +323,7 @@ def daemon():
                 luks_header_path = disk_util.create_luks_header()
 
                 if(encryption_queue.current_command() == CommonVariables.enableencryption_all_inplace):
-                    enable_encryption_all_in_place(passphrase,luks_header_path,encryption_queue, disk_util, bek_util)
+                    enable_encryption_all_in_place(passphrase,luks_header_path,encryption_queue, disk_util,bek_util)
                 elif(encryption_queue.current_command() == CommonVariables.enableencryption_format):
                     enable_encryption_format(passphrase,luks_header_path,encryption_queue,disk_util)
                 else:
