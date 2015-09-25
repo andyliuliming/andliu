@@ -34,32 +34,31 @@ class EncryptionQueue(object):
     def __init__(self,logger,encryptionEnvironment):
         self.logger = logger
         self.encryptionEnvironment = encryptionEnvironment
-        self.queue_file_path = encryptionEnvironment.azure_crypt_request_queue_path
-        self.encryption_config = ConfigUtil(self.queue_file_path,'encryption_request_queue',self.logger)
+        self.encryption_config = ConfigUtil(self.encryptionEnvironment.azure_crypt_request_queue_path,'encryption_request_queue',self.logger)
 
     def mark_encryption(self, encryption_request):
-        self.encryption_config.save_config("command", encryption_request.command)
-        self.encryption_config.save_config("volume_type", encryption_request.volume_type)
-        self.encryption_config.save_config("parameters", encryption_request.parameters)
+        self.encryption_config.save_config('command', encryption_request.command)
+        self.encryption_config.save_config('volume_type', encryption_request.volume_type)
+        self.encryption_config.save_config('parameters', encryption_request.parameters)
 
     def clear_queue(self):
         try:
-            if(os.path.exists(self.queue_file_path)):
-                os.remove(self.queue_file_path)
+            if(os.path.exists(self.encryptionEnvironment.azure_crypt_request_queue_path)):
+                os.remove(self.encryptionEnvironment.azure_crypt_request_queue_path)
             return True
         except OSError as e:
             self.logger.log("Failed to clear_queue with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
             return False
 
     def current_command(self):
-        self.encryption_config.get_config("command")
+        self.encryption_config.get_config('command')
 
     def current_parameters(self):
-        self.encryption_config.get_config("parameters")
+        self.encryption_config.get_config('parameters')
 
     def is_encryption_marked(self):
         """
         we should compare the timestamp of the file with the current system time
         if not match (in 30 minutes, then should skip the file)
         """
-        return os.path.exists(self.queue_file_path)
+        return self.encryption_config.config_file_exists()
