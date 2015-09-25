@@ -45,7 +45,7 @@ class CommonVariables:
     """
     value for VolumeTypeKey could be OS or Data
     """
-    VolumeTypeKey = 'BitlockerVolumeType'
+    VolumeTypeKey = 'VolumeType'
     AADClientSecretKey = 'AADClientSecret'
     SecretUriKey = 'SecretUri'
 
