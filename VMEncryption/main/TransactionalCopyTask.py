@@ -23,13 +23,14 @@ import os
 import os.path
 import sys
 from subprocess import *
-
+from common import EncryptionError
 class CopyTask(object):
     def __init__(self):
         pass
 
 class TransactionalCopyTask(object):
-    def __init__(self, device_item, destination, patching, encryptionEnvironment):
+    def __init__(self,logger, device_item, destination, patching, encryptionEnvironment):
+        self.logger=logger
         self.encryptionEnvironment = encryptionEnvironment
         self.device_item = device_item
         self.destination = destination
@@ -65,9 +66,9 @@ class TransactionalCopyTask(object):
         check the device_item size first, cut it 
         """
         if(self.patching.distro_info[0].lower() == "ubuntu" and self.patching.distro_info[1] == "12.04"):
-            return self.copy_using_cp(from_device,to_device)
+            return self.copy_using_cp(os.path.join("/dev/", self.device_item.name),self.destination)
         else:
-            return self.copy_using_dd(from_device,to_device)
+            return self.copy_using_dd(os.path.join("/dev/", self.device_item.name),self.destination)
 
     """
     this would be a monster, if the time period is not controled.

@@ -41,7 +41,7 @@ class DiskUtil(object):
         """
         if the os is ubuntu 12.04, then ues the cp --sparse instead.
         """
-        copy_task = TransactionalCopyTask(device_item, destination, self.patching, self.encryptionEnvironment)
+        copy_task = TransactionalCopyTask(self.logger,device_item, destination, self.patching, self.encryptionEnvironment)
         return copy_task.begin_copy()
 
     def get_disk_partition_table_type(self, dev_path):
