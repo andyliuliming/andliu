@@ -297,7 +297,7 @@ def daemon():
             """
             disk_util = DiskUtil(hutil, MyPatching, logger, encryptionEnvironment)
 
-            encryption_config = EncryptionConfig()
+            encryption_config = EncryptionConfig(encryptionEnvironment)
             passphrase = None
             """
             try to find the attached bek volume, and use the file to mount the crypted volumes,
