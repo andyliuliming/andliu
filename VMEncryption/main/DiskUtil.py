@@ -152,10 +152,10 @@ class DiskUtil(object):
 
     def create_luks_header(self):
         if(os.path.exists(self.encryptionEnvironment.luks_header_path)):
-            return luks_header_path
+            return self.encryptionEnvironment.luks_header_path
         else:
             # dd if=/dev/zero bs=8388608 count=1 > /luks_header_path
-            commandToExecute = '/bin/bash -c "' + 'dd if=/dev/zero bs=8388608 count=1 > ' + luks_header_path + '"'
+            commandToExecute = '/bin/bash -c "' + 'dd if=/dev/zero bs=8388608 count=1 > ' + self.encryptionEnvironment.luks_header_path + '"'
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()
             self.logger.log("result of make luks header result is " + str(returnCode))
