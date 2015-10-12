@@ -86,7 +86,7 @@ def enable():
     try:
         encryption_config = EncryptionConfig(encryptionEnvironment,logger)
         passphrase_existed = None
-        kek_secret_uri_created = None
+        kek_secret_id_created = None
 
         disk_util = DiskUtil(hutil, MyPatching, logger, encryptionEnvironment)
         bek_util = BekUtil(disk_util, logger)
@@ -143,7 +143,7 @@ def enable():
             #handle the passphrase related
             if(passphrase_existed == None):
                 extension_parameter.passphrase = bek_util.generate_passphrase()
-                kek_secret_uri_created = keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
+                kek_secret_id_created = keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
                     KeyVaultURL = extension_parameter.KeyVaultURL,\
                     KeyEncryptionKeyURL = extension_parameter.KeyEncryptionKeyURL,\
                     AADClientID = extension_parameter.AADClientID,\
@@ -151,12 +151,12 @@ def enable():
                     AADClientSecret = extension_parameter.AADClientSecret,\
                     DiskEncryptionKeyFileName = extension_parameter.DiskEncryptionKeyFileName)
 
-                if(kek_secret_uri_created == None):
+                if(kek_secret_id_created == None):
                     hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.create_encryption_secret_failed), 'Enable failed.')
                 else:
                     encryption_config.save_bek_filename(extension_parameter.DiskEncryptionKeyFileName)
                     encryption_config.save_bek_filesystem(CommonVariables.BekVolumeFileSystem)
-                    encryption_config.save_secret_uri(kek_secret_uri_created)
+                    encryption_config.save_secret_uri(kek_secret_id_created)
 
             encryption_request = EncryptionRequest(logger)
             encryption_request.command = extension_parameter.command
@@ -167,14 +167,14 @@ def enable():
             # TODO check the encryption request is marked at the very
             # beginning.
             # TODO implement the format encryption
-            if(kek_secret_uri_created != None):
-                hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.success), str(kek_secret_uri_created))
+            if(kek_secret_id_created != None):
+                hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.success), str(kek_secret_id_created))
             else:
                 """
                 the enabling called again. the passphrase would be re-used.
                 """
                 start_daemon()
-                hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.encrypttion_already_enabled), str(kek_secret_uri_created))
+                hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.encrypttion_already_enabled), str(kek_secret_id_created))
 
     except Exception as e:
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))

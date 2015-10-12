@@ -78,9 +78,9 @@ class KeyVaultUtil(object):
             if(secret_value == None):
                 return None
 
-            secret_keyvault_uri = self.create_secret(access_token,KeyVaultURL,secret_value,KeyEncryptionAlgorithm,DiskEncryptionKeyFileName)
+            secret_id = self.create_secret(access_token,KeyVaultURL,secret_value,KeyEncryptionAlgorithm,DiskEncryptionKeyFileName)
 
-            return secret_keyvault_uri
+            return secret_id
         except Exception as e:
             self.logger.log("Failed to create_kek_secret with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
             return None
@@ -183,10 +183,14 @@ class KeyVaultUtil(object):
             connection.request('PUT', sasuri_obj.path + '?api-version=' + self.api_version , request_content, headers = headers)
             result = connection.getresponse()
             self.logger.log(str(result.status) + " " + str(result.getheaders()))
+            result_content = result.read()
+            self.logger.log(result_content)
+            result_json = json.loads(result_content)
+            secret_id = result_json["id"]
             connection.close()
             if(result.status != httplib.OK and result.status != httplib.ACCEPTED):
                 return None
-            return secret_keyvault_uri
+            return secret_id
         except Exception as e:
             self.logger.log("Failed to create_secret with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
             return None
