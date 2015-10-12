@@ -135,23 +135,22 @@ class KeyVaultUtil(object):
             encrypt our passphrase using the encryption key
             api for encrypt use key is https://msdn.microsoft.com/en-us/library/azure/dn878060.aspx
             """
-            self.logger.log("encrypting the secret using key." + str(key_id) + " " + str(Passphrase) + " " + str(AccessToken))
+            self.logger.log("encrypting the secret using key." + str(key_id))
             sasuri_obj = urlparse.urlparse(key_id)
             connection = httplib.HTTPSConnection(sasuri_obj.hostname)
-            request_content = '{"alg":"' + KeyEncryptionAlgorithm + '","value":"' + Passphrase + '"}'
+            request_content = '{"alg":"' + str(KeyEncryptionAlgorithm) + '","value":"' + str(Passphrase) + '"}'
             headers = {}
             headers["Content-Type"] = "application/json"
             headers["Authorization"] = "Bearer " + str(AccessToken)
-            #Authorization: Bearer
             relative_path = sasuri_obj.path + "/encrypt" + '?api-version=' + self.api_version
-            self.logger.log("crypt path to post is " + str(relative_path))
+            self.logger.log("crypt path to post is " + str(relative_path) + " and the algorithm using are " + str(KeyEncryptionAlgorithm))
             connection.request('POST', relative_path , request_content, headers = headers)
             result = connection.getresponse()
             self.logger.log(str(result.status) + " " + str(result.getheaders()))
             if(result.status != httplib.OK and result.status != httplib.ACCEPTED):
                 return CommonVariables.create_encryption_secret_failed
             result_content = result.read()
-            self.logger.log("result_content is: "+str(result_content))
+            self.logger.log("result_content is: " + str(result_content))
             connection.close()
             result_json = json.loads(result_content)
             secret_value = result_json[u'value']
@@ -185,7 +184,7 @@ class KeyVaultUtil(object):
             result = connection.getresponse()
             self.logger.log(str(result.status) + " " + str(result.getheaders()))
             result_content = result.read()
-            self.logger.log(result_content)
+            self.logger.log("result_content is " + str(result_content))
             result_json = json.loads(result_content)
             secret_id = result_json["id"]
             connection.close()
