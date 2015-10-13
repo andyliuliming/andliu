@@ -26,7 +26,7 @@ from ConfigUtil import ConfigKeyValuePair
 class EncryptionConfig(object):
     def __init__(self, encryptionEnvironment,logger):
         self.encryptionEnvironment = encryptionEnvironment
-        self.encryption_config = ConfigUtil(encryptionEnvironment.encryptio_config_path,'azure_crypt_config',logger)
+        self.encryption_config = ConfigUtil(encryptionEnvironment.encryption_config_path,'azure_crypt_config',logger)
         self.passphrase_file_name = None
         self.bek_filesystem = None
         self.secret_id = None

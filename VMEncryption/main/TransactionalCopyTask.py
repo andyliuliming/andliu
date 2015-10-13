@@ -26,6 +26,7 @@ from subprocess import *
 from CommandExecuter import CommandExecuter
 from Common import EncryptionError
 from Common import CommonVariables
+from ConfigUtil import ConfigUtil
 
 class TransactionalCopyTask(object):
     def __init__(self,logger, device_item, destination, patching, encryptionEnvironment):
@@ -38,9 +39,10 @@ class TransactionalCopyTask(object):
         self.command_executer = CommandExecuter(self.logger)
         self.tmpfs_mount_point = "/mnt/azure_encrypt_tmpfs"
         self.slice_file_path = tmpfs_mount_point + "/slice_file"
+        self.transactional_copy_config = ConfigUtil(encryptionEnvironment.azure_crypt_current_transactional_copy_path,'azure_crypt_copy_config',logger)
     
     def prepare_mem_fs(self):
-        commandToExecute = "mount -t tmpfs -o size=" + str(self.slice_size+1024) + " tmpfs " + self.tmpfs_mount_point
+        commandToExecute = "mount -t tmpfs -o size=" + str(self.slice_size + 1024) + " tmpfs " + self.tmpfs_mount_point
         returnCode = self.command_executer.Execute(commandToExecute)
         return returnCode
 
@@ -49,31 +51,27 @@ class TransactionalCopyTask(object):
         returnCode = self.command_executer.Execute(commandToExecute)
         return returnCode
 
-    def copy_to_tmpfs(self):
-        pass
-
+    """
+    TODO: if the copy failed?
+    """
     def copy_internal(self,copy_command,from_device,to_device,skip,size):
+        """
+        first, copy the data to the middle cache
+        """
         commandToExecute = '/bin/bash -c "' + str(copy_command) + ' if=' + from_device + ' of=' + self.slice_file_path + ' bs=' + str(size) + " skip=" + str(skip)
         self.logger.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
         returnCode = self.command_executer.Execute(commandToExecute)
         if(returnCode != 0):
             self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
 
-
+        """
+        second, copy the data in the middle cache to the target device.
+        """
         commandToExecute = '/bin/bash -c "' + str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + " seek=" + str(skip)
         self.logger.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
         returnCode = self.command_executer.Execute(commandToExecute)
         if(returnCode != 0):
             self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
-
-
-    def copy_using_cp(self, from_device, to_device,skip,size):
-        copy_command = 'sg_dd oflag=sparse'
-        self.copy_internal(copy_command,from_device,to_device,skip,size)
-
-    def copy_using_dd(self, from_device, to_device,skip,size):
-        copy_command = 'dd conv=sparse'
-        self.copy_internal(copy_command,from_device,to_device,skip,size)
 
     def begin_copy(self):
         """
@@ -88,11 +86,16 @@ class TransactionalCopyTask(object):
 
         origin_device_path = os.path.join("/dev/",self.device_item.name)
         returnCode = CommonVariables.success
+
+        transactional_copy_config.save_config(CommonVariables.CurrentDeviceNameKey,device_item.name)
+        transactional_copy_config.save_config(CommonVariables.CurrentSliceSizeKey,self.slice_size)
         for i in range(0, total_slice_size):
+            transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,self.i)
             if(using_cp_to_copy):
-                self.copy_using_cp(origin_device_path,self.destination,i,self.slice_size)
+                copy_command = 'sg_dd oflag=sparse'
             else:
-                self.copy_using_dd(origin_device_path,self.destination,i,self.slice_size)
+                copy_command = 'dd conv=sparse'
+            self.copy_internal(copy_command,from_device,to_device,skip,size)
 
         """
         copy the bytes not align with the slice_size
@@ -102,22 +105,3 @@ class TransactionalCopyTask(object):
         else:
             self.copy_using_dd(origin_device_path,self.destination,total_slice_size,last_slice_size)
         return returnCode
-
-
-    def current_progress(self):
-        """
-        If you read man dd, it refers you to info coreutils 'dd invocation' which says, in part,
-        Sending an INFO signal to a running dd process makes it print I/O statistics to standard error and then resume copying. In the example below, dd is run in the background to copy 10 million blocks. The kill command makes it output intermediate I/O statistics, and when dd completes normally or is killed by the SIGINT signal, it outputs the final statistics.
-            $ dd if=/dev/zero of=/dev/null count=10MB & pid=$!
-            $ kill -s INFO $pid; wait $pid
-            3385223+0 records in
-            3385223+0 records out
-            1733234176 bytes (1.7 GB) copied, 6.42173 seconds, 270 MB/s
-            10000000+0 records in
-            10000000+0 records out
-            5120000000 bytes (5.1 GB) copied, 18.913 seconds, 271 MB/s
-        On systems lacking the INFO signal dd responds to the USR1 signal instead, unless the POSIXLY_CORRECT environment variable is set.
-        """
-        pass
-
-

@@ -21,10 +21,10 @@
 class EncryptionEnvironment(object):
     """description of class"""
     def __init__(self):
-        self.encryptio_config_path = '/etc/azure_crypt_config.ini'
+        self.encryption_config_path = '/etc/azure_crypt_config.ini'
         self.azure_crypt_mount_config_path = '/etc/azure_crypt_mount'
         self.azure_crypt_request_queue_path = '/etc/azure_crypt_request_queue.ini'
-        self.azure_crypt_transactional_copy_path = '/mnt/azure_transaction_copy'
+        self.azure_crypt_current_transactional_copy_path = '/etc/azure_crypt_copy_progress.ini'
         self.luks_header_path = '/azureluksheader'
 
     def make_sure_config_exists(self):

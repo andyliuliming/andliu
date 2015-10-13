@@ -22,6 +22,7 @@ import os
 import os.path
 import traceback
 from ConfigUtil import *
+from Common import CommonVariables
 
 class EncryptionRequest(object):
     def __init__(self,logger):
@@ -37,12 +38,12 @@ class EncryptionMark(object):
         self.encryption_config = ConfigUtil(self.encryptionEnvironment.azure_crypt_request_queue_path,'encryption_request_queue',self.logger)
 
     def mark_encryption(self, encryption_request):
-        key_value_pairs=[]
-        command = ConfigKeyValuePair('command',encryption_request.command)
+        key_value_pairs = []
+        command = ConfigKeyValuePair(CommonVariables.EncryptionCommandKey,encryption_request.command)
         key_value_pairs.append(command)
-        volume_type = ConfigKeyValuePair('volume_type',encryption_request.volume_type)
+        volume_type = ConfigKeyValuePair(CommonVariables.EncryptionVolumeTypeKey,encryption_request.volume_type)
         key_value_pairs.append(volume_type)
-        parameters = ConfigKeyValuePair('parameters',encryption_request.parameters)
+        parameters = ConfigKeyValuePair(CommonVariables.EncryptionParametersKey,encryption_request.parameters)
         key_value_pairs.append(parameters)
         self.encryption_config.save_config(key_value_pairs)
 
@@ -56,7 +57,7 @@ class EncryptionMark(object):
             return False
 
     def current_command(self):
-        return self.encryption_config.get_config('command')
+        return self.encryption_config.get_config(CommonVariables.EncryptionCommandKey)
 
     def current_parameters(self):
         self.encryption_config.get_config('parameters')

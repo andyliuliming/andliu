@@ -34,6 +34,7 @@ class CommonVariables:
     default_mount_name = 'encrypted_disk'
     dev_mapper_root = '/dev/mapper/'
     BekVolumeFileSystem = 'vfat'
+
     """
     parameter key names
     """
@@ -44,6 +45,8 @@ class CommonVariables:
     KeyEncryptionAlgorithmKey = 'KeyEncryptionAlgorithm'
     DiskFormatQuerykey = "DiskFormatQuery"
     BekVolumeFileSystemKey = "BekVolumeFileSystem"
+
+
     """
     value for VolumeType could be OS or Data
     """
@@ -56,6 +59,20 @@ class CommonVariables:
     """
     enableencryption_all_inplace = 'enableencryption_all_inplace'
     enableencryption_format = 'enableencryption_format'
+
+    """
+    encryption config keys
+    """
+    EncryptionCommandKey='command'
+    EncryptionVolumeTypeKey = 'volume_type'
+    EncryptionParametersKey = 'parameters'
+
+    """
+    transactional copy keys
+    """
+    CurrentDeviceNameKey = 'current_device_name'
+    CurrentSliceSizeKey = 'current_slice_size'
+    CurrentSliceIndexKey= 'current_slice_index'
 
     # error code
     extension_success_status = 'success'
