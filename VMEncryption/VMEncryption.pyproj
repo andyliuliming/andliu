@@ -61,7 +61,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="main\BackupLogger.py" />
-    <Compile Include="main\common.py" />
+    <Compile Include="main\Common.py" />
     <Compile Include="main\DiskUtil.py">
       <SubType>Code</SubType>
     </Compile>

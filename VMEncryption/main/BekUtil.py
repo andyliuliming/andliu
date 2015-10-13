@@ -19,7 +19,7 @@
 # Requires Python 2.7+
 #
 from DiskUtil import *
-from common import *
+from Common import *
 import base64
 import os.path
 import os

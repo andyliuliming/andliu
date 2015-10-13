@@ -26,7 +26,7 @@ from subprocess import *
 import shutil
 import uuid
 from TransactionalCopyTask import TransactionalCopyTask
-from common import *
+from Common import *
 
 class DiskUtil(object):
     def __init__(self, hutil, patching, logger, encryptionEnvironment):
@@ -154,8 +154,8 @@ class DiskUtil(object):
         if(os.path.exists(self.encryptionEnvironment.luks_header_path)):
             return self.encryptionEnvironment.luks_header_path
         else:
-            # dd if=/dev/zero bs=8388608 count=1 > /luks_header_path
-            commandToExecute = '/bin/bash -c "' + 'dd if=/dev/zero bs=8388608 count=1 > ' + self.encryptionEnvironment.luks_header_path + '"'
+            # dd if=/dev/zero bs=8388608 count=1 > /luks_header_path  32M
+            commandToExecute = '/bin/bash -c "' + 'dd if=/dev/zero bs=‭33554432‬ count=1 > ' + self.encryptionEnvironment.luks_header_path + '"'
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()
             self.logger.log("result of make luks header result is " + str(returnCode))
@@ -366,7 +366,7 @@ class DiskUtil(object):
         else:
             supported_device_type = ["disk","part","raid0","raid1","raid5","raid10"]
             if(device_item.type not in supported_device_type):
-                self.logger.log("the device type: " + str(device_item.type) + " is not supported yet")
+                self.logger.log("the device type: " + str(device_item.type) + " is not supported yet, so skip it")
                 return True
 
             sub_items = self.get_lsblk("/dev/" + device_item.name)
@@ -376,11 +376,11 @@ class DiskUtil(object):
 
             azure_blk_items = self.get_azure_devices()
             if(device_item.type == "crypt"):
-                self.logger.log("device_item.type is " + str(device_item.type) + " so skip it")
+                self.logger.log("device_item.type is " + str(device_item.type) + ", so skip it")
                 return True
 
             if(device_item.mountpoint == "/"):
-                self.logger.log("the mountpoint is root, so skip. " + str(device_item))
+                self.logger.log("the mountpoint is root " + str(device_item)+ ", so skip it")
                 return True
 
             for j in range(0,len(azure_blk_items)):

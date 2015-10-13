@@ -19,7 +19,7 @@
 # Requires Python 2.7+
 #
 import os.path
-from common import CommonVariables
+from Common import CommonVariables
 from ConfigParser import ConfigParser
 from ConfigUtil import ConfigUtil
 

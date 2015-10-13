@@ -19,19 +19,20 @@
 # Requires Python 2.7+
 #
 class CommonVariables:
-    azure_path = 'main/azure'
     utils_path_name = 'Utils'
-    extension_name = 'VMEncryption2'
+    extension_name = 'VMEncryption'
     extension_version = 0.1 
     extension_type = extension_name
     extension_media_link = 'https://andliu.blob.core.windows.net/extensions/' + extension_name + '-' + str(extension_version) + '.zip'
     extension_label = 'Windows Azure VMEncryption Extension for Linux IaaS'
     extension_description = extension_label
+
+    """
+    disk/file system related
+    """
     default_file_system = 'ext4'
     default_mount_name = 'encrypted_disk'
     dev_mapper_root = '/dev/mapper/'
-    extension_success_status = 'success'
-    extension_error_status = 'error'
     BekVolumeFileSystem = 'vfat'
     """
     parameter key names
@@ -43,7 +44,7 @@ class CommonVariables:
     KeyEncryptionAlgorithmKey = 'KeyEncryptionAlgorithm'
     DiskFormatQuerykey = "DiskFormatQuery"
     """
-    value for VolumeTypeKey could be OS or Data
+    value for VolumeType could be OS or Data
     """
     VolumeTypeKey = 'VolumeType'
     AADClientSecretKey = 'AADClientSecret'
@@ -56,6 +57,8 @@ class CommonVariables:
     enableencryption_format = 'enableencryption_format'
 
     # error code
+    extension_success_status = 'success'
+    extension_error_status = 'error'
     success = 0
     os_not_supported = 1
     luks_format_error = 2

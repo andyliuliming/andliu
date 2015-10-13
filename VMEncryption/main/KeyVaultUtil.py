@@ -25,7 +25,7 @@ import json
 import uuid
 import base64
 import traceback
-from common import *
+from Common import *
 
 class KeyVaultUtil(object):
     def __init__(self,logger):

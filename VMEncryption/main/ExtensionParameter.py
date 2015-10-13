@@ -20,7 +20,7 @@
 #
 import xml.parsers.expat
 from Utils import HandlerUtil
-from common import *
+from Common import *
 
 # parameter format should be like this:
 #{"command":"enableencryption","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],

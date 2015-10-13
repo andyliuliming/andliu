@@ -35,7 +35,7 @@ import urllib2
 import urlparse
 import httplib
 from Utils import HandlerUtil
-from common import *
+from Common import *
 from ExtensionParameter import ExtensionParameter
 from ExtensionParameter import EncryptionItem
 from DiskUtil import DiskUtil
@@ -85,14 +85,17 @@ def enable():
 
     try:
         encryption_config = EncryptionConfig(encryptionEnvironment,logger)
-        passphrase_existed = None
+        existed_passphrase = None
         kek_secret_id_created = None
 
+        """
+        trying to mount the crypted items.
+        """
         disk_util = DiskUtil(hutil, MyPatching, logger, encryptionEnvironment)
         bek_util = BekUtil(disk_util, logger)
         if(encryption_config.config_file_exists()):
-            passphrase_existed = bek_util.get_bek_passphrase(encryption_config)
-            if(passphrase_existed != None):
+            existed_passphrase = bek_util.get_bek_passphrase(encryption_config)
+            if(existed_passphrase != None):
                 crypt_items = disk_util.get_crypt_items()
                 if(crypt_items is not None):
                     for i in range(0, len(crypt_items)):
@@ -100,7 +103,7 @@ def enable():
                         #None is the placeholder if the file system is not
                         #mounted
                         if(crypt_item.mount_point != "None"):
-                            disk_util.mount_crypt_item(crypt_item, passphrase_existed)
+                            disk_util.mount_crypt_item(crypt_item, existed_passphrase)
                         else:
                             logger.log("skipping mount for the item " + str(crypt_item))
             else:
@@ -136,12 +139,11 @@ def enable():
             if(extension_parameter.command not in [CommonVariables.enableencryption_all_inplace, CommonVariables.enableencryption_format]):
                 hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.command_not_support), 'Command ' + str(extension_parameter.command) + ' is not supported.')
 
-
             """
             this is the fresh call case
             """
             #handle the passphrase related
-            if(passphrase_existed == None):
+            if(existed_passphrase == None):
                 extension_parameter.passphrase = bek_util.generate_passphrase()
                 kek_secret_id_created = keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
                     KeyVaultURL = extension_parameter.KeyVaultURL,\
@@ -188,8 +190,6 @@ def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_
     for scsi_num in encryption_parameters_obj:
         sdx_path = disk_util.query_dev_sdx_path_by_scsi_id(scsi_num)
         devices = disk_util.get_lsblk(sdx_path)
-        """
-        """
         if(len(devices) != 1):
             logger.log("the device with scsi number:" + scsi_num + " have more than one sub device. so skip it.")
             continue
@@ -217,7 +217,6 @@ def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_
 
 def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queue, disk_util,bek_util):
     ########### the existing scenario starts ###################
-    # we do not support the backup version policy
     # {"command":"enableencryption_format","query":[{"source_scsi_number":"[5:0:0:0]","filesystem":"ext4","mount_point":"/mnt/"}],
     # {"command":"enableencryption_all_inplace"}],
     # {"command":"enableencryption_clone","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
@@ -232,12 +231,13 @@ def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queu
         logger.log("device_item == " + str(device_item))
 
         should_skip = disk_util.should_skip_for_inplace_encryption(device_item)
-        if(device_item.name == bek_util.passphrase_device):
-            logger.log("skip for the passphrase disk " + str(device_item))
-            should_skip = True
-        if(device_item.name in encrypted_items):
-            logger.log("already did a operation " + str(device_item))
-            should_skip = True
+        if( not should_skip):
+            if(device_item.name == bek_util.passphrase_device):
+                logger.log("skip for the passphrase disk " + str(device_item))
+                should_skip = True
+            if(device_item.name in encrypted_items):
+                logger.log("already did a operation " + str(device_item) + " so skip it")
+                should_skip = True
 
         if(not should_skip):
             umount_status_code = CommonVariables.success
@@ -251,7 +251,7 @@ def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queu
                 logger.log("encrypting " + str(device_item))
                 encrypt_error = disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name, luks_header_path)
                 if(encrypt_error.errorcode == CommonVariables.success):
-                    logger.log("copying data " + str(device_item))
+                    logger.log("start copying data " + str(device_item))
                     copy_result = disk_util.copy(device_item, os.path.join(CommonVariables.dev_mapper_root, mapper_name))
                     if(copy_result != CommonVariables.success):
                         error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
@@ -298,16 +298,16 @@ def daemon():
             disk_util = DiskUtil(hutil, MyPatching, logger, encryptionEnvironment)
 
             encryption_config = EncryptionConfig(encryptionEnvironment,logger)
-            passphrase = None
+            bek_passphrase = None
             """
             try to find the attached bek volume, and use the file to mount the crypted volumes,
             and if the passphrase file is found, then we will re-use it for the future.
             """
             bek_util = BekUtil(disk_util, logger)
             if(encryption_config.config_file_exists()):
-                passphrase = bek_util.get_bek_passphrase(encryption_config)
+                bek_passphrase = bek_util.get_bek_passphrase(encryption_config)
 
-            if(passphrase == None):
+            if(bek_passphrase == None):
                 hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status, CommonVariables.passphrase_file_not_found, 'Passphrase file not found.')
             else:
                 """
@@ -323,9 +323,9 @@ def daemon():
                 luks_header_path = disk_util.create_luks_header()
 
                 if(encryption_queue.current_command() == CommonVariables.enableencryption_all_inplace):
-                    enable_encryption_all_in_place(passphrase,luks_header_path,encryption_queue, disk_util,bek_util)
+                    enable_encryption_all_in_place(bek_passphrase,luks_header_path,encryption_queue, disk_util,bek_util)
                 elif(encryption_queue.current_command() == CommonVariables.enableencryption_format):
-                    enable_encryption_format(passphrase,luks_header_path,encryption_queue,disk_util)
+                    enable_encryption_format(bek_passphrase,luks_header_path,encryption_queue,disk_util)
                 else:
                     #TODO we should exit.
                     logger.log("command "+str(encryption_queue.current_command())+" not supported")

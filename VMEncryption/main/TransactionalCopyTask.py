@@ -23,7 +23,7 @@ import os
 import os.path
 import sys
 from subprocess import *
-from common import EncryptionError
+from Common import EncryptionError
 class CopyTask(object):
     def __init__(self):
         pass
@@ -70,11 +70,6 @@ class TransactionalCopyTask(object):
         else:
             return self.copy_using_dd(os.path.join("/dev/", self.device_item.name),self.destination)
 
-    """
-    this would be a monster, if the time period is not controled.
-    """
-    def resume_copy(self):
-        pass
 
     def current_progress(self):
         """

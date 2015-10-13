@@ -19,7 +19,7 @@
 # Requires Python 2.7+
 #
 import os.path
-from common import *
+from Common import *
 from ConfigParser import ConfigParser
 
 class ConfigUtil(object):
@@ -28,7 +28,7 @@ class ConfigUtil(object):
     """
     def __init__(self, config_file_path, section_name,logger):
         self.config_file_path = config_file_path
-        self.logger=logger
+        self.logger = logger
         self.azure_crypt_config_section = section_name
     
     def config_file_exists(self):
