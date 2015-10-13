@@ -22,6 +22,11 @@ import os.path
 from Common import *
 from ConfigParser import ConfigParser
 
+class ConfigKeyValuePair(object):
+    def __init__(self,prop_name,prop_value):
+        self.prob_name = prob_name
+        self.prop_value = prop_value
+
 class ConfigUtil(object):
     """
     this should not create the config file with path: config_file_path
@@ -47,7 +52,20 @@ class ConfigUtil(object):
         config.set(self.azure_crypt_config_section, prop_name, prop_value)
         with open(self.config_file_path, 'wb') as configfile:
             config.write(configfile)
-    
+    """
+    save the configs
+    """
+    def save_configs(self, key_value_pairs):
+        config = ConfigParser()
+        if(os.path.exists(self.config_file_path)):
+            config.read(self.config_file_path)
+        # read values from a section
+        if(not config.has_section(self.azure_crypt_config_section)):
+            config.add_section(self.azure_crypt_config_section)
+        for key_value_pair in key_value_pairs:
+            config.set(self.azure_crypt_config_section, key_value_pair.prop_name, key_value_pair.prop_value)
+        with open(self.config_file_path, 'wb') as configfile:
+            config.write(configfile)
     """
     get the config
     """

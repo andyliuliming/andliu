@@ -30,16 +30,21 @@ class EncryptionRequest(object):
         self.parameters = None
         self.logger = logger
 
-class EncryptionQueue(object):
+class EncryptionMark(object):
     def __init__(self,logger,encryptionEnvironment):
         self.logger = logger
         self.encryptionEnvironment = encryptionEnvironment
         self.encryption_config = ConfigUtil(self.encryptionEnvironment.azure_crypt_request_queue_path,'encryption_request_queue',self.logger)
 
     def mark_encryption(self, encryption_request):
-        self.encryption_config.save_config('command', encryption_request.command)
-        self.encryption_config.save_config('volume_type', encryption_request.volume_type)
-        self.encryption_config.save_config('parameters', encryption_request.parameters)
+        key_value_pairs=[]
+        command = ConfigKeyValuePair('command',encryption_request.command)
+        key_value_pairs.append(command)
+        volume_type = ConfigKeyValuePair('volume_type',encryption_request.volume_type)
+        key_value_pairs.append(volume_type)
+        parameters = ConfigKeyValuePair('parameters',encryption_request.parameters)
+        key_value_pairs.append(parameters)
+        self.encryption_config.save_config(key_value_pairs)
 
     def clear_queue(self):
         try:

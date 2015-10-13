@@ -43,6 +43,7 @@ class CommonVariables:
     AADClientIDKey = 'AADClientID'
     KeyEncryptionAlgorithmKey = 'KeyEncryptionAlgorithm'
     DiskFormatQuerykey = "DiskFormatQuery"
+    BekVolumeFileSystemKey = "BekVolumeFileSystem"
     """
     value for VolumeType could be OS or Data
     """
@@ -94,7 +95,7 @@ class EncryptionError(object):
     def __str__(self):
         return "errorcode: " + str(self.errorcode) + " state:" + str(self.state) + " code:" + str(self.code) + " info:" + str(self.info)
 
-class LsblkItem(object):
+class DeviceItem(object):
     def __init__(self):
         #NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL
         self.name = None

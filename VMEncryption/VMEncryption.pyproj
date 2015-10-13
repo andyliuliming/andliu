@@ -54,7 +54,7 @@
     <Compile Include="main\TransactionalCopyTask.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="main\EncryptionQueue.py">
+    <Compile Include="main\EncryptionMark.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="main\KeyVaultUtil.py">

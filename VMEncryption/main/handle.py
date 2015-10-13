@@ -44,8 +44,8 @@ from KeyVaultUtil import KeyVaultUtil
 from EncryptionConfig import *
 from patch import *
 from BekUtil import *
-from EncryptionQueue import EncryptionQueue
-from EncryptionQueue import EncryptionRequest
+from EncryptionMark import EncryptionMark
+from EncryptionMark import EncryptionRequest
 from EncryptionEnvironment import EncryptionEnvironment
 #Main function is the only entrence to this extension handler
 def main():
@@ -113,7 +113,7 @@ def enable():
                 logger.log("the config file exists, but we could not get the passphrase according to it.")
                 hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.passphrase_file_not_found),'The passphrase could not get.')
 
-        encryption_queue = EncryptionQueue(logger, encryptionEnvironment)
+        encryption_queue = EncryptionMark(logger, encryptionEnvironment)
         if encryption_queue.is_encryption_marked():
             # verify the encryption mark
             start_daemon()
@@ -158,7 +158,7 @@ def enable():
                 else:
                     encryption_config.save_bek_filename(extension_parameter.DiskEncryptionKeyFileName)
                     encryption_config.save_bek_filesystem(CommonVariables.BekVolumeFileSystem)
-                    encryption_config.save_secret_uri(kek_secret_id_created)
+                    encryption_config.save_secret_id(kek_secret_id_created)
 
             encryption_request = EncryptionRequest(logger)
             encryption_request.command = extension_parameter.command
@@ -189,7 +189,7 @@ def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_
     encryption_parameters_obj = json.loads(encryption_parameters)
     for scsi_num in encryption_parameters_obj:
         sdx_path = disk_util.query_dev_sdx_path_by_scsi_id(scsi_num)
-        devices = disk_util.get_lsblk(sdx_path)
+        devices = disk_util.get_device_items(sdx_path)
         if(len(devices) != 1):
             logger.log("the device with scsi number:" + scsi_num + " have more than one sub device. so skip it.")
             continue
@@ -200,14 +200,14 @@ def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_
                 logger.log("encrypting " + str(device_item))
                 encrypt_error = disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name, luks_header_path)
                 if(encrypt_error.errorcode == CommonVariables.success):
-                    file_system="ext4"
-                    disk_util.format_disk("/dev/mapper/"+mapper_name,file_system)
+                    file_system = "ext4"
+                    disk_util.format_disk("/dev/mapper/" + mapper_name,file_system)
                     crypt_item_to_update = CryptItem()
                     crypt_item_to_update.mapper_name = mapper_name
                     crypt_item_to_update.dev_path = os.path.join("/dev/" ,device_item.name)
                     crypt_item_to_update.luks_header_path = luks_header_path
                     crypt_item_to_update.file_system = file_system
-                    crypt_item_to_update.mount_point="/mnt/mapper_name";
+                    crypt_item_to_update.mount_point = "/mnt/mapper_name"
 
                     disk_util.make_sure_path_exists(crypt_item_to_update.mount_point)
                     disk_util.update_crypt_item(crypt_item_to_update)
@@ -224,14 +224,14 @@ def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queu
     # this is the encryption in place
     # "force":"true", "passphrase":"User@123"}
     logger.log("executing the enableencryption_all_inplace command.")
-    devices = disk_util.get_lsblk(None)
+    device_items = disk_util.get_device_items(None)
     encrypted_items = []
     error_message = ""
-    for device_item in devices:
+    for device_item in device_items:
         logger.log("device_item == " + str(device_item))
 
         should_skip = disk_util.should_skip_for_inplace_encryption(device_item)
-        if( not should_skip):
+        if(not should_skip):
             if(device_item.name == bek_util.passphrase_device):
                 logger.log("skip for the passphrase disk " + str(device_item))
                 should_skip = True
@@ -283,7 +283,7 @@ def daemon():
         # Ensure the same configuration is executed only once
         # If the previous enable failed, we do not have retry logic here.
         # TODO Remount all
-        encryption_queue = EncryptionQueue(logger, encryptionEnvironment)
+        encryption_queue = EncryptionMark(logger, encryptionEnvironment)
         if(encryption_queue.is_encryption_marked()):
             logger.log(" encryption is marked.")
         else:
@@ -328,14 +328,14 @@ def daemon():
                     enable_encryption_format(bek_passphrase,luks_header_path,encryption_queue,disk_util)
                 else:
                     #TODO we should exit.
-                    logger.log("command "+str(encryption_queue.current_command())+" not supported")
+                    logger.log("command " + str(encryption_queue.current_command()) + " not supported")
 
     except Exception as e:
         # mount the file systems back.
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
         hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,'1', 'Enable failed.')
     finally:
-        encryption_queue = EncryptionQueue(logger, encryptionEnvironment)
+        encryption_queue = EncryptionMark(logger, encryptionEnvironment)
         #TODO not remove it, backed it up.
         encryption_queue.clear_queue()
         logger.log("finally in daemon")

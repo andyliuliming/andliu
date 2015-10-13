@@ -22,29 +22,42 @@ import os.path
 from Common import CommonVariables
 from ConfigParser import ConfigParser
 from ConfigUtil import ConfigUtil
-
+from ConfigUtil import ConfigKeyValuePair
 class EncryptionConfig(object):
     def __init__(self, encryptionEnvironment,logger):
         self.encryptionEnvironment = encryptionEnvironment
         self.encryption_config = ConfigUtil(encryptionEnvironment.encryptio_config_path,'azure_crypt_config',logger)
+        self.passphrase_file_name = None
+        self.bek_filesystem = None
+        self.secret_uri = None
 
     def config_file_exists(self):
         return self.encryption_config.config_file_exists()
 
     def save_bek_filename(self, passphrase_file_name):
-        self.encryption_config.save_config(CommonVariables.PassphraseFileNameKey, passphrase_file_name)
+        self.passphrase_file_name = passphrase_file_name
 
     def get_bek_filename(self):
         return self.encryption_config.get_config(CommonVariables.PassphraseFileNameKey)
 
     def save_bek_filesystem(self, bek_filesystem):
-        self.encryption_config.save_config(CommonVariables.VolumeTypeKey, bek_filesystem)
+        self.bek_filesystem = bek_filesystem
 
     def get_bek_filesystem(self):
-        return self.encryption_config.get_config(CommonVariables.VolumeTypeKey)
+        return self.encryption_config.get_config(CommonVariables.BekVolumeFileSystemKey)
 
-    def save_secret_uri(self,secret_uri):
-        self.encryption_config.save_config(CommonVariables.SecretUriKey,secret_uri)
+    def save_secret_id(self,secret_uri):
+        self.secret_uri = secret_uri
 
-    def get_secret_uri(self):
+    def get_secret_id(self):
         return self.encryption_config.get_config(CommonVariables.SecretUriKey)
+
+    def commit(self):
+        key_value_pairs = []
+        command = ConfigKeyValuePair(CommonVariables.PassphraseFileNameKey,self.passphrase_file_name)
+        key_value_pairs.append(command)
+        volume_type = ConfigKeyValuePair(CommonVariables.VolumeTypeKey,self.bek_filesystem)
+        key_value_pairs.append(volume_type)
+        parameters = ConfigKeyValuePair(CommonVariables.SecretUriKey,self.secret_uri)
+        key_value_pairs.append(parameters)
+        self.encryption_config.save_configs(key_value_pairs)

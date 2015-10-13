@@ -59,7 +59,7 @@ class DiskUtil(object):
     def get_disk_partitions(self, dev_path):
         #TODO check the dev path parameter
         disk_partitions = []
-        blk_items = self.get_lsblk(dev_path)
+        blk_items = self.get_device_items(dev_path)
         for i in range(0,len(blk_items)):
             if(blk_items[i].type == "part"):
                 disk_partitions.append(blk_items[i])
@@ -267,7 +267,7 @@ class DiskUtil(object):
         return sdx_path
 
     def is_blank_disk(self,dev_path):
-        blk_items = self.get_lsblk(dev_path)
+        blk_items = self.get_device_items(dev_path)
         for i in range(0,len(blk_items)):
             blk_item = blk_items[i]
             if(blk_item.fstype != "" or blk_item.type != "disk"):
@@ -303,7 +303,7 @@ class DiskUtil(object):
         sdx_path = self.query_dev_sdx_path_by_scsi_id(scsi_number)
         return self.query_dev_uuid_path_by_sdx_path(sdx_path)
 
-    def get_lsblk(self, dev_path):
+    def get_device_items(self, dev_path):
         self.logger.log("getting the blk info from " + str(dev_path))
         blk_items = []
         # lsblk -b -n -P -o NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL
@@ -319,7 +319,7 @@ class DiskUtil(object):
             item_value_str = lines[i].strip()
             if(item_value_str != ""):
                 disk_info_item_array = item_value_str.split()
-                blk_item = LsblkItem()
+                blk_item = DeviceItem()
                 disk_info_item_array_length = len(disk_info_item_array)
                 for j in range(0, disk_info_item_array_length):
                     disk_info_property = disk_info_item_array[j]
@@ -369,7 +369,7 @@ class DiskUtil(object):
                 self.logger.log("the device type: " + str(device_item.type) + " is not supported yet, so skip it")
                 return True
 
-            sub_items = self.get_lsblk("/dev/" + device_item.name)
+            sub_items = self.get_device_items("/dev/" + device_item.name)
             if(len(sub_items) > 1):
                 self.logger.log("there's sub items for the device: " + str(device_item.name) + ", so skip it")
                 return True
@@ -394,7 +394,7 @@ class DiskUtil(object):
         blk_items = []
         for i in range(0,len(ide_devices)):
             ide_device = ide_devices[i]
-            current_blk_items = self.get_lsblk("/dev/" + ide_device)
+            current_blk_items = self.get_device_items("/dev/" + ide_device)
             for j in range(0,len(current_blk_items)):
                 blk_items.append(current_blk_items[i])
         return blk_items

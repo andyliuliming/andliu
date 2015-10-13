@@ -48,7 +48,7 @@ class BekUtil(object):
         pass_phrase = None
         if TestHooks.search_not_only_ide:
             self.logger.log("TESTHOOK: search not only ide set")
-            azure_devices = self.disk_util.get_lsblk(None)
+            azure_devices = self.disk_util.get_device_items(None)
         else:
             azure_devices = self.disk_util.get_azure_devices()
         
