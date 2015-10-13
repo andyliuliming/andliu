@@ -41,8 +41,12 @@ class DiskUtil(object):
         """
         if the os is ubuntu 12.04, then ues the cp --sparse instead.
         """
-        copy_task = TransactionalCopyTask(self.logger,device_item, destination, self.patching, self.encryptionEnvironment)
-        return copy_task.begin_copy()
+        copy_task = TransactionalCopyTask(self.logger, device_item, destination, self.patching, self.encryptionEnvironment)
+        copy_task.prepare_mem_fs()
+        
+        returnCode = copy_task.begin_copy()
+        copy_task.clear_mem_fs()
+        return returnCode
 
     def get_disk_partition_table_type(self, dev_path):
         p = subprocess.Popen(['udevadm', 'info', '-q', 'property', '-n',dev_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -154,7 +158,7 @@ class DiskUtil(object):
         if(os.path.exists(self.encryptionEnvironment.luks_header_path)):
             return self.encryptionEnvironment.luks_header_path
         else:
-            # dd if=/dev/zero bs=8388608 count=1 > /luks_header_path  32M
+            # dd if=/dev/zero bs=8388608 count=1 > /luks_header_path 32M
             commandToExecute = '/bin/bash -c "' + 'dd if=/dev/zero bs=‭33554432‬ count=1 > ' + self.encryptionEnvironment.luks_header_path + '"'
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()
@@ -305,7 +309,7 @@ class DiskUtil(object):
 
     def get_device_items(self, dev_path):
         self.logger.log("getting the blk info from " + str(dev_path))
-        blk_items = []
+        device_items = []
         # lsblk -b -n -P -o NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL
         if(dev_path is None):
             p = subprocess.Popen(['lsblk', '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -319,37 +323,37 @@ class DiskUtil(object):
             item_value_str = lines[i].strip()
             if(item_value_str != ""):
                 disk_info_item_array = item_value_str.split()
-                blk_item = DeviceItem()
+                device_item = DeviceItem()
                 disk_info_item_array_length = len(disk_info_item_array)
                 for j in range(0, disk_info_item_array_length):
                     disk_info_property = disk_info_item_array[j]
                     property_item_pair = disk_info_property.split('=')
                     if(property_item_pair[0] == 'SIZE'):
-                        blk_item.size = property_item_pair[1].strip('"')
+                        device_item.size = property_item_pair[1].strip('"')
 
                     if(property_item_pair[0] == 'NAME'):
-                        blk_item.name = property_item_pair[1].strip('"')
+                        device_item.name = property_item_pair[1].strip('"')
 
                     if(property_item_pair[0] == 'TYPE'):
-                        blk_item.type = property_item_pair[1].strip('"')
+                        device_item.type = property_item_pair[1].strip('"')
 
                     if(property_item_pair[0] == 'FSTYPE'):
-                        blk_item.fstype = property_item_pair[1].strip('"')
+                        device_item.fstype = property_item_pair[1].strip('"')
                         
                     if(property_item_pair[0] == 'MOUNTPOINT'):
-                        blk_item.mountpoint = property_item_pair[1].strip('"')
+                        device_item.mountpoint = property_item_pair[1].strip('"')
 
                     if(property_item_pair[0] == 'LABEL'):
-                        blk_item.label = property_item_pair[1].strip('"')
+                        device_item.label = property_item_pair[1].strip('"')
 
                     if(property_item_pair[0] == 'UUID'):
-                        blk_item.uuid = property_item_pair[1].strip('"')
+                        device_item.uuid = property_item_pair[1].strip('"')
 
                     if(property_item_pair[0] == 'MODEL'):
-                        blk_item.model = property_item_pair[1].strip('"')
+                        device_item.model = property_item_pair[1].strip('"')
 
-                blk_items.append(blk_item)
-        return blk_items
+                device_items.append(device_item)
+        return device_items
     
     def should_skip_for_inplace_encryption(self, device_item):
         """
@@ -380,7 +384,7 @@ class DiskUtil(object):
                 return True
 
             if(device_item.mountpoint == "/"):
-                self.logger.log("the mountpoint is root " + str(device_item)+ ", so skip it")
+                self.logger.log("the mountpoint is root " + str(device_item) + ", so skip it")
                 return True
 
             for j in range(0,len(azure_blk_items)):
