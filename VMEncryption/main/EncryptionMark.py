@@ -45,7 +45,7 @@ class EncryptionMark(object):
         key_value_pairs.append(volume_type)
         parameters = ConfigKeyValuePair(CommonVariables.EncryptionParametersKey,encryption_request.parameters)
         key_value_pairs.append(parameters)
-        self.encryption_config.save_config(key_value_pairs)
+        self.encryption_config.save_configs(key_value_pairs)
 
     def clear_queue(self):
         try:

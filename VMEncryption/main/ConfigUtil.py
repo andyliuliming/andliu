@@ -24,7 +24,7 @@ from ConfigParser import ConfigParser
 
 class ConfigKeyValuePair(object):
     def __init__(self,prop_name,prop_value):
-        self.prob_name = prob_name
+        self.prop_name = prop_name
         self.prop_value = prop_value
 
 class ConfigUtil(object):

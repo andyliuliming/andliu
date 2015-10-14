@@ -63,7 +63,7 @@ class CommonVariables:
     """
     encryption config keys
     """
-    EncryptionCommandKey='command'
+    EncryptionCommandKey = 'command'
     EncryptionVolumeTypeKey = 'volume_type'
     EncryptionParametersKey = 'parameters'
 
@@ -72,7 +72,7 @@ class CommonVariables:
     """
     CurrentDeviceNameKey = 'current_device_name'
     CurrentSliceSizeKey = 'current_slice_size'
-    CurrentSliceIndexKey= 'current_slice_index'
+    CurrentSliceIndexKey = 'current_slice_index'
 
     # error code
     extension_success_status = 'success'
