@@ -127,6 +127,7 @@ class KeyVaultUtil(object):
             if(result.status != httplib.OK and result.status != httplib.ACCEPTED):
                 return None
             result_content = result.read()
+            self.logger.log("result_content is " + str(result_content))
             connection.close()
             result_json = json.loads(result_content)
             key_id = result_json["key"]["kid"]
@@ -135,7 +136,7 @@ class KeyVaultUtil(object):
             encrypt our passphrase using the encryption key
             api for encrypt use key is https://msdn.microsoft.com/en-us/library/azure/dn878060.aspx
             """
-            self.logger.log("encrypting the secret using key." + str(key_id))
+            self.logger.log("encrypting the secret using key: " + str(key_id))
             sasuri_obj = urlparse.urlparse(key_id)
             connection = httplib.HTTPSConnection(sasuri_obj.hostname)
             request_content = '{"alg":"' + str(KeyEncryptionAlgorithm) + '","value":"' + str(Passphrase) + '"}'
@@ -146,11 +147,11 @@ class KeyVaultUtil(object):
             self.logger.log("crypt path to post is " + str(relative_path) + " and the algorithm using are " + str(KeyEncryptionAlgorithm))
             connection.request('POST', relative_path , request_content, headers = headers)
             result = connection.getresponse()
+            result_content = result.read()
+            self.logger.log("result_content is: " + str(result_content))
             self.logger.log(str(result.status) + " " + str(result.getheaders()))
             if(result.status != httplib.OK and result.status != httplib.ACCEPTED):
                 return None
-            result_content = result.read()
-            self.logger.log("result_content is: " + str(result_content))
             connection.close()
             result_json = json.loads(result_content)
             secret_value = result_json[u'value']
@@ -200,7 +201,7 @@ class KeyVaultUtil(object):
         Bearer authorization="https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47", resource="https://vault.azure.net"
         """
         try:
-            self.logger.log("trying to get the authorize uri from " + str(bearerHeader))
+            self.logger.log("trying to get the authorize uri from: " + str(bearerHeader))
             bearerString = str(bearerHeader)
             authoirzation_key = 'authorization="'
             authoirzation_index = bearerString.index(authoirzation_key)

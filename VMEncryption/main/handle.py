@@ -144,7 +144,7 @@ def enable():
             """
             #handle the passphrase related
             if(existed_passphrase == None):
-                extension_parameter.passphrase = bek_util.generate_passphrase()
+                extension_parameter.passphrase = bek_util.generate_passphrase(algorithm)
                 kek_secret_id_created = keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
                     KeyVaultURL = extension_parameter.KeyVaultURL,\
                     KeyEncryptionKeyURL = extension_parameter.KeyEncryptionKeyURL,\

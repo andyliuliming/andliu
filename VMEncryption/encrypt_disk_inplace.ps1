@@ -1,5 +1,5 @@
 #scp -r main root@fareast-andliu.cloudapp.net:/var/lib/waagent/Microsoft.OSTCExtensions.VMEncryption-0.1/main
-. .\keyvault_prepare.ps1
+#. .\keyvault_prepare.ps1
 
 #$passphrase="VGhpcyBpcyB0aGUgcGxhaW4gdGV4dCBtZXNzYWdlLg"
 #$encryption_keyvault_uri="https://andliukeyvault.vault.azure.net/keys/mykey"
@@ -16,9 +16,9 @@ function Encrypt-Disk
     )
     $vm = (Get-AzureVM -ServiceName $cloudServiceName -Name $virtualMachineName)
 
-    $osDisk = $vm | Get-AzureOSDisk 
-    $osDiskMediaLink = $osDisk.MediaLink
-    $destinationKeyDiskPath = $osDiskMediaLink.Scheme+"://"+$osDiskMediaLink.Host+$osDiskMediaLink.Segments[0]+$osDiskMediaLink.Segments[1]+"empty_disk_blob"+[guid]::NewGuid().ToString()+".vhd"
+    #$osDisk = $vm | Get-AzureOSDisk 
+    #$osDiskMediaLink = $osDisk.MediaLink
+    #$destinationKeyDiskPath = $osDiskMediaLink.Scheme+"://"+$osDiskMediaLink.Host+$osDiskMediaLink.Segments[0]+$osDiskMediaLink.Segments[1]+"empty_disk_blob"+[guid]::NewGuid().ToString()+".vhd"
     #prepare the keydisk
 
     # get the max lun of the vm
@@ -42,11 +42,11 @@ function Encrypt-Disk
     $publicConfig='
     {
         "command":"enableencryption_all_inplace",
-        "KeyEncryptionKeyURL":"https://andliukeyvault.vault.azure.net/keys/mykey",
-        "KeyVaultURL":"https://andliukeyvault.vault.azure.net/",
-        "AADClientID":"b7b48143-6c58-4cd4-a9e0-0a15cbda0614",
-        "KeyEncryptionAlgorithm":"RSA1_5",
-        "BitlockerVolumeType":"Data"
+        "AADClientID": "b7b48143-6c58-4cd4-a9e0-0a15cbda0614",
+        "KeyVaultURL": "https://andliukeyvault.vault.azure.net/",
+        "KeyEncryptionKeyURL": "https://andliukeyvault.vault.azure.net/keys/andliukeyvaultkek/a86443419dfa4d7e9ebdf3189e9677fb",
+        "KeyEncryptionAlgorithm": "RSA-OAEP",
+        "VolumeType": "Data"
     }
     '
 
@@ -55,14 +55,12 @@ function Encrypt-Disk
         "AADClientSecret":"/XazYdJ9XaMBbiQ0dwSoyue7LbkQ1OJOePGGcrG3dkA="
     }
     '
-
     #construct the parameters
-
     $tempAzurevm = (Get-AzureVM -ServiceName $cloudServiceName -Name $virtualMachineName)
  
-    set-azurevmextension -extensionName "VMEncryption" -Publisher "Microsoft.OSTCExtensions" -Version 0.1 -vm $tempAzurevm -PrivateConfiguration $privateConfig -PublicConfiguration $publicConfig| update-azurevm
+    set-azurevmextension -extensionName "VMEncryption3" -Publisher "Microsoft.OSTCExtensions" -Version 0.1 -vm $tempAzurevm -PrivateConfiguration $privateConfig -PublicConfiguration $publicConfig| update-azurevm
 }
 
 #Add-AzureAccount
-Select-AzureSubscription "CRP TiP Sub 001"
-Encrypt-Disk -cloudServiceName "andliu-ubuntu14" -virtualMachineName "andliu-ubuntu14"
+Select-AzureSubscription "OSTC Shanghai Dev"
+Encrypt-Disk -cloudServiceName "andliu-oop" -virtualMachineName "andliu-oop"
