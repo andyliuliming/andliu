@@ -9,7 +9,7 @@
             "uninstallCommand": "main/handle.py -uninstall", 
             "updateCommand": "main/handle.py -update"
         }, 
-        "name": "VMEncryption", 
-        "version": 1.0
+        "name": "VMEncryptionPreview", 
+        "version": 0.1
     }
 ]
