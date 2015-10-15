@@ -38,7 +38,7 @@ class TransactionalCopyTask(object):
         self.slice_size = 512 * 1000# this is in byte
         self.command_executer = CommandExecuter(self.logger)
         self.tmpfs_mount_point = "/mnt/azure_encrypt_tmpfs"
-        self.slice_file_path = tmpfs_mount_point + "/slice_file"
+        self.slice_file_path = self.tmpfs_mount_point + "/slice_file"
         self.transactional_copy_config = ConfigUtil(encryptionEnvironment.azure_crypt_current_transactional_copy_path,'azure_crypt_copy_config',logger)
     
     def prepare_mem_fs(self):
@@ -59,7 +59,7 @@ class TransactionalCopyTask(object):
         first, copy the data to the middle cache
         """
         commandToExecute = '/bin/bash -c "' + str(copy_command) + ' if=' + from_device + ' of=' + self.slice_file_path + ' bs=' + str(size) + " skip=" + str(skip)
-        self.logger.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
+        #self.logger.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
         returnCode = self.command_executer.Execute(commandToExecute)
         if(returnCode != 0):
             self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
@@ -68,7 +68,7 @@ class TransactionalCopyTask(object):
         second, copy the data in the middle cache to the target device.
         """
         commandToExecute = '/bin/bash -c "' + str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + " seek=" + str(skip)
-        self.logger.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
+        #self.logger.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
         returnCode = self.command_executer.Execute(commandToExecute)
         if(returnCode != 0):
             self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
@@ -87,21 +87,22 @@ class TransactionalCopyTask(object):
         origin_device_path = os.path.join("/dev/",self.device_item.name)
         returnCode = CommonVariables.success
 
-        transactional_copy_config.save_config(CommonVariables.CurrentDeviceNameKey,device_item.name)
-        transactional_copy_config.save_config(CommonVariables.CurrentSliceSizeKey,self.slice_size)
+        self.transactional_copy_config.save_config(CommonVariables.CurrentDeviceNameKey,self.device_item.name)
+        self.transactional_copy_config.save_config(CommonVariables.CurrentSliceSizeKey,self.slice_size)
         for i in range(0, total_slice_size):
-            transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,self.i)
+            self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,i)
             if(using_cp_to_copy):
                 copy_command = 'sg_dd oflag=sparse'
             else:
                 copy_command = 'dd conv=sparse'
-            self.copy_internal(copy_command,from_device,to_device,skip,size)
+            self.copy_internal(copy_command,origin_device_path,self.destination,i,self.slice_size)
 
         """
         copy the bytes not align with the slice_size
         """
-        if(using_cp_to_copy):
-            self.copy_using_cp(origin_device_path,self.destination,total_slice_size,last_slice_size)
-        else:
-            self.copy_using_dd(origin_device_path,self.destination,total_slice_size,last_slice_size)
+        if(last_slice_size > 0):
+            if(using_cp_to_copy):
+                self.copy_using_cp(origin_device_path,self.destination,total_slice_size,last_slice_size)
+            else:
+                self.copy_using_dd(origin_device_path,self.destination,total_slice_size,last_slice_size)
         return returnCode

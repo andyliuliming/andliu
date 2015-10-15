@@ -328,7 +328,7 @@ class DiskUtil(object):
                     disk_info_property = disk_info_item_array[j]
                     property_item_pair = disk_info_property.split('=')
                     if(property_item_pair[0] == 'SIZE'):
-                        device_item.size = property_item_pair[1].strip('"')
+                        device_item.size = int(property_item_pair[1].strip('"'))
 
                     if(property_item_pair[0] == 'NAME'):
                         device_item.name = property_item_pair[1].strip('"')
@@ -385,9 +385,8 @@ class DiskUtil(object):
             if(device_item.mountpoint == "/"):
                 self.logger.log("the mountpoint is root " + str(device_item) + ", so skip it")
                 return True
-
-            for j in range(0,len(azure_blk_items)):
-                if(azure_blk_items[j].name == device_item.name):
+            for azure_blk_item in azure_blk_items:
+                if(azure_blk_item.name == device_item.name):
                     self.logger.log("the mountpoint is the azure disk root or resource, so skip it.")
                     return True
             return False
@@ -395,11 +394,10 @@ class DiskUtil(object):
     def get_azure_devices(self):
         ide_devices = self.get_ide_devices()
         blk_items = []
-        for i in range(0,len(ide_devices)):
-            ide_device = ide_devices[i]
+        for ide_device in ide_devices:
             current_blk_items = self.get_device_items("/dev/" + ide_device)
-            for j in range(0,len(current_blk_items)):
-                blk_items.append(current_blk_items[i])
+            for current_blk_item in current_blk_items:
+                blk_items.append(current_blk_item)
         return blk_items
 
     def get_ide_devices(self):
