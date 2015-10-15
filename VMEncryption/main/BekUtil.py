@@ -23,7 +23,9 @@ from Common import *
 import base64
 import os.path
 import os
-
+"""
+add retry-logic to the network api call.
+"""
 class BekUtil(object):
     """description of class"""
     def __init__(self,disk_util,logger):
@@ -38,7 +40,8 @@ class BekUtil(object):
             return TestHooks.hard_code_passphrase
         else:
             with open("/dev/urandom", "rb") as _random_source:
-                #TODO is 127 enough? we should calculate the length depend on the algorithm.
+                #TODO is 127 enough?  we should calculate the length depend on
+                #the algorithm.
                 bytes = _random_source.read(127)
                 passphrase_generated = base64.b64encode(bytes)
             return passphrase_generated
