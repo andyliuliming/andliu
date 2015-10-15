@@ -40,7 +40,7 @@ import sys
 import subprocess
 from subprocess import call
 from zipfile import ZipFile
-from main.common import CommonVariables
+from main.Common import CommonVariables
 
 packages_array = []
 main_folder = 'main'
