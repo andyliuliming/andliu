@@ -57,14 +57,14 @@ class CommonVariables:
     """
     command types
     """
-    enableencryption_all_inplace = 'enableencryption_all_inplace'
-    enableencryption_format = 'enableencryption_format'
+    EnableEncryption = 'EnableEncryption'
+    EnableEncryptionFormat = 'EnableEncryptionFormat'
 
     """
     encryption config keys
     """
-    EncryptionCommandKey = 'command'
-    EncryptionVolumeTypeKey = 'volume_type'
+    EncryptionEncryptionOperationKey = 'EncryptionOperation'
+    EncryptionVolumeTypeKey = 'VolumeType'
     EncryptionParametersKey = 'parameters'
 
     """

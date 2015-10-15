@@ -32,7 +32,7 @@ class ExtensionParameter(object):
         """
         self.hutil = hutil
         self.devpath = None
-        self.command = public_settings.get('command')
+        self.command = public_settings.get(CommonVariables.EncryptionEncryptionOperationKey)
         self.KeyEncryptionKeyURL = public_settings.get(CommonVariables.KeyEncryptionKeyURLKey)
         self.KeyVaultURL = public_settings.get(CommonVariables.KeyVaultURLKey)
         self.AADClientID = public_settings.get(CommonVariables.AADClientIDKey)

@@ -136,7 +136,7 @@ def enable():
             if(extension_parameter.VolumeType != "Data"):
                 hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.volue_type_not_support), 'VolumeType ' + str(extension_parameter.VolumeType) + ' is not supported.')
 
-            if(extension_parameter.command not in [CommonVariables.enableencryption_all_inplace, CommonVariables.enableencryption_format]):
+            if(extension_parameter.command not in [CommonVariables.EnableEncryption, CommonVariables.EnableEncryptionFormat]):
                 hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.command_not_support), 'Command ' + str(extension_parameter.command) + ' is not supported.')
 
             """
@@ -290,7 +290,7 @@ def daemon():
         else:
             return
 
-        if(encryption_queue.current_command() == CommonVariables.enableencryption_format):
+        if(encryption_queue.current_command() == CommonVariables.EnableEncryptionFormat):
             enable_encryption_format()
         else:
             """
@@ -323,9 +323,9 @@ def daemon():
                 logger.log("creating luks header")
                 luks_header_path = disk_util.create_luks_header()
 
-                if(encryption_queue.current_command() == CommonVariables.enableencryption_all_inplace):
+                if(encryption_queue.current_command() == CommonVariables.EnableEncryption):
                     enable_encryption_all_in_place(bek_passphrase,luks_header_path,encryption_queue, disk_util,bek_util)
-                elif(encryption_queue.current_command() == CommonVariables.enableencryption_format):
+                elif(encryption_queue.current_command() == CommonVariables.EnableEncryptionFormat):
                     enable_encryption_format(bek_passphrase,luks_header_path,encryption_queue,disk_util)
                 else:
                     #TODO we should exit.

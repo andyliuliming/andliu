@@ -39,7 +39,7 @@ class EncryptionMark(object):
 
     def mark_encryption(self, encryption_request):
         key_value_pairs = []
-        command = ConfigKeyValuePair(CommonVariables.EncryptionCommandKey,encryption_request.command)
+        command = ConfigKeyValuePair(CommonVariables.EncryptionEncryptionOperationKey,encryption_request.command)
         key_value_pairs.append(command)
         volume_type = ConfigKeyValuePair(CommonVariables.EncryptionVolumeTypeKey,encryption_request.volume_type)
         key_value_pairs.append(volume_type)
@@ -57,7 +57,7 @@ class EncryptionMark(object):
             return False
 
     def current_command(self):
-        return self.encryption_mark_config.get_config(CommonVariables.EncryptionCommandKey)
+        return self.encryption_mark_config.get_config(CommonVariables.EncryptionEncryptionOperationKey)
 
     def current_parameters(self):
         self.encryption_mark_config.get_config(CommonVariables.EncryptionParametersKey)
