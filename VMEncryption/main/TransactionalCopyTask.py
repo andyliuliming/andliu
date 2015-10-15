@@ -43,6 +43,7 @@ class TransactionalCopyTask(object):
     
     def prepare_mem_fs(self):
         commandToExecute = "mount -t tmpfs -o size=" + str(self.slice_size + 1024) + " tmpfs " + self.tmpfs_mount_point
+        self.logger.log("prepare mem fs script is: " + str(commandToExecute))
         returnCode = self.command_executer.Execute(commandToExecute)
         return returnCode
 
@@ -58,8 +59,9 @@ class TransactionalCopyTask(object):
         """
         first, copy the data to the middle cache
         """
-        commandToExecute = '/bin/bash -c "' + str(copy_command) + ' if=' + from_device + ' of=' + self.slice_file_path + ' bs=' + str(size) + " skip=" + str(skip)
-        #self.logger.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
+        commandToExecute = '/bin/bash -c "' + str(copy_command) + ' if=' + from_device + ' of=' + self.slice_file_path + ' bs=' + str(size) + ' skip=' + str(skip) + ' count=1"'
+        #self.logger.log("copying from " + str(from_device) + " to " +
+        #str(to_device) + " using command " + str(commandToExecute))
         returnCode = self.command_executer.Execute(commandToExecute)
         if(returnCode != 0):
             self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
@@ -67,8 +69,9 @@ class TransactionalCopyTask(object):
         """
         second, copy the data in the middle cache to the target device.
         """
-        commandToExecute = '/bin/bash -c "' + str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + " seek=" + str(skip)
-        #self.logger.log("copying from " + str(from_device) + " to " + str(to_device) + " using command " + str(commandToExecute))
+        commandToExecute = '/bin/bash -c "' + str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1"'
+        #self.logger.log("copying from " + str(from_device) + " to " +
+        #str(to_device) + " using command " + str(commandToExecute))
         returnCode = self.command_executer.Execute(commandToExecute)
         if(returnCode != 0):
             self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))

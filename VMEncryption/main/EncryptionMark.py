@@ -35,7 +35,7 @@ class EncryptionMark(object):
     def __init__(self,logger,encryptionEnvironment):
         self.logger = logger
         self.encryptionEnvironment = encryptionEnvironment
-        self.encryption_config = ConfigUtil(self.encryptionEnvironment.azure_crypt_request_queue_path,'encryption_request_queue',self.logger)
+        self.encryption_mark_config = ConfigUtil(self.encryptionEnvironment.azure_crypt_request_queue_path,'encryption_request_queue',self.logger)
 
     def mark_encryption(self, encryption_request):
         key_value_pairs = []
@@ -45,7 +45,7 @@ class EncryptionMark(object):
         key_value_pairs.append(volume_type)
         parameters = ConfigKeyValuePair(CommonVariables.EncryptionParametersKey,encryption_request.parameters)
         key_value_pairs.append(parameters)
-        self.encryption_config.save_configs(key_value_pairs)
+        self.encryption_mark_config.save_configs(key_value_pairs)
 
     def clear_queue(self):
         try:
@@ -57,14 +57,14 @@ class EncryptionMark(object):
             return False
 
     def current_command(self):
-        return self.encryption_config.get_config(CommonVariables.EncryptionCommandKey)
+        return self.encryption_mark_config.get_config(CommonVariables.EncryptionCommandKey)
 
     def current_parameters(self):
-        self.encryption_config.get_config('parameters')
+        self.encryption_mark_config.get_config(CommonVariables.EncryptionParametersKey)
 
     def is_encryption_marked(self):
         """
         we should compare the timestamp of the file with the current system time
         if not match (in 30 minutes, then should skip the file)
         """
-        return self.encryption_config.config_file_exists()
+        return self.encryption_mark_config.config_file_exists()

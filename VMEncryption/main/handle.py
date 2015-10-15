@@ -156,9 +156,9 @@ def enable():
                 if(kek_secret_id_created == None):
                     hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.create_encryption_secret_failed), 'Enable failed.')
                 else:
-                    encryption_config.passphrase_file_name=(extension_parameter.DiskEncryptionKeyFileName)
-                    encryption_config.bek_filesystem=(CommonVariables.BekVolumeFileSystem)
-                    encryption_config.secret_id=(kek_secret_id_created)
+                    encryption_config.passphrase_file_name = extension_parameter.DiskEncryptionKeyFileName
+                    encryption_config.bek_filesystem = CommonVariables.BekVolumeFileSystem
+                    encryption_config.secret_id = kek_secret_id_created
                     encryption_config.commit()
 
             encryption_request = EncryptionRequest(logger)

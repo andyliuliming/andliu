@@ -39,7 +39,7 @@ class DiskUtil(object):
 
     def copy(self, device_item, destination):
         """
-        if the os is ubuntu 12.04, then ues the cp --sparse instead.
+        if the os is ubuntu 12.04, then ues the sg_dd --sparse instead.
         """
         copy_task = TransactionalCopyTask(self.logger, device_item, destination, self.patching, self.encryptionEnvironment)
         self.make_sure_path_exists(copy_task.tmpfs_mount_point)
