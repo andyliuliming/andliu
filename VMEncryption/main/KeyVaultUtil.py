@@ -71,7 +71,7 @@ class KeyVaultUtil(object):
             """
             we should skip encrypting the passphrase if the KeyVaultURL and KeyEncryptionKeyURL is empty
             """
-            if(KeyEncryptionKeyURL == None):
+            if(KeyEncryptionKeyURL == None or KeyEncryptionKeyURL == ""):
                 secret_value = passphrase_encoded
             else:
                 secret_value = self.encrypt_passphrase(access_token, passphrase_encoded,KeyVaultURL, KeyEncryptionKeyURL, AADClientID, KeyEncryptionAlgorithm, AADClientSecret)
