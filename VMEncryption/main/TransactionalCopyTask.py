@@ -55,7 +55,7 @@ class TransactionalCopyTask(object):
     """
     TODO: if the copy failed?
     """
-    def copy_internal(self,copy_command,from_device,to_device,skip,size):
+    def copy_internal(self,copy_command,from_device,to_device,skip,size,options):
         """
         first, copy the data to the middle cache
         """
@@ -69,7 +69,7 @@ class TransactionalCopyTask(object):
         """
         second, copy the data in the middle cache to the target device.
         """
-        commandToExecute = '/bin/bash -c "' + str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1"'
+        commandToExecute = '/bin/bash -c "' + str(copy_command) + ' ' + str(options) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1"'
         #self.logger.log("copying from " + str(from_device) + " to " +
         #str(to_device) + " using command " + str(commandToExecute))
         returnCode = self.command_executer.Execute(commandToExecute)
@@ -90,15 +90,19 @@ class TransactionalCopyTask(object):
         origin_device_path = os.path.join("/dev/",self.device_item.name)
         returnCode = CommonVariables.success
 
+        copy_command=None
+        copy_options=None
         self.transactional_copy_config.save_config(CommonVariables.CurrentDeviceNameKey,self.device_item.name)
         self.transactional_copy_config.save_config(CommonVariables.CurrentSliceSizeKey,self.slice_size)
         for i in range(0, total_slice_size):
             self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,i)
             if(using_cp_to_copy):
-                copy_command = 'sg_dd oflag=sparse'
+                copy_command = 'sg_dd'
+                copy_options = 'oflag=sparse'
             else:
-                copy_command = 'dd conv=sparse'
-            self.copy_internal(copy_command,origin_device_path,self.destination,i,self.slice_size)
+                copy_command = 'dd'
+                copy_options = 'conv=sparse'
+            self.copy_internal(copy_command,origin_device_path,self.destination,i,self.slice_size,copy_options)
 
         """
         copy the bytes not align with the slice_size
