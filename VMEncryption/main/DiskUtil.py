@@ -42,7 +42,10 @@ class DiskUtil(object):
         if the os is ubuntu 12.04, then ues the cp --sparse instead.
         """
         copy_task = TransactionalCopyTask(self.logger, device_item, destination, self.patching, self.encryptionEnvironment)
-        copy_task.prepare_mem_fs()
+        self.make_sure_path_exists(copy_task.tmpfs_mount_point)
+        mem_fs_result = copy_task.prepare_mem_fs()
+        if(mem_fs_result != 0):
+            return CommonVariables.copy_data_error
         
         returnCode = copy_task.begin_copy()
         copy_task.clear_mem_fs()

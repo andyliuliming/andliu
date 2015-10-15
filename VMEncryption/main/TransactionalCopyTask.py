@@ -35,7 +35,7 @@ class TransactionalCopyTask(object):
         self.device_item = device_item
         self.destination = destination
         self.patching = patching
-        self.slice_size = 512 * 1000# this is in byte
+        self.slice_size = 52428800# this is in byte 50M
         self.command_executer = CommandExecuter(self.logger)
         self.tmpfs_mount_point = "/mnt/azure_encrypt_tmpfs"
         self.slice_file_path = self.tmpfs_mount_point + "/slice_file"
@@ -102,7 +102,8 @@ class TransactionalCopyTask(object):
         """
         if(last_slice_size > 0):
             if(using_cp_to_copy):
-                self.copy_using_cp(origin_device_path,self.destination,total_slice_size,last_slice_size)
+                copy_command = 'sg_dd oflag=sparse'
             else:
-                self.copy_using_dd(origin_device_path,self.destination,total_slice_size,last_slice_size)
+                copy_command = 'dd conv=sparse'
+            self.copy_internal(copy_command,origin_device_path,self.destination,total_slice_size,last_slice_size)
         return returnCode
