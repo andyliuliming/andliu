@@ -69,7 +69,8 @@ class TransactionalCopyTask(object):
         """
         second, copy the data in the middle cache to the target device.
         """
-        commandToExecute = '/bin/bash -c "' + str(copy_command) + ' ' + str(options) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1"'
+        #commandToExecute = '/bin/bash -c "' + str(copy_command) + ' ' + str(options) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1"'
+        commandToExecute = '/bin/bash -c "' + str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1"'
         #self.logger.log("copying from " + str(from_device) + " to " +
         #str(to_device) + " using command " + str(commandToExecute))
         returnCode = self.command_executer.Execute(commandToExecute)
