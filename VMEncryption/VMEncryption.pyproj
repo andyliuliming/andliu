@@ -37,6 +37,7 @@
     <Content Include="MANIFEST.in" />
     <Content Include="README.txt" />
     <Content Include="SetAzureDiskEncryptionTest.ps1" />
+    <Content Include="SetAzureDiskEncryptionSplits.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="main\BekUtil.py">

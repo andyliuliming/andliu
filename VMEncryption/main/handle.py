@@ -48,6 +48,10 @@ from EncryptionMark import EncryptionMark
 from EncryptionMark import EncryptionRequest
 from EncryptionEnvironment import EncryptionEnvironment
 #Main function is the only entrence to this extension handler
+
+def exit_without_status_report():
+    sys.exit(0)
+
 def main():
     global hutil,MyPatching,logger,encryptionEnvironment
     HandlerUtil.LoggerInit('/var/log/waagent.log','/dev/stdout')
@@ -75,16 +79,16 @@ def main():
 
 def install():
     hutil.do_parse_context('Install')
-    hutil.do_exit(0, 'Install',CommonVariables.extension_success_status,str(CommonVariables.success), 'Install Succeeded')
+    hutil.do_exit(0, 'Install', CommonVariables.extension_success_status, str(CommonVariables.success), 'Install Succeeded')
 
 def enable():
     hutil.do_parse_context('Enable')
     # we need to start another subprocess to do it, because the initial process
     # would be killed by the wala in 5 minutes.
-    logger.log("enabling...")
+    logger.log('enabling...')
 
     try:
-        encryption_config = EncryptionConfig(encryptionEnvironment,logger)
+        encryption_config = EncryptionConfig(encryptionEnvironment, logger)
         existed_passphrase = None
         kek_secret_id_created = None
 
@@ -102,24 +106,24 @@ def enable():
                         crypt_item = crypt_items[i]
                         #None is the placeholder if the file system is not
                         #mounted
-                        if(crypt_item.mount_point != "None"):
+                        if(crypt_item.mount_point != 'None'):
                             disk_util.mount_crypt_item(crypt_item, existed_passphrase)
                         else:
-                            logger.log("skipping mount for the item " + str(crypt_item))
+                            logger.log('skipping mount for the item ' + str(crypt_item))
             else:
                 """
                 the config exists, and the passphrase not get is a error case.
                 """
                 logger.log("the config file exists, but we could not get the passphrase according to it.")
-                hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.passphrase_file_not_found),'The passphrase could not get.')
+                exit_without_status_report()
+                #hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.passphrase_file_not_found),'The passphrase could not get.')
 
-        encryption_queue = EncryptionMark(logger, encryptionEnvironment)
-        if encryption_queue.is_encryption_marked():
+        encryption_marker = EncryptionMark(logger, encryptionEnvironment)
+        if encryption_marker.is_encryption_marked():
             # verify the encryption mark
             start_daemon()
         else:
             hutil.exit_if_enabled()
-
             """
             creating the secret, the secret would be transferred to a bek volume after the updatevm called in powershell.
             """
@@ -133,11 +137,11 @@ def enable():
             """
             validate the parameters
             """
-            if(extension_parameter.VolumeType != "Data"):
-                hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.volue_type_not_support), 'VolumeType ' + str(extension_parameter.VolumeType) + ' is not supported.')
+            if(extension_parameter.VolumeType != 'Data'):
+                hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status,str(CommonVariables.volue_type_not_support), 'VolumeType ' + str(extension_parameter.VolumeType) + ' is not supported.')
 
             if(extension_parameter.command not in [CommonVariables.EnableEncryption, CommonVariables.EnableEncryptionFormat]):
-                hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.command_not_support), 'Command ' + str(extension_parameter.command) + ' is not supported.')
+                hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status,str(CommonVariables.command_not_support), 'Command ' + str(extension_parameter.command) + ' is not supported.')
 
             """
             this is the fresh call case
@@ -165,7 +169,7 @@ def enable():
             encryption_request.command = extension_parameter.command
             encryption_request.volume_type = extension_parameter.VolumeType
             encryption_request.parameters = extension_parameter.DiskFormatQuery
-            encryption_queue.mark_encryption(encryption_request)
+            encryption_marker.mark_encryption(encryption_request)
 
             # TODO check the encryption request is marked at the very
             # beginning.
@@ -182,7 +186,6 @@ def enable():
     except Exception as e:
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
         hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,str(CommonVariables.unknown_error), 'Enable failed.')
-
 
 def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_util, bek_util):
     # get the disks to format."["5:0:0:1":"5:0:0:2"]"
@@ -286,7 +289,7 @@ def daemon():
         # TODO Remount all
         encryption_queue = EncryptionMark(logger, encryptionEnvironment)
         if(encryption_queue.is_encryption_marked()):
-            logger.log(" encryption is marked.")
+            logger.log("encryption is marked.")
         else:
             return
 

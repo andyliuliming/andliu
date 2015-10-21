@@ -2,64 +2,21 @@
 
 
 #Add-AzureAccount
-Select-AzureSubscription "CRP TiP Sub 001"
+#Select-AzureSubscription "OSTC Shanghai Dev"
+Add-AzureRmAccount 
+Set-AzureRmContext -SubscriptionId c4528d9e-c99a-48bb-b12d-fde2176a43b8 -SubscriptionName "OSTC Shanghai Dev"
 
-New-AzureKeyVault -VaultName "andliukeyvault" -ResourceGroupName "andliu-encrypt" -Location westus
-
-Set-AzureKeyVaultAccessPolicy -VaultName andliukeyvault -ResourceGroupName andliu-encrypt -ServicePrincipalName b7b48143-6c58-4cd4-a9e0-0a15cbda0614 -PermissionsToKeys all -PermissionsToSecrets all
-
-Add-AzureKeyVaultKey -VaultName "andliukeyvault" -Name "mykey" -Destination Software
-
-
-
-
-
-
-$ResourceGroupName = "diskencryptiontst"
-$Location = "westus"
-
-## Storage
-$StorageName = "andliuencrypt"
-$StorageType = "Standard_GRS"
-
-## Network
-$InterfaceName = "andliuencryptifn"
-$Subnet1Name = "Subnet1"
-$VNetName = "VNet09"
-$VNetAddressPrefix = "10.0.0.0/16"
-$VNetSubnetAddressPrefix = "10.0.0.0/24"
-
-## Compute
-$VMName = "ubuntu-encrypt"
-$ComputerName = "Server22"
-$VMSize = "Standard_A2"
-$OSDiskName = $VMName + "osDisk"
-
-# Resource Group
-New-AzureResourceGroup -Name $ResourceGroupName -Location $Location
-
-# Storage
-$StorageAccount = New-AzureStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageName -Type $StorageType -Location $Location
-
-# Network
-$PIp = New-AzurePublicIpAddress -Name $InterfaceName -ResourceGroupName $ResourceGroupName -Location $Location -AllocationMethod Dynamic
-$SubnetConfig = New-AzureVirtualNetworkSubnetConfig -Name $Subnet1Name -AddressPrefix $VNetSubnetAddressPrefix
-$VNet = New-AzureVirtualNetwork -Name $VNetName -ResourceGroupName $ResourceGroupName -Location $Location -AddressPrefix $VNetAddressPrefix -Subnet $SubnetConfig
-$Interface = New-AzureNetworkInterface -Name $InterfaceName -ResourceGroupName $ResourceGroupName -Location $Location -SubnetId $VNet.Subnets[0].Id -PublicIpAddressId $PIp.Id
-
-# Compute
-
-## Setup local VM object
-$Credential = Get-Credential
-$VirtualMachine = New-AzureVMConfig -VMName $VMName -VMSize $VMSize
-$VirtualMachine = Set-AzureVMOperatingSystem -VM $VirtualMachine -Windows -ComputerName $ComputerName -Credential $Credential -ProvisionVMAgent -EnableAutoUpdate
-$VirtualMachine = Set-AzureVMSourceImage -VM $VirtualMachine -PublisherName AzureRT.PIRCore.TestWAStage -Offer TestUbuntuServer -Skus 14.10 -Version "latest"
-$VirtualMachine = Add-AzureVMNetworkInterface -VM $VirtualMachine -Id $Interface.Id
-$OSDiskUri = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $OSDiskName + ".vhd"
-$VirtualMachine = Set-AzureVMOSDisk -VM $VirtualMachine -Name $OSDiskName -VhdUri $OSDiskUri -CreateOption FromImage
-
-## Create the VM in Azure
-New-AzureVM -ResourceGroupName $ResourceGroupName -Location $Location -VM $VirtualMachine
+$resourceGroupName="andliuresourcegroup2"
+$vmName="andliu-encrypt"
+$aadClientId="b7b48143-6c58-4cd4-a9e0-0a15cbda0614"
+$aadClientSecret="/XazYdJ9XaMBbiQ0dwSoyue7LbkQ1OJOePGGcrG3dkA="
+$keyVaultUrl="https://andliukeyvault.vault.azure.net"
+$location="North Central US"
+$diskEncryptionKeyVaultId="/subscriptions/c4528d9e-c99a-48bb-b12d-fde2176a43b8/resourceGroups/andliuresourcegroup2/providers/Microsoft.KeyVault/vaults/andliukeyvault"
+$keyEncryptionKeyUrl="https://andliukeyvault.vault.azure.net/keys/andliukeyvaultkek/a86443419dfa4d7e9ebdf3189e9677fb"
+$keyEncryptionAlgorithm="RSA-OAEP"
+$volumeType="Data"
+$extensionName="andliu-encrypt"
 
 
 #"command":"enableencryption_all_inplace",
@@ -68,4 +25,4 @@ New-AzureVM -ResourceGroupName $ResourceGroupName -Location $Location -VM $Virtu
 #        "AADClientID":"b7b48143-6c58-4cd4-a9e0-0a15cbda0614",
 #        "KeyEncryptionAlgorithm":"RSA1_5",
 #        "BitlockerVolumeType":"Data"
-Set-AzureDiskEncryptionExtension -ResourceGroupName "diskencryptiontst" -Name "VMEncryptionExtension" -Location "westus" -VMName "andliuencrypt" -AadClientID "b7b48143-6c58-4cd4-a9e0-0a15cbda0614" -AadClientSecret "/XazYdJ9XaMBbiQ0dwSoyue7LbkQ1OJOePGGcrG3dkA=" -KeyVaultURL "https://andliukeyvault.vault.azure.net/" -KeyEncryptionKeyURL "https://andliukeyvault.vault.azure.net/keys/mykey" -KeyEncryptionAlgorithm "RSA1_5" -VolumeType "Data" -Tag vmencryptiontag
+Set-AzureDiskEncryptionExtension -ResourceGroupName $resourceGroupName -VMName $vmName -AadClientID $aadClientId -AadClientSecret $aadClientSecret -KeyVaultURL $keyVaultUrl -Location $location -DiskEncryptionKeyVaultId $diskEncryptionKeyVaultId -KeyEncryptionKeyUrl $keyEncryptionKeyUrl -KeyEncryptionAlgorithm $keyEncryptionAlgorithm -VolumeType $volumeType -Name $extensionName
