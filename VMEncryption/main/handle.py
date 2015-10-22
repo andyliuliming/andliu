@@ -260,7 +260,7 @@ def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queu
                     if(copy_result != CommonVariables.success):
                         error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
                         logger.log("the copying result is " + copy_result + " so skip the mounting")
-                        hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.copy_data_error),error_message)
+                        hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.copy_data_error), error_message)
                     else:
                         crypt_item_to_update = CryptItem()
                         crypt_item_to_update.mapper_name = mapper_name
@@ -278,6 +278,8 @@ def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queu
 
                         if(crypt_item_to_update.mount_point != "None"):
                             disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
+                        else:
+                            logger.log("the crypt_item_to_update.mount_point is None, so we do not mount it.")
                 else:
                     hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(encrypt_error.code),encrypt_error.info)
 
@@ -327,7 +329,7 @@ def daemon():
                 luks_header_path = disk_util.create_luks_header()
 
                 if(encryption_queue.current_command() == CommonVariables.EnableEncryption):
-                    enable_encryption_all_in_place(bek_passphrase,luks_header_path,encryption_queue, disk_util,bek_util)
+                    enable_encryption_all_in_place(bek_passphrase,luks_header_path, encryption_queue, disk_util, bek_util)
                 elif(encryption_queue.current_command() == CommonVariables.EnableEncryptionFormat):
                     enable_encryption_format(bek_passphrase,luks_header_path,encryption_queue,disk_util)
                 else:

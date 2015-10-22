@@ -124,7 +124,7 @@ class DeviceItem(object):
         self.model = None
         self.size = None
     def __str__(self):
-        return "name:" + str(self.name) + " type:" + str(self.type) + " fstype:" + str(self.fstype) + " mountpoint:" + str(self.mountpoint) + " label" + str(self.label) + " model:" + str(self.model)
+        return "name:" + str(self.name) + " type:" + str(self.type) + " fstype:" + str(self.fstype) + " mountpoint:" + str(self.mountpoint) + " label:" + str(self.label) + " model:" + str(self.model)
 
 class CryptItem(object):
     def __init__(self):
