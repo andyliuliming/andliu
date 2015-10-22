@@ -234,12 +234,8 @@ class DiskUtil(object):
 
     def mount_crypt_item(self, crypt_item, passphrase):
         self.logger.log("trying to mount the crypt item:" + str(crypt_item))
-        luks_open_result = self.luks_open(passphrase,crypt_item.dev_path,crypt_item.mapper_name,crypt_item.luks_header_path)
-        if(luks_open_result == CommonVariables.success):
-            mount_filesystem_result = self.mount_filesystem(os.path.join('/dev/mapper',crypt_item.mapper_name),crypt_item.mount_point,crypt_item.file_system)
-            self.logger.log("mount file system result: " + str(mount_filesystem_result))
-        else:
-            self.logger.log("luks open failed with " + str(luks_open_result))
+        mount_filesystem_result = self.mount_filesystem(os.path.join('/dev/mapper',crypt_item.mapper_name),crypt_item.mount_point,crypt_item.file_system)
+        self.logger.log("mount file system result: " + str(mount_filesystem_result))
 
     def umount(self, path):
         commandToExecute = '/bin/bash -c "umount ' + path + ' 2> /dev/null"'

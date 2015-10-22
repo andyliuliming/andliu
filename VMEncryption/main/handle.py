@@ -106,10 +106,12 @@ def enable():
                         crypt_item = crypt_items[i]
                         #None is the placeholder if the file system is not
                         #mounted
-                        if(crypt_item.mount_point != 'None'):
-                            disk_util.mount_crypt_item(crypt_item, existed_passphrase)
-                        else:
-                            logger.log('skipping mount for the item ' + str(crypt_item))
+                        luks_open_result = disk_util.luks_open(existed_passphrase,crypt_item.dev_path,crypt_item.mapper_name,crypt_item.luks_header_path)
+                        if(luks_open_result == CommonVariables.success):
+                            if(crypt_item.mount_point != 'None'):
+                                disk_util.mount_crypt_item(crypt_item, existed_passphrase)
+                            else:
+                                logger.log('skipping mount for the item ' + str(crypt_item))
             else:
                 """
                 the config exists, and the passphrase not get is a error case.
