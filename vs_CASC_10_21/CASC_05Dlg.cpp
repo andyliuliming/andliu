@@ -539,7 +539,7 @@ void CCASC_05Dlg::Msg_RD()
     {
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0035000009");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -595,7 +595,7 @@ void CCASC_05Dlg::Msg_RD()
         //其余M变量报警-----------------------------------------------------------------
         strcpy(s_buf, "500000FF03FF000018000A04010001M*0005500007");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -660,7 +660,7 @@ void CCASC_05Dlg::Msg_RD()
         {
             strcpy(s_buf, "500000FF03FF000018000A04010000D*0035000009");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -715,7 +715,7 @@ void CCASC_05Dlg::Msg_RD()
             //其余M变量报警-----------------------------------------------------------------
             strcpy(s_buf, "500000FF03FF000018000A04010001M*0005500007");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -775,7 +775,7 @@ void CCASC_05Dlg::Msg_RD()
                 //pin上限位------------------------------------------------
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0003000002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -805,7 +805,7 @@ void CCASC_05Dlg::Msg_RD()
         //pin下限位------------------------------------------------
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0003020002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -835,7 +835,7 @@ void CCASC_05Dlg::Msg_RD()
         //slv上限位------------------------------------------------
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0003040002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -865,7 +865,7 @@ void CCASC_05Dlg::Msg_RD()
         //slv下限位------------------------------------------------
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0003060002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -898,7 +898,7 @@ void CCASC_05Dlg::Msg_RD()
     //旋转速度显示		
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0001620002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -930,7 +930,7 @@ void CCASC_05Dlg::Msg_RD()
         //slv动态窗口值显示
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0002040002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -957,7 +957,7 @@ void CCASC_05Dlg::Msg_RD()
         //pin动态窗口值显示
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0001840002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -995,7 +995,7 @@ void CCASC_05Dlg::Msg_RD()
         {
             strcpy(s_buf, "500000FF03FF000018000A04010000D*0035000009");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1050,7 +1050,7 @@ void CCASC_05Dlg::Msg_RD()
             //其余M变量报警-----------------------------------------------------------------
             strcpy(s_buf, "500000FF03FF000018000A04010001M*0005500007");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1105,7 +1105,7 @@ void CCASC_05Dlg::Msg_RD()
         //旋转速度显示		
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0001620002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1135,7 +1135,7 @@ void CCASC_05Dlg::Msg_RD()
         //torque转矩值显示
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0001620002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1180,7 +1180,7 @@ void CCASC_05Dlg::Msg_RD()
         //slv动态窗口值显示
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0002040002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1207,7 +1207,7 @@ void CCASC_05Dlg::Msg_RD()
         //pin动态窗口值显示
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0001840002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1234,7 +1234,7 @@ void CCASC_05Dlg::Msg_RD()
         //焊接点计数器
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0020880002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1264,7 +1264,7 @@ void CCASC_05Dlg::Msg_RD()
             //pin上限位------------------------------------------------
             strcpy(s_buf, "500000FF03FF000018000A04010000D*0003000002");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1324,7 +1324,7 @@ void CCASC_05Dlg::Msg_RD()
             //slv上限位------------------------------------------------
             strcpy(s_buf, "500000FF03FF000018000A04010000D*0003040002");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1354,7 +1354,7 @@ void CCASC_05Dlg::Msg_RD()
             //slv下限位------------------------------------------------
             strcpy(s_buf, "500000FF03FF000018000A04010000D*0003060002");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1390,7 +1390,7 @@ void CCASC_05Dlg::Msg_RD()
             //C型架处于工作位置
             strcpy(s_buf, "500000FF03FF000018000A04010001M*0001230001");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1442,7 +1442,7 @@ void CCASC_05Dlg::Msg_RD()
             //气路压力传感器
             strcpy(s_buf, "500000FF03FF000018000A04010001M*0001000001");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1469,7 +1469,7 @@ void CCASC_05Dlg::Msg_RD()
             //制动装置开
             strcpy(s_buf, "500000FF03FF000018000A04010001Y*0000350001");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1495,7 +1495,7 @@ void CCASC_05Dlg::Msg_RD()
             //冷却气体开
             strcpy(s_buf, "500000FF03FF000018000A04010001Y*0000340001");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1521,7 +1521,7 @@ void CCASC_05Dlg::Msg_RD()
             //液压缸开
             strcpy(s_buf, "500000FF03FF000018000A04010001Y*0000330001");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1555,7 +1555,7 @@ void CCASC_05Dlg::Msg_RD()
         {
             strcpy(s_buf, "500000FF03FF000018000A04010000D*0035000009");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1610,7 +1610,7 @@ void CCASC_05Dlg::Msg_RD()
             //其余M变量报警-----------------------------------------------------------------
             strcpy(s_buf, "500000FF03FF000018000A04010001M*0005500007");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1668,7 +1668,7 @@ void CCASC_05Dlg::Msg_RD()
             //pin上限位------------------------------------------------
             strcpy(s_buf, "500000FF03FF000018000A04010000D*0003000002");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1728,7 +1728,7 @@ void CCASC_05Dlg::Msg_RD()
             //slv上限位------------------------------------------------
             strcpy(s_buf, "500000FF03FF000018000A04010000D*0003040002");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1758,7 +1758,7 @@ void CCASC_05Dlg::Msg_RD()
             //slv下限位------------------------------------------------
             strcpy(s_buf, "500000FF03FF000018000A04010000D*0003060002");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1790,7 +1790,7 @@ void CCASC_05Dlg::Msg_RD()
         //slv动态窗口值显示
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0002040002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1817,7 +1817,7 @@ void CCASC_05Dlg::Msg_RD()
         //pin动态窗口值显示
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0001840002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1844,7 +1844,7 @@ void CCASC_05Dlg::Msg_RD()
         //slv坐标设定值
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0020820002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1871,7 +1871,7 @@ void CCASC_05Dlg::Msg_RD()
         //pin坐标设定值
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0020800002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1898,7 +1898,7 @@ void CCASC_05Dlg::Msg_RD()
         //C型架处于工作位置
         strcpy(s_buf, "500000FF03FF000018000A04010001M*0001230001");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1924,7 +1924,7 @@ void CCASC_05Dlg::Msg_RD()
         //C型架处于导轨尾部
         strcpy(s_buf, "500000FF03FF000018000A04010001M*0001240001");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1950,7 +1950,7 @@ void CCASC_05Dlg::Msg_RD()
         //气路压力传感器
         strcpy(s_buf, "500000FF03FF000018000A04010001M*0001000001");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1976,7 +1976,7 @@ void CCASC_05Dlg::Msg_RD()
         //搅拌套上限位传感器
         strcpy(s_buf, "500000FF03FF000018000A04010001M*0001260001");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2002,7 +2002,7 @@ void CCASC_05Dlg::Msg_RD()
         //搅拌针上限位传感器
         strcpy(s_buf, "500000FF03FF000018000A04010001M*0001250001");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2028,7 +2028,7 @@ void CCASC_05Dlg::Msg_RD()
         //制动装置开
         strcpy(s_buf, "500000FF03FF000018000A04010001M*0001220001");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2054,7 +2054,7 @@ void CCASC_05Dlg::Msg_RD()
         //冷却气体开
         strcpy(s_buf, "500000FF03FF000018000A04010001M*0001210001");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2080,7 +2080,7 @@ void CCASC_05Dlg::Msg_RD()
         //液压缸开
         strcpy(s_buf, "500000FF03FF000018000A04010001M*0001200001");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2111,7 +2111,7 @@ void CCASC_05Dlg::Msg_RD()
         //旋转速度显示		
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0001620002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2142,7 +2142,7 @@ void CCASC_05Dlg::Msg_RD()
         //slv动态窗口值显示
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0002040002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2169,7 +2169,7 @@ void CCASC_05Dlg::Msg_RD()
         //pin动态窗口值显示
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0001840002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2196,7 +2196,7 @@ void CCASC_05Dlg::Msg_RD()
         //slv进给值显示
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0004260002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2223,7 +2223,7 @@ void CCASC_05Dlg::Msg_RD()
         //pin进给值显示
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0004220002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2250,7 +2250,7 @@ void CCASC_05Dlg::Msg_RD()
         //slv对刀开始
         strcpy(s_buf, "500000FF03FF000018000A04010001M*0000600001");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2276,7 +2276,7 @@ void CCASC_05Dlg::Msg_RD()
         //slv对刀完成
         strcpy(s_buf, "500000FF03FF000018000A04010001M*0000930001");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2302,7 +2302,7 @@ void CCASC_05Dlg::Msg_RD()
         //pin对刀开始
         strcpy(s_buf, "500000FF03FF000018000A04010001M*0000500001");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2328,7 +2328,7 @@ void CCASC_05Dlg::Msg_RD()
         //pin对刀完成
         strcpy(s_buf, "500000FF03FF000018000A04010001M*0000920001");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2360,7 +2360,7 @@ void CCASC_05Dlg::Msg_RD()
         {
             strcpy(s_buf, "500000FF03FF000018000A04010000D*0035000009");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -2415,7 +2415,7 @@ void CCASC_05Dlg::Msg_RD()
             //其余M变量报警-----------------------------------------------------------------
             strcpy(s_buf, "500000FF03FF000018000A04010001M*0005500007");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -2470,7 +2470,7 @@ void CCASC_05Dlg::Msg_RD()
         //旋转速度显示		
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0001620002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2501,7 +2501,7 @@ void CCASC_05Dlg::Msg_RD()
         //slv动态窗口值显示
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0002040002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2528,7 +2528,7 @@ void CCASC_05Dlg::Msg_RD()
         //pin动态窗口值显示
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0001840002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2561,7 +2561,7 @@ void CCASC_05Dlg::Msg_RD()
         {
             strcpy(s_buf, "500000FF03FF000018000A04010000D*0035000009");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -2616,7 +2616,7 @@ void CCASC_05Dlg::Msg_RD()
             //其余M变量报警-----------------------------------------------------------------
             strcpy(s_buf, "500000FF03FF000018000A04010001M*0005500007");
             length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -2671,7 +2671,7 @@ void CCASC_05Dlg::Msg_RD()
         //旋转速度显示		
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0001620002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2702,7 +2702,7 @@ void CCASC_05Dlg::Msg_RD()
         //slv动态窗口值显示
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0002040002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2729,7 +2729,7 @@ void CCASC_05Dlg::Msg_RD()
         //pin动态窗口值显示
         strcpy(s_buf, "500000FF03FF000018000A04010000D*0001840002");
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2759,7 +2759,7 @@ void CCASC_05Dlg::Msg_RD()
         //----------------------------------------
         strcpy(s_buf, "500000FF03FF000018000A04010001M*0002380001");//搅拌针回原点
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2789,7 +2789,7 @@ void CCASC_05Dlg::Msg_RD()
         }
         strcpy(s_buf, "500000FF03FF000018000A04010001M*0002580001");//搅拌套回原点
         length = strlen(s_buf);
-        if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
