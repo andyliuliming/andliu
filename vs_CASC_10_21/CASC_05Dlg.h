@@ -58,7 +58,11 @@ private:
     int k = 0;
     const char alarm_safe[59] = "D00000FF03FF0000280000000000000000000000000000000000000000";
     const char alarm_safe_m[30] = "D00000FF03FF00000B00001110010";
+    const char *CMD_STR_1 = "500000FF03FF000018000A04010000D*0035000009";
+    int CMD_STR_1_LEN = 0;
+
 public:
+    void InitializeCommand();
 	void Char_To_Int();
 	void Float_To_Char();
 	void Char_To_Float();

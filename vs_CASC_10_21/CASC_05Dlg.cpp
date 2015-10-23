@@ -155,6 +155,7 @@ CCASC_05Dlg::CCASC_05Dlg(CWnd* pParent /*=NULL*/)
     //}}AFX_DATA_INIT
     // Note that LoadIcon does not require a subsequent DestroyIcon in Win32
     m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+    this->InitializeCommand();
 }
 
 void CCASC_05Dlg::DoDataExchange(CDataExchange* pDX)
@@ -525,11 +526,16 @@ void CCASC_05Dlg::Sockerror(int error_kind)
         }
     }
 }
+void CCASC_05Dlg::InitializeCommand() {
+    this->CMD_STR_1_LEN = strlen(this->CMD_STR_1);
+
+}
+
 //网络通讯——读取数据
 void CCASC_05Dlg::Msg_RD()
 {
-    int length = 0;
-    int k = 0;
+    this->length = 0;
+    this->k = 0;
     m_client = (SOCKET)m_client_static;
     //****************************************************************************************
     //************主页与报警页****************************************************************
@@ -537,9 +543,7 @@ void CCASC_05Dlg::Msg_RD()
     //报警监控================================================================================
     if (global_mode == ALARM_LIST)
     {
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0035000009");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_1, this->CMD_STR_1_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -658,9 +662,7 @@ void CCASC_05Dlg::Msg_RD()
         //手动报警界面
         if (k >= 4)
         {
-            strcpy(s_buf, "500000FF03FF000018000A04010000D*0035000009");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_1, this->CMD_STR_1_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -993,9 +995,7 @@ void CCASC_05Dlg::Msg_RD()
         //自动报警界面
         if (k >= 2)
         {
-            strcpy(s_buf, "500000FF03FF000018000A04010000D*0035000009");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_1, this->CMD_STR_1_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1553,9 +1553,7 @@ void CCASC_05Dlg::Msg_RD()
         //手动监视报警界面
         if (k >= 2)
         {
-            strcpy(s_buf, "500000FF03FF000018000A04010000D*0035000009");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_1, this->CMD_STR_1_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -2358,9 +2356,7 @@ void CCASC_05Dlg::Msg_RD()
         //辅助清洗报警界面
         if (k >= 2)
         {
-            strcpy(s_buf, "500000FF03FF000018000A04010000D*0035000009");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_1, this->CMD_STR_1_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -2559,9 +2555,7 @@ void CCASC_05Dlg::Msg_RD()
         //辅助报警界面
         if (k >= 2)
         {
-            strcpy(s_buf, "500000FF03FF000018000A04010000D*0035000009");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_1, this->CMD_STR_1_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
