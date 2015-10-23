@@ -531,7 +531,6 @@ void CCASC_05Dlg::Msg_RD()
 	int length=0;
 	CCasc_01_jog jog_01;
 	CCASC_05Dlg read_main;
-	int i,j;
 	int k=0;
 	char alarm_safe[59];
 	char alarm_safe_m[30];
@@ -562,8 +561,7 @@ void CCASC_05Dlg::Msg_RD()
 		{
 			global_m_Event_Rd.SetEvent();
 			strcpy(r_buf_static,r_buf);
-			//i=strcmp(r_buf_static,alarm_safe);
-			i=strcmp(r_buf_static,alarm_safe);
+
 			//消除报警
 			if(strcmp(r_buf_static,alarm_safe)>0)
 			{
@@ -618,7 +616,7 @@ void CCASC_05Dlg::Msg_RD()
 			global_m_Event_Rd.SetEvent();
 			strcpy(r_buf_static,r_buf);
 			
-			j=strcmp(r_buf_static,alarm_safe_m);
+			
 			//消除报警
 			if(strcmp(r_buf_static,alarm_safe_m)!=0)
 			{
@@ -637,8 +635,6 @@ void CCASC_05Dlg::Msg_RD()
 				//}
 			}
 			//报警灯关
-			i=strcmp(r_buf_static,alarm_safe);
-			j=strcmp(r_buf_static,alarm_safe_m);
 			if((strcmp(r_buf_static,alarm_safe)<=0)&&(strcmp(r_buf_static,alarm_safe_m)==0))
 			{
 				//if(global_alarm_status==FALSE)
@@ -682,8 +678,6 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					//i=strcmp(r_buf_static,alarm_safe);
-					i=strcmp(r_buf_static,alarm_safe);
 					//消除报警
 					if(strcmp(r_buf_static,alarm_safe)>0)
 					{
@@ -738,7 +732,6 @@ void CCASC_05Dlg::Msg_RD()
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
 					
-					j=strcmp(r_buf_static,alarm_safe_m);
 					//消除报警
 					if(strcmp(r_buf_static,alarm_safe_m)!=0)
 					{
@@ -757,8 +750,6 @@ void CCASC_05Dlg::Msg_RD()
 						//}
 					}
 					//报警灯关
-					i=strcmp(r_buf_static,alarm_safe);
-					j=strcmp(r_buf_static,alarm_safe_m);
 					if((strcmp(r_buf_static,alarm_safe)<=0)&&(strcmp(r_buf_static,alarm_safe_m)==0))
 					{
 						//if(global_alarm_status==FALSE)
@@ -1004,8 +995,6 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					//i=strcmp(r_buf_static,alarm_safe);
-					i=strcmp(r_buf_static,alarm_safe);
 					//消除报警
 					if(strcmp(r_buf_static,alarm_safe)>0)
 					{
@@ -1060,7 +1049,6 @@ void CCASC_05Dlg::Msg_RD()
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
 					
-					j=strcmp(r_buf_static,alarm_safe_m);
 					//消除报警
 					if(strcmp(r_buf_static,alarm_safe_m)!=0)
 					{
@@ -1079,8 +1067,6 @@ void CCASC_05Dlg::Msg_RD()
 						//}
 					}
 					//报警灯关
-					i=strcmp(r_buf_static,alarm_safe);
-					j=strcmp(r_buf_static,alarm_safe_m);
 					if((strcmp(r_buf_static,alarm_safe)<=0)&&(strcmp(r_buf_static,alarm_safe_m)==0))
 					{
 						//if(global_alarm_status==FALSE)
@@ -1534,8 +1520,6 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					//i=strcmp(r_buf_static,alarm_safe);
-					i=strcmp(r_buf_static,alarm_safe);
 					//消除报警
 					if(strcmp(r_buf_static,alarm_safe)>0)
 					{
@@ -1590,7 +1574,6 @@ void CCASC_05Dlg::Msg_RD()
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
 					
-					j=strcmp(r_buf_static,alarm_safe_m);
 					//消除报警
 					if(strcmp(r_buf_static,alarm_safe_m)!=0)
 					{
@@ -1609,8 +1592,6 @@ void CCASC_05Dlg::Msg_RD()
 						//}
 					}
 					//报警灯关
-					i=strcmp(r_buf_static,alarm_safe);
-					j=strcmp(r_buf_static,alarm_safe_m);
 					if((strcmp(r_buf_static,alarm_safe)<=0)&&(strcmp(r_buf_static,alarm_safe_m)==0))
 					{
 						//if(global_alarm_status==FALSE)
@@ -2290,8 +2271,6 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					//i=strcmp(r_buf_static,alarm_safe);
-					i=strcmp(r_buf_static,alarm_safe);
 					//消除报警
 					if(strcmp(r_buf_static,alarm_safe)>0)
 					{
@@ -2346,7 +2325,6 @@ void CCASC_05Dlg::Msg_RD()
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
 					
-					j=strcmp(r_buf_static,alarm_safe_m);
 					//消除报警
 					if(strcmp(r_buf_static,alarm_safe_m)!=0)
 					{
@@ -2365,8 +2343,6 @@ void CCASC_05Dlg::Msg_RD()
 						//}
 					}
 					//报警灯关
-					i=strcmp(r_buf_static,alarm_safe);
-					j=strcmp(r_buf_static,alarm_safe_m);
 					if((strcmp(r_buf_static,alarm_safe)<=0)&&(strcmp(r_buf_static,alarm_safe_m)==0))
 					{
 						//if(global_alarm_status==FALSE)
@@ -2486,8 +2462,6 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					//i=strcmp(r_buf_static,alarm_safe);
-					i=strcmp(r_buf_static,alarm_safe);
 					//消除报警
 					if(strcmp(r_buf_static,alarm_safe)>0)
 					{
@@ -2542,7 +2516,6 @@ void CCASC_05Dlg::Msg_RD()
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
 					
-					j=strcmp(r_buf_static,alarm_safe_m);
 					//消除报警
 					if(strcmp(r_buf_static,alarm_safe_m)!=0)
 					{
@@ -2561,8 +2534,6 @@ void CCASC_05Dlg::Msg_RD()
 						//}
 					}
 					//报警灯关
-					i=strcmp(r_buf_static,alarm_safe);
-					j=strcmp(r_buf_static,alarm_safe_m);
 					if((strcmp(r_buf_static,alarm_safe)<=0)&&(strcmp(r_buf_static,alarm_safe_m)==0))
 					{
 						//if(global_alarm_status==FALSE)
