@@ -374,7 +374,6 @@ void CCASC_05Dlg::OnCascJog()
 
 void CCASC_05Dlg::OnCascRecipe()
 {
-
     CCasc_03_recipe recipe_03_window;
     //按键设置位-----------------------
 
@@ -454,18 +453,14 @@ void CCASC_05Dlg::PostNcDestroy()
 void CCASC_05Dlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
     CDialog::OnShowWindow(bShow, nStatus);
-
     // TODO: Add your message handler code here
-
 }
 
 int CCASC_05Dlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
     if (CDialog::OnCreate(lpCreateStruct) == -1)
         return -1;
-
     // TODO: Add your specialized creation code here
-
     return 0;
 }
 
@@ -481,14 +476,12 @@ void CCASC_05Dlg::OnCascAux1()
 void CCASC_05Dlg::OnOK()
 {
     // TODO: Add extra validation here
-
     CDialog::OnOK();
 }
 
 void CCASC_05Dlg::OnLink()
 {
     // TODO: Add your control notification handler code here
-
 }
 //网络通讯——诊断
 void CCASC_05Dlg::Sockerror(int error_kind)
@@ -597,9 +590,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //其余M变量报警-----------------------------------------------------------------
-        strcpy(s_buf, "500000FF03FF000018000A04010001M*0005500007");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_2, this->CMD_STR_2_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -715,9 +706,7 @@ void CCASC_05Dlg::Msg_RD()
                 global_m_Event_Rd.ResetEvent();
             }
             //其余M变量报警-----------------------------------------------------------------
-            strcpy(s_buf, "500000FF03FF000018000A04010001M*0005500007");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_2, this->CMD_STR_2_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -770,14 +759,12 @@ void CCASC_05Dlg::Msg_RD()
         }
         k++;
         //------------------------------------------------------------------------------------
-            //=============================================================
-            //上下极限位置显示
-            //if(global_up_dn_lim_status==0)
-            //{
-                //pin上限位------------------------------------------------
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0003000002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        //=============================================================
+        //上下极限位置显示
+        //if(global_up_dn_lim_status==0)
+        //{
+        //pin上限位------------------------------------------------
+        if (send(m_client, this->CMD_STR_3, this->CMD_STR_3_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1048,9 +1035,7 @@ void CCASC_05Dlg::Msg_RD()
                 global_m_Event_Rd.ResetEvent();
             }
             //其余M变量报警-----------------------------------------------------------------
-            strcpy(s_buf, "500000FF03FF000018000A04010001M*0005500007");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_2, this->CMD_STR_2_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1262,9 +1247,7 @@ void CCASC_05Dlg::Msg_RD()
         if (global_up_dn_lim_status == 0)
         {
             //pin上限位------------------------------------------------
-            strcpy(s_buf, "500000FF03FF000018000A04010000D*0003000002");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_3, this->CMD_STR_3_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1606,9 +1589,7 @@ void CCASC_05Dlg::Msg_RD()
                 global_m_Event_Rd.ResetEvent();
             }
             //其余M变量报警-----------------------------------------------------------------
-            strcpy(s_buf, "500000FF03FF000018000A04010001M*0005500007");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_2, this->CMD_STR_2_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1664,9 +1645,7 @@ void CCASC_05Dlg::Msg_RD()
         if (global_up_dn_lim_status == 0)
         {
             //pin上限位------------------------------------------------
-            strcpy(s_buf, "500000FF03FF000018000A04010000D*0003000002");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_3, this->CMD_STR_3_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -2409,9 +2388,7 @@ void CCASC_05Dlg::Msg_RD()
                 global_m_Event_Rd.ResetEvent();
             }
             //其余M变量报警-----------------------------------------------------------------
-            strcpy(s_buf, "500000FF03FF000018000A04010001M*0005500007");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_2, this->CMD_STR_2_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -2608,9 +2585,7 @@ void CCASC_05Dlg::Msg_RD()
                 global_m_Event_Rd.ResetEvent();
             }
             //其余M变量报警-----------------------------------------------------------------
-            strcpy(s_buf, "500000FF03FF000018000A04010001M*0005500007");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_2, this->CMD_STR_2_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
