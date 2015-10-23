@@ -53,6 +53,11 @@ extern int global_opr_num_key;//0ÎÞ²Ù×÷
 class CCASC_05Dlg : public CDialog
 {
 // Construction
+private:
+    int length = 0;
+    int k = 0;
+    const char alarm_safe[59] = "D00000FF03FF0000280000000000000000000000000000000000000000";
+    const char alarm_safe_m[30] = "D00000FF03FF00000B00001110010";
 public:
 	void Char_To_Int();
 	void Float_To_Char();

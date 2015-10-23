@@ -529,13 +529,7 @@ void CCASC_05Dlg::Sockerror(int error_kind)
 void CCASC_05Dlg::Msg_RD()
 {
 	int length=0;
-	CCasc_01_jog jog_01;
-	CCASC_05Dlg read_main;
 	int k=0;
-	char alarm_safe[59];
-	char alarm_safe_m[30];
-	strcpy(alarm_safe,"D00000FF03FF0000280000000000000000000000000000000000000000");
-	strcpy(alarm_safe_m,"D00000FF03FF00000B00001110010");
 	m_client=(SOCKET)m_client_static;
 	//****************************************************************************************
 	//************主页与报警页****************************************************************
@@ -789,7 +783,7 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					read_main.Float_To_Char();
+					this->Float_To_Char();
 					global_pin_limit_up=read_convert;
 					//MessageBox(r_buf);
 				}
@@ -817,7 +811,7 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					read_main.Float_To_Char();
+					this->Float_To_Char();
 					global_pin_limit_dn=read_convert;
 					//MessageBox(r_buf);
 				}
@@ -845,7 +839,7 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					read_main.Float_To_Char();
+					this->Float_To_Char();
 					global_slv_limit_up=read_convert;
 					//MessageBox(r_buf);
 				}
@@ -873,7 +867,7 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					read_main.Float_To_Char();
+					this->Float_To_Char();
 					global_slv_limit_dn=read_convert;
 					//MessageBox(r_buf);
 				}
@@ -901,13 +895,13 @@ void CCASC_05Dlg::Msg_RD()
 			}
 			r_buf[length]=0;
 			strcpy(r_buf_static,r_buf);
-			//read_main.Float_To_Char();
+			//this->Float_To_Char();
 			//global_rot_spd_disp=read_convert;
 			if((r_buf[18]==48)&&(r_buf[19]==48)&&(r_buf[20]==48)&&(r_buf[21]==48))
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_rot_spd_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -934,7 +928,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_slv_pos_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -959,7 +953,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_pin_pos_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -1098,13 +1092,13 @@ void CCASC_05Dlg::Msg_RD()
 			}
 			r_buf[length]=0;
 			strcpy(r_buf_static,r_buf);
-			read_main.Float_To_Char();
+			this->Float_To_Char();
 			global_rot_spd_disp=read_convert;
 			if((r_buf[18]==48)&&(r_buf[19]==48)&&(r_buf[20]==48)&&(r_buf[21]==48))
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_rot_spd_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -1126,13 +1120,13 @@ void CCASC_05Dlg::Msg_RD()
 			}
 			r_buf[length]=0;
 			strcpy(r_buf_static,r_buf);
-			//read_main.Float_To_Char();
+			//this->Float_To_Char();
 			//global_rot_spd_disp=read_convert;
 			if((r_buf[18]==48)&&(r_buf[19]==48)&&(r_buf[20]==48)&&(r_buf[21]==48))
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_torque_disp=read_convert;
 				//MessageBox(r_buf);
 				//wendy add 2015/10/21
@@ -1171,7 +1165,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_slv_pos_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -1196,7 +1190,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_pin_pos_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -1221,7 +1215,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_weild_show_time=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -1249,7 +1243,7 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					read_main.Float_To_Char();
+					this->Float_To_Char();
 					global_pin_limit_up=read_convert;
 					//MessageBox(r_buf);
 				}
@@ -1277,7 +1271,7 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					read_main.Float_To_Char();
+					this->Float_To_Char();
 					global_pin_limit_dn=read_convert;
 					//MessageBox(r_buf);
 				}
@@ -1305,7 +1299,7 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					read_main.Float_To_Char();
+					this->Float_To_Char();
 					global_slv_limit_up=read_convert;
 					//MessageBox(r_buf);
 				}
@@ -1333,7 +1327,7 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					read_main.Float_To_Char();
+					this->Float_To_Char();
 					global_slv_limit_dn=read_convert;
 					//MessageBox(r_buf);
 				}
@@ -1629,7 +1623,7 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					read_main.Float_To_Char();
+					this->Float_To_Char();
 					global_pin_limit_up=read_convert;
 					//MessageBox(r_buf);
 				}
@@ -1657,7 +1651,7 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					read_main.Float_To_Char();
+					this->Float_To_Char();
 					global_pin_limit_dn=read_convert;
 					//MessageBox(r_buf);
 				}
@@ -1685,7 +1679,7 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					read_main.Float_To_Char();
+					this->Float_To_Char();
 					global_slv_limit_up=read_convert;
 					//MessageBox(r_buf);
 				}
@@ -1713,7 +1707,7 @@ void CCASC_05Dlg::Msg_RD()
 				{
 					global_m_Event_Rd.SetEvent();
 					strcpy(r_buf_static,r_buf);
-					read_main.Float_To_Char();
+					this->Float_To_Char();
 					global_slv_limit_dn=read_convert;
 					//MessageBox(r_buf);
 				}
@@ -1743,7 +1737,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_slv_pos_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -1768,7 +1762,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_pin_pos_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -1793,7 +1787,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_slv_axis_set=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -1818,7 +1812,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_pin_axis_set=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -2037,13 +2031,13 @@ void CCASC_05Dlg::Msg_RD()
 			}
 			r_buf[length]=0;
 			strcpy(r_buf_static,r_buf);
-			read_main.Float_To_Char();
+			this->Float_To_Char();
 			global_rot_spd_disp=read_convert;
 			if((r_buf[18]==48)&&(r_buf[19]==48)&&(r_buf[20]==48)&&(r_buf[21]==48))
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_rot_spd_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -2069,7 +2063,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_slv_pos_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -2094,7 +2088,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_pin_pos_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -2119,7 +2113,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_slv_spd_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -2144,7 +2138,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_pin_spd_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -2374,13 +2368,13 @@ void CCASC_05Dlg::Msg_RD()
 			}
 			r_buf[length]=0;
 			strcpy(r_buf_static,r_buf);
-			read_main.Float_To_Char();
+			this->Float_To_Char();
 			global_rot_spd_disp=read_convert;
 			if((r_buf[18]==48)&&(r_buf[19]==48)&&(r_buf[20]==48)&&(r_buf[21]==48))
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_rot_spd_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -2406,7 +2400,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_slv_pos_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -2431,7 +2425,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_pin_pos_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -2565,13 +2559,13 @@ void CCASC_05Dlg::Msg_RD()
 			}
 			r_buf[length]=0;
 			strcpy(r_buf_static,r_buf);
-			read_main.Float_To_Char();
+			this->Float_To_Char();
 			global_rot_spd_disp=read_convert;
 			if((r_buf[18]==48)&&(r_buf[19]==48)&&(r_buf[20]==48)&&(r_buf[21]==48))
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_rot_spd_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -2597,7 +2591,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_slv_pos_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -2622,7 +2616,7 @@ void CCASC_05Dlg::Msg_RD()
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
-				read_main.Float_To_Char();
+				this->Float_To_Char();
 				global_pin_pos_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -2647,14 +2641,14 @@ void CCASC_05Dlg::Msg_RD()
 			}
 			r_buf[length]=0;
 			strcpy(r_buf_static,r_buf);
-			//read_main.Float_To_Char();
+			//this->Float_To_Char();
 			//global_rot_spd_disp=read_convert;
 			if((r_buf[18]==48)&&(r_buf[19]==48)&&(r_buf[20]==48)&&(r_buf[21]==48))
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
 				global_home_pin=r_buf[22]-48;
-				//read_main.Float_To_Char();
+				//this->Float_To_Char();
 				//global_rot_spd_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -2675,14 +2669,14 @@ void CCASC_05Dlg::Msg_RD()
 			}
 			r_buf[length]=0;
 			strcpy(r_buf_static,r_buf);
-			//read_main.Float_To_Char();
+			//this->Float_To_Char();
 			//global_rot_spd_disp=read_convert;
 			if((r_buf[18]==48)&&(r_buf[19]==48)&&(r_buf[20]==48)&&(r_buf[21]==48))
 			{
 				global_m_Event_Rd.SetEvent();
 				strcpy(r_buf_static,r_buf);
 				global_home_slv=r_buf[22]-48;//回原点信号完成反馈
-				//read_main.Float_To_Char();
+				//this->Float_To_Char();
 				//global_rot_spd_disp=read_convert;
 				//MessageBox(r_buf);
 			}
@@ -2703,16 +2697,20 @@ void CCASC_05Dlg::Msg_WR()
 	{
 	//手动模式
 	case JOG_ROT_SPD_SET:{
-		strcpy(s_buf,"500000FF03FF000020000A14010000D*0001600002");strcat(s_buf,m_char_to_float);
+		strcpy(s_buf,"500000FF03FF000020000A14010000D*0001600002");
+        strcat(s_buf,m_char_to_float);
 		break;}//主轴旋转目标速度
 	case JOG_SLV_POS_SET:{
-		strcpy(s_buf,"500000FF03FF000020000A14010000D*0030320002");strcat(s_buf,m_char_to_float);
+		strcpy(s_buf,"500000FF03FF000020000A14010000D*0030320002");
+        strcat(s_buf,m_char_to_float);
 		break;}//套目标位置
 	case JOG_PIN_POS_SET:{
-		strcpy(s_buf,"500000FF03FF000020000A14010000D*0030300002");strcat(s_buf,m_char_to_float);
+		strcpy(s_buf,"500000FF03FF000020000A14010000D*0030300002");
+        strcat(s_buf,m_char_to_float);
 		break;}//针目标位置
 	case JOG_PIN_SLV_UD_SET:{
-		strcpy(s_buf,"500000FF03FF000020000A14010000D*0001640002");strcat(s_buf,m_char_to_float);
+		strcpy(s_buf,"500000FF03FF000020000A14010000D*0001640002");
+        strcat(s_buf,m_char_to_float);
 		break;}//搅拌针套进给量设计
 	}
 	
@@ -2729,8 +2727,10 @@ void CCASC_05Dlg::Msg_WR()
 		break;}//手动——退出手动模式
 	//手动模式——主页
 	case JOG_ROT_START:{
-		if(global_jog_rot_status==1)strcpy(s_buf,"500000FF03FF000019000A14010001M*00000000011");
-		else strcpy(s_buf,"500000FF03FF000019000A14010001M*00000000010");
+		if(global_jog_rot_status==1)
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00000000011");
+		else
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00000000010");
 		break;}//手动——主轴旋转启动
 	case JOG_ROT_START_2:{
 		if(global_jog_rot_status_2 == 1) strcpy(s_buf,"500000FF03FF000019000A14010001M*00009400011");
@@ -2739,47 +2739,64 @@ void CCASC_05Dlg::Msg_WR()
 		break;
 						 }
 	case JOG_SLV_UP:{
-		if(global_slv_up_status==1)strcpy(s_buf,"500000FF03FF000019000A14010001M*00000300011");
-		else strcpy(s_buf,"500000FF03FF000019000A14010001M*00000300010");
+		if(global_slv_up_status==1)
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00000300011");
+		else 
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00000300010");
 		//global_m_Event_Wr.ResetEvent();
 		break;}//手动——套按钮上运动
 	case JOG_SLV_DN:{
-		if(global_slv_dn_status==1)strcpy(s_buf,"500000FF03FF000019000A14010001M*00000400011");
-		else strcpy(s_buf,"500000FF03FF000019000A14010001M*00000400010");
+		if(global_slv_dn_status==1)
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00000400011");
+		else 
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00000400010");
 		//global_m_Event_Wr.ResetEvent();
 		break;}//手动——套按钮下运动
 	case JOG_PIN_UP:{
-		if(global_pin_up_status==1)strcpy(s_buf,"500000FF03FF000019000A14010001M*00000100011");
-		else strcpy(s_buf,"500000FF03FF000019000A14010001M*00000100010");
+		if(global_pin_up_status==1)
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00000100011");
+		else 
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00000100010");
 		//global_m_Event_Wr.ResetEvent();
 		break;}//手动——针按钮上运动
 	case JOG_PIN_DN:{
-		if(global_pin_dn_status==1)strcpy(s_buf,"500000FF03FF000019000A14010001M*00000200011");
-		else strcpy(s_buf,"500000FF03FF000019000A14010001M*00000200010");
+		if(global_pin_dn_status==1)
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00000200011");
+		else
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00000200010");
 		//global_m_Event_Wr.ResetEvent();
 		break;}//手动——针按钮下运动
 	//手动模式——监视
 	case JOG_BRK_OPEN:{
-		if(global_jog_brk_status==1)strcpy(s_buf,"500000FF03FF000019000A14010001M*00012200011");
-		else strcpy(s_buf,"500000FF03FF000019000A14010001M*00012200010");
+		if(global_jog_brk_status==1)
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00012200011");
+		else 
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00012200010");
 		break;}//手动——制动刹车打开
 	case JOG_COL_OPEN:{
-		if(global_jog_col_status==1)strcpy(s_buf,"500000FF03FF000019000A14010001M*00012100011");
-		else strcpy(s_buf,"500000FF03FF000019000A14010001M*00012100010");
+		if(global_jog_col_status==1)
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00012100011");
+		else 
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00012100010");
 		break;}//手动——冷却气打开
 	case JOG_GAS_OPEN:{
-		if(global_jog_gas_status==1)strcpy(s_buf,"500000FF03FF000019000A14010001M*00012000011");
+		if(global_jog_gas_status==1)
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00012000011");
 		else strcpy(s_buf,"500000FF03FF000019000A14010001M*00012000010");
 		break;}//手动——气液缸打开
 	case JOG_CNT_CLEAR:{
 		break;}//手动——计数器清零
 	case JOG_SLV_LINK:{
-		if(global_jog_slv_link==1)strcpy(s_buf,"500000FF03FF000019000A14010001M*00001100011");
-		else strcpy(s_buf,"500000FF03FF000019000A14010001M*00001100010");
+		if(global_jog_slv_link==1)
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00001100011");
+		else 
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00001100010");
 		break;}//手动——搅拌套连动
 	case JOG_ROT_LINK:{
-		if(global_jog_rot_link==1)strcpy(s_buf,"500000FF03FF000019000A14010001M*00001000011");
-		else strcpy(s_buf,"500000FF03FF000019000A14010001M*00001000010");
+		if(global_jog_rot_link==1)
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00001000011");
+		else 
+            strcpy(s_buf,"500000FF03FF000019000A14010001M*00001000010");
 		break;}//手动——搅拌套连动
 	//自动模式
 	case MAIN_AUTO_MODE:{
