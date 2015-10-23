@@ -3055,7 +3055,6 @@ void CCASC_05Dlg::Msg_WR()
         strcpy(s_buf, "500000FF03FF000018000A1402000101M*00004801");
         if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
         {
-            int n = strlen(s_buf);
             Sockerror(ERROR_SEND);//发送出错处理
         }
         length = recv(m_client, r_buf, BUF_SIZE, 0);
@@ -3073,7 +3072,6 @@ void CCASC_05Dlg::Msg_WR()
         strcpy(s_buf, "500000FF03FF000018000A1402000101M*00004800");
         if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
         {
-            int n = strlen(s_buf);
             Sockerror(ERROR_SEND);//发送出错处理
         }
         length = recv(m_client, r_buf, BUF_SIZE, 0);
@@ -3190,10 +3188,8 @@ void CCASC_05Dlg::Msg_WR()
             if (q == 122) { s_buf[q] = 0; }
             else { s_buf[q] = -52; }
         }
-        int n = strlen(s_buf);
         if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
         {
-            int n = strlen(s_buf);
             Sockerror(ERROR_SEND);//发送出错处理
         }
         length = recv(m_client, r_buf, BUF_SIZE, 0);
@@ -3225,7 +3221,6 @@ void CCASC_05Dlg::Msg_WR()
 
         if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
         {
-            int n = strlen(s_buf);
             Sockerror(ERROR_SEND);//发送出错处理
         }
         length = recv(m_client, r_buf, BUF_SIZE, 0);
@@ -3256,7 +3251,6 @@ void CCASC_05Dlg::Msg_WR()
 
         if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
         {
-            int n = strlen(s_buf);
             Sockerror(ERROR_SEND);//发送出错处理
         }
         length = recv(m_client, r_buf, BUF_SIZE, 0);
@@ -3286,7 +3280,6 @@ void CCASC_05Dlg::Msg_WR()
 
         if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
         {
-            int n = strlen(s_buf);
             Sockerror(ERROR_SEND);//发送出错处理
         }
         length = recv(m_client, r_buf, BUF_SIZE, 0);
@@ -3309,7 +3302,6 @@ void CCASC_05Dlg::Msg_WR()
         }
         if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
         {
-            int n = strlen(s_buf);
             Sockerror(ERROR_SEND);//发送出错处理
         }
         length = recv(m_client, r_buf, BUF_SIZE, 0);
@@ -3329,7 +3321,6 @@ void CCASC_05Dlg::Msg_WR()
         strcpy(s_buf, "500000FF03FF000018000A1402000101M*00013900");
         if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
         {
-            int n = strlen(s_buf);
             Sockerror(ERROR_SEND);//发送出错处理
         }
         length = recv(m_client, r_buf, BUF_SIZE, 0);
