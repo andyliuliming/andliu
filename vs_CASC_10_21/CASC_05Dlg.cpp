@@ -519,9 +519,39 @@ void CCASC_05Dlg::Sockerror(int error_kind)
         }
     }
 }
+
 void CCASC_05Dlg::InitializeCommand() {
     this->CMD_STR_1_LEN = strlen(this->CMD_STR_1);
-
+    this->CMD_STR_2_LEN = strlen(this->CMD_STR_2);
+    this->CMD_STR_3_LEN = strlen(this->CMD_STR_3);
+    this->CMD_STR_4_LEN = strlen(this->CMD_STR_4);
+    this->CMD_STR_5_LEN = strlen(this->CMD_STR_5);
+    this->CMD_STR_6_LEN = strlen(this->CMD_STR_6);
+    this->CMD_STR_7_LEN = strlen(this->CMD_STR_7);
+    this->CMD_STR_8_LEN = strlen(this->CMD_STR_8);
+    this->CMD_STR_9_LEN = strlen(this->CMD_STR_9);
+    this->CMD_STR_10_LEN = strlen(this->CMD_STR_10);
+    this->CMD_STR_11_LEN = strlen(this->CMD_STR_11);
+    this->CMD_STR_12_LEN = strlen(this->CMD_STR_12);
+    this->CMD_STR_13_LEN = strlen(this->CMD_STR_13);
+    this->CMD_STR_14_LEN = strlen(this->CMD_STR_14);
+    this->CMD_STR_15_LEN = strlen(this->CMD_STR_15);
+    this->CMD_STR_16_LEN = strlen(this->CMD_STR_16);
+    this->CMD_STR_17_LEN = strlen(this->CMD_STR_17);
+    this->CMD_STR_18_LEN = strlen(this->CMD_STR_18);
+    this->CMD_STR_19_LEN = strlen(this->CMD_STR_19);
+    this->CMD_STR_20_LEN = strlen(this->CMD_STR_20);
+    this->CMD_STR_21_LEN = strlen(this->CMD_STR_21);
+    this->CMD_STR_22_LEN = strlen(this->CMD_STR_22);
+    this->CMD_STR_23_LEN = strlen(this->CMD_STR_23);
+    this->CMD_STR_24_LEN = strlen(this->CMD_STR_24);
+    this->CMD_STR_25_LEN = strlen(this->CMD_STR_25);
+    this->CMD_STR_26_LEN = strlen(this->CMD_STR_26);
+    this->CMD_STR_27_LEN = strlen(this->CMD_STR_27);
+    this->CMD_STR_28_LEN = strlen(this->CMD_STR_28);
+    this->CMD_STR_29_LEN = strlen(this->CMD_STR_29);
+    this->CMD_STR_30_LEN = strlen(this->CMD_STR_30);
+    this->CMD_STR_31_LEN = strlen(this->CMD_STR_31);
 }
 
 //网络通讯——读取数据
@@ -606,7 +636,6 @@ void CCASC_05Dlg::Msg_RD()
         {
             global_m_Event_Rd.SetEvent();
             strcpy(r_buf_static, r_buf);
-
 
             //消除报警
             if (strcmp(r_buf_static, alarm_safe_m) != 0)
@@ -792,9 +821,7 @@ void CCASC_05Dlg::Msg_RD()
             }
         }
         //pin下限位------------------------------------------------
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0003020002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_4, this->CMD_STR_4_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -822,9 +849,7 @@ void CCASC_05Dlg::Msg_RD()
             }
         }
         //slv上限位------------------------------------------------
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0003040002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_6, this->CMD_STR_6_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -852,9 +877,7 @@ void CCASC_05Dlg::Msg_RD()
             }
         }
         //slv下限位------------------------------------------------
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0003060002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_5, this->CMD_STR_5_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -885,9 +908,7 @@ void CCASC_05Dlg::Msg_RD()
     //}	
 
     //旋转速度显示		
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0001620002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_7, this->CMD_STR_7_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -917,9 +938,7 @@ void CCASC_05Dlg::Msg_RD()
 
         //MessageBox(r_buf);
         //slv动态窗口值显示
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0002040002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_8, this->CMD_STR_8_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -944,9 +963,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //pin动态窗口值显示
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0001840002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_9, this->CMD_STR_9_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -970,8 +987,6 @@ void CCASC_05Dlg::Msg_RD()
         {
             global_m_Event_Rd.ResetEvent();
         }
-
-
     }
     //****************************************************************************************
     //****************************************************************************************
@@ -1087,10 +1102,8 @@ void CCASC_05Dlg::Msg_RD()
             k = 0;
         }
         k++;
-        //旋转速度显示		
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0001620002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        //旋转速度显示
+        if (send(m_client, this->CMD_STR_7, this->CMD_STR_7_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1118,9 +1131,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //torque转矩值显示
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0001620002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_7, this->CMD_STR_7_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1144,7 +1155,6 @@ void CCASC_05Dlg::Msg_RD()
             //MessageBox(r_buf);
             //wendy add 2015/10/21
 
-
             if (global_display_8 == 1)
             {
                 global_handler.StartWrite();
@@ -1163,9 +1173,7 @@ void CCASC_05Dlg::Msg_RD()
         }
         //MessageBox(r_buf);
         //slv动态窗口值显示
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0002040002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_8, this->CMD_STR_8_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1190,9 +1198,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //pin动态窗口值显示
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0001840002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_9, this->CMD_STR_9_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1217,9 +1223,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //焊接点计数器
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0020880002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_11, this->CMD_STR_11_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1275,9 +1279,7 @@ void CCASC_05Dlg::Msg_RD()
                 }
             }
             //pin下限位------------------------------------------------
-            strcpy(s_buf, "500000FF03FF000018000A04010000D*0003020002");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_4, this->CMD_STR_4_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1305,9 +1307,7 @@ void CCASC_05Dlg::Msg_RD()
                 }
             }
             //slv上限位------------------------------------------------
-            strcpy(s_buf, "500000FF03FF000018000A04010000D*0003040002");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_6, this->CMD_STR_6_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1335,9 +1335,7 @@ void CCASC_05Dlg::Msg_RD()
                 }
             }
             //slv下限位------------------------------------------------
-            strcpy(s_buf, "500000FF03FF000018000A04010000D*0003060002");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_5, this->CMD_STR_5_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1371,9 +1369,7 @@ void CCASC_05Dlg::Msg_RD()
         {
 
             //C型架处于工作位置
-            strcpy(s_buf, "500000FF03FF000018000A04010001M*0001230001");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_12, this->CMD_STR_12_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1397,9 +1393,7 @@ void CCASC_05Dlg::Msg_RD()
                 global_m_Event_Rd.ResetEvent();
             }
             //C型架处于导轨尾部
-            strcpy(s_buf, "500000FF03FF000018000A04010001M*0001240001");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_10, this->CMD_STR_10_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1423,9 +1417,7 @@ void CCASC_05Dlg::Msg_RD()
                 global_m_Event_Rd.ResetEvent();
             }
             //气路压力传感器
-            strcpy(s_buf, "500000FF03FF000018000A04010001M*0001000001");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_13, this->CMD_STR_13_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1450,9 +1442,7 @@ void CCASC_05Dlg::Msg_RD()
             }
 
             //制动装置开
-            strcpy(s_buf, "500000FF03FF000018000A04010001Y*0000350001");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_18, this->CMD_STR_18_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1476,9 +1466,7 @@ void CCASC_05Dlg::Msg_RD()
                 global_m_Event_Rd.ResetEvent();
             }
             //冷却气体开
-            strcpy(s_buf, "500000FF03FF000018000A04010001Y*0000340001");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_19, this->CMD_STR_19_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1502,9 +1490,7 @@ void CCASC_05Dlg::Msg_RD()
                 global_m_Event_Rd.ResetEvent();
             }
             //液压缸开
-            strcpy(s_buf, "500000FF03FF000018000A04010001Y*0000330001");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_20, this->CMD_STR_20_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1673,9 +1659,7 @@ void CCASC_05Dlg::Msg_RD()
                 }
             }
             //pin下限位------------------------------------------------
-            strcpy(s_buf, "500000FF03FF000018000A04010000D*0003020002");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, strlen(s_buf), 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_4, this->CMD_STR_4_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1703,9 +1687,7 @@ void CCASC_05Dlg::Msg_RD()
                 }
             }
             //slv上限位------------------------------------------------
-            strcpy(s_buf, "500000FF03FF000018000A04010000D*0003040002");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_6, this->CMD_STR_6_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1733,9 +1715,7 @@ void CCASC_05Dlg::Msg_RD()
                 }
             }
             //slv下限位------------------------------------------------
-            strcpy(s_buf, "500000FF03FF000018000A04010000D*0003060002");
-            length = strlen(s_buf);
-            if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+            if (send(m_client, this->CMD_STR_5, this->CMD_STR_5_LEN, 0) == SOCKET_ERROR)//数据发送
             {
                 Sockerror(ERROR_SEND);//发送出错处理
                 //return(SOCK_NG);
@@ -1765,9 +1745,7 @@ void CCASC_05Dlg::Msg_RD()
             global_up_dn_lim_status = 1;
         }
         //slv动态窗口值显示
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0002040002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_8, this->CMD_STR_8_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1792,9 +1770,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //pin动态窗口值显示
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0001840002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_9, this->CMD_STR_9_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1819,9 +1795,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //slv坐标设定值
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0020820002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_15, this->CMD_STR_15_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1846,9 +1820,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //pin坐标设定值
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0020800002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_16, this->CMD_STR_16_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1873,9 +1845,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //C型架处于工作位置
-        strcpy(s_buf, "500000FF03FF000018000A04010001M*0001230001");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_12, this->CMD_STR_12_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1899,9 +1869,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //C型架处于导轨尾部
-        strcpy(s_buf, "500000FF03FF000018000A04010001M*0001240001");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_10, this->CMD_STR_10_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1925,9 +1893,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //气路压力传感器
-        strcpy(s_buf, "500000FF03FF000018000A04010001M*0001000001");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_13, this->CMD_STR_13_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1951,9 +1917,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //搅拌套上限位传感器
-        strcpy(s_buf, "500000FF03FF000018000A04010001M*0001260001");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_14, this->CMD_STR_14_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -1977,9 +1941,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //搅拌针上限位传感器
-        strcpy(s_buf, "500000FF03FF000018000A04010001M*0001250001");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_17, this->CMD_STR_17_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2003,9 +1965,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //制动装置开
-        strcpy(s_buf, "500000FF03FF000018000A04010001M*0001220001");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_21, this->CMD_STR_21_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2029,9 +1989,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //冷却气体开
-        strcpy(s_buf, "500000FF03FF000018000A04010001M*0001210001");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_22, this->CMD_STR_22_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2055,9 +2013,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //液压缸开
-        strcpy(s_buf, "500000FF03FF000018000A04010001M*0001200001");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_23, this->CMD_STR_23_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2086,9 +2042,7 @@ void CCASC_05Dlg::Msg_RD()
     if (global_mode == AUX_ALIGN_ENTER)//辅助自动对刀
     {
         //旋转速度显示		
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0001620002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_7, this->CMD_STR_7_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2117,9 +2071,7 @@ void CCASC_05Dlg::Msg_RD()
         }
         //MessageBox(r_buf);
         //slv动态窗口值显示
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0002040002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_8, this->CMD_STR_8_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2144,9 +2096,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //pin动态窗口值显示
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0001840002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_9, this->CMD_STR_9_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2171,9 +2121,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //slv进给值显示
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0004260002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_24, this->CMD_STR_24_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2198,9 +2146,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //pin进给值显示
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0004220002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_25, this->CMD_STR_25_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2225,9 +2171,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //slv对刀开始
-        strcpy(s_buf, "500000FF03FF000018000A04010001M*0000600001");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_26, this->CMD_STR_26_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2251,9 +2195,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //slv对刀完成
-        strcpy(s_buf, "500000FF03FF000018000A04010001M*0000930001");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_27, this->CMD_STR_27_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2277,9 +2219,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //pin对刀开始
-        strcpy(s_buf, "500000FF03FF000018000A04010001M*0000500001");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_28, this->CMD_STR_28_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2303,9 +2243,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //pin对刀完成
-        strcpy(s_buf, "500000FF03FF000018000A04010001M*0000920001");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_29, this->CMD_STR_29_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2441,9 +2379,7 @@ void CCASC_05Dlg::Msg_RD()
         }
         k++;
         //旋转速度显示		
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0001620002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_7, this->CMD_STR_7_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2472,9 +2408,7 @@ void CCASC_05Dlg::Msg_RD()
         }
         //MessageBox(r_buf);
         //slv动态窗口值显示
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0002040002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_8, this->CMD_STR_8_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2499,9 +2433,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //pin动态窗口值显示
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0001840002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_9, this->CMD_STR_9_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2638,9 +2570,7 @@ void CCASC_05Dlg::Msg_RD()
         }
         k++;
         //旋转速度显示		
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0001620002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_7, this->CMD_STR_7_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2669,9 +2599,7 @@ void CCASC_05Dlg::Msg_RD()
         }
         //MessageBox(r_buf);
         //slv动态窗口值显示
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0002040002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_8, this->CMD_STR_8_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2696,9 +2624,7 @@ void CCASC_05Dlg::Msg_RD()
             global_m_Event_Rd.ResetEvent();
         }
         //pin动态窗口值显示
-        strcpy(s_buf, "500000FF03FF000018000A04010000D*0001840002");
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        if (send(m_client, this->CMD_STR_9, this->CMD_STR_9_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2726,9 +2652,8 @@ void CCASC_05Dlg::Msg_RD()
     if (global_mode == AUX_HOME_START)//回原点状态监控
     {
         //----------------------------------------
-        strcpy(s_buf, "500000FF03FF000018000A04010001M*0002380001");//搅拌针回原点
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        //搅拌针回原点
+        if (send(m_client, this->CMD_STR_30, this->CMD_STR_30_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2756,9 +2681,8 @@ void CCASC_05Dlg::Msg_RD()
         {
             global_m_Event_Rd.ResetEvent();
         }
-        strcpy(s_buf, "500000FF03FF000018000A04010001M*0002580001");//搅拌套回原点
-        length = strlen(s_buf);
-        if (send(m_client, s_buf, length, 0) == SOCKET_ERROR)//数据发送
+        //搅拌套回原点
+        if (send(m_client, this->CMD_STR_31, this->CMD_STR_31_LEN, 0) == SOCKET_ERROR)//数据发送
         {
             Sockerror(ERROR_SEND);//发送出错处理
             //return(SOCK_NG);
@@ -2795,7 +2719,6 @@ void CCASC_05Dlg::Msg_WR()
 {
     int length;
     m_client = (SOCKET)m_client_static;
-
 
     switch (global_opr_num_key)
     {
