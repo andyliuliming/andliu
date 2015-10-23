@@ -1,0 +1,404 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{9e9cf12a-039a-4671-83f8-c4efe11d2096}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{232ff7f0-d6a1-433c-a333-19f3a4c101d1}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{5c7f1bdb-aef0-4529-a7b8-2a35524d5868}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BmpProgressEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BmpProgressEx_1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BmpProgressEx_2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_011_jog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_01_jog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_021_auto.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_02_auto.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_03_recipe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_041_sys_mech.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_042_sys_process.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_043_sys_soft.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_04_sys.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CASC_05.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CASC_05Dlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_061_aux_auto_axis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_062_aux_set_axis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_063_aux_auto_wash.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_06_aux.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_091_num_keyboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_092_char_keyboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_101_robot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Casc_200_alarm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D_Jog_Btn_Pin_Dn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D_Jog_Btn_Pin_Up.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D_Jog_Btn_Slv_Dn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D_Jog_Btn_Slv_Up.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D_Jog_Pin_Btn_Pin_Dn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WriteHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WriteQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="CASC_05.idl">
+      <Filter>Source Files</Filter>
+    </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CASC_05.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BmpProgressEx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BmpProgressEx_1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BmpProgressEx_2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_011_jog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_01_jog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_021_auto.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_02_auto.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_03_recipe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_041_sys_mech.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_042_sys_process.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_043_sys_soft.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_04_sys.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CASC_05.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CASC_05Dlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_061_aux_auto_axis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_062_aux_set_axis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_063_aux_auto_wash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_06_aux.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_091_num_keyboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_092_char_keyboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_101_robot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Casc_200_alarm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D_Jog_Btn_Pin_Dn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D_Jog_Btn_Pin_Up.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D_Jog_Btn_Slv_Dn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D_Jog_Btn_Slv_Up.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D_Jog_Pin_Btn_Pin_Dn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\6.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\blue.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00001.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00002.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00003.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00004.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00005.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00006.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00007.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00008.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00009.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00010.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00011.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00012.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00013.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00014.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00015.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00016.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00017.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00018.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00019.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\CASC_05.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00001.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00002.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00003.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00004.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00005.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00006.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00007.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00008.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00009.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00010.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00011.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00012.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00013.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00014.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00015.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00016.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00017.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00018.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00019.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00020.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00021.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00022.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00023.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00024.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00025.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00026.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00027.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00028.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00029.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ico00030.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon_011.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon_061.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon_062.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\pin1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\pin_back.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\slv1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\CASC_05.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CASC_05.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+</Project>
