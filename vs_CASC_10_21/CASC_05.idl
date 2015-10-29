@@ -1,0 +1,19 @@
+
+	// CASC_05.idl : IDL source for CASC_05.exe
+//
+// This file will be processed by the MIDL tool to
+// produce the type library (CASC_05.tlb) and marshalling code.
+import "oaidl.idl";
+import "ocidl.idl";
+[
+	uuid(E3BD0465-D0BB-4DC2-AB1F-C15FCD109CB8),
+	version(1.0),
+	helpstring("CASC_05 1.0 Type Library")
+]
+library CASC_05Lib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+};
+
+	
