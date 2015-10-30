@@ -114,5 +114,5 @@ class TransactionalCopyTask(object):
             else:
                 copy_command = 'dd conv=sparse'
             self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,(total_slice_size+1))
-            self.copy_internal(copy_command,origin_device_path,self.destination,total_slice_size,last_slice_size)
+            self.copy_internal(copy_command,origin_device_path,self.destination,total_slice_size,last_slice_size,'')
         return returnCode

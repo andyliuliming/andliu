@@ -7,7 +7,7 @@ Add-AzureRmAccount
 Set-AzureRmContext -SubscriptionName "OSTC Shanghai Dev"
 
 $resourceGroupName="andliuresourcegroup2"
-$vmName="azure-encrypt"
+$vmName="andliu-encrypt3"
 $aadClientId="b7b48143-6c58-4cd4-a9e0-0a15cbda0614"
 $aadClientSecret="/XazYdJ9XaMBbiQ0dwSoyue7LbkQ1OJOePGGcrG3dkA="
 $keyVaultUrl="https://andliukeyvault.vault.azure.net"
@@ -16,7 +16,7 @@ $diskEncryptionKeyVaultId="/subscriptions/c4528d9e-c99a-48bb-b12d-fde2176a43b8/r
 $keyEncryptionKeyUrl="https://andliukeyvault.vault.azure.net/keys/andliukeyvaultkek/a86443419dfa4d7e9ebdf3189e9677fb"
 $keyEncryptionAlgorithm="RSA-OAEP"
 $volumeType="Data"
-$extensionName="azure-encrypt"
+$extensionName="andliu-encrypt3"
 
 
 #"command":"enableencryption_all_inplace",
