@@ -34,7 +34,7 @@ from Common import *
 
 class centosPatching(redhatPatching):
     def __init__(self,logger):
-        super(centosPatching,self).__init__()
+        super(centosPatching,self).__init__(logger)
         self.logger = logger
 
     def install_extras(self):

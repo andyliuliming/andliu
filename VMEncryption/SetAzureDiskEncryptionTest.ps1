@@ -26,3 +26,6 @@ $extensionName="azure-encrypt"
 #        "KeyEncryptionAlgorithm":"RSA1_5",
 #        "BitlockerVolumeType":"Data"
 Set-AzureRmVMDiskEncryptionExtension -ResourceGroupName $resourceGroupName -VMName $vmName -AadClientID $aadClientId -AadClientSecret $aadClientSecret -DiskEncryptionKeyVaultUrl $keyVaultUrl -DiskEncryptionKeyVaultId $diskEncryptionKeyVaultId -KeyEncryptionKeyUrl $keyEncryptionKeyUrl -KeyEncryptionAlgorithm $keyEncryptionAlgorithm -VolumeType $volumeType -Name $extensionName
+
+
+azure vm enable-disk-encryption -g andliuresourcegroup2 -n andliu-encrypt -a b7b48143-6c58-4cd4-a9e0-0a15cbda0614 -p /XazYdJ9XaMBbiQ0dwSoyue7LbkQ1OJOePGGcrG3dkA= -k https://andliukeyvault.vault.azure.net -r /subscriptions/c4528d9e-c99a-48bb-b12d-fde2176a43b8/resourceGroups/andliuresourcegroup2/providers/Microsoft.KeyVault/vaults/andliukeyvault -t Data
