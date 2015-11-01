@@ -44,7 +44,7 @@ class ExtensionParameter(object):
         private settings
         """
         self.AADClientSecret = protected_settings.get(CommonVariables.AADClientSecretKey)
+        self.passphrase = protected_settings.get(CommonVariables.PassphraseKey)
 
-        self.passphrase = None
         self.DiskEncryptionKeyFileName = "LinuxPassPhraseFileName"
         # parse the query from the array

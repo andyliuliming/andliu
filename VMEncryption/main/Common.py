@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -44,6 +44,7 @@ class CommonVariables:
     AADClientIDKey = 'AADClientID'
     KeyEncryptionAlgorithmKey = 'KeyEncryptionAlgorithm'
     DiskFormatQuerykey = "DiskFormatQuery"
+    PassphraseKey = 'Passphrase'
     BekVolumeFileSystemKey = "BekVolumeFileSystem"
 
 
