@@ -94,10 +94,10 @@ class KeyVaultUtil(object):
         connection.request('POST', sasuri_obj.path , (request_content), headers = headers)
         result = connection.getresponse()
         self.logger.log(str(result.status) + " " + str(result.getheaders()))
-
-        if(result.status != httplib.OK and result.status != httplib.ACCEPTED):
-            return CommonVariables.create_encryption_secret_failed
         result_content = result.read()
+        if(result.status != httplib.OK and result.status != httplib.ACCEPTED):
+            self.logger.log(str(result_content))
+            return CommonVariables.create_encryption_secret_failed
         connection.close()
 
         result_json = json.loads(result_content)

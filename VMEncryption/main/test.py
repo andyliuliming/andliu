@@ -36,7 +36,6 @@ import time
 import urlparse
 import httplib
 from urlparse import urljoin
-from keyvault import *
 
 import time
 import datetime
@@ -53,6 +52,7 @@ class Fakelogger(object):
         print(log_msg)
 
 def main():
+    passphrase_generated = base64.b64encode("Quattro!")
     logger =Fakelogger()
     keyVaultUtil = KeyVaultUtil(logger)
     #"https://diskencryptionkeyvault.vault.azure.net/keys/DiskEncryption-Kek/9bab277dd9be400bb88a7df7a49d2431
