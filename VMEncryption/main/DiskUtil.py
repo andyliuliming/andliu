@@ -21,6 +21,7 @@
 import subprocess
 import os
 import os.path
+import shlex
 import sys
 from subprocess import *
 import shutil
@@ -73,10 +74,6 @@ class DiskUtil(object):
         return disk_partitions
 
     def clone_partition_table(self, target_dev, source_dev):
-        """
-        partition it
-        http://superuser.com/questions/823922/dm-cryptluks-can-i-have-a-separate-header-without-storing-it-on-the-luks-encry
-        """
         self.logger.log("cloning the partition table from " + str(source_dev) + " to " + str(target_dev))
         if(self.get_disk_partition_table_type(source_dev) == "dos"):
             commandToExecute = '/bin/bash -c "' + 'sfdisk -d ' + source_dev + ' | sfdisk --force ' + target_dev + '"'
@@ -84,7 +81,6 @@ class DiskUtil(object):
             returnCode = proc.wait()
             return returnCode
         elif(self.get_disk_partition_table_type(target_dev) == "gpt"):
-            #sgdisk -R=/dev/sdb /dev/sda
             commandToExecute = '/bin/bash -c "' + 'sgdisk -R=' + target_dev + ' ' + source_dev + + '"'
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()
@@ -114,7 +110,6 @@ class DiskUtil(object):
         return error
 
     def make_sure_path_exists(self,path):
-        #mkdir -p foo/bar/baz
         commandToExecute = '/bin/bash -c "mkdir -p ' + path + '"'
         self.logger.log("make sure path exists, execute :" + commandToExecute)
         proc = Popen(commandToExecute, shell=True)
@@ -174,7 +169,7 @@ class DiskUtil(object):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_format_error
             error.info = "devpath is " + str(devpath)
-            self.logger.log('cryptsetup -y luksFormat returnCode is ' + str(returnCode))
+            self.logger.log('cryptsetup luksFormat returnCode is ' + str(returnCode))
             return error
 
         returnCode = self.luks_open(passphrase, devpath, mappername, headerfile)
@@ -190,17 +185,20 @@ class DiskUtil(object):
     """
     def luks_format(self,passphrase,devpath,headerfile):
         self.hutil.log("dev path to cryptsetup luksFormat " + str(devpath))
-        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksFormat ' + devpath + ' --header ' + headerfile + '"'
-        proc = Popen(commandToExecute, shell=True)
+        commandToExecute = '/bin/bash -c "' + 'echo -n \'' + passphrase + '\' | cryptsetup luksFormat ' + devpath + ' --header ' + headerfile + '"'
+        args= shlex.split(commandToExecute)
+        proc = Popen(args)
         returnCode = proc.wait()
         return returnCode
+
     """
     return the return code of the process for error handling.
     """
     def luks_open(self,passphrase,devpath,mappername,headerfile):
         self.hutil.log("dev mapper name to cryptsetup luksFormat " + (mappername))
-        commandToExecute = '/bin/bash -c "' + 'echo -n "' + passphrase + '" | cryptsetup luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + '"'
-        proc = Popen(commandToExecute, shell=True)
+        commandToExecute = '/bin/bash -c "' + 'echo -n \'' + passphrase + '\' | cryptsetup luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + '"'
+        args= shlex.split(commandToExecute)
+        proc = Popen(args)
         returnCode = proc.wait()
         return returnCode
 
@@ -308,11 +306,10 @@ class DiskUtil(object):
     def get_device_items(self, dev_path):
         self.logger.log("getting the blk info from " + str(dev_path))
         device_items = []
-        # lsblk -b -n -P -o NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL
         if(dev_path is None):
-            p = subprocess.Popen(['lsblk', '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = Popen(['lsblk', '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         else:
-            p = subprocess.Popen(['lsblk', '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE',dev_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = Popen(['lsblk', '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE',dev_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out_lsblk_output, err = p.communicate()
         out_lsblk_output = str(out_lsblk_output)
         self.logger.log("out_lsblk_output:\n" + str(out_lsblk_output))
