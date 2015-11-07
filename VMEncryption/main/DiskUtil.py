@@ -47,7 +47,7 @@ class DiskUtil(object):
         mem_fs_result = copy_task.prepare_mem_fs()
         if(mem_fs_result != 0):
             return CommonVariables.copy_data_error
-        
+
         returnCode = copy_task.begin_copy()
         copy_task.clear_mem_fs()
         return returnCode
@@ -76,12 +76,12 @@ class DiskUtil(object):
     def clone_partition_table(self, target_dev, source_dev):
         self.logger.log("cloning the partition table from " + str(source_dev) + " to " + str(target_dev))
         if(self.get_disk_partition_table_type(source_dev) == "dos"):
-            commandToExecute = '/bin/bash -c "' + 'sfdisk -d ' + source_dev + ' | sfdisk --force ' + target_dev + '"'
+            commandToExecute = MyPatching.bash_path + ' -c "' + 'sfdisk -d ' + source_dev + ' | sfdisk --force ' + target_dev + '"'
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()
             return returnCode
         elif(self.get_disk_partition_table_type(target_dev) == "gpt"):
-            commandToExecute = '/bin/bash -c "' + 'sgdisk -R=' + target_dev + ' ' + source_dev + + '"'
+            commandToExecute = MyPatching.bash_path + ' -c "' + 'sgdisk -R=' + target_dev + ' ' + source_dev + + '"'
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()
             return returnCode
@@ -98,7 +98,7 @@ class DiskUtil(object):
             mkfs_command = "mkfs.xfs"
         elif(filesystem == "btrfs"):
             mkfs_command = "mkfs.btrfs"
-        commandToExecute = '/bin/bash -c "' + mkfs_command + ' ' + dev_path + ' 2> /dev/null"'
+        commandToExecute = MyPatching.bash_path + ' -c "' + mkfs_command + ' ' + dev_path + ' 2> /dev/null"'
         self.logger.log("command to execute :" + commandToExecute)
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
@@ -110,7 +110,7 @@ class DiskUtil(object):
         return error
 
     def make_sure_path_exists(self,path):
-        commandToExecute = '/bin/bash -c "mkdir -p ' + path + '"'
+        commandToExecute = MyPatching.bash_path + ' -c "' + MyPatching.mkdir_path + ' -p ' + path + '"'
         self.logger.log("make sure path exists, execute :" + commandToExecute)
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
@@ -156,7 +156,7 @@ class DiskUtil(object):
         if(os.path.exists(self.encryptionEnvironment.luks_header_path)):
             return self.encryptionEnvironment.luks_header_path
         else:
-            commandToExecute = '/bin/bash -c "dd if=/dev/zero bs=33554432 count=1 > ' + self.encryptionEnvironment.luks_header_path + '"'
+            commandToExecute = MyPatching.bash_path + ' -c "' + MyPatching.dd_path + ' if=/dev/zero bs=33554432 count=1 > ' + self.encryptionEnvironment.luks_header_path + '"'
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()
             self.logger.log("result of make luks header result is " + str(returnCode))
@@ -185,8 +185,8 @@ class DiskUtil(object):
     """
     def luks_format(self,passphrase,devpath,headerfile):
         self.hutil.log("dev path to cryptsetup luksFormat " + str(devpath))
-        commandToExecute = '/bin/bash -c "' + 'echo -n \'' + passphrase + '\' | cryptsetup luksFormat ' + devpath + ' --header ' + headerfile + '"'
-        args= shlex.split(commandToExecute)
+        commandToExecute = MyPatching.bash_path + ' -c "' + MyPatching.echo_path + ' -n \'' + passphrase + '\' | ' + MyPatching.cryptsetup_path + ' luksFormat ' + devpath + ' --header ' + headerfile + '"'
+        args = shlex.split(commandToExecute)
         proc = Popen(args)
         returnCode = proc.wait()
         return returnCode
@@ -196,8 +196,9 @@ class DiskUtil(object):
     """
     def luks_open(self,passphrase,devpath,mappername,headerfile):
         self.hutil.log("dev mapper name to cryptsetup luksFormat " + (mappername))
-        commandToExecute = '/bin/bash -c "' + 'echo -n \'' + passphrase + '\' | cryptsetup luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + '"'
-        args= shlex.split(commandToExecute)
+        #TODO check the full path of all the command lines.
+        commandToExecute = MyPatching.bash_path + ' -c "' + MyPatching.echo_path + ' -n \'' + passphrase + '\' | ' + MyPatching.cryptsetup_path + ' luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + '"'
+        args = shlex.split(commandToExecute)
         proc = Popen(args)
         returnCode = proc.wait()
         return returnCode
@@ -219,12 +220,12 @@ class DiskUtil(object):
     def mount_filesystem(self,dev_path,mount_point,file_system=None):
         returnCode = -1
         if file_system == None:
-            commandToExecute = '/bin/bash -c "mount ' + dev_path + ' ' + mount_point + '"'
+            commandToExecute = MyPatching.bash_path + ' -c "' + MyPatching.mount_path + ' ' + dev_path + ' ' + mount_point + '"'
             self.logger.log("mount file system, execute :" + commandToExecute)
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()
         else: 
-            commandToExecute = '/bin/bash -c "mount ' + dev_path + ' ' + mount_point + ' -t ' + file_system + '"'
+            commandToExecute = MyPatching.bash_path + ' -c "' + MyPatching.mount_path + ' ' + mount_point + ' -t ' + file_system + '"'
             self.logger.log("mount file system, execute :" + commandToExecute)
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()
@@ -236,7 +237,7 @@ class DiskUtil(object):
         self.logger.log("mount file system result: " + str(mount_filesystem_result))
 
     def umount(self, path):
-        commandToExecute = '/bin/bash -c "umount ' + path + ' 2> /dev/null"'
+        commandToExecute = MyPatching.bash_path + ' -c "' + MyPatching.umount_path + ' ' + path + ' 2> /dev/null"'
         self.logger.log("umount, execute :" + commandToExecute)
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
@@ -244,7 +245,7 @@ class DiskUtil(object):
 
     def mount_all(self):
         error = EncryptionError()
-        commandToExecute = '/bin/bash -c "mount -a 2> /dev/null"'
+        commandToExecute = MyPatching.bash_path + ' -c "' + MyPatching.mount_path + ' -a 2> /dev/null"'
         self.logger.log("command to execute :" + commandToExecute)
         proc = Popen(commandToExecute, shell=True)
         returnCode = proc.wait()
@@ -256,7 +257,7 @@ class DiskUtil(object):
         return error
 
     def query_dev_sdx_path_by_scsi_id(self,scsi_number): 
-        p = Popen(['lsscsi', scsi_number], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = Popen([MyPatching.lsscsi_path, scsi_number], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         identity, err = p.communicate()
         # identity sample: [5:0:0:0] disk Msft Virtual Disk 1.0 /dev/sdc
         self.logger.log("lsscsi output is: \n" + identity)
@@ -273,9 +274,6 @@ class DiskUtil(object):
             if(blk_item.fstype != "" or blk_item.type != "disk"):
                 self.logger.log("the device  " + str(dev_path) + "is not blank blk item is " + str(blk_item))
                 return False
-                #hutil.do_exit(1, 'Enable','error',
-                #CommonVariables.device_not_blank, 'Enable failed.
-                #enableencryption_format called on an not blank device')
         return True
 
     """
@@ -307,9 +305,9 @@ class DiskUtil(object):
         self.logger.log("getting the blk info from " + str(dev_path))
         device_items = []
         if(dev_path is None):
-            p = Popen(['lsblk', '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = Popen([MyPatching.lsblk_path, '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         else:
-            p = Popen(['lsblk', '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE',dev_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = Popen([MyPatching.lsblk_path, '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE',dev_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out_lsblk_output, err = p.communicate()
         out_lsblk_output = str(out_lsblk_output)
         self.logger.log("out_lsblk_output:\n" + str(out_lsblk_output))

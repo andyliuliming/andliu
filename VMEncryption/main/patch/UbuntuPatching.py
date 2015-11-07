@@ -37,6 +37,17 @@ class UbuntuPatching(AbstractPatching):
     def __init__(self,logger):
         super(UbuntuPatching,self).__init__()
         self.logger = logger
+        self.base64_path = '/usr/bin/base64'
+        self.bash_path = '/bin/bash'
+        self.cryptsetup_path = '/sbin/cryptsetup'
+        self.dd_path = '/bin/dd'
+        self.echo_path = '/bin/echo'
+        self.lsblk_path = '/bin/lsblk'
+        self.lsscsi_path = '/usr/bin/lsscsi'
+        self.mkdir_path = '/bin/mkdir'
+        self.mount_path = '/bin/mount'
+        self.openssl_path = '/usr/bin/openssl'
+        self.umount_path = '/bin/umount'
 
     def install_extras(self):
         """

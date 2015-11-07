@@ -1,4 +1,4 @@
-﻿#
+#
 # Handler library for Linux IaaS
 #
 # Copyright 2015 Microsoft Corporation
@@ -61,6 +61,7 @@ import imp
 import base64
 import json
 import time
+import tempfile
 from os.path import join
 from Utils.WAAgentUtil import waagent
 from waagent import LoggerInit
@@ -176,9 +177,12 @@ class HandlerUtility:
                 thumb=config['runtimeSettings'][0]['handlerSettings']['protectedSettingsCertThumbprint']
                 cert=waagent.LibDir+'/'+thumb+'.crt'
                 pkey=waagent.LibDir+'/'+thumb+'.prv'
-                waagent.SetFileContents('/tmp/kk',config['runtimeSettings'][0]['handlerSettings']['protectedSettings'])
-                cleartxt=None
-                cleartxt=waagent.RunGetOutput("base64 -d /tmp/kk | openssl smime  -inform DER -decrypt -recip " +  cert + "  -inkey " + pkey )[1]
+                f = tempfile.NamedTemporaryFile(delete=False)
+                f.close()
+                f.name
+                waagent.SetFileContents(f.name,config['runtimeSettings'][0]['handlerSettings']['protectedSettings'])
+                cleartxt = None
+                cleartxt = waagent.RunGetOutput(MyPatching.base64_path + " -d " + f.name + " | " + MyPatching.openssl_path + " smime  -inform DER -decrypt -recip " + cert + "  -inkey " + pkey)[1]
                 if cleartxt == None:
                     error_msg = "OpenSSh decode error using  thumbprint " + thumb
                     self.error(error_msg)

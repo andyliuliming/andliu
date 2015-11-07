@@ -37,6 +37,7 @@ import urlparse
 import httplib
 from urlparse import urljoin
 
+import tempfile
 import time
 import datetime
 
@@ -52,6 +53,9 @@ class Fakelogger(object):
         print(log_msg)
 
 def main():
+    f = tempfile.NamedTemporaryFile(delete=False)
+    f.close()
+    f.name
     passphrase_generated = base64.b64encode("Quattro!")
     logger =Fakelogger()
     keyVaultUtil = KeyVaultUtil(logger)

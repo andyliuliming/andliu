@@ -81,7 +81,6 @@
     <Compile Include="main\Utils\HandlerUtil.py" />
     <Compile Include="main\Utils\WAAgentUtil.py" />
     <Compile Include="main\__init__.py" />
-    <Compile Include="mkstub.py" />
     <Compile Include="setup.py" />
     <Compile Include="test\test.py">
       <SubType>Code</SubType>

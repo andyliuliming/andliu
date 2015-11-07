@@ -1,4 +1,4 @@
-﻿#!/usr/bin/python
+#!/usr/bin/python
 #
 # AbstractPatching is the base patching class of all the linux distros
 #
@@ -37,6 +37,17 @@ class AbstractPatching(object):
     """
     def __init__(self):
         self.distro_info = None
-        pass
+        self.base64_path = '/usr/bin/base64'
+        self.bash_path = '/bin/bash'
+        self.cryptsetup_path = '/usr/sbin/cryptsetup'
+        self.dd_path = '/usr/bin/dd'
+        self.echo_path = '/usr/bin/echo'
+        self.lsblk_path = '/usr/bin/lsblk'
+        self.lsscsi_path = '/usr/bin/lsscsi'
+        self.mkdir_path = '/usr/bin/mkdir'
+        self.mount_path = '/usr/bin/mount'
+        self.openssl_path = '/usr/bin/openssl'
+        self.umount_path = '/usr/bin/umount'
+
     def install_extras(self):
         pass
