@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -35,13 +35,10 @@ class BekUtil(object):
         self.bek_filesystem_mount_point = '/mnt/azure_passphrase'
 
     def generate_passphrase(self,algorithm):
-        #TODO genearete a better passphrase
         if(TestHooks.use_hard_code_passphrase):
             return TestHooks.hard_code_passphrase
         else:
             with open("/dev/urandom", "rb") as _random_source:
-                #TODO is 127 enough?  we should calculate the length depend on
-                #the algorithm.
                 bytes = _random_source.read(127)
                 passphrase_generated = base64.b64encode(bytes)
             return passphrase_generated
