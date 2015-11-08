@@ -86,7 +86,7 @@ class TransactionalCopyTask(object):
         copy_command = None
         self.transactional_copy_config.save_config(CommonVariables.CurrentDeviceNameKey,self.device_item.name)
         self.transactional_copy_config.save_config(CommonVariables.CurrentSliceSizeKey,self.slice_size)
-        self.transactional_copy_config.save_config(CommonVariables.CurrentTotalSizeKey,(self.total_slice_size + 1))
+        self.transactional_copy_config.save_config(CommonVariables.CurrentTotalSizeKey,(total_slice_size + 1))
         for i in range(0, total_slice_size):
             self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,i)
             copy_command = self.patching.dd_path
