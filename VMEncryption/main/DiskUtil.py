@@ -186,7 +186,6 @@ class DiskUtil(object):
     def luks_format(self,passphrase,devpath,headerfile):
         self.hutil.log("dev path to cryptsetup luksFormat " + str(devpath))
         commandToExecute = self.patching.bash_path + ' -c "' + self.patching.echo_path + ' -n \'' + passphrase + '\' | ' + self.patching.cryptsetup_path + ' luksFormat ' + devpath + ' --header ' + headerfile + '"'
-        print("luks format:"+commandToExecute)
         args = shlex.split(commandToExecute)
         proc = Popen(args)
         returnCode = proc.wait()
@@ -199,7 +198,6 @@ class DiskUtil(object):
         self.hutil.log("dev mapper name to cryptsetup luksFormat " + (mappername))
         #TODO check the full path of all the command lines.
         commandToExecute = self.patching.bash_path + ' -c "' + self.patching.echo_path + ' -n \'' + passphrase + '\' | ' + self.patching.cryptsetup_path + ' luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + '"'
-        print("luks open:"+str(commandToExecute))
         args = shlex.split(commandToExecute)
         proc = Popen(args)
         returnCode = proc.wait()
