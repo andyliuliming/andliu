@@ -52,14 +52,17 @@ from EncryptionEnvironment import EncryptionEnvironment
 def exit_without_status_report():
     sys.exit(0)
 
+
 def main():
     global hutil,MyPatching,logger,encryptionEnvironment
     HandlerUtil.LoggerInit('/var/log/waagent.log','/dev/stdout')
-    HandlerUtil.waagent.Log("%s started to handle." % (CommonVariables.extension_name)) 
+    HandlerUtil.waagent.Log("%s started to handle." % (CommonVariables.extension_name))
+    
+    encryptionEnvironment = EncryptionEnvironment()
     hutil = HandlerUtil.HandlerUtility(HandlerUtil.waagent.Log, HandlerUtil.waagent.Error, CommonVariables.extension_name)
     logger = BackupLogger(hutil)
-    encryptionEnvironment = EncryptionEnvironment()
     MyPatching = GetMyPatching(logger)
+    hutil.patching = MyPatching
     if MyPatching == None:
         hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.os_not_supported), 'the os is not supported')
 

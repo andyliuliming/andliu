@@ -55,7 +55,7 @@ class BekUtil(object):
         
         for i in range(0,len(azure_devices)):
             azure_device = azure_devices[i]
-            if(azure_device.fstype == bek_filesystem):
+            if(str(azure_device.fstype).lower() == str(bek_filesystem).lower()):
                 #TODO handle the failure case
                 self.disk_util.make_sure_path_exists(self.bek_filesystem_mount_point)
                 self.disk_util.mount_filesystem(os.path.join('/dev/' + azure_device.name), '/mnt/azure_passphrase', bek_filesystem)

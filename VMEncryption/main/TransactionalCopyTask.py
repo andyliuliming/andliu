@@ -42,13 +42,13 @@ class TransactionalCopyTask(object):
         self.transactional_copy_config = ConfigUtil(encryptionEnvironment.azure_crypt_current_transactional_copy_path,'azure_crypt_copy_config',logger)
     
     def prepare_mem_fs(self):
-        commandToExecute = MyPatching.mount_path + " -t tmpfs -o size=" + str(self.slice_size + 1024) + " tmpfs " + self.tmpfs_mount_point
+        commandToExecute = self.patching.mount_path + " -t tmpfs -o size=" + str(self.slice_size + 1024) + " tmpfs " + self.tmpfs_mount_point
         self.logger.log("prepare mem fs script is: " + str(commandToExecute))
         returnCode = self.command_executer.Execute(commandToExecute)
         return returnCode
 
     def clear_mem_fs(self):
-        commandToExecute = MyPatching.umount_path + " " + self.tmpfs_mount_point
+        commandToExecute = self.patching.umount_path + " " + self.tmpfs_mount_point
         returnCode = self.command_executer.Execute(commandToExecute)
         return returnCode
 
@@ -59,7 +59,7 @@ class TransactionalCopyTask(object):
         """
         first, copy the data to the middle cache
         """
-        commandToExecute = MyPatching.bash_path + ' -c "' + str(copy_command) + ' if=' + from_device + ' of=' + self.slice_file_path + ' bs=' + str(size) + ' skip=' + str(skip) + ' count=1"'
+        commandToExecute = self.patching.bash_path + ' -c "' + str(copy_command) + ' if=' + from_device + ' of=' + self.slice_file_path + ' bs=' + str(size) + ' skip=' + str(skip) + ' count=1"'
         returnCode = self.command_executer.Execute(commandToExecute)
         if(returnCode != 0):
             self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
@@ -67,7 +67,7 @@ class TransactionalCopyTask(object):
         """
         second, copy the data in the middle cache to the target device.
         """
-        commandToExecute = MyPatching.bash_path + ' -c "' + str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1"'
+        commandToExecute = self.patching.bash_path + ' -c "' + str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1"'
         returnCode = self.command_executer.Execute(commandToExecute)
         if(returnCode != 0):
             self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
@@ -89,14 +89,14 @@ class TransactionalCopyTask(object):
         self.transactional_copy_config.save_config(CommonVariables.CurrentTotalSizeKey,(self.total_slice_size + 1))
         for i in range(0, total_slice_size):
             self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,i)
-            copy_command = MyPatching.dd_path
+            copy_command = self.patching.dd_path
             self.copy_internal(copy_command,origin_device_path,self.destination,i,self.slice_size)
 
         """
         copy the bytes not align with the slice_size
         """
         if(last_slice_size > 0):
-            copy_command = MyPatching.dd_path
+            copy_command = self.patching.dd_path
             self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,(total_slice_size + 1))
             self.copy_internal(copy_command,origin_device_path,self.destination,total_slice_size,last_slice_size)
         return returnCode

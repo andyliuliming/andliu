@@ -79,6 +79,7 @@ class HandlerUtility:
         self._log = log
         self._error = error
         self._short_name = short_name
+        self.patching = None
         
     def _get_log_prefix(self):
         return '[%s-%s]' %(self._context._name, self._context._version)
@@ -182,7 +183,7 @@ class HandlerUtility:
                 f.name
                 waagent.SetFileContents(f.name,config['runtimeSettings'][0]['handlerSettings']['protectedSettings'])
                 cleartxt = None
-                cleartxt = waagent.RunGetOutput(MyPatching.base64_path + " -d " + f.name + " | " + MyPatching.openssl_path + " smime  -inform DER -decrypt -recip " + cert + "  -inkey " + pkey)[1]
+                cleartxt = waagent.RunGetOutput(self.patching.base64_path + " -d " + f.name + " | " + self.patching.openssl_path + " smime  -inform DER -decrypt -recip " + cert + "  -inkey " + pkey)[1]
                 if cleartxt == None:
                     error_msg = "OpenSSh decode error using  thumbprint " + thumb
                     self.error(error_msg)
