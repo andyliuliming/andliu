@@ -195,7 +195,7 @@ class DiskUtil(object):
     return the return code of the process for error handling.
     """
     def luks_open(self,passphrase,devpath,mappername,headerfile):
-        self.hutil.log("dev mapper name to cryptsetup luksFormat " + (mappername))
+        self.hutil.log("dev mapper name to cryptsetup luksOpen " + (mappername))
         #TODO check the full path of all the command lines.
         commandToExecute = self.patching.bash_path + ' -c "' + self.patching.echo_path + ' -n \'' + passphrase + '\' | ' + self.patching.cryptsetup_path + ' luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + '"'
         args = shlex.split(commandToExecute)

@@ -107,14 +107,14 @@ def enable():
                 if(crypt_items is not None):
                     for i in range(0, len(crypt_items)):
                         crypt_item = crypt_items[i]
-                        #None is the placeholder if the file system is not
-                        #mounted
+
                         luks_open_result = disk_util.luks_open(existed_passphrase,crypt_item.dev_path,crypt_item.mapper_name,crypt_item.luks_header_path)
-                        if(luks_open_result == CommonVariables.success):
-                            if(crypt_item.mount_point != 'None'):
-                                disk_util.mount_crypt_item(crypt_item, existed_passphrase)
-                            else:
-                                logger.log('skipping mount for the item ' + str(crypt_item))
+                        logger.log("luks open result is " + str(luks_open_result))
+                        if(crypt_item.mount_point != 'None'):
+                            disk_util.mount_crypt_item(crypt_item, existed_passphrase)
+                        else:
+                            logger.log('mount_point is None so skipping mount for the item ' + str(crypt_item))
+
             else:
                 """
                 the config exists, and the passphrase not get is a error case.
@@ -134,7 +134,7 @@ def enable():
             """
             protected_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('protectedSettings')
             public_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('publicSettings')
-            
+
             #store the luks passphrase in the secret.
             keyVaultUtil = KeyVaultUtil(logger)
 
@@ -226,13 +226,6 @@ def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_
                     hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(encrypt_error.code),encrypt_error.info)
 
 def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queue, disk_util,bek_util):
-    ########### the existing scenario starts ###################
-    # {"command":"enableencryption_format","query":[{"source_scsi_number":"[5:0:0:0]","filesystem":"ext4","mount_point":"/mnt/"}],
-    # {"command":"enableencryption_all_inplace"}],
-    # {"command":"enableencryption_clone","query":[{"source_scsi_number":"[5:0:0:0]","target_scsi_number":"[5:0:0:2]"},{"source_scsi_number":"[5:0:0:1]","target_scsi_number":"[5:0:0:3]"}],
-    # {"command":"enableencryption_inplace","query":[{"source_scsi_number":"[5:0:0:0]","in-place":"true"}"}],
-    # this is the encryption in place
-    # "force":"true", "passphrase":"User@123"}
     logger.log("executing the enableencryption_all_inplace command.")
     device_items = disk_util.get_device_items(None)
     encrypted_items = []
@@ -254,7 +247,7 @@ def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queu
             if(device_item.mountpoint != ""):
                 umount_status_code = disk_util.umount(device_item.mountpoint)
             if(umount_status_code != CommonVariables.success):
-                    logger.log("error occured when do the umount for " + device_item.mountpoint + str(umount_status_code))
+                logger.log("error occured when do the umount for " + device_item.mountpoint + str(umount_status_code))
             else:
                 encrypted_items.append(device_item.name)
                 mapper_name = str(uuid.uuid4())
@@ -270,7 +263,7 @@ def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queu
                     else:
                         crypt_item_to_update = CryptItem()
                         crypt_item_to_update.mapper_name = mapper_name
-                        crypt_item_to_update.dev_path = os.path.join("/dev/" ,device_item.name)
+                        crypt_item_to_update.dev_path = os.path.join("/dev/", device_item.name)
                         crypt_item_to_update.luks_header_path = luks_header_path
                         crypt_item_to_update.file_system = device_item.fstype
                         # if the original mountpoint is empty, then leave
