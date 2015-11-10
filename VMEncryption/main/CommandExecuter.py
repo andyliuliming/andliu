@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -22,6 +22,7 @@
 import subprocess
 import os
 import os.path
+import shlex
 import sys
 from subprocess import *
 
@@ -31,6 +32,7 @@ class CommandExecuter(object):
         self.logger = logger
 
     def Execute(self,command_to_execute):
-        proc = Popen(command_to_execute, shell=True)
+        args = shlex.split(command_to_execute)
+        proc = Popen(args)
         returnCode = proc.wait()
         return returnCode
