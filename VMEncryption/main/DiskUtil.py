@@ -187,7 +187,7 @@ class DiskUtil(object):
         self.hutil.log("dev path to cryptsetup luksFormat " + str(devpath))
         commandToExecute = self.patching.bash_path + ' -c "' + self.patching.echo_path + ' -n \'' + passphrase + '\' | ' + self.patching.cryptsetup_path + ' luksFormat ' + devpath + ' --header ' + headerfile + '"'
         args = shlex.split(commandToExecute)
-        proc = Popen(args)
+        proc = Popen(args,shell=True)
         returnCode = proc.wait()
         return returnCode
 
@@ -199,7 +199,7 @@ class DiskUtil(object):
         #TODO check the full path of all the command lines.
         commandToExecute = self.patching.bash_path + ' -c "' + self.patching.echo_path + ' -n \'' + passphrase + '\' | ' + self.patching.cryptsetup_path + ' luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + '"'
         args = shlex.split(commandToExecute)
-        proc = Popen(args)
+        proc = Popen(args,shell=True)
         returnCode = proc.wait()
         return returnCode
 
