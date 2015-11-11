@@ -39,6 +39,7 @@ class SuSEPatching(AbstractPatching):
         self.logger = logger
         self.base64_path = '/usr/bin/base64'
         self.bash_path = '/bin/bash'
+        self.blkid_path = '/usr/bin/blkid'
         self.cryptsetup_path = '/usr/sbin/cryptsetup'
         self.dd_path = '/usr/bin/dd'
         self.echo_path = '/usr/bin/echo'

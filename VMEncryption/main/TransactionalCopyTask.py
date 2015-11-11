@@ -59,16 +59,16 @@ class TransactionalCopyTask(object):
         """
         first, copy the data to the middle cache
         """
-        commandToExecute = self.patching.bash_path + ' -c "' + str(copy_command) + ' if=' + from_device + ' of=' + self.slice_file_path + ' bs=' + str(size) + ' skip=' + str(skip) + ' count=1"'
-        returnCode = self.command_executer.Execute(commandToExecute)
+        dd_cmd = str(copy_command) + ' if=' + from_device + ' of=' + self.slice_file_path + ' bs=' + str(size) + ' skip=' + str(skip) + ' count=1'
+        returnCode = self.command_executer.Execute(dd_cmd)
         if(returnCode != 0):
             self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
 
         """
         second, copy the data in the middle cache to the target device.
         """
-        commandToExecute = self.patching.bash_path + ' -c "' + str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1"'
-        returnCode = self.command_executer.Execute(commandToExecute)
+        dd_cmd = str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1'
+        returnCode = self.command_executer.Execute(dd_cmd)
         if(returnCode != 0):
             self.logger.log(str(commandToExecute) + ' is ' + str(returnCode))
 

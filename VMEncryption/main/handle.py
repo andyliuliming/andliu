@@ -198,7 +198,7 @@ def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_
     # get the disks to format."[{"scsi":"6:0:0:1","name":"azuredisk"},{"scsi":"6:0:0:1","name":"azuredisk2"}]"
     # get the disks to format."[{\"scsi\":\"6:0:0:1\",\"name\":\"azuredisk\"},{\"scsi\":\"6:0:0:1\",\"name\":\"azuredisk2\"}]"
     encryption_parameters = encryption_queue.encryptionDiskFormatQuery()
-    encryption_parameters='[{"scsi":"6:0:0:1","name":"azuredisk"},{"scsi":"6:0:0:1","name":"azuredisk2"}]'
+    encryption_parameters='[{"scsi":"6:0:0:0","name":"azuredisk"},{"scsi":"6:0:0:1","name":"azuredisk2"}]'
     print(encryption_parameters)
     encryption_format_items = json.loads(encryption_parameters)
     for encryption_item in encryption_format_items:
@@ -214,6 +214,7 @@ def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_
                 logger.log("encrypting " + str(device_item))
                 encrypt_error = disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name, luks_header_path)
                 if(encrypt_error.errorcode == CommonVariables.success):
+                    # let customer specify it in the parameter
                     file_system = "ext4"
                     disk_util.format_disk("/dev/mapper/" + mapper_name, file_system)
                     crypt_item_to_update = CryptItem()
@@ -230,8 +231,8 @@ def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_
                     disk_util.make_sure_path_exists(crypt_item_to_update.mount_point)
                     disk_util.update_crypt_item(crypt_item_to_update)
 
-                    mount_result = disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
-                    logger.log("mount result is "+str(mount_result))
+                    mount_result = disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), crypt_item_to_update.mount_point)
+                    logger.log("mount result is " + str(mount_result))
                 else:
                     hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(encrypt_error.code),encrypt_error.info)
             else:

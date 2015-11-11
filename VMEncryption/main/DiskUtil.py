@@ -98,9 +98,10 @@ class DiskUtil(object):
             mkfs_command = "mkfs.xfs"
         elif(filesystem == "btrfs"):
             mkfs_command = "mkfs.btrfs"
-        commandToExecute = self.patching.bash_path + ' -c "' + mkfs_command + ' ' + dev_path + ' 2> /dev/null"'
-        self.logger.log("command to execute :" + commandToExecute)
-        proc = Popen(commandToExecute, shell=True)
+        mkfs_cmd = mkfs_command + ' ' + dev_path
+        self.logger.log("command to execute :" + mkfs_cmd)
+        mkfs_cmd_args = shlex.split(mkfs_cmd)
+        proc = Popen(mkfs_cmd_args)
         returnCode = proc.wait()
         if(returnCode != 0):
             error.errorcode = returnCode
@@ -110,9 +111,10 @@ class DiskUtil(object):
         return error
 
     def make_sure_path_exists(self,path):
-        commandToExecute = self.patching.bash_path + ' -c "' + self.patching.mkdir_path + ' -p ' + path + '"'
-        self.logger.log("make sure path exists, execute :" + commandToExecute)
-        proc = Popen(commandToExecute, shell=True)
+        mkdir_cmd = self.patching.mkdir_path + ' -p ' + path
+        self.logger.log("make sure path exists, execute :" + mkdir_cmd)
+        mkdir_cmd_args = shlex.split(mkdir_cmd)
+        proc = Popen(mkdir_cmd_args)
         returnCode = proc.wait()
         return returnCode
 
@@ -185,10 +187,15 @@ class DiskUtil(object):
     """
     def luks_format(self,passphrase,devpath,headerfile):
         self.hutil.log("dev path to cryptsetup luksFormat " + str(devpath))
-        commandToExecute = self.patching.bash_path + ' -c "' + self.patching.echo_path + ' -n \'' + passphrase + '\' | ' + self.patching.cryptsetup_path + ' luksFormat ' + devpath + ' --header ' + headerfile + '"'
-        args = shlex.split(commandToExecute)
-        proc = Popen(args,shell=True)
-        returnCode = proc.wait()
+        passphrase_cmd = self.patching.echo_path + ' -n \'' + passphrase + '\''
+        passphrase_cmd_args = shlex.split(passphrase_cmd)
+        cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + devpath + ' --header ' + headerfile
+        cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
+
+        passphrase_p = Popen(passphrase_cmd_args,stdout=subprocess.PIPE)
+        cryptsetup_p = Popen(cryptsetup_cmd_args,stdin=passphrase_p.stdout)
+
+        returnCode = cryptsetup_p.wait()
         return returnCode
 
     """
@@ -196,11 +203,15 @@ class DiskUtil(object):
     """
     def luks_open(self,passphrase,devpath,mappername,headerfile):
         self.hutil.log("dev mapper name to cryptsetup luksOpen " + (mappername))
-        #TODO check the full path of all the command lines.
-        commandToExecute = self.patching.bash_path + ' -c "' + self.patching.echo_path + ' -n \'' + passphrase + '\' | ' + self.patching.cryptsetup_path + ' luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + '"'
-        args = shlex.split(commandToExecute)
-        proc = Popen(args,shell=True)
-        returnCode = proc.wait()
+        passphrase_cmd = self.patching.echo_path + ' -n \'' + passphrase + '\''
+        passphrase_cmd_args = shlex.split(passphrase_cmd)
+        cryptsetup_cmd = self.patching.cryptsetup_path + ' luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile
+        cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
+
+        passphrase_p = Popen(passphrase_cmd_args,stdout=subprocess.PIPE)
+        cryptsetup_p = Popen(cryptsetup_cmd_args,stdin=passphrase_p.stdout)
+
+        returnCode = cryptsetup_p.wait()
         return returnCode
 
     #TODO error handling.
@@ -220,14 +231,16 @@ class DiskUtil(object):
     def mount_filesystem(self,dev_path,mount_point,file_system=None):
         returnCode = -1
         if file_system == None:
-            commandToExecute = self.patching.bash_path + ' -c "' + self.patching.mount_path + ' ' + dev_path + ' ' + mount_point + '"'
-            self.logger.log("mount file system, execute :" + commandToExecute)
-            proc = Popen(commandToExecute, shell=True)
+            mount_cmd = self.patching.mount_path + ' ' + dev_path + ' ' + mount_point
+            self.logger.log("mount file system, execute :" + mount_cmd)
+            mount_cmd_args = shlex.split(mount_cmd)
+            proc = Popen(mount_cmd_args)
             returnCode = proc.wait()
         else: 
-            commandToExecute = self.patching.bash_path + ' -c "' + self.patching.mount_path + ' ' + dev_path + ' ' + mount_point + ' -t ' + file_system + '"'
-            self.logger.log("mount file system, execute :" + commandToExecute)
-            proc = Popen(commandToExecute, shell=True)
+            mount_cmd = self.patching.mount_path + ' ' + dev_path + ' ' + mount_point + ' -t ' + file_system
+            self.logger.log("mount file system, execute :" + mount_cmd)
+            mount_cmd_args = shlex.split(mount_cmd)
+            proc = Popen(mount_cmd_args)
             returnCode = proc.wait()
         return returnCode
 
@@ -237,17 +250,19 @@ class DiskUtil(object):
         self.logger.log("mount file system result: " + str(mount_filesystem_result))
 
     def umount(self, path):
-        commandToExecute = self.patching.bash_path + ' -c "' + self.patching.umount_path + ' ' + path + ' 2> /dev/null"'
-        self.logger.log("umount, execute :" + commandToExecute)
-        proc = Popen(commandToExecute, shell=True)
+        umount_cmd = self.patching.umount_path + ' ' + path
+        self.logger.log("umount, execute :" + umount_cmd)
+        umount_cmd_args = shlex.split(umount_cmd)
+        proc = Popen(umount_cmd_args)
         returnCode = proc.wait()
         return returnCode
 
     def mount_all(self):
         error = EncryptionError()
-        commandToExecute = self.patching.bash_path + ' -c "' + self.patching.mount_path + ' -a 2> /dev/null"'
-        self.logger.log("command to execute :" + commandToExecute)
-        proc = Popen(commandToExecute, shell=True)
+        mount_all_cmd = self.patching.mount_path + ' -a'
+        self.logger.log("command to execute :" + mount_all_cmd)
+        mount_all_cmd_args = shlex.split(mount_all_cmd)
+        proc = Popen(mount_all_cmd_args)
         returnCode = proc.wait()
         if(returnCode != 0):
             error.errorcode = returnCode
@@ -281,7 +296,8 @@ class DiskUtil(object):
     """
     def query_dev_uuid_path_by_sdx_path(self, sdx_path):
         self.logger.log("querying the sdx path of:" + str(sdx_path))
-        p = Popen(['blkid',sdx_path],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        #blkid path
+        p = Popen([self.patching.blkid_path,sdx_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         identity,err = p.communicate()
         identity = identity.lower()
         self.logger.log("blkid output is: \n" + identity)
