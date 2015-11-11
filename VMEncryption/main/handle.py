@@ -195,10 +195,7 @@ def enable():
         hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,str(CommonVariables.unknown_error), 'Enable failed.')
 
 def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_util):
-    # get the disks to format."[{"scsi":"6:0:0:1","name":"azuredisk"},{"scsi":"6:0:0:1","name":"azuredisk2"}]"
-    # get the disks to format."[{\"scsi\":\"6:0:0:1\",\"name\":\"azuredisk\"},{\"scsi\":\"6:0:0:1\",\"name\":\"azuredisk2\"}]"
     encryption_parameters = encryption_queue.encryptionDiskFormatQuery()
-    encryption_parameters='[{"scsi":"6:0:0:0","name":"azuredisk"},{"scsi":"6:0:0:1","name":"azuredisk2"}]'
     print(encryption_parameters)
     encryption_format_items = json.loads(encryption_parameters)
     for encryption_item in encryption_format_items:
