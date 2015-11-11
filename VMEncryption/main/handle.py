@@ -21,6 +21,7 @@
 
 import array
 import base64
+import json
 import os
 import os.path
 import re
@@ -174,7 +175,7 @@ def enable():
             encryption_request = EncryptionRequest(logger)
             encryption_request.command = extension_parameter.command
             encryption_request.volume_type = extension_parameter.VolumeType
-            encryption_request.parameters = extension_parameter.DiskFormatQuery
+            encryption_request.diskFormatQuery = extension_parameter.DiskFormatQuery
             encryption_marker.mark_encryption(encryption_request)
 
             # TODO check the encryption request is marked at the very
@@ -193,15 +194,18 @@ def enable():
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
         hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,str(CommonVariables.unknown_error), 'Enable failed.')
 
-def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_util, bek_util):
-    # get the disks to format."["5:0:0:1":"5:0:0:2"]"
-    encryption_parameters = encryption_queue.current_parameters()
-    encryption_parameters_obj = json.loads(encryption_parameters)
-    for scsi_num in encryption_parameters_obj:
-        sdx_path = disk_util.query_dev_sdx_path_by_scsi_id(scsi_num)
+def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_util):
+    # get the disks to format."[{"scsi":"6:0:0:1","name":"azuredisk"},{"scsi":"6:0:0:1","name":"azuredisk2"}]"
+    # get the disks to format."[{\"scsi\":\"6:0:0:1\",\"name\":\"azuredisk\"},{\"scsi\":\"6:0:0:1\",\"name\":\"azuredisk2\"}]"
+    encryption_parameters = encryption_queue.encryptionDiskFormatQuery()
+    encryption_parameters='[{"scsi":"6:0:0:1","name":"azuredisk"},{"scsi":"6:0:0:1","name":"azuredisk2"}]'
+    print(encryption_parameters)
+    encryption_format_items = json.loads(encryption_parameters)
+    for encryption_item in encryption_format_items:
+        sdx_path = disk_util.query_dev_sdx_path_by_scsi_id(encryption_item["scsi"])
         devices = disk_util.get_device_items(sdx_path)
         if(len(devices) != 1):
-            logger.log("the device with scsi number:" + scsi_num + " have more than one sub device. so skip it.")
+            logger.log("the device with scsi number:" + str(encryption_item["scsi"]) + " have more than one sub device. so skip it.")
             continue
         else:
             device_item = devices[0]
@@ -211,19 +215,27 @@ def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_
                 encrypt_error = disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name, luks_header_path)
                 if(encrypt_error.errorcode == CommonVariables.success):
                     file_system = "ext4"
-                    disk_util.format_disk("/dev/mapper/" + mapper_name,file_system)
+                    disk_util.format_disk("/dev/mapper/" + mapper_name, file_system)
                     crypt_item_to_update = CryptItem()
                     crypt_item_to_update.mapper_name = mapper_name
-                    crypt_item_to_update.dev_path = os.path.join("/dev/" ,device_item.name)
+                    crypt_item_to_update.dev_path = os.path.join("/dev/", device_item.name)
                     crypt_item_to_update.luks_header_path = luks_header_path
                     crypt_item_to_update.file_system = file_system
-                    crypt_item_to_update.mount_point = "/mnt/mapper_name"
+
+                    if(encryption_item["name"] is not None):
+                        crypt_item_to_update.mount_point = "/mnt/" + str(encryption_item["name"])
+                    else:
+                        crypt_item_to_update.mount_point = "/mnt/" + mapper_name
 
                     disk_util.make_sure_path_exists(crypt_item_to_update.mount_point)
                     disk_util.update_crypt_item(crypt_item_to_update)
-                    disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
+
+                    mount_result = disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
+                    logger.log("mount result is "+str(mount_result))
                 else:
                     hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(encrypt_error.code),encrypt_error.info)
+            else:
+                logger.log("the item fstype is not empty or the type is not a disk")
 
 def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queue, disk_util,bek_util):
     logger.log("executing the enableencryption_all_inplace command.")
@@ -294,46 +306,43 @@ def daemon():
         else:
             return
 
-        if(encryption_queue.current_command() == CommonVariables.EnableEncryptionFormat):
-            enable_encryption_format()
+        """
+        search for the bek volume, then mount it:)
+        """
+        disk_util = DiskUtil(hutil, MyPatching, logger, encryptionEnvironment)
+
+        encryption_config = EncryptionConfig(encryptionEnvironment,logger)
+        bek_passphrase = None
+        """
+        try to find the attached bek volume, and use the file to mount the crypted volumes,
+        and if the passphrase file is found, then we will re-use it for the future.
+        """
+        bek_util = BekUtil(disk_util, logger)
+        if(encryption_config.config_file_exists()):
+            bek_passphrase = bek_util.get_bek_passphrase(encryption_config)
+
+        if(bek_passphrase == None):
+            hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status, CommonVariables.passphrase_file_not_found, 'Passphrase file not found.')
         else:
             """
-            search for the bek volume, then mount it:)
+            check whether there's a scheduled encryption task
             """
-            disk_util = DiskUtil(hutil, MyPatching, logger, encryptionEnvironment)
+            logger.log("trying to install the extras")
+            MyPatching.install_extras()
 
-            encryption_config = EncryptionConfig(encryptionEnvironment,logger)
-            bek_passphrase = None
             """
-            try to find the attached bek volume, and use the file to mount the crypted volumes,
-            and if the passphrase file is found, then we will re-use it for the future.
+            if the key is not created successfully, the encrypted file system should not 
             """
-            bek_util = BekUtil(disk_util, logger)
-            if(encryption_config.config_file_exists()):
-                bek_passphrase = bek_util.get_bek_passphrase(encryption_config)
+            logger.log("creating luks header")
+            luks_header_path = disk_util.create_luks_header()
 
-            if(bek_passphrase == None):
-                hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status, CommonVariables.passphrase_file_not_found, 'Passphrase file not found.')
+            if(encryption_queue.current_command() == CommonVariables.EnableEncryption):
+                enable_encryption_all_in_place(bek_passphrase,luks_header_path, encryption_queue, disk_util, bek_util)
+            elif(encryption_queue.current_command() == CommonVariables.EnableEncryptionFormat):
+                enable_encryption_format(bek_passphrase,luks_header_path,encryption_queue,disk_util)
             else:
-                """
-                check whether there's a scheduled encryption task
-                """
-                logger.log("trying to install the extras")
-                MyPatching.install_extras()
-
-                """
-                if the key is not created successfully, the encrypted file system should not 
-                """
-                logger.log("creating luks header")
-                luks_header_path = disk_util.create_luks_header()
-
-                if(encryption_queue.current_command() == CommonVariables.EnableEncryption):
-                    enable_encryption_all_in_place(bek_passphrase,luks_header_path, encryption_queue, disk_util, bek_util)
-                elif(encryption_queue.current_command() == CommonVariables.EnableEncryptionFormat):
-                    enable_encryption_format(bek_passphrase,luks_header_path,encryption_queue,disk_util)
-                else:
-                    #TODO we should exit.
-                    logger.log("command " + str(encryption_queue.current_command()) + " not supported")
+                #TODO we should exit.
+                logger.log("command " + str(encryption_queue.current_command()) + " not supported")
 
     except Exception as e:
         # mount the file systems back.

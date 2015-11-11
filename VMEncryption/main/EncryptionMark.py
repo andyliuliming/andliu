@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -28,7 +28,7 @@ class EncryptionRequest(object):
     def __init__(self,logger):
         self.command = None
         self.volume_type = None
-        self.parameters = None
+        self.diskFormatQuery = None
         self.logger = logger
 
 class EncryptionMark(object):
@@ -43,8 +43,8 @@ class EncryptionMark(object):
         key_value_pairs.append(command)
         volume_type = ConfigKeyValuePair(CommonVariables.EncryptionVolumeTypeKey,encryption_request.volume_type)
         key_value_pairs.append(volume_type)
-        parameters = ConfigKeyValuePair(CommonVariables.EncryptionParametersKey,encryption_request.parameters)
-        key_value_pairs.append(parameters)
+        disk_format_query = ConfigKeyValuePair(CommonVariables.EncryptionDiskFormatQueryKey,encryption_request.diskFormatQuery)
+        key_value_pairs.append(disk_format_query)
         self.encryption_mark_config.save_configs(key_value_pairs)
 
     def clear_queue(self):
@@ -59,8 +59,8 @@ class EncryptionMark(object):
     def current_command(self):
         return self.encryption_mark_config.get_config(CommonVariables.EncryptionEncryptionOperationKey)
 
-    def current_parameters(self):
-        self.encryption_mark_config.get_config(CommonVariables.EncryptionParametersKey)
+    def encryptionDiskFormatQuery(self):
+        return self.encryption_mark_config.get_config(CommonVariables.EncryptionDiskFormatQueryKey)
 
     def is_encryption_marked(self):
         """

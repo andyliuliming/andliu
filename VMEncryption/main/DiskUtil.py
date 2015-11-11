@@ -164,7 +164,7 @@ class DiskUtil(object):
 
     def encrypt_disk(self, devpath, passphrase, mappername, headerfile):
         error = EncryptionError()
-        returnCode = self.luks_format(passphrase,devpath,headerfile)
+        returnCode = self.luks_format(passphrase, devpath, headerfile)
         if(returnCode != 0):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_format_error
