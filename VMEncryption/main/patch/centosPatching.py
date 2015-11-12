@@ -36,18 +36,32 @@ class centosPatching(redhatPatching):
     def __init__(self,logger,distro_info):
         super(centosPatching,self).__init__(logger,distro_info)
         self.logger = logger
-        self.base64_path = '/usr/bin/base64'
-        self.bash_path = '/usr/bin/bash'
-        self.blkid_path = '/usr/bin/blkid'# centos 6.6 /bin/blkid
-        self.cryptsetup_path = '/usr/sbin/cryptsetup'
-        self.dd_path = '/usr/bin/dd' # centos 6.6 /bin/dd
-        self.echo_path = '/usr/bin/echo' #centos 6.6 /bin/echo
-        self.lsblk_path = '/usr/bin/lsblk' #centos 6.6 /bin/lsblk
-        self.lsscsi_path = '/usr/bin/lsscsi'
-        self.mkdir_path = '/usr/bin/mkdir'
-        self.mount_path = '/usr/bin/mount'
-        self.openssl_path = '/usr/bin/openssl'
-        self.umount_path = '/usr/bin/umount'
+        if(distro_info[1] == "6.6"):
+            self.base64_path = '/usr/bin/base64'
+            self.bash_path = '/bin/bash'
+            self.blkid_path = '/sbin/blkid'
+            self.cryptsetup_path = '/sbin/cryptsetup'
+            self.dd_path = '/bin/dd'
+            self.echo_path = '/bin/echo'
+            self.lsblk_path = '/bin/lsblk' 
+            self.lsscsi_path = '/usr/bin/lsscsi'
+            self.mkdir_path = '/bin/mkdir'
+            self.mount_path = '/bin/mount'
+            self.openssl_path = '/usr/bin/openssl'
+            self.umount_path = '/bin/umount'
+        else:
+            self.base64_path = '/usr/bin/base64'
+            self.bash_path = '/usr/bin/bash'
+            self.blkid_path = '/usr/bin/blkid'
+            self.cryptsetup_path = '/usr/sbin/cryptsetup'
+            self.dd_path = '/usr/bin/dd'
+            self.echo_path = '/usr/bin/echo'
+            self.lsblk_path = '/usr/bin/lsblk'
+            self.lsscsi_path = '/usr/bin/lsscsi'
+            self.mkdir_path = '/usr/bin/mkdir'
+            self.mount_path = '/usr/bin/mount'
+            self.openssl_path = '/usr/bin/openssl'
+            self.umount_path = '/usr/bin/umount'
 
     def install_extras(self):
         common_extras = ['cryptsetup','lsscsi','gdisk','udevadm']
