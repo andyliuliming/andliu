@@ -51,7 +51,6 @@ class HttpUtil(object):
             #parse the uri str here
             if(self.proxyHost == None or self.proxyPort == None):
                 self.connection = httplib.HTTPSConnection(uri_obj.hostname)
-                self.logger.log("uri is "+uri_obj.path + uri_obj.query)
                 if(uri_obj.query is not None):
                     self.connection.request(method = method, url=(uri_obj.path +'?'+ uri_obj.query), body = data, headers = headers)
                 else:
