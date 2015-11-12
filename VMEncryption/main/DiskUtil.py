@@ -170,7 +170,7 @@ class DiskUtil(object):
         if(returnCode != 0):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_format_error
-            error.info = "devpath is " + str(devpath)
+            error.info = "luks format failed, devpath is " + str(devpath)
             self.logger.log('cryptsetup luksFormat returnCode is ' + str(returnCode))
             return error
 
@@ -178,7 +178,7 @@ class DiskUtil(object):
         if(returnCode != 0):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_open_error
-            error.info = "devpath is " + str(devpath) + " dev_mapper_name is " + str(mappername)
+            error.info = "luks open failed, devpath is " + str(devpath) + " dev_mapper_name is " + str(mappername)
             self.logger.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
         return error
 
