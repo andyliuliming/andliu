@@ -33,16 +33,16 @@ from redhatPatching import redhatPatching
 from Common import *
 
 class centosPatching(redhatPatching):
-    def __init__(self,logger):
-        super(centosPatching,self).__init__(logger)
+    def __init__(self,logger,distro_info):
+        super(centosPatching,self).__init__(logger,distro_info)
         self.logger = logger
         self.base64_path = '/usr/bin/base64'
         self.bash_path = '/usr/bin/bash'
-        self.blkid_path = '/usr/bin/blkid'
+        self.blkid_path = '/usr/bin/blkid'# centos 6.6 /bin/blkid
         self.cryptsetup_path = '/usr/sbin/cryptsetup'
-        self.dd_path = '/usr/bin/dd'
-        self.echo_path = '/usr/bin/echo'
-        self.lsblk_path = '/usr/bin/lsblk'
+        self.dd_path = '/usr/bin/dd' # centos 6.6 /bin/dd
+        self.echo_path = '/usr/bin/echo' #centos 6.6 /bin/echo
+        self.lsblk_path = '/usr/bin/lsblk' #centos 6.6 /bin/lsblk
         self.lsscsi_path = '/usr/bin/lsscsi'
         self.mkdir_path = '/usr/bin/mkdir'
         self.mount_path = '/usr/bin/mount'
@@ -53,9 +53,3 @@ class centosPatching(redhatPatching):
         common_extras = ['cryptsetup','lsscsi','gdisk','udevadm']
         for extra in common_extras:
             self.logger.log("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
-
-        #if(paras.filesystem == "btrfs"):
-        #    extras = ['btrfs-tools']
-        #    for extra in extras:
-        #        self.logger.log("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
-        #pass

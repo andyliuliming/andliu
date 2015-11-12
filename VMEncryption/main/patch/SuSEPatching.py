@@ -34,8 +34,8 @@ from Common import *
 
 
 class SuSEPatching(AbstractPatching):
-    def __init__(self,logger):
-        super(SuSEPatching,self).__init__()
+    def __init__(self,logger,distro_info):
+        super(SuSEPatching,self).__init__(distro_info)
         self.logger = logger
         self.base64_path = '/usr/bin/base64'
         self.bash_path = '/bin/bash'

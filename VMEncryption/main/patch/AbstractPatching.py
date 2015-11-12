@@ -35,8 +35,8 @@ class AbstractPatching(object):
     """
     AbstractPatching defines a skeleton neccesary for a concrete Patching class.
     """
-    def __init__(self):
-        self.distro_info = None
+    def __init__(self,distro_info):
+        self.distro_info = distro_info
         self.base64_path = '/usr/bin/base64'
         self.bash_path = '/bin/bash'
         self.blkid_path = '/usr/bin/blkid'
