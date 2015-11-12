@@ -55,6 +55,9 @@
     <Compile Include="main\EncryptionEnvironment.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="main\HttpUtil.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="main\TransactionalCopyTask.py">
       <SubType>Code</SubType>
     </Compile>
