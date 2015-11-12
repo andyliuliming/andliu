@@ -36,19 +36,34 @@ from Common import *
 class SuSEPatching(AbstractPatching):
     def __init__(self,logger,distro_info):
         super(SuSEPatching,self).__init__(distro_info)
-        self.logger = logger
-        self.base64_path = '/usr/bin/base64'
-        self.bash_path = '/bin/bash'
-        self.blkid_path = '/usr/bin/blkid'
-        self.cryptsetup_path = '/usr/sbin/cryptsetup'
-        self.dd_path = '/usr/bin/dd'
-        self.echo_path = '/usr/bin/echo'
-        self.lsblk_path = '/usr/bin/lsblk'
-        self.lsscsi_path = '/usr/bin/lsscsi'
-        self.mkdir_path = '/usr/bin/mkdir'
-        self.mount_path = '/usr/bin/mount'
-        self.openssl_path = '/usr/bin/openssl'
-        self.umount_path = '/usr/bin/umount'
+        if(distro_info[1] == "11"):
+            self.logger = logger
+            self.base64_path = '/usr/bin/base64'
+            self.bash_path = '/bin/bash'
+            self.blkid_path = '/sbin/blkid'
+            self.cryptsetup_path = '/sbin/cryptsetup'
+            self.dd_path = '/bin/dd'
+            self.echo_path = '/bin/echo'
+            self.lsblk_path = '/bin/lsblk'
+            self.lsscsi_path = '/usr/bin/lsscsi'
+            self.mkdir_path = '/bin/mkdir'
+            self.mount_path = '/bin/mount'
+            self.openssl_path = '/usr/bin/openssl'
+            self.umount_path = '/bin/umount'
+        else:
+            self.logger = logger
+            self.base64_path = '/usr/bin/base64'
+            self.bash_path = '/bin/bash'
+            self.blkid_path = '/usr/bin/blkid'
+            self.cryptsetup_path = '/usr/sbin/cryptsetup'
+            self.dd_path = '/usr/bin/dd'
+            self.echo_path = '/usr/bin/echo'
+            self.lsblk_path = '/usr/bin/lsblk'
+            self.lsscsi_path = '/usr/bin/lsscsi'
+            self.mkdir_path = '/usr/bin/mkdir'
+            self.mount_path = '/usr/bin/mount'
+            self.openssl_path = '/usr/bin/openssl'
+            self.umount_path = '/usr/bin/umount'
 
     def install_extras(self):
         common_extras = ['cryptsetup','lsscsi','gdisk','udevadm']
