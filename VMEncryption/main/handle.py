@@ -93,7 +93,7 @@ def enable():
 
     try:
         encryption_config = EncryptionConfig(encryptionEnvironment, logger)
-        existed_passphrase = None
+        existed_passphrase_file = None
         kek_secret_id_created = None
 
         """
@@ -102,25 +102,26 @@ def enable():
         disk_util = DiskUtil(hutil, MyPatching, logger, encryptionEnvironment)
         bek_util = BekUtil(disk_util, logger)
         if(encryption_config.config_file_exists()):
-            existed_passphrase = bek_util.get_bek_passphrase(encryption_config)
-            if(existed_passphrase != None):
+            existed_passphrase_file = bek_util.get_bek_passphrase_file(encryption_config)
+            if(existed_passphrase_file != None):
                 crypt_items = disk_util.get_crypt_items()
                 if(crypt_items is not None):
                     for i in range(0, len(crypt_items)):
                         crypt_item = crypt_items[i]
 
-                        luks_open_result = disk_util.luks_open(existed_passphrase,crypt_item.dev_path,crypt_item.mapper_name,crypt_item.luks_header_path)
+                        luks_open_result = disk_util.luks_open(existed_passphrase_file,crypt_item.dev_path,crypt_item.mapper_name,crypt_item.luks_header_path)
                         logger.log("luks open result is " + str(luks_open_result))
                         if(crypt_item.mount_point != 'None'):
-                            disk_util.mount_crypt_item(crypt_item, existed_passphrase)
+                            disk_util.mount_crypt_item(crypt_item, existed_passphrase_file)
                         else:
                             logger.log('mount_point is None so skipping mount for the item ' + str(crypt_item))
-
+                bek_util.umount_azure_passhprase(encryption_config)
             else:
                 """
                 the config exists, and the passphrase not get is a error case.
                 """
                 logger.log("the config file exists, but we could not get the passphrase according to it.")
+                bek_util.umount_azure_passhprase(encryption_config)
                 exit_without_status_report()
                 #hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.passphrase_file_not_found),'The passphrase could not get.')
 
@@ -153,7 +154,7 @@ def enable():
             this is the fresh call case
             """
             #handle the passphrase related
-            if(existed_passphrase == None):
+            if(existed_passphrase_file == None):
                 if(extension_parameter.passphrase is None or extension_parameter.passphrase == ""):
                     extension_parameter.passphrase = bek_util.generate_passphrase(extension_parameter.KeyEncryptionAlgorithm)
                 kek_secret_id_created = keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
@@ -235,7 +236,7 @@ def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_
             else:
                 logger.log("the item fstype is not empty or the type is not a disk")
 
-def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queue, disk_util,bek_util):
+def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption_queue, disk_util,bek_util):
     logger.log("executing the enableencryption_all_inplace command.")
     device_items = disk_util.get_device_items(None)
     encrypted_items = []
@@ -262,7 +263,7 @@ def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queu
                 encrypted_items.append(device_item.name)
                 mapper_name = str(uuid.uuid4())
                 logger.log("encrypting " + str(device_item))
-                encrypt_error = disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name, luks_header_path)
+                encrypt_error = disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase_file, mapper_name, luks_header_path)
                 if(encrypt_error.errorcode == CommonVariables.success):
                     logger.log("start copying data " + str(device_item))
                     copy_result = disk_util.copy(device_item, os.path.join(CommonVariables.dev_mapper_root, mapper_name))
@@ -290,6 +291,7 @@ def enable_encryption_all_in_place(passphrase, luks_header_path, encryption_queu
                         else:
                             logger.log("the crypt_item_to_update.mount_point is None, so we do not mount it.")
                 else:
+                    logger.log("the encrypton for " + str(device_item) + " failed")
                     hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(encrypt_error.code),encrypt_error.info)
 
 def daemon():
@@ -310,17 +312,17 @@ def daemon():
         disk_util = DiskUtil(hutil, MyPatching, logger, encryptionEnvironment)
 
         encryption_config = EncryptionConfig(encryptionEnvironment,logger)
-        bek_passphrase = None
+        bek_passphrase_file = None
         """
         try to find the attached bek volume, and use the file to mount the crypted volumes,
         and if the passphrase file is found, then we will re-use it for the future.
         """
         bek_util = BekUtil(disk_util, logger)
         if(encryption_config.config_file_exists()):
-            bek_passphrase = bek_util.get_bek_passphrase(encryption_config)
+            bek_passphrase_file = bek_util.get_bek_passphrase_file(encryption_config)
 
-        if(bek_passphrase == None):
-            hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status, CommonVariables.passphrase_file_not_found, 'Passphrase file not found.')
+        if(bek_passphrase_file == None):
+            hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, CommonVariables.passphrase_file_not_found, 'Passphrase file not found.')
         else:
             """
             check whether there's a scheduled encryption task
@@ -335,17 +337,18 @@ def daemon():
             luks_header_path = disk_util.create_luks_header()
 
             if(encryption_queue.current_command() == CommonVariables.EnableEncryption):
-                enable_encryption_all_in_place(bek_passphrase,luks_header_path, encryption_queue, disk_util, bek_util)
+                enable_encryption_all_in_place(bek_passphrase_file, luks_header_path, encryption_queue, disk_util, bek_util)
             elif(encryption_queue.current_command() == CommonVariables.EnableEncryptionFormat):
-                enable_encryption_format(bek_passphrase,luks_header_path,encryption_queue,disk_util)
+                enable_encryption_format(bek_passphrase_file, luks_header_path, encryption_queue, disk_util)
             else:
                 #TODO we should exit.
                 logger.log("command " + str(encryption_queue.current_command()) + " not supported")
+        bek_util.umount_azure_passhprase(encryption_config)
 
     except Exception as e:
         # mount the file systems back.
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
-        hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,'1', 'Enable failed.')
+        hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status, '1', 'Enable failed.')
     finally:
         encryption_queue = EncryptionMark(logger, encryptionEnvironment)
         #TODO not remove it, backed it up.

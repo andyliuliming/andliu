@@ -164,9 +164,9 @@ class DiskUtil(object):
             self.logger.log("result of make luks header result is " + str(returnCode))
             return self.encryptionEnvironment.luks_header_path
 
-    def encrypt_disk(self, devpath, passphrase, mappername, headerfile):
+    def encrypt_disk(self, devpath, passphrase_file, mappername, headerfile):
         error = EncryptionError()
-        returnCode = self.luks_format(passphrase, devpath, headerfile)
+        returnCode = self.luks_format(passphrase_file, devpath, headerfile)
         if(returnCode != 0):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_format_error
@@ -174,7 +174,7 @@ class DiskUtil(object):
             self.logger.log('cryptsetup luksFormat returnCode is ' + str(returnCode))
             return error
 
-        returnCode = self.luks_open(passphrase, devpath, mappername, headerfile)
+        returnCode = self.luks_open(passphrase_file, devpath, mappername, headerfile)
         if(returnCode != 0):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_open_error
@@ -185,48 +185,34 @@ class DiskUtil(object):
     """
     return the return code of the process for error handling.
     """
-    def luks_format(self,passphrase,devpath,headerfile):
+    def luks_format(self,passphrase_file,devpath,headerfile):
         self.hutil.log("dev path to cryptsetup luksFormat " + str(devpath))
+        cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + devpath + ' --header ' + headerfile + ' -d ' + passphrase_file + ' -q'
+        self.logger.log("cryptsetup_cmd is:" + cryptsetup_cmd)
+        cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
         if(self.patching.distro_info[0].lower() == 'centos' and self.patching.distro_info[1].startswith('7.0')):
-            commandToExecute = self.patching.bash_path + ' -c "' + self.patching.echo_path + ' -n \'' + passphrase + '\' | ' + self.patching.cryptsetup_path + ' luksFormat ' + devpath + ' --header ' + headerfile + '"'
-            args = shlex.split(commandToExecute)
-            proc = Popen(args,shell=True)
-            returnCode = proc.wait()
-            return returnCode
-        else:
-            passphrase_cmd = self.patching.echo_path + ' -n \'' + passphrase + '\''
-            passphrase_cmd_args = shlex.split(passphrase_cmd)
-            cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + devpath + ' --header ' + headerfile
-            cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
-
-            passphrase_p = Popen(passphrase_cmd_args,stdout=subprocess.PIPE)
-            cryptsetup_p = Popen(cryptsetup_cmd_args,stdin=passphrase_p.stdout)
-
+            self.logger.log("using the shell to execute")
+            cryptsetup_p = Popen(cryptsetup_cmd, shell=True)
             returnCode = cryptsetup_p.wait()
-            return returnCode
+        else:
+            cryptsetup_p = Popen(cryptsetup_cmd_args)
+        returnCode = cryptsetup_p.wait()
+        return returnCode
 
     """
     return the return code of the process for error handling.
     """
-    def luks_open(self,passphrase,devpath,mappername,headerfile):
+    def luks_open(self,passphrase_file,devpath,mappername,headerfile):
         self.hutil.log("dev mapper name to cryptsetup luksOpen " + (mappername))
+        cryptsetup_cmd = self.patching.cryptsetup_path + ' luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + ' -d ' + passphrase_file + ' -q'
+        self.logger.log("cryptsetup_cmd is:" + cryptsetup_cmd)
+        cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
         if(self.patching.distro_info[0].lower() == 'centos' and self.patching.distro_info[1].startswith('7.0')):
-            commandToExecute = self.patching.bash_path + ' -c "' + self.patching.echo_path + ' -n \'' + passphrase + '\' | ' + self.patching.cryptsetup_path + ' luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + '"'
-            args = shlex.split(commandToExecute)
-            proc = Popen(args,shell=True)
-            returnCode = proc.wait()
-            return returnCode
+            cryptsetup_p = Popen(cryptsetup_cmd, shell=True)
         else:
-            passphrase_cmd = self.patching.echo_path + ' -n \'' + passphrase + '\''
-            passphrase_cmd_args = shlex.split(passphrase_cmd)
-            cryptsetup_cmd = self.patching.cryptsetup_path + ' luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile
-            cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
-
-            passphrase_p = Popen(passphrase_cmd_args,stdout=subprocess.PIPE)
-            cryptsetup_p = Popen(cryptsetup_cmd_args,stdin=passphrase_p.stdout)
-
-            returnCode = cryptsetup_p.wait()
-            return returnCode
+            cryptsetup_p = Popen(cryptsetup_cmd_args)
+        returnCode = cryptsetup_p.wait()
+        return returnCode
 
     #TODO error handling.
     def append_mount_info(self, dev_path, mount_point):

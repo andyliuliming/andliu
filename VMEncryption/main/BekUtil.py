@@ -32,7 +32,7 @@ class BekUtil(object):
         self.disk_util = disk_util
         self.logger = logger
         self.passphrase_device = None
-        self.bek_filesystem_mount_point = '/mnt/azure_passphrase'
+        self.bek_filesystem_mount_point = '/mnt/azure_bek_disk'
 
     def generate_passphrase(self,algorithm):
         if(TestHooks.use_hard_code_passphrase):
@@ -43,7 +43,7 @@ class BekUtil(object):
                 passphrase_generated = base64.b64encode(bytes)
             return passphrase_generated
 
-    def get_bek_passphrase(self, encryption_config):
+    def get_bek_passphrase_file(self, encryption_config):
         bek_filename = encryption_config.get_bek_filename()
         bek_filesystem = encryption_config.get_bek_filesystem()
         pass_phrase = None
@@ -52,18 +52,34 @@ class BekUtil(object):
             azure_devices = self.disk_util.get_device_items(None)
         else:
             azure_devices = self.disk_util.get_azure_devices()
-        
+
         for i in range(0,len(azure_devices)):
             azure_device = azure_devices[i]
             if(str(azure_device.fstype).lower() == str(bek_filesystem).lower()):
                 #TODO handle the failure case
                 self.disk_util.make_sure_path_exists(self.bek_filesystem_mount_point)
-                self.disk_util.mount_filesystem(os.path.join('/dev/' + azure_device.name), '/mnt/azure_passphrase', bek_filesystem)
+                self.disk_util.mount_filesystem(os.path.join('/dev/' + azure_device.name), self.bek_filesystem_mount_point, bek_filesystem)
+                #search for the passphrase file.
+                if(os.path.exists(os.path.join(self.bek_filesystem_mount_point, bek_filename))):
+                    return os.path.join(self.bek_filesystem_mount_point,bek_filename)
+        return None
+
+    def umount_azure_passhprase(self, encryption_config):
+        bek_filename = encryption_config.get_bek_filename()
+        bek_filesystem = encryption_config.get_bek_filesystem()
+        pass_phrase = None
+        if TestHooks.search_not_only_ide:
+            self.logger.log("TESTHOOK: search not only ide set")
+            azure_devices = self.disk_util.get_device_items(None)
+        else:
+            azure_devices = self.disk_util.get_azure_devices()
+
+        for i in range(0,len(azure_devices)):
+            azure_device = azure_devices[i]
+            if(str(azure_device.fstype).lower() == str(bek_filesystem).lower()):
+                #TODO handle the failure case
+                self.disk_util.make_sure_path_exists(self.bek_filesystem_mount_point)
+                self.disk_util.mount_filesystem(os.path.join('/dev/' + azure_device.name), self.bek_filesystem_mount_point, bek_filesystem)
                 #search for the passphrase file.
                 if(os.path.exists(os.path.join(self.bek_filesystem_mount_point,bek_filename))):
-                    with open(os.path.join(self.bek_filesystem_mount_point,bek_filename),'r') as f:
-                        pass_phrase = f.read()
-                        passphrase_device = azure_device.name
-                        self.logger.log("got the passphrase from " + str(azure_device.name))
-                self.disk_util.umount(self.bek_filesystem_mount_point)
-        return pass_phrase
+                    self.disk_util.umount(self.bek_filesystem_mount_point)
