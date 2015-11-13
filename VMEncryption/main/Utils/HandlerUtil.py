@@ -180,7 +180,6 @@ class HandlerUtility:
                 pkey=waagent.LibDir+'/'+thumb+'.prv'
                 f = tempfile.NamedTemporaryFile(delete=False)
                 f.close()
-                f.name
                 waagent.SetFileContents(f.name,config['runtimeSettings'][0]['handlerSettings']['protectedSettings'])
                 cleartxt = None
                 cleartxt = waagent.RunGetOutput(self.patching.base64_path + " -d " + f.name + " | " + self.patching.openssl_path + " smime  -inform DER -decrypt -recip " + cert + "  -inkey " + pkey)[1]
