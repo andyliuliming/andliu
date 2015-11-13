@@ -193,7 +193,6 @@ class DiskUtil(object):
         if(self.patching.distro_info[0].lower() == 'centos' and self.patching.distro_info[1].startswith('7.0')):
             self.logger.log("using the shell to execute")
             cryptsetup_p = Popen(cryptsetup_cmd, shell=True)
-            returnCode = cryptsetup_p.wait()
         else:
             cryptsetup_p = Popen(cryptsetup_cmd_args)
         returnCode = cryptsetup_p.wait()
@@ -208,6 +207,7 @@ class DiskUtil(object):
         self.logger.log("cryptsetup_cmd is:" + cryptsetup_cmd)
         cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
         if(self.patching.distro_info[0].lower() == 'centos' and self.patching.distro_info[1].startswith('7.0')):
+            self.logger.log("using the shell to execute")
             cryptsetup_p = Popen(cryptsetup_cmd, shell=True)
         else:
             cryptsetup_p = Popen(cryptsetup_cmd_args)
