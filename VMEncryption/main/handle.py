@@ -263,36 +263,51 @@ def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption
                 encrypted_items.append(device_item.name)
                 mapper_name = str(uuid.uuid4())
                 logger.log("encrypting " + str(device_item))
-                encrypt_error = disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase_file, mapper_name, luks_header_path)
-                if(encrypt_error.errorcode == CommonVariables.success):
-                    logger.log("start copying data " + str(device_item))
-                    copy_result = disk_util.copy(device_item, os.path.join(CommonVariables.dev_mapper_root, mapper_name))
-                    if(copy_result != CommonVariables.success):
-                        error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
-                        logger.log("the copying result is " + copy_result + " so skip the mounting")
-                        hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.copy_data_error), error_message)
-                    else:
-                        crypt_item_to_update = CryptItem()
-                        crypt_item_to_update.mapper_name = mapper_name
-                        crypt_item_to_update.dev_path = os.path.join("/dev/", device_item.name)
-                        crypt_item_to_update.luks_header_path = luks_header_path
-                        crypt_item_to_update.file_system = device_item.fstype
-                        # if the original mountpoint is empty, then leave
-                        # it as
-                        # None
-                        if device_item.mountpoint == "" or device_item.mountpoint == None:
-                            crypt_item_to_update.mount_point = "None"
-                        else:
-                            crypt_item_to_update.mount_point = device_item.mountpoint
-                        disk_util.update_crypt_item(crypt_item_to_update)
-
-                        if(crypt_item_to_update.mount_point != "None"):
-                            disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
-                        else:
-                            logger.log("the crypt_item_to_update.mount_point is None, so we do not mount it.")
+                if(MyPatching.distro_info[0].lower() == "centos" and MyPatching.distro_info[1].startswith('6.')):
+                    # 1.  check the file system
+                    # 2.  resize2fs to resize the fs
+                    # 3.  backup the first header of the original(2097152==4096*512 byte=2048*1K byte=2M byte), 
+                    #     say /tmp/file1 dd if=/dev/sdd of=/tmp/file1 bs=2M count=1
+                    # 4.  call the luksFormat to format the original disk
+                    # 5.  call the luksOpen to open the luks mapper device.
+                    # 6.  copy the orignal data to the encrypted one.
+                    #     suppose the original data is   123456780, and the 1 stands for the header
+                    #     calculate the count need to copy   count = (total size/4M - 1)
+                    #     then the progress would be dd if=/dev/sdd of=/dev/mapper/uuid seek=2M skip=2M bs=2M 
+                    #                                dd if=/tmp/file1 of=/dev/mapper/uuid bs=2M count=1
+                    logger.log("this is the centos 6 serios, need special handling")
+                    pass
                 else:
-                    logger.log("the encrypton for " + str(device_item) + " failed")
-                    hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(encrypt_error.code),encrypt_error.info)
+                    encrypt_error = disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase_file, mapper_name, luks_header_path)
+                    if(encrypt_error.errorcode == CommonVariables.success):
+                        logger.log("start copying data " + str(device_item))
+                        copy_result = disk_util.copy(device_item, os.path.join(CommonVariables.dev_mapper_root, mapper_name))
+                        if(copy_result != CommonVariables.success):
+                            error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
+                            logger.log("the copying result is " + copy_result + " so skip the mounting")
+                            hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.copy_data_error), error_message)
+                        else:
+                            crypt_item_to_update = CryptItem()
+                            crypt_item_to_update.mapper_name = mapper_name
+                            crypt_item_to_update.dev_path = os.path.join("/dev/", device_item.name)
+                            crypt_item_to_update.luks_header_path = luks_header_path
+                            crypt_item_to_update.file_system = device_item.fstype
+                            # if the original mountpoint is empty, then leave
+                            # it as
+                            # None
+                            if device_item.mountpoint == "" or device_item.mountpoint == None:
+                                crypt_item_to_update.mount_point = "None"
+                            else:
+                                crypt_item_to_update.mount_point = device_item.mountpoint
+                            disk_util.update_crypt_item(crypt_item_to_update)
+
+                            if(crypt_item_to_update.mount_point != "None"):
+                                disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
+                            else:
+                                logger.log("the crypt_item_to_update.mount_point is None, so we do not mount it.")
+                    else:
+                        logger.log("the encrypton for " + str(device_item) + " failed")
+                        hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(encrypt_error.code),encrypt_error.info)
 
 def daemon():
     hutil.do_parse_context('Executing')

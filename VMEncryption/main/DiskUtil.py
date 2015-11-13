@@ -182,6 +182,16 @@ class DiskUtil(object):
             self.logger.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
         return error
 
+    def checkfs(self,devpath):
+        pass
+
+    def resize2fs(self,devpath):
+        pass
+
+    def luks_format_without_header(self,passphrase_file,devpath):
+        pass
+    def luks_open_without_header(self,passphrase_file,devpath):
+        pass
     """
     return the return code of the process for error handling.
     """
@@ -190,11 +200,7 @@ class DiskUtil(object):
         cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + devpath + ' --header ' + headerfile + ' -d ' + passphrase_file + ' -q'
         self.logger.log("cryptsetup_cmd is:" + cryptsetup_cmd)
         cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
-        if(self.patching.distro_info[0].lower() == 'centos' and self.patching.distro_info[1].startswith('7.0')):
-            self.logger.log("using the shell to execute")
-            cryptsetup_p = Popen(cryptsetup_cmd, shell=True)
-        else:
-            cryptsetup_p = Popen(cryptsetup_cmd_args)
+        cryptsetup_p = Popen(cryptsetup_cmd_args)
         returnCode = cryptsetup_p.wait()
         return returnCode
 
@@ -206,11 +212,7 @@ class DiskUtil(object):
         cryptsetup_cmd = self.patching.cryptsetup_path + ' luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + ' -d ' + passphrase_file + ' -q'
         self.logger.log("cryptsetup_cmd is:" + cryptsetup_cmd)
         cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
-        if(self.patching.distro_info[0].lower() == 'centos' and self.patching.distro_info[1].startswith('7.0')):
-            self.logger.log("using the shell to execute")
-            cryptsetup_p = Popen(cryptsetup_cmd, shell=True)
-        else:
-            cryptsetup_p = Popen(cryptsetup_cmd_args)
+        cryptsetup_p = Popen(cryptsetup_cmd_args)
         returnCode = cryptsetup_p.wait()
         return returnCode
 

@@ -89,7 +89,7 @@ class TransactionalCopyTask(object):
         self.transactional_copy_config.save_config(CommonVariables.CurrentTotalSizeKey,(total_slice_size + 1))
         for i in range(0, total_slice_size):
             copy_command = self.patching.dd_path
-            self.copy_internal(copy_command,origin_device_path,self.destination,i,self.slice_size)
+            self.copy_internal(copy_command=copy_command,from_device=origin_device_path,to_device=self.destination,skip=i,size=self.slice_size)
             self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,i)
 
         """
@@ -97,6 +97,6 @@ class TransactionalCopyTask(object):
         """
         if(last_slice_size > 0):
             copy_command = self.patching.dd_path
-            self.copy_internal(copy_command,origin_device_path,self.destination,total_slice_size,last_slice_size)
+            self.copy_internal(copy_command=copy_command,from_device=origin_device_path,to_device=self.destination,skip=total_slice_size,size=last_slice_size)
             self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,(total_slice_size + 1))
         return returnCode
