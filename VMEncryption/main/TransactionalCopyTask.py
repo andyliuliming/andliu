@@ -103,7 +103,21 @@ class TransactionalCopyTask(object):
         self.transactional_copy_config.save_config(CommonVariables.CurrentTotalSizeKey,(total_slice_size + 1))
         if(self.from_end):
             #copy from end to the beginning.
-            pass
+            if(last_slice_size > 0):
+                copy_command = self.patching.dd_path
+                copy_result = self.copy_internal(copy_command=copy_command,from_device=origin_device_path,to_device=self.destination,skip=total_slice_size,size=last_slice_size)
+                if(copy_result==CommonVariables.process_success):
+                    self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,(total_slice_size + 1))
+                else:
+                    return copy_result
+
+            for i in range(total_slice_size, 0):
+                copy_command = self.patching.dd_path
+                copy_result = self.copy_internal(copy_command=copy_command,from_device=origin_device_path,to_device=self.destination,skip=i,size=self.block_size)
+                if(copy_result==CommonVariables.process_success):
+                    self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,i)
+                else:
+                    return copy_result
         else:
             for i in range(0, total_slice_size):
                 copy_command = self.patching.dd_path
