@@ -294,11 +294,11 @@ def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption
                         if(shrinkfs_result == CommonVariables.process_success):
                             tmpfile_created = tempfile.NamedTemporaryFile()
                             tmpfile_created.close()
-                            copy_result = disk_util.copy(device_path,CommonVariables.default_block_size,tmpfile_created.file)
+                            copy_result = disk_util.copy(source_dev_name=device_path,copy_total_size=CommonVariables.default_block_size,destination = tmpfile_created.name)
                             encrypt_error = disk_util.encrypt_disk(dev_path=device_path,passphrase_file=passphrase_file,mapper_name=mapper_name,header_file=None)
                             #TODO remove the tempfile created
                             copy_result = disk_util.copy(source_dev_name=device_path,copy_total_size=(device_item.size - luks_header_size),destination=device_mapper_path,from_end=True)
-                            copy_result = disk_util.copy(tmpfile_created.file,CommonVariables.default_block_size,device_mapper_path,from_end=False)
+                            copy_result = disk_util.copy(tmpfile_created.name,CommonVariables.default_block_size,device_mapper_path,from_end=False)
                         else:
                             pass
                     else:

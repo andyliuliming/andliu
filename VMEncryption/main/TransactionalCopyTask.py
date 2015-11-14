@@ -33,7 +33,7 @@ class TransactionalCopyTask(object):
     copy_total_size is in byte, skip_target_size is also in byte
     slice_size is in byte 50M
     """
-    def __init__(self,logger, source_dev_name, copy_total_size, destination, patching, encryption_environment,\
+    def __init__(self,logger,disk_util, source_dev_name, copy_total_size, destination, patching, encryption_environment,\
                     block_size=CommonVariables.default_block_size,skip_source_block=0,skip_target_block=0,from_end=False):
         """
         copy_total_size is in bytes.
@@ -49,12 +49,13 @@ class TransactionalCopyTask(object):
         self.skip_source_block = skip_source_block
         self.skip_target_block = skip_target_block
         self.block_size = block_size
+        self.disk_util = disk_util
         self.tmpfs_mount_point = "/mnt/azure_encrypt_tmpfs"
         self.slice_file_path = self.tmpfs_mount_point + "/slice_file"
         self.transactional_copy_config = ConfigUtil(encryption_environment.azure_crypt_current_transactional_copy_path,'azure_crypt_copy_config',logger)
     
     def prepare_mem_fs(self):
-        self.make_sure_path_exists(self.tmpfs_mount_point)
+        self.disk_util.make_sure_path_exists(self.tmpfs_mount_point)
         commandToExecute = self.patching.mount_path + " -t tmpfs -o size=" + str(self.block_size + 1024) + " tmpfs " + self.tmpfs_mount_point
         self.logger.log("prepare mem fs script is: " + str(commandToExecute))
         returnCode = self.command_executer.Execute(commandToExecute)

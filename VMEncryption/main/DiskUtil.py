@@ -27,7 +27,7 @@ from subprocess import *
 import shutil
 import uuid
 from TransactionalCopyTask import TransactionalCopyTask
-from Common import CommonVariables
+from Common import *
 
 class DiskUtil(object):
     def __init__(self, hutil, patching, logger, encryption_environment):
@@ -39,7 +39,7 @@ class DiskUtil(object):
         self.vmbus_sys_path = '/sys/bus/vmbus/devices'
 
     def copy(self, source_dev_name, copy_total_size, destination,from_end=False):
-        copy_task = TransactionalCopyTask(self.logger, source_dev_name=source_dev_name, copy_total_size=copy_total_size, destination=destination, patching=self.patching,encryption_environment= self.encryption_environment,from_end=from_end)
+        copy_task = TransactionalCopyTask(logger=self.logger,disk_util=self, source_dev_name=source_dev_name, copy_total_size=copy_total_size, destination=destination, patching=self.patching,encryption_environment= self.encryption_environment,from_end=from_end)
         mem_fs_result = copy_task.prepare_mem_fs()
         if(mem_fs_result != CommonVariables.process_success):
             return CommonVariables.copy_data_error
@@ -208,7 +208,10 @@ class DiskUtil(object):
     """
     def luks_format(self,passphrase_file,dev_path,headerfile):
         self.hutil.log("dev path to cryptsetup luksFormat " + str(dev_path))
-        cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + dev_path + ' --header ' + headerfile + ' -d ' + passphrase_file + ' -q'
+        if(headerfile is not None):
+            cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + dev_path + ' --header ' + headerfile + ' -d ' + passphrase_file + ' -q'
+        else:
+            cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + dev_path + ' -d ' + passphrase_file + ' -q'
         self.logger.log("cryptsetup_cmd is:" + cryptsetup_cmd)
         cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
         cryptsetup_p = Popen(cryptsetup_cmd_args)
@@ -220,7 +223,10 @@ class DiskUtil(object):
     """
     def luks_open(self,passphrase_file,dev_path,mapper_name,header_file):
         self.hutil.log("dev mapper name to cryptsetup luksOpen " + (mapper_name))
-        cryptsetup_cmd = self.patching.cryptsetup_path + ' luksOpen ' + dev_path + ' ' + mapper_name + ' --header ' + header_file + ' -d ' + passphrase_file + ' -q'
+        if(headerfile is not None):
+            cryptsetup_cmd = self.patching.cryptsetup_path + ' luksOpen ' + dev_path + ' ' + mapper_name + ' --header ' + header_file + ' -d ' + passphrase_file + ' -q'
+        else:
+            cryptsetup_cmd = self.patching.cryptsetup_path + ' luksOpen ' + dev_path + ' ' + mapper_name + ' -d ' + passphrase_file + ' -q'
         self.logger.log("cryptsetup_cmd is:" + cryptsetup_cmd)
         cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
         cryptsetup_p = Popen(cryptsetup_cmd_args)
