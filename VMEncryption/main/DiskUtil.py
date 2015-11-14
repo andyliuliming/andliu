@@ -30,8 +30,8 @@ from TransactionalCopyTask import TransactionalCopyTask
 from Common import *
 
 class DiskUtil(object):
-    def __init__(self, hutil, patching, logger, encryptionEnvironment):
-        self.encryptionEnvironment = encryptionEnvironment
+    def __init__(self, hutil, patching, logger, encryption_environment):
+        self.encryption_environment = encryption_environment
         self.hutil = hutil
         self.patching = patching
         self.logger = logger
@@ -42,7 +42,7 @@ class DiskUtil(object):
         """
         if the os is ubuntu 12.04, then ues the sg_dd --sparse instead.
         """
-        copy_task = TransactionalCopyTask(self.logger, device_item, destination, self.patching, self.encryptionEnvironment)
+        copy_task = TransactionalCopyTask(self.logger,device_item=device_item, destination=destination, patching=self.patching,encryption_environment= self.encryption_environment)
         self.make_sure_path_exists(copy_task.tmpfs_mount_point)
         mem_fs_result = copy_task.prepare_mem_fs()
         if(mem_fs_result != 0):
@@ -120,11 +120,11 @@ class DiskUtil(object):
 
     def get_crypt_items(self):
         crypt_items = []
-        if not os.path.exists(self.encryptionEnvironment.azure_crypt_mount_config_path):
-            self.logger.log(self.encryptionEnvironment.azure_crypt_mount_config_path + " not exists")
+        if not os.path.exists(self.encryption_environment.azure_crypt_mount_config_path):
+            self.logger.log(self.encryption_environment.azure_crypt_mount_config_path + " not exists")
             return None
         else:
-            with open(self.encryptionEnvironment.azure_crypt_mount_config_path,'r') as f:
+            with open(self.encryption_environment.azure_crypt_mount_config_path,'r') as f:
                 existing_content = f.read()
                 crypt_mount_items = existing_content.splitlines()
                 for i in range(0,len(crypt_mount_items)):
@@ -141,28 +141,28 @@ class DiskUtil(object):
         return crypt_items
 
     def update_crypt_item(self,crypt_item):
-        if not os.path.exists(self.encryptionEnvironment.azure_crypt_mount_config_path):
-            with open(self.encryptionEnvironment.azure_crypt_mount_config_path,'w') as wf:
+        if not os.path.exists(self.encryption_environment.azure_crypt_mount_config_path):
+            with open(self.encryption_environment.azure_crypt_mount_config_path,'w') as wf:
                 wf.write("")
 
         mount_content_item = crypt_item.mapper_name + " " + crypt_item.dev_path + " " + crypt_item.luks_header_path + " " + crypt_item.mount_point + " " + crypt_item.file_system
-        with open(self.encryptionEnvironment.azure_crypt_mount_config_path,'r') as f:
+        with open(self.encryption_environment.azure_crypt_mount_config_path,'r') as f:
             existing_content = f.read()
             new_mount_content = existing_content + "\n" + mount_content_item
-        with open(self.encryptionEnvironment.azure_crypt_mount_config_path,'w') as wf:
+        with open(self.encryption_environment.azure_crypt_mount_config_path,'w') as wf:
             existing_content+="\n" + mount_content_item
             wf.write(new_mount_content)
         # <target name> <source device> <key file> <options>
 
     def create_luks_header(self):
-        if(os.path.exists(self.encryptionEnvironment.luks_header_path)):
-            return self.encryptionEnvironment.luks_header_path
+        if(os.path.exists(self.encryption_environment.luks_header_path)):
+            return self.encryption_environment.luks_header_path
         else:
-            commandToExecute = self.patching.bash_path + ' -c "' + self.patching.dd_path + ' if=/dev/zero bs=33554432 count=1 > ' + self.encryptionEnvironment.luks_header_path + '"'
+            commandToExecute = self.patching.bash_path + ' -c "' + self.patching.dd_path + ' if=/dev/zero bs=33554432 count=1 > ' + self.encryption_environment.luks_header_path + '"'
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()
             self.logger.log("result of make luks header result is " + str(returnCode))
-            return self.encryptionEnvironment.luks_header_path
+            return self.encryption_environment.luks_header_path
 
     def encrypt_disk(self, devpath, passphrase_file, mappername, headerfile):
         error = EncryptionError()
@@ -185,11 +185,25 @@ class DiskUtil(object):
     def checkfs(self,devpath):
         pass
 
-    def resize2fs(self,devpath):
-        pass
+    def expandfs(self,devpath):
+        expandfs_cmd = self.patching.resize2fs_path + devpath
+        self.logger.log("cryptsetup_cmd is:" + expandfs_cmd)
+        expandfs_cmd_args = shlex.split(expandfs_cmd)
+        shrinkfs_p = Popen(expandfs_cmd_args)
+        returnCode = shrinkfs_p.wait()
+        return returnCode
+
+    def shrinkfs(self,devpath):
+        shrinkfs_cmd = self.patching.resize2fs_path + ' -M ' + devpath
+        self.logger.log("cryptsetup_cmd is:" + shrinkfs_cmd)
+        shrinkfs_cmd_args = shlex.split(shrinkfs_cmd)
+        shrinkfs_p = Popen(shrinkfs_cmd_args)
+        returnCode = shrinkfs_p.wait()
+        return returnCode
 
     def luks_format_without_header(self,passphrase_file,devpath):
         pass
+
     def luks_open_without_header(self,passphrase_file,devpath):
         pass
     """

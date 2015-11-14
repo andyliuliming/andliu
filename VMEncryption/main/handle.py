@@ -264,7 +264,7 @@ def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption
                 mapper_name = str(uuid.uuid4())
                 logger.log("encrypting " + str(device_item))
                 if(MyPatching.distro_info[0].lower() == "centos" and MyPatching.distro_info[1].startswith('6.')):
-                    # 1.  check the file system
+                    # 1.  check the file system e2fsck -f /dev/sdd
                     # 2.  resize2fs to resize the fs
                     # 3.  backup the first header of the original(2097152==4096*512 byte=2048*1K byte=2M byte), 
                     #     say /tmp/file1 dd if=/dev/sdd of=/tmp/file1 bs=2M count=1
@@ -272,10 +272,12 @@ def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption
                     # 5.  call the luksOpen to open the luks mapper device.
                     # 6.  copy the orignal data to the encrypted one.
                     #     suppose the original data is   123456780, and the 1 stands for the header
+                    #     
                     #     calculate the count need to copy   count = (total size/4M - 1)
                     #     then the progress would be dd if=/dev/sdd of=/dev/mapper/uuid seek=2M skip=2M bs=2M 
                     #                                dd if=/tmp/file1 of=/dev/mapper/uuid bs=2M count=1
                     logger.log("this is the centos 6 serios, need special handling")
+
                     pass
                 else:
                     encrypt_error = disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase_file, mapper_name, luks_header_path)

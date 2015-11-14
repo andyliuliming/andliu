@@ -29,17 +29,23 @@ from Common import CommonVariables
 from ConfigUtil import ConfigUtil
 
 class TransactionalCopyTask(object):
-    def __init__(self,logger, device_item, destination, patching, encryptionEnvironment):
-        self.logger = logger
-        self.encryptionEnvironment = encryptionEnvironment
+    """
+    skip_source_size is in byte, skip_target_size is also in byte
+    slice_size is in byte 50M
+    """
+    def __init__(self,logger, device_item, destination, patching, encryption_environment,slice_size=52428800,skip_source_size=0,skip_target_size=0):
+        self.command_executer = CommandExecuter(self.logger)
         self.device_item = device_item
         self.destination = destination
+        self.encryption_environment = encryption_environment
+        self.logger = logger
         self.patching = patching
-        self.slice_size = 52428800# this is in byte 50M
-        self.command_executer = CommandExecuter(self.logger)
-        self.tmpfs_mount_point = "/mnt/azure_encrypt_tmpfs"
+        self.skip_source_size = skip_source_size
+        self.skip_target_size = skip_target_size
+        self.slice_size = slice_size
         self.slice_file_path = self.tmpfs_mount_point + "/slice_file"
-        self.transactional_copy_config = ConfigUtil(encryptionEnvironment.azure_crypt_current_transactional_copy_path,'azure_crypt_copy_config',logger)
+        self.tmpfs_mount_point = "/mnt/azure_encrypt_tmpfs"
+        self.transactional_copy_config = ConfigUtil(encryption_environment.azure_crypt_current_transactional_copy_path,'azure_crypt_copy_config',logger)
     
     def prepare_mem_fs(self):
         commandToExecute = self.patching.mount_path + " -t tmpfs -o size=" + str(self.slice_size + 1024) + " tmpfs " + self.tmpfs_mount_point

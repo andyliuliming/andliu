@@ -48,6 +48,7 @@ class redhatPatching(AbstractPatching):
         self.mkdir_path = '/usr/bin/mkdir'
         self.mount_path = '/usr/bin/mount'
         self.openssl_path = '/usr/bin/openssl'
+        self.resize2fs_path = '/sbin/resize2fs'
         self.umount_path = '/usr/bin/umount'
 
     def install_extras(self):
