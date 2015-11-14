@@ -21,20 +21,22 @@
 
 import array
 import base64
+import httplib
+import imp
 import json
 import os
 import os.path
 import re
+import shlex
 import string
 import subprocess
 import sys
-import imp
-import uuid
-import shlex
+import tempfile
 import traceback
 import urllib2
 import urlparse
-import httplib
+import uuid
+
 from Utils import HandlerUtil
 from Common import *
 from ExtensionParameter import ExtensionParameter
@@ -49,10 +51,8 @@ from EncryptionMark import EncryptionMark
 from EncryptionMark import EncryptionRequest
 from EncryptionEnvironment import EncryptionEnvironment
 #Main function is the only entrence to this extension handler
-
 def exit_without_status_report():
     sys.exit(0)
-
 
 def main():
     global hutil,MyPatching,logger,encryptionEnvironment
@@ -123,7 +123,8 @@ def enable():
                 logger.log("the config file exists, but we could not get the passphrase according to it.")
                 bek_util.umount_azure_passhprase(encryption_config)
                 exit_without_status_report()
-                #hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.passphrase_file_not_found),'The passphrase could not get.')
+                #hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.passphrase_file_not_found),'The
+                #passphrase could not get.')
 
         encryption_marker = EncryptionMark(logger, encryptionEnvironment)
         if encryption_marker.is_encryption_marked():
@@ -213,7 +214,7 @@ def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_
                 encrypt_error = disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name, luks_header_path)
                 if(encrypt_error.errorcode == CommonVariables.success):
                     # let customer specify it in the parameter
-                    file_system = "ext4"
+                    file_system = CommonVariables.default_file_system
                     disk_util.format_disk("/dev/mapper/" + mapper_name, file_system)
                     crypt_item_to_update = CryptItem()
                     crypt_item_to_update.mapper_name = mapper_name
@@ -263,27 +264,45 @@ def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption
                 encrypted_items.append(device_item.name)
                 mapper_name = str(uuid.uuid4())
                 logger.log("encrypting " + str(device_item))
+                device_path = os.path.join("/dev/", device_item.name)
+                device_mapper_path = os.path.join(CommonVariables.dev_mapper_root, mapper_name)
                 if(MyPatching.distro_info[0].lower() == "centos" and MyPatching.distro_info[1].startswith('6.')):
                     # 1.  check the file system e2fsck -f /dev/sdd
                     # 2.  resize2fs to resize the fs
-                    # 3.  backup the first header of the original(2097152==4096*512 byte=2048*1K byte=2M byte), 
-                    #     say /tmp/file1 dd if=/dev/sdd of=/tmp/file1 bs=2M count=1
+                    # 3.  backup the first header of the
+                    # original(2097152==4096*512 byte=2048*1K byte=2M byte),
+                    #     say /tmp/file1 dd if=/dev/sdd of=/tmp/file1 bs=2M
+                    #     count=1
                     # 4.  call the luksFormat to format the original disk
                     # 5.  call the luksOpen to open the luks mapper device.
                     # 6.  copy the orignal data to the encrypted one.
-                    #     suppose the original data is   123456780, and the 1 stands for the header
-                    #     
-                    #     calculate the count need to copy   count = (total size/4M - 1)
-                    #     then the progress would be dd if=/dev/sdd of=/dev/mapper/uuid seek=2M skip=2M bs=2M 
-                    #                                dd if=/tmp/file1 of=/dev/mapper/uuid bs=2M count=1
+                    #     suppose the original data is 123456780, and the 1
+                    #     stands for the header
+                    #
+                    #     calculate the count need to copy count = (total
+                    #     size/4M - 1)
+                    #     then the progress would be dd if=/dev/sdd
+                    #     of=/dev/mapper/uuid seek=2M skip=2M bs=2M
+                    #                                dd if=/tmp/file1
+                    #                                of=/dev/mapper/uuid bs=2M
+                    #                                count=1
                     logger.log("this is the centos 6 serios, need special handling")
-
-                    pass
+                    check_fs_result = disk_util.check_fs(devpath=device_path)
+                    if(check_fs_result):
+                        shrinkfs_result = disk_util.shrink_fs(device_path)
+                        if(shrinkfs_result == CommonVariables.process_success):
+                            tmpfile_created = tempfile.NamedTemporaryFile()
+                            tmpfile_created.close()
+                            
+                        else:
+                            pass
+                    else:
+                        logger.log("check fs result failed for: "+str(device_path))
                 else:
-                    encrypt_error = disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase_file, mapper_name, luks_header_path)
+                    encrypt_error = disk_util.encrypt_disk(device_path, passphrase_file, mapper_name, luks_header_path)
                     if(encrypt_error.errorcode == CommonVariables.success):
                         logger.log("start copying data " + str(device_item))
-                        copy_result = disk_util.copy(device_item, os.path.join(CommonVariables.dev_mapper_root, mapper_name))
+                        copy_result = disk_util.copy(device_item, device_mapper_path)
                         if(copy_result != CommonVariables.success):
                             error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
                             logger.log("the copying result is " + copy_result + " so skip the mounting")
@@ -291,7 +310,7 @@ def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption
                         else:
                             crypt_item_to_update = CryptItem()
                             crypt_item_to_update.mapper_name = mapper_name
-                            crypt_item_to_update.dev_path = os.path.join("/dev/", device_item.name)
+                            crypt_item_to_update.dev_path = device_path
                             crypt_item_to_update.luks_header_path = luks_header_path
                             crypt_item_to_update.file_system = device_item.fstype
                             # if the original mountpoint is empty, then leave
@@ -304,7 +323,7 @@ def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption
                             disk_util.update_crypt_item(crypt_item_to_update)
 
                             if(crypt_item_to_update.mount_point != "None"):
-                                disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), device_item.mountpoint)
+                                disk_util.mount_filesystem(device_mapper_path, device_item.mountpoint)
                             else:
                                 logger.log("the crypt_item_to_update.mount_point is None, so we do not mount it.")
                     else:

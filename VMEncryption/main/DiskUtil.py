@@ -27,7 +27,7 @@ from subprocess import *
 import shutil
 import uuid
 from TransactionalCopyTask import TransactionalCopyTask
-from Common import *
+from Common import CommonVariables
 
 class DiskUtil(object):
     def __init__(self, hutil, patching, logger, encryption_environment):
@@ -39,13 +39,9 @@ class DiskUtil(object):
         self.vmbus_sys_path = '/sys/bus/vmbus/devices'
 
     def copy(self, device_item, destination):
-        """
-        if the os is ubuntu 12.04, then ues the sg_dd --sparse instead.
-        """
         copy_task = TransactionalCopyTask(self.logger,device_item=device_item, destination=destination, patching=self.patching,encryption_environment= self.encryption_environment)
-        self.make_sure_path_exists(copy_task.tmpfs_mount_point)
         mem_fs_result = copy_task.prepare_mem_fs()
-        if(mem_fs_result != 0):
+        if(mem_fs_result != CommonVariables.process_success):
             return CommonVariables.copy_data_error
 
         returnCode = copy_task.begin_copy()
@@ -167,7 +163,7 @@ class DiskUtil(object):
     def encrypt_disk(self, devpath, passphrase_file, mappername, headerfile):
         error = EncryptionError()
         returnCode = self.luks_format(passphrase_file, devpath, headerfile)
-        if(returnCode != 0):
+        if(returnCode != CommonVariables.process_success):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_format_error
             error.info = "luks format failed, devpath is " + str(devpath)
@@ -175,17 +171,18 @@ class DiskUtil(object):
             return error
 
         returnCode = self.luks_open(passphrase_file, devpath, mappername, headerfile)
-        if(returnCode != 0):
+        if(returnCode != CommonVariables.process_success):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_open_error
             error.info = "luks open failed, devpath is " + str(devpath) + " dev_mapper_name is " + str(mappername)
             self.logger.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
         return error
 
-    def checkfs(self,devpath):
-        pass
+    def check_fs(self,devpath):
+        self.logger.log("checking fs:" + str(devpath))
+        return True
 
-    def expandfs(self,devpath):
+    def expand_fs(self,devpath):
         expandfs_cmd = self.patching.resize2fs_path + devpath
         self.logger.log("cryptsetup_cmd is:" + expandfs_cmd)
         expandfs_cmd_args = shlex.split(expandfs_cmd)
@@ -193,7 +190,7 @@ class DiskUtil(object):
         returnCode = shrinkfs_p.wait()
         return returnCode
 
-    def shrinkfs(self,devpath):
+    def shrink_fs(self,devpath):
         shrinkfs_cmd = self.patching.resize2fs_path + ' -M ' + devpath
         self.logger.log("cryptsetup_cmd is:" + shrinkfs_cmd)
         shrinkfs_cmd_args = shlex.split(shrinkfs_cmd)
@@ -280,7 +277,7 @@ class DiskUtil(object):
         mount_all_cmd_args = shlex.split(mount_all_cmd)
         proc = Popen(mount_all_cmd_args)
         returnCode = proc.wait()
-        if(returnCode != 0):
+        if(returnCode != CommonVariables.process_success):
             error.errorcode = returnCode
             error.code = CommonVariables.mount_error
             error.info = "commandToExecute is " + commandToExecute

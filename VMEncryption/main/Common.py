@@ -80,6 +80,7 @@ class CommonVariables:
     # error code
     extension_success_status = 'success'
     extension_error_status = 'error'
+    process_success = 0
     success = 0
     os_not_supported = 1
     luks_format_error = 2
