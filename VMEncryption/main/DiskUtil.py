@@ -393,6 +393,10 @@ class DiskUtil(object):
         if(device_item.fstype == None or device_item.fstype == ""):
             return True
         else:
+            if(device_item.size < CommonVariables.min_filesystem_size_support):
+                self.logger.log("the device size is too small," + str(device_item.size) + " so skip it")
+                return True
+
             supported_device_type = ["disk","part","raid0","raid1","raid5","raid10"]
             if(device_item.type not in supported_device_type):
                 self.logger.log("the device type: " + str(device_item.type) + " is not supported yet, so skip it")

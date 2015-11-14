@@ -30,6 +30,8 @@ class CommonVariables:
     """
     disk/file system related
     """
+    default_block_size = 52428800
+    min_filesystem_size_support = 52428800*2
     default_file_system = 'ext4'
     default_mount_name = 'encrypted_disk'
     dev_mapper_root = '/dev/mapper/'
@@ -46,7 +48,6 @@ class CommonVariables:
     DiskFormatQuerykey = "DiskFormatQuery"
     PassphraseKey = 'Passphrase'
     BekVolumeFileSystemKey = "BekVolumeFileSystem"
-
 
     """
     value for VolumeType could be OS or Data
