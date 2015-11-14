@@ -287,7 +287,7 @@ def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption
                     #                                of=/dev/mapper/uuid bs=2M
                     #                                count=1
                     logger.log("this is the centos 6 serios, need special handling")
-                    check_fs_result = disk_util.check_fs(devpath = device_path)
+                    check_fs_result = disk_util.check_fs(dev_path = device_path)
                     luks_header_size = 4096 * 512
                     if(check_fs_result):
                         shrinkfs_result = disk_util.shrink_fs(device_path)
@@ -295,12 +295,23 @@ def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption
                             tmpfile_created = tempfile.NamedTemporaryFile()
                             tmpfile_created.close()
                             copy_result = disk_util.copy(source_dev_name=device_path,copy_total_size=CommonVariables.default_block_size,destination = tmpfile_created.name)
-                            encrypt_error = disk_util.encrypt_disk(dev_path=device_path,passphrase_file=passphrase_file,mapper_name=mapper_name,header_file=None)
+                            if(copy_result == CommonVariables.process_success):
+                                encrypt_error = disk_util.encrypt_disk(dev_path=device_path,passphrase_file=passphrase_file,mapper_name=mapper_name,header_file=None)
+                                if(encrypt_error.code == CommonVariables.success):
+                                    copy_result = disk_util.copy(source_dev_name=device_path,copy_total_size=(device_item.size - luks_header_size),destination=device_mapper_path,from_end=True)
+                                    if(copy_result == CommonVariables.process_success):
+                                        copy_result = disk_util.copy(tmpfile_created.name,CommonVariables.default_block_size,device_mapper_path,from_end=False)
+                                        expand_fs_result = disk_util.expand_fs(dev_path=device_mapper_path)
+                                        logger.log("expand fs result is: " + str(expand_fs_result))
+                                    else:
+                                        logger.log("copy the main content block failed, return code is: " + str(copy_result))
+                                else:
+                                    logger.log("encrypt file system failed.")
+                            else:
+                                logger.log("copy the header block failed, return code is: " + str(copy_result))
                             #TODO remove the tempfile created
-                            copy_result = disk_util.copy(source_dev_name=device_path,copy_total_size=(device_item.size - luks_header_size),destination=device_mapper_path,from_end=True)
-                            copy_result = disk_util.copy(tmpfile_created.name,CommonVariables.default_block_size,device_mapper_path,from_end=False)
                         else:
-                            pass
+                            logger.log("shrink file system failed, return code is: " + str(shrinkfs_result))
                     else:
                         logger.log("check fs result failed for: " + str(device_path))
                 else:
@@ -318,7 +329,8 @@ def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption
                             crypt_item_to_update.dev_path = device_path
                             crypt_item_to_update.luks_header_path = luks_header_path
                             crypt_item_to_update.file_system = device_item.fstype
-                            # if the original mountpoint is empty, then leave it as None
+                            # if the original mountpoint is empty, then leave
+                            # it as None
                             if device_item.mountpoint == "" or device_item.mountpoint == None:
                                 crypt_item_to_update.mount_point = "None"
                             else:
