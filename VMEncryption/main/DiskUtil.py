@@ -162,7 +162,7 @@ class DiskUtil(object):
 
     def encrypt_disk(self, dev_path, passphrase_file, mapper_name, header_file):
         error = EncryptionError()
-        returnCode = self.luks_format(passphrase_file=passphrase_file, dev_path=dev_path, headerfile=header_file)
+        returnCode = self.luks_format(passphrase_file=passphrase_file, dev_path=dev_path, header_file=header_file)
         if(returnCode != CommonVariables.process_success):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_format_error
@@ -198,18 +198,13 @@ class DiskUtil(object):
         returnCode = shrinkfs_p.wait()
         return returnCode
 
-    def luks_format_without_header(self,passphrase_file,devpath):
-        pass
-
-    def luks_open_without_header(self,passphrase_file,devpath):
-        pass
     """
     return the return code of the process for error handling.
     """
-    def luks_format(self,passphrase_file,dev_path,headerfile):
+    def luks_format(self,passphrase_file,dev_path,header_file):
         self.hutil.log("dev path to cryptsetup luksFormat " + str(dev_path))
-        if(headerfile is not None):
-            cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + dev_path + ' --header ' + headerfile + ' -d ' + passphrase_file + ' -q'
+        if(header_file is not None):
+            cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + dev_path + ' --header ' + header_file + ' -d ' + passphrase_file + ' -q'
         else:
             cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + dev_path + ' -d ' + passphrase_file + ' -q'
         self.logger.log("cryptsetup_cmd is:" + cryptsetup_cmd)
@@ -223,7 +218,7 @@ class DiskUtil(object):
     """
     def luks_open(self,passphrase_file,dev_path,mapper_name,header_file):
         self.hutil.log("dev mapper name to cryptsetup luksOpen " + (mapper_name))
-        if(headerfile is not None):
+        if(header_file is not None):
             cryptsetup_cmd = self.patching.cryptsetup_path + ' luksOpen ' + dev_path + ' ' + mapper_name + ' --header ' + header_file + ' -d ' + passphrase_file + ' -q'
         else:
             cryptsetup_cmd = self.patching.cryptsetup_path + ' luksOpen ' + dev_path + ' ' + mapper_name + ' -d ' + passphrase_file + ' -q'
