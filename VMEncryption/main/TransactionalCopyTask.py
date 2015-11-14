@@ -112,9 +112,10 @@ class TransactionalCopyTask(object):
                 else:
                     return copy_result
 
-            for i in range(total_slice_size - 1, -1):
+            for i in range(0,total_slice_size):
                 copy_command = self.patching.dd_path
-                copy_result = self.copy_internal(copy_command=copy_command,from_device=origin_device_path,to_device=self.destination,skip=i,size=self.block_size)
+                skip_block = (total_slice_size - i - 1)
+                copy_result = self.copy_internal(copy_command=copy_command,from_device=origin_device_path,to_device=self.destination,skip=skip_block,size=self.block_size)
                 if(copy_result == CommonVariables.process_success):
                     self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,i)
                 else:
