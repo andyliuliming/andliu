@@ -38,21 +38,8 @@ class DiskUtil(object):
         self.ide_class_id = "{32412632-86cb-44a2-9b5c-50d1417354f5}"
         self.vmbus_sys_path = '/sys/bus/vmbus/devices'
 
-    def copy(self, source_dev_name, source_total_size, destination):
-        copy_task = TransactionalCopyTask(self.logger, source_dev_name=source_dev_name, copy_total_size=source_total_size, destination=destination, patching=self.patching,encryption_environment= self.encryption_environment)
-        mem_fs_result = copy_task.prepare_mem_fs()
-        if(mem_fs_result != CommonVariables.process_success):
-            return CommonVariables.copy_data_error
-
-        returnCode = copy_task.begin_copy()
-        copy_task.clear_mem_fs()
-        return returnCode
-
-    def copy(self, source_dev_name, source_total_size, destination, size):
-        """
-        if the size is used, then we sh
-        """
-        copy_task = TransactionalCopyTask(self.logger,source_dev_name=source_dev_name,copy_total_size=source_total_size,destination=destination,patching=self.patching,encryption_environment=encryption_environment)
+    def copy(self, source_dev_name, copy_total_size, destination,from_end=False):
+        copy_task = TransactionalCopyTask(self.logger, source_dev_name=source_dev_name, copy_total_size=copy_total_size, destination=destination, patching=self.patching,encryption_environment= self.encryption_environment,from_end=from_end)
         mem_fs_result = copy_task.prepare_mem_fs()
         if(mem_fs_result != CommonVariables.process_success):
             return CommonVariables.copy_data_error

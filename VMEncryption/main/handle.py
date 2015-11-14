@@ -297,6 +297,7 @@ def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption
                             copy_result = disk_util.copy(device_path,CommonVariables.default_block_size,tmpfile_created.file)
                             encrypt_error = disk_util.encrypt_disk(dev_path=device_path,passphrase_file=passphrase_file,mapper_name=mapper_name,header_file=None)
                             #TODO remove the tempfile created
+                            #disk_util.copy(source_dev_name=device_path,
                         else:
                             pass
                     else:
@@ -305,7 +306,7 @@ def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption
                     encrypt_error = disk_util.encrypt_disk(device_path, passphrase_file, mapper_name, luks_header_path)
                     if(encrypt_error.errorcode == CommonVariables.success):
                         logger.log("start copying data " + str(device_item))
-                        copy_result = disk_util.copy(device_item.name, device_item.size, device_mapper_path)
+                        copy_result = disk_util.copy(source_dev_name=device_item.name,copy_total_size= device_item.size,destination= device_mapper_path,from_end=False)
                         if(copy_result != CommonVariables.success):
                             error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
                             logger.log("the copying result is " + copy_result + " so skip the mounting")
@@ -316,9 +317,7 @@ def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption
                             crypt_item_to_update.dev_path = device_path
                             crypt_item_to_update.luks_header_path = luks_header_path
                             crypt_item_to_update.file_system = device_item.fstype
-                            # if the original mountpoint is empty, then leave
-                            # it as
-                            # None
+                            # if the original mountpoint is empty, then leave it as None
                             if device_item.mountpoint == "" or device_item.mountpoint == None:
                                 crypt_item_to_update.mount_point = "None"
                             else:
