@@ -119,6 +119,7 @@ class TransactionalCopyTask(object):
                     self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,i)
                 else:
                     return copy_result
+            return CommonVariables.process_success
         else:
             for i in range(0, total_slice_size):
                 copy_command = self.patching.dd_path
@@ -138,3 +139,4 @@ class TransactionalCopyTask(object):
                     self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,(total_slice_size + 1))
                 else:
                     return copy_result
+            return CommonVariables.process_success
