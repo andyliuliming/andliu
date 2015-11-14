@@ -183,7 +183,7 @@ class DiskUtil(object):
         return True
 
     def expand_fs(self,dev_path):
-        expandfs_cmd = self.patching.resize2fs_path + +" " + dev_path
+        expandfs_cmd = self.patching.resize2fs_path + " " + dev_path
         self.logger.log("expand_fs command is:" + expandfs_cmd)
         expandfs_cmd_args = shlex.split(expandfs_cmd)
         shrinkfs_p = Popen(expandfs_cmd_args)
