@@ -31,7 +31,7 @@ class CommonVariables:
     disk/file system related
     """
     default_block_size = 52428800
-    min_filesystem_size_support = 52428800*2
+    min_filesystem_size_support = 52428800*3
     default_file_system = 'ext4'
     default_mount_name = 'encrypted_disk'
     dev_mapper_root = '/dev/mapper/'

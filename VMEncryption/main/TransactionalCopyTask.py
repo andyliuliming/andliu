@@ -33,9 +33,14 @@ class TransactionalCopyTask(object):
     skip_source_size is in byte, skip_target_size is also in byte
     slice_size is in byte 50M
     """
-    def __init__(self,logger, device_item, destination, patching, encryption_environment,block_size=CommonVariables.default_block_size,skip_block=0,skip_target=0,from_end=False):
+    def __init__(self,logger, source_dev_name, copy_total_size, destination, patching, encryption_environment,\
+                    block_size=CommonVariables.default_block_size,skip_block=0,skip_target=0,from_end=False):
+        """
+        copy_total_size is in bytes.
+        """
         self.command_executer = CommandExecuter(logger)
-        self.device_item = device_item
+        self.source_dev_name = source_dev_name
+        self.source_total_size = copy_total_size
         self.destination = destination
         self.encryption_environment = encryption_environment
         self.from_end = from_end
@@ -44,8 +49,8 @@ class TransactionalCopyTask(object):
         self.skip_source_size = skip_block
         self.skip_target_size = skip_target
         self.block_size = block_size
-        self.slice_file_path = self.tmpfs_mount_point + "/slice_file"
         self.tmpfs_mount_point = "/mnt/azure_encrypt_tmpfs"
+        self.slice_file_path = self.tmpfs_mount_point + "/slice_file"
         self.transactional_copy_config = ConfigUtil(encryption_environment.azure_crypt_current_transactional_copy_path,'azure_crypt_copy_config',logger)
     
     def prepare_mem_fs(self):
@@ -84,15 +89,15 @@ class TransactionalCopyTask(object):
         """
         check the device_item size first, cut it 
         """
-        total_size = self.device_item.size
+        total_size = self.source_total_size
         last_slice_size = total_size % self.block_size
         total_slice_size = (total_size - last_slice_size) / self.block_size
 
-        origin_device_path = os.path.join("/dev/",self.device_item.name)
+        origin_device_path = os.path.join("/dev/",self.source_dev_name)
         returnCode = CommonVariables.success
 
         copy_command = None
-        self.transactional_copy_config.save_config(CommonVariables.CurrentDeviceNameKey,self.device_item.name)
+        self.transactional_copy_config.save_config(CommonVariables.CurrentDeviceNameKey,self.source_dev_name)
         self.transactional_copy_config.save_config(CommonVariables.CurrentSliceSizeKey,self.block_size)
         self.transactional_copy_config.save_config(CommonVariables.CurrentTotalSizeKey,(total_slice_size + 1))
         for i in range(0, total_slice_size):

@@ -287,22 +287,25 @@ def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption
                     #                                of=/dev/mapper/uuid bs=2M
                     #                                count=1
                     logger.log("this is the centos 6 serios, need special handling")
-                    check_fs_result = disk_util.check_fs(devpath=device_path)
+                    check_fs_result = disk_util.check_fs(devpath = device_path)
+                    luks_header_size = 4096 * 512
                     if(check_fs_result):
                         shrinkfs_result = disk_util.shrink_fs(device_path)
                         if(shrinkfs_result == CommonVariables.process_success):
                             tmpfile_created = tempfile.NamedTemporaryFile()
                             tmpfile_created.close()
-                            
+                            copy_result = disk_util.copy(device_path,CommonVariables.default_block_size,tmpfile_created.file)
+                            encrypt_error = disk_util.encrypt_disk(dev_path=device_path,passphrase_file=passphrase_file,mapper_name=mapper_name,header_file=None)
+                            #TODO remove the tempfile created
                         else:
                             pass
                     else:
-                        logger.log("check fs result failed for: "+str(device_path))
+                        logger.log("check fs result failed for: " + str(device_path))
                 else:
                     encrypt_error = disk_util.encrypt_disk(device_path, passphrase_file, mapper_name, luks_header_path)
                     if(encrypt_error.errorcode == CommonVariables.success):
                         logger.log("start copying data " + str(device_item))
-                        copy_result = disk_util.copy(device_item, device_mapper_path)
+                        copy_result = disk_util.copy(device_item.name, device_item.size, device_mapper_path)
                         if(copy_result != CommonVariables.success):
                             error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
                             logger.log("the copying result is " + copy_result + " so skip the mounting")

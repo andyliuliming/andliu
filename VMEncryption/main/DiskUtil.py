@@ -38,8 +38,21 @@ class DiskUtil(object):
         self.ide_class_id = "{32412632-86cb-44a2-9b5c-50d1417354f5}"
         self.vmbus_sys_path = '/sys/bus/vmbus/devices'
 
-    def copy(self, device_item, destination):
-        copy_task = TransactionalCopyTask(self.logger,device_item=device_item, destination=destination, patching=self.patching,encryption_environment= self.encryption_environment)
+    def copy(self, source_dev_name, source_total_size, destination):
+        copy_task = TransactionalCopyTask(self.logger, source_dev_name=source_dev_name, copy_total_size=source_total_size, destination=destination, patching=self.patching,encryption_environment= self.encryption_environment)
+        mem_fs_result = copy_task.prepare_mem_fs()
+        if(mem_fs_result != CommonVariables.process_success):
+            return CommonVariables.copy_data_error
+
+        returnCode = copy_task.begin_copy()
+        copy_task.clear_mem_fs()
+        return returnCode
+
+    def copy(self, source_dev_name, source_total_size, destination, size):
+        """
+        if the size is used, then we sh
+        """
+        copy_task = TransactionalCopyTask(self.logger,source_dev_name=source_dev_name,copy_total_size=source_total_size,destination=destination,patching=self.patching,encryption_environment=encryption_environment)
         mem_fs_result = copy_task.prepare_mem_fs()
         if(mem_fs_result != CommonVariables.process_success):
             return CommonVariables.copy_data_error
@@ -160,21 +173,21 @@ class DiskUtil(object):
             self.logger.log("result of make luks header result is " + str(returnCode))
             return self.encryption_environment.luks_header_path
 
-    def encrypt_disk(self, devpath, passphrase_file, mappername, headerfile):
+    def encrypt_disk(self, dev_path, passphrase_file, mapper_name, header_file):
         error = EncryptionError()
-        returnCode = self.luks_format(passphrase_file, devpath, headerfile)
+        returnCode = self.luks_format(passphrase_file=passphrase_file, dev_path=dev_path, headerfile=header_file)
         if(returnCode != CommonVariables.process_success):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_format_error
-            error.info = "luks format failed, devpath is " + str(devpath)
+            error.info = "luks format failed, devpath is " + str(dev_path)
             self.logger.log('cryptsetup luksFormat returnCode is ' + str(returnCode))
             return error
 
-        returnCode = self.luks_open(passphrase_file, devpath, mappername, headerfile)
+        returnCode = self.luks_open(passphrase_file=passphrase_file, dev_path=dev_path, mapper_name=mapper_name,header_file= header_file)
         if(returnCode != CommonVariables.process_success):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_open_error
-            error.info = "luks open failed, devpath is " + str(devpath) + " dev_mapper_name is " + str(mappername)
+            error.info = "luks open failed, devpath is " + str(dev_path) + " dev_mapper_name is " + str(mapper_name)
             self.logger.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
         return error
 
@@ -206,9 +219,9 @@ class DiskUtil(object):
     """
     return the return code of the process for error handling.
     """
-    def luks_format(self,passphrase_file,devpath,headerfile):
-        self.hutil.log("dev path to cryptsetup luksFormat " + str(devpath))
-        cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + devpath + ' --header ' + headerfile + ' -d ' + passphrase_file + ' -q'
+    def luks_format(self,passphrase_file,dev_path,headerfile):
+        self.hutil.log("dev path to cryptsetup luksFormat " + str(dev_path))
+        cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + dev_path + ' --header ' + headerfile + ' -d ' + passphrase_file + ' -q'
         self.logger.log("cryptsetup_cmd is:" + cryptsetup_cmd)
         cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
         cryptsetup_p = Popen(cryptsetup_cmd_args)
@@ -218,9 +231,9 @@ class DiskUtil(object):
     """
     return the return code of the process for error handling.
     """
-    def luks_open(self,passphrase_file,devpath,mappername,headerfile):
-        self.hutil.log("dev mapper name to cryptsetup luksOpen " + (mappername))
-        cryptsetup_cmd = self.patching.cryptsetup_path + ' luksOpen ' + devpath + ' ' + mappername + ' --header ' + headerfile + ' -d ' + passphrase_file + ' -q'
+    def luks_open(self,passphrase_file,dev_path,mapper_name,header_file):
+        self.hutil.log("dev mapper name to cryptsetup luksOpen " + (mapper_name))
+        cryptsetup_cmd = self.patching.cryptsetup_path + ' luksOpen ' + dev_path + ' ' + mapper_name + ' --header ' + header_file + ' -d ' + passphrase_file + ' -q'
         self.logger.log("cryptsetup_cmd is:" + cryptsetup_cmd)
         cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
         cryptsetup_p = Popen(cryptsetup_cmd_args)
