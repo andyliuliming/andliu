@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -18,14 +18,14 @@
 #
 # Requires Python 2.7+
 #
+import os
+import os.path
 class EncryptionEnvironment(object):
     """description of class"""
     def __init__(self):
-        self.encryption_config_path = '/etc/azure_crypt_config.ini'
-        self.azure_crypt_mount_config_path = '/etc/azure_crypt_mount'
-        self.azure_crypt_request_queue_path = '/etc/azure_crypt_request_queue.ini'
-        self.azure_crypt_current_transactional_copy_path = '/etc/azure_crypt_copy_progress.ini'
-        self.luks_header_path = '/azureluksheader'
-
-    def make_sure_config_exists(self):
-        pass
+        self.encryption_config_path = '/var/lib/azure_disk_encryption_config/'
+        self.encryption_config_file_path = os.path.join(self.encryption_config,'azure_crypt_config.ini')
+        self.azure_crypt_mount_config_path = os.path.join(self.encryption_config,'azure_crypt_mount')
+        self.azure_crypt_request_queue_path = os.path.join(self.encryption_config,'azure_crypt_request_queue.ini')
+        self.azure_crypt_current_transactional_copy_path = os.path.join(self.encryption_config,'azure_crypt_copy_progress.ini')
+        self.luks_header_path = os.path.join(self.encryption_config,'azureluksheader')

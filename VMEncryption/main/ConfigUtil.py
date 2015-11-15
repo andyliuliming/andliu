@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -28,19 +28,17 @@ class ConfigKeyValuePair(object):
         self.prop_value = prop_value
 
 class ConfigUtil(object):
-    """
-    this should not create the config file with path: config_file_path
-    """
     def __init__(self, config_file_path, section_name,logger):
+        """
+        this should not create the config file with path: config_file_path
+        """
         self.config_file_path = config_file_path
         self.logger = logger
         self.azure_crypt_config_section = section_name
     
     def config_file_exists(self):
         return os.path.exists(self.config_file_path)
-    """
-    save the config
-    """
+
     def save_config(self, prop_name, prop_value):
         #TODO make the operation an transaction.
         config = ConfigParser()
@@ -52,9 +50,7 @@ class ConfigUtil(object):
         config.set(self.azure_crypt_config_section, prop_name, prop_value)
         with open(self.config_file_path, 'wb') as configfile:
             config.write(configfile)
-    """
-    save the configs
-    """
+
     def save_configs(self, key_value_pairs):
         config = ConfigParser()
         if(os.path.exists(self.config_file_path)):
@@ -66,9 +62,7 @@ class ConfigUtil(object):
             config.set(self.azure_crypt_config_section, key_value_pair.prop_name, key_value_pair.prop_value)
         with open(self.config_file_path, 'wb') as configfile:
             config.write(configfile)
-    """
-    get the config
-    """
+
     def get_config(self,prop_name):
         # write the configs, the bek file name and so on.
         if(os.path.exists(self.config_file_path)):

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -55,11 +55,11 @@ def exit_without_status_report():
     sys.exit(0)
 
 def main():
-    global hutil,MyPatching,logger,encryptionEnvironment
+    global hutil,MyPatching,logger,encryption_environment
     HandlerUtil.LoggerInit('/var/log/waagent.log','/dev/stdout')
     HandlerUtil.waagent.Log("%s started to handle." % (CommonVariables.extension_name))
     
-    encryptionEnvironment = EncryptionEnvironment()
+    encryption_environment = EncryptionEnvironment()
     hutil = HandlerUtil.HandlerUtility(HandlerUtil.waagent.Log, HandlerUtil.waagent.Error, CommonVariables.extension_name)
     logger = BackupLogger(hutil)
     MyPatching = GetMyPatching(logger)
@@ -92,15 +92,20 @@ def enable():
     logger.log('enabling...')
 
     try:
-        encryption_config = EncryptionConfig(encryptionEnvironment, logger)
+        encryption_config = EncryptionConfig(encryption_environment, logger)
         existed_passphrase_file = None
         kek_secret_id_created = None
 
         """
         trying to mount the crypted items.
         """
-        disk_util = DiskUtil(hutil, MyPatching, logger, encryptionEnvironment)
+        disk_util = DiskUtil(hutil, MyPatching, logger, encryption_environment)
         bek_util = BekUtil(disk_util, logger)
+
+        #make sure the azure disk config path exists.
+        config_path_result = disk_util.make_sure_path_exists(encryption_environment.encryption_config_path)
+        if(config_path_result != CommonVariables.process_success):
+            logger.log("azure encryption path creation failed.")
         if(encryption_config.config_file_exists()):
             existed_passphrase_file = bek_util.get_bek_passphrase_file(encryption_config)
             if(existed_passphrase_file != None):
@@ -126,7 +131,7 @@ def enable():
                 #hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.passphrase_file_not_found),'The
                 #passphrase could not get.')
 
-        encryption_marker = EncryptionMark(logger, encryptionEnvironment)
+        encryption_marker = EncryptionMark(logger, encryption_environment)
         if encryption_marker.is_encryption_marked():
             # verify the encryption mark
             start_daemon()
@@ -351,7 +356,7 @@ def daemon():
         # Ensure the same configuration is executed only once
         # If the previous enable failed, we do not have retry logic here.
         # TODO Remount all
-        encryption_queue = EncryptionMark(logger, encryptionEnvironment)
+        encryption_queue = EncryptionMark(logger, encryption_environment)
         if(encryption_queue.is_encryption_marked()):
             logger.log("encryption is marked.")
         else:
@@ -360,9 +365,9 @@ def daemon():
         """
         search for the bek volume, then mount it:)
         """
-        disk_util = DiskUtil(hutil, MyPatching, logger, encryptionEnvironment)
+        disk_util = DiskUtil(hutil, MyPatching, logger, encryption_environment)
 
-        encryption_config = EncryptionConfig(encryptionEnvironment,logger)
+        encryption_config = EncryptionConfig(encryption_environment,logger)
         bek_passphrase_file = None
         """
         try to find the attached bek volume, and use the file to mount the crypted volumes,
@@ -401,7 +406,7 @@ def daemon():
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
         hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status, '1', 'Enable failed.')
     finally:
-        encryption_queue = EncryptionMark(logger, encryptionEnvironment)
+        encryption_queue = EncryptionMark(logger, encryption_environment)
         #TODO not remove it, backed it up.
         encryption_queue.clear_queue()
         logger.log("finally in daemon")
