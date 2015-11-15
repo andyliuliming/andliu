@@ -114,7 +114,7 @@ def enable():
                     for i in range(0, len(crypt_items)):
                         crypt_item = crypt_items[i]
 
-                        luks_open_result = disk_util.luks_open(existed_passphrase_file,crypt_item.dev_path,crypt_item.mapper_name,crypt_item.luks_header_path)
+                        luks_open_result = disk_util.luks_open(passphrase_file=existed_passphrase_file,dev_path=crypt_item.dev_path,mapper_name=crypt_item.mapper_name,header_file=crypt_item.luks_header_path)
                         logger.log("luks open result is " + str(luks_open_result))
                         if(crypt_item.mount_point != 'None'):
                             disk_util.mount_crypt_item(crypt_item, existed_passphrase_file)
@@ -237,7 +237,7 @@ def enable_encryption_format(passphrase, encryption_queue, disk_util):
                     disk_util.make_sure_path_exists(crypt_item_to_update.mount_point)
                     disk_util.update_crypt_item(crypt_item_to_update)
 
-                    mount_result = disk_util.mount_filesystem(encrypted_device_path, crypt_item_to_update.mount_point)
+                    mount_result = disk_util.mount_filesystem(dev_path=encrypted_device_path,mount_point=crypt_item_to_update.mount_point)
                     logger.log("mount result is " + str(mount_result))
                 else:
                     hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(encrypt_error.code),encrypt_error.info)
@@ -266,7 +266,7 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
             if(device_item.mountpoint != ""):
                 umount_status_code = disk_util.umount(device_item.mountpoint)
             if(umount_status_code != CommonVariables.success):
-                logger.log("error occured when do the umount for " + device_item.mountpoint + str(umount_status_code))
+                logger.log("error occured when do the umount for " + str(device_item.mountpoint) + str(umount_status_code))
             else:
                 encrypted_items.append(device_item.name)
                 mapper_name = str(uuid.uuid4())
