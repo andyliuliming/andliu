@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -201,9 +201,9 @@ def enable():
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
         hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,str(CommonVariables.unknown_error), 'Enable failed.')
 
-def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_util):
+def enable_encryption_format(passphrase, encryption_queue, disk_util):
     encryption_parameters = encryption_queue.encryptionDiskFormatQuery()
-    print(encryption_parameters)
+
     encryption_format_items = json.loads(encryption_parameters)
     for encryption_item in encryption_format_items:
         sdx_path = disk_util.query_dev_sdx_path_by_scsi_id(encryption_item["scsi"])
@@ -216,15 +216,17 @@ def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_
             if(device_item.fstype == "" and device_item.type == "disk"):
                 mapper_name = str(uuid.uuid4())
                 logger.log("encrypting " + str(device_item))
-                encrypt_error = disk_util.encrypt_disk(os.path.join("/dev/", device_item.name), passphrase, mapper_name, luks_header_path)
+                device_to_encrypt = os.path.join("/dev/", device_item.name)
+                encrypted_device_path = os.path.join(CommonVariables.dev_mapper_root,mapper_name)
+                encrypt_error = disk_util.encrypt_disk(device_to_encrypt, passphrase, mapper_name, header_file=None)
                 if(encrypt_error.errorcode == CommonVariables.success):
-                    # let customer specify it in the parameter
+                    #TODO: let customer specify it in the parameter
                     file_system = CommonVariables.default_file_system
-                    disk_util.format_disk("/dev/mapper/" + mapper_name, file_system)
+                    disk_util.format_disk(encrypted_device_path, file_system)
                     crypt_item_to_update = CryptItem()
                     crypt_item_to_update.mapper_name = mapper_name
-                    crypt_item_to_update.dev_path = os.path.join("/dev/", device_item.name)
-                    crypt_item_to_update.luks_header_path = luks_header_path
+                    crypt_item_to_update.dev_path = device_to_encrypt
+                    crypt_item_to_update.luks_header_path = "None"
                     crypt_item_to_update.file_system = file_system
 
                     if(encryption_item["name"] is not None):
@@ -235,14 +237,14 @@ def enable_encryption_format(passphrase,luks_header_path,encryption_queue, disk_
                     disk_util.make_sure_path_exists(crypt_item_to_update.mount_point)
                     disk_util.update_crypt_item(crypt_item_to_update)
 
-                    mount_result = disk_util.mount_filesystem(os.path.join(CommonVariables.dev_mapper_root,mapper_name), crypt_item_to_update.mount_point)
+                    mount_result = disk_util.mount_filesystem(encrypted_device_path, crypt_item_to_update.mount_point)
                     logger.log("mount result is " + str(mount_result))
                 else:
                     hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(encrypt_error.code),encrypt_error.info)
             else:
                 logger.log("the item fstype is not empty or the type is not a disk")
 
-def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption_queue, disk_util,bek_util):
+def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,bek_util):
     logger.log("executing the enableencryption_all_inplace command.")
     device_items = disk_util.get_device_items(None)
     encrypted_items = []
@@ -320,7 +322,8 @@ def enable_encryption_all_in_place(passphrase_file, luks_header_path, encryption
                     else:
                         logger.log("check fs result failed for: " + str(device_path))
                 else:
-                    encrypt_error = disk_util.encrypt_disk(device_path, passphrase_file, mapper_name, luks_header_path)
+                    luks_header_file=disk_util.create_luks_header(mapper_name)
+                    encrypt_error = disk_util.encrypt_disk(device_path, passphrase_file, mapper_name,header_file=luks_header_file)
                     if(encrypt_error.errorcode == CommonVariables.success):
                         logger.log("start copying data " + str(device_item))
                         copy_result = disk_util.copy(source_dev_name=device_item.name,copy_total_size= device_item.size,destination= device_mapper_path,from_end=False)
@@ -389,13 +392,11 @@ def daemon():
             """
             if the key is not created successfully, the encrypted file system should not 
             """
-            logger.log("creating luks header")
-            luks_header_path = disk_util.create_luks_header()
 
             if(encryption_queue.current_command() == CommonVariables.EnableEncryption):
-                enable_encryption_all_in_place(bek_passphrase_file, luks_header_path, encryption_queue, disk_util, bek_util)
+                enable_encryption_all_in_place(bek_passphrase_file, encryption_queue, disk_util, bek_util)
             elif(encryption_queue.current_command() == CommonVariables.EnableEncryptionFormat):
-                enable_encryption_format(bek_passphrase_file, luks_header_path, encryption_queue, disk_util)
+                enable_encryption_format(bek_passphrase_file, encryption_queue, disk_util)
             else:
                 #TODO we should exit.
                 logger.log("command " + str(encryption_queue.current_command()) + " not supported")

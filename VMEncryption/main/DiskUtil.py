@@ -150,15 +150,16 @@ class DiskUtil(object):
             wf.write(new_mount_content)
         # <target name> <source device> <key file> <options>
 
-    def create_luks_header(self):
-        if(os.path.exists(self.encryption_environment.luks_header_path)):
-            return self.encryption_environment.luks_header_path
+    def create_luks_header(self,mapper_name):
+        luks_header_file_path = self.encryption_environment.luks_header_base_path + mapper_name
+        if(os.path.exists(luks_header_file_path)):
+            return luks_header_file_path
         else:
-            commandToExecute = self.patching.bash_path + ' -c "' + self.patching.dd_path + ' if=/dev/zero bs=33554432 count=1 > ' + self.encryption_environment.luks_header_path + '"'
+            commandToExecute = self.patching.bash_path + ' -c "' + self.patching.dd_path + ' if=/dev/zero bs=33554432 count=1 > ' + luks_header_file_path + '"'
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()
             self.logger.log("result of make luks header result is " + str(returnCode))
-            return self.encryption_environment.luks_header_path
+            return luks_header_file_path
 
     def encrypt_disk(self, dev_path, passphrase_file, mapper_name, header_file):
         error = EncryptionError()
