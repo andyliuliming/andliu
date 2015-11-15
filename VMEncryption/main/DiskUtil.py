@@ -130,7 +130,10 @@ class DiskUtil(object):
                         crypt_item = CryptItem()
                         crypt_item.mapper_name = crypt_mount_item_properties[0]
                         crypt_item.dev_path = crypt_mount_item_properties[1]
-                        crypt_item.luks_header_path = crypt_mount_item_properties[2]
+                        header_file_path = None
+                        if(crypt_mount_item_properties[2] != "None"):
+                            header_file_path = crypt_mount_item_properties[2]
+                        crypt_item.luks_header_path = header_file_path
                         crypt_item.mount_point = crypt_mount_item_properties[3]
                         crypt_item.file_system = crypt_mount_item_properties[4]
                         crypt_items.append(crypt_item)
