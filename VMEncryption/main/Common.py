@@ -77,6 +77,13 @@ class CommonVariables:
     CurrentTotalSizeKey = 'total_size'
     CurrentSliceIndexKey = 'current_slice_index'
 
+    """
+    logs related
+    """
+    InfoLevel = 'Info'
+    WarningLevel = 'Warning'
+    ErrorLevel = 'Error'
+
     # error code
     extension_success_status = 'success'
     extension_error_status = 'error'

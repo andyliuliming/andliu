@@ -171,7 +171,7 @@ class DiskUtil(object):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_format_error
             error.info = "luks format failed, devpath is " + str(dev_path)
-            self.logger.log('cryptsetup luksFormat returnCode is ' + str(returnCode))
+            self.logger.log(msg=('cryptsetup luksFormat returnCode is ' + str(returnCode)),level=CommonVariables.ErrorLevel)
             return error
 
         returnCode = self.luks_open(passphrase_file=passphrase_file, dev_path=dev_path, mapper_name=mapper_name, header_file= header_file)
@@ -179,12 +179,12 @@ class DiskUtil(object):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_open_error
             error.info = "luks open failed, devpath is " + str(dev_path) + " dev_mapper_name is " + str(mapper_name)
-            self.logger.log('cryptsetup luksOpen returnCode is ' + str(returnCode))
+            self.logger.log(msg=('cryptsetup luksOpen returnCode is ' + str(returnCode)),level=CommonVariables.ErrorLevel)
         return error
 
     def check_fs(self,dev_path):
         self.logger.log("checking fs:" + str(dev_path))
-        check_fs_cmd = self.patching.self.e2fsck_path + " -f " + dev_path
+        check_fs_cmd = self.patching.e2fsck_path + " -f " + dev_path
         expandfs_cmd_args = shlex.split(expandfs_cmd)
         expandfs_p = Popen(expandfs_cmd_args)
         returnCode = expandfs_p.wait()

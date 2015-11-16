@@ -106,7 +106,7 @@ def enable():
         #make sure the azure disk config path exists.
         config_path_result = disk_util.make_sure_path_exists(encryption_environment.encryption_config_path)
         if(config_path_result != CommonVariables.process_success):
-            logger.log("azure encryption path creation failed.")
+            logger.log(msg="azure encryption path creation failed.",level=CommonVariables.ErrorLevel)
         if(encryption_config.config_file_exists()):
             existed_passphrase_file = bek_util.get_bek_passphrase_file(encryption_config)
             if(existed_passphrase_file != None):
@@ -127,13 +127,13 @@ def enable():
                         if(crypt_item.mount_point != 'None'):
                             disk_util.mount_crypt_item(crypt_item, existed_passphrase_file)
                         else:
-                            logger.log('mount_point is None so skipping mount for the item ' + str(crypt_item))
+                            logger.log(msg=('mount_point is None so skipping mount for the item ' + str(crypt_item)),level=CommonVariables.WarningLevel)
                 bek_util.umount_azure_passhprase(encryption_config)
             else:
                 """
                 the config exists, and the passphrase not get is a error case.
                 """
-                logger.log("the config file exists, but we could not get the passphrase according to it.")
+                logger.log(msg="the config file exists, but we could not get the passphrase according to it.",level=CommonVariables.ErrorLevel)
                 bek_util.umount_azure_passhprase(encryption_config)
                 exit_without_status_report()
                 #hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.passphrase_file_not_found),'The
@@ -217,7 +217,7 @@ def enable_encryption_format(passphrase, encryption_queue, disk_util):
         sdx_path = disk_util.query_dev_sdx_path_by_scsi_id(encryption_item["scsi"])
         devices = disk_util.get_device_items(sdx_path)
         if(len(devices) != 1):
-            logger.log("the device with scsi number:" + str(encryption_item["scsi"]) + " have more than one sub device. so skip it.")
+            logger.log(msg=("the device with scsi number:" + str(encryption_item["scsi"]) + " have more than one sub device. so skip it."),level=CommonVariables.WarningLevel)
             continue
         else:
             device_item = devices[0]
@@ -312,44 +312,47 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                     #                                dd if=/tmp/file1
                     #                                of=/dev/mapper/uuid bs=2M
                     #                                count=1
-                    logger.log("this is the centos 6 serios, need special handling.")
+                    logger.log(msg="this is the centos 6 serios, need special handling.",level=CommonVariables.WarningLevel)
                     # we only support ext file systems.
                     if(not device_item.fstype.lower().startswith("ext")):
-                        logger.log("we only support ext file systems for centos 6.5/6.6/6.7")
+                        logger.log(msg="we only support ext file systems for centos 6.5/6.6/6.7",level=CommonVariables.WarningLevel)
                         continue
                     check_fs_result = disk_util.check_fs(dev_path = device_path)
                     if(check_fs_result != CommonVariables.process_success):
-                        logger.log("check fs result failed with code " + check_fs_result + " for: " + str(device_path))
+                        logger.log(msg=("check fs result failed with code " + check_fs_result + " for: " + str(device_path)),level=CommonVariables.ErrorLevel)
                         continue
                     luks_header_size = 4096 * 512
                     shrinkfs_result = disk_util.shrink_fs(device_path)
                     if(shrinkfs_result != CommonVariables.process_success):
-                        logger.log("shrink file system failed, return code is: " + str(shrinkfs_result))
+                        logger.log(msg=("shrink file system failed, return code is: " + str(shrinkfs_result)),level=CommonVariables.ErrorLevel)
                         continue
                     tmpfile_created = tempfile.NamedTemporaryFile()
                     tmpfile_created.close()
                     #TODO: the copy progress file seems not cleared.
                     copy_result = disk_util.copy(source_dev_name=device_path,copy_total_size=CommonVariables.default_block_size,destination = tmpfile_created.name)
-                    if(copy_result == CommonVariables.process_success):
-                        encrypt_error = disk_util.encrypt_disk(dev_path=device_path,passphrase_file=passphrase_file,mapper_name=mapper_name,header_file=None)
-                        # get the luks_header_size
-                        if(encrypt_error.code == CommonVariables.success):
-                            copy_result = disk_util.copy(source_dev_name=device_path,copy_total_size=(device_item.size - luks_header_size),destination=device_mapper_path,from_end=True)
-                            if(copy_result == CommonVariables.process_success):
-                                copy_result = disk_util.copy(tmpfile_created.name,CommonVariables.default_block_size,device_mapper_path,from_end=False)
-                                expand_fs_result = disk_util.expand_fs(dev_path=device_mapper_path)
-                                logger.log("expand fs result is: " + str(expand_fs_result))
-                            else:
-                                logger.log("copy the main content block failed, return code is: " + str(copy_result))
-                        else:
-                            logger.log("encrypt file system failed.")
-                    else:
-                        logger.log("copy the header block failed, return code is: " + str(copy_result))
+
+                    if(copy_result != CommonVariables.process_success):
+                        logger.log(msg=("copy the header block failed, return code is: " + str(copy_result)),level=CommonVariables.ErrorLevel)
+                        continue
+                    encrypt_error = disk_util.encrypt_disk(dev_path=device_path,passphrase_file=passphrase_file,mapper_name=mapper_name,header_file=None)
+                    # get the luks_header_size
+                    if(encrypt_error.code == CommonVariables.success):
+                        logger.log(msg="encrypt file system failed.",level=CommonVariables.ErrorLevel)
+                        continue
+
+                    copy_result = disk_util.copy(source_dev_name=device_path,copy_total_size=(device_item.size - luks_header_size),destination=device_mapper_path,from_end=True)
+                    if(copy_result != CommonVariables.process_success):
+                        logger.log(msg=("copy the main content block failed, return code is: " + str(copy_result)),level=CommonVariables.ErrorLevel)
+                        continue
+                    copy_result = disk_util.copy(tmpfile_created.name, CommonVariables.default_block_size, device_mapper_path, from_end=False)
+                    expand_fs_result = disk_util.expand_fs(dev_path=device_mapper_path)
+                    if(expand_fs_result != CommonVariables.process_success):
+                        logger.log(msg=("expand fs result is: " + str(expand_fs_result)),level=CommonVariables.ErrorLevel)
                 else:
                     luks_header_file = disk_util.create_luks_header(mapper_name)
                     encrypt_error = None
-                    #walkaround for the centos 7.0
                     try:
+                        #walkaround for the centos 7.0
                         se_linux_status = encryption_environment.get_se_linux()
                         if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
                             if(se_linux_status.lower() == 'enforcing'):
@@ -364,8 +367,9 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                         copy_result = disk_util.copy(source_dev_name=device_item.name,copy_total_size= device_item.size,destination= device_mapper_path,from_end=False)
                         if(copy_result != CommonVariables.success):
                             error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
-                            logger.log("the copying result is " + copy_result + " so skip the mounting")
-                            hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.copy_data_error), error_message)
+                            logger.log(msg=("the copying result is " + copy_result + " so skip the mounting"),level=CommonVariables.ErrorLevel)
+                            #hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.copy_data_error), error_message)
+                            continue
                         else:
                             crypt_item_to_update = CryptItem()
                             crypt_item_to_update.mapper_name = mapper_name
@@ -385,8 +389,9 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                             else:
                                 logger.log("the crypt_item_to_update.mount_point is None, so we do not mount it.")
                     else:
-                        logger.log("the encrypton for " + str(device_item) + " failed")
-                        hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(encrypt_error.code),encrypt_error.info)
+                        logger.log(msg=("the encrypton for " + str(device_item) + " failed"),level=CommonVariables.ErrorLevel)
+                        continue
+                        #hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(encrypt_error.code),encrypt_error.info)
 
 def daemon():
     hutil.do_parse_context('Executing')
