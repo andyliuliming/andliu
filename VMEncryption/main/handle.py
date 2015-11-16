@@ -113,7 +113,6 @@ def enable():
                 if(crypt_items is not None):
                     for i in range(0, len(crypt_items)):
                         crypt_item = crypt_items[i]
-
                         luks_open_result = disk_util.luks_open(passphrase_file=existed_passphrase_file,dev_path=crypt_item.dev_path,mapper_name=crypt_item.mapper_name,header_file=crypt_item.luks_header_path)
                         logger.log("luks open result is " + str(luks_open_result))
                         if(crypt_item.mount_point != 'None'):
@@ -339,7 +338,7 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                             crypt_item_to_update = CryptItem()
                             crypt_item_to_update.mapper_name = mapper_name
                             crypt_item_to_update.dev_path = device_path
-                            crypt_item_to_update.luks_header_path = luks_header_path
+                            crypt_item_to_update.luks_header_path = luks_header_file
                             crypt_item_to_update.file_system = device_item.fstype
                             # if the original mountpoint is empty, then leave
                             # it as None
