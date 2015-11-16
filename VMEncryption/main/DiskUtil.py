@@ -184,7 +184,11 @@ class DiskUtil(object):
 
     def check_fs(self,dev_path):
         self.logger.log("checking fs:" + str(dev_path))
-        return True
+        check_fs_cmd = self.patching.self.e2fsck_path + " -f " + dev_path
+        expandfs_cmd_args = shlex.split(expandfs_cmd)
+        expandfs_p = Popen(expandfs_cmd_args)
+        returnCode = expandfs_p.wait()
+        return returnCode
 
     def expand_fs(self,dev_path):
         expandfs_cmd = self.patching.resize2fs_path + " " + dev_path

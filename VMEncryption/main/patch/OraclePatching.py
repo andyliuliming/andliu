@@ -41,6 +41,7 @@ class OraclePatching(redhatPatching):
         self.blkid_path = '/usr/bin/blkid'
         self.cryptsetup_path = '/usr/sbin/cryptsetup'
         self.dd_path = '/usr/bin/dd'
+        self.e2fsck_path = '/sbin/e2fsck'
         self.echo_path = '/usr/bin/echo'
         self.lsblk_path = '/usr/bin/lsblk'
         self.lsscsi_path = '/usr/bin/lsscsi'

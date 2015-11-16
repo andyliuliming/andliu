@@ -42,6 +42,7 @@ class redhatPatching(AbstractPatching):
         self.blkid_path = '/usr/bin/blkid'
         self.cryptsetup_path = '/usr/sbin/cryptsetup'
         self.dd_path = '/usr/bin/dd'
+        self.e2fsck_path = '/sbin/e2fsck'
         self.echo_path = '/usr/bin/echo'
         self.lsblk_path = '/usr/bin/lsblk'
         self.lsscsi_path = '/usr/bin/lsscsi'
@@ -55,9 +56,3 @@ class redhatPatching(AbstractPatching):
         common_extras = ['cryptsetup','lsscsi','gdisk','udevadm']
         for extra in common_extras:
             self.logger.log("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
-
-        #if(paras.filesystem == "btrfs"):
-        #    extras = ['btrfs-tools']
-        #    for extra in extras:
-        #        self.logger.log("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
-        #pass

@@ -293,36 +293,40 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                     #                                dd if=/tmp/file1
                     #                                of=/dev/mapper/uuid bs=2M
                     #                                count=1
-                    logger.log("this is the centos 6 serios, need special handling")
+                    logger.log("this is the centos 6 serios, need special handling.")
+                    # we only support ext file systems.
+                    if(not device_item.fstype.lower().startswith("ext")):
+                        logger.log("we only support ext file systems for centos 6.5/6.6/6.7")
+                        continue
                     check_fs_result = disk_util.check_fs(dev_path = device_path)
+                    if(check_fs_result != CommonVariables.process_success):
+                        logger.log("check fs result failed with code " + check_fs_result + " for: " + str(device_path)
+                        continue
                     luks_header_size = 4096 * 512
-                    if(check_fs_result):
-                        shrinkfs_result = disk_util.shrink_fs(device_path)
-                        if(shrinkfs_result == CommonVariables.process_success):
-                            tmpfile_created = tempfile.NamedTemporaryFile()
-                            tmpfile_created.close()
-                            copy_result = disk_util.copy(source_dev_name=device_path,copy_total_size=CommonVariables.default_block_size,destination = tmpfile_created.name)
+                    shrinkfs_result = disk_util.shrink_fs(device_path)
+                    if(shrinkfs_result != CommonVariables.process_success):
+                        logger.log("shrink file system failed, return code is: " + str(shrinkfs_result))
+                        continue
+                    tmpfile_created = tempfile.NamedTemporaryFile()
+                    tmpfile_created.close()
+                    #TODO: the copy progress file seems not cleared.
+                    copy_result = disk_util.copy(source_dev_name=device_path,copy_total_size=CommonVariables.default_block_size,destination = tmpfile_created.name)
+                    if(copy_result == CommonVariables.process_success):
+                        encrypt_error = disk_util.encrypt_disk(dev_path=device_path,passphrase_file=passphrase_file,mapper_name=mapper_name,header_file=None)
+                        if(encrypt_error.code == CommonVariables.success):
+                            copy_result = disk_util.copy(source_dev_name=device_path,copy_total_size=(device_item.size - luks_header_size),destination=device_mapper_path,from_end=True)
                             if(copy_result == CommonVariables.process_success):
-                                encrypt_error = disk_util.encrypt_disk(dev_path=device_path,passphrase_file=passphrase_file,mapper_name=mapper_name,header_file=None)
-                                if(encrypt_error.code == CommonVariables.success):
-                                    copy_result = disk_util.copy(source_dev_name=device_path,copy_total_size=(device_item.size - luks_header_size),destination=device_mapper_path,from_end=True)
-                                    if(copy_result == CommonVariables.process_success):
-                                        copy_result = disk_util.copy(tmpfile_created.name,CommonVariables.default_block_size,device_mapper_path,from_end=False)
-                                        expand_fs_result = disk_util.expand_fs(dev_path=device_mapper_path)
-                                        logger.log("expand fs result is: " + str(expand_fs_result))
-                                    else:
-                                        logger.log("copy the main content block failed, return code is: " + str(copy_result))
-                                else:
-                                    logger.log("encrypt file system failed.")
+                                copy_result = disk_util.copy(tmpfile_created.name,CommonVariables.default_block_size,device_mapper_path,from_end=False)
+                                expand_fs_result = disk_util.expand_fs(dev_path=device_mapper_path)
+                                logger.log("expand fs result is: " + str(expand_fs_result))
                             else:
-                                logger.log("copy the header block failed, return code is: " + str(copy_result))
-                            #TODO remove the tempfile created
+                                logger.log("copy the main content block failed, return code is: " + str(copy_result))
                         else:
-                            logger.log("shrink file system failed, return code is: " + str(shrinkfs_result))
+                            logger.log("encrypt file system failed.")
                     else:
-                        logger.log("check fs result failed for: " + str(device_path))
+                        logger.log("copy the header block failed, return code is: " + str(copy_result))
                 else:
-                    luks_header_file=disk_util.create_luks_header(mapper_name)
+                    luks_header_file = disk_util.create_luks_header(mapper_name)
                     encrypt_error = disk_util.encrypt_disk(device_path, passphrase_file, mapper_name,header_file=luks_header_file)
                     if(encrypt_error.errorcode == CommonVariables.success):
                         logger.log("start copying data " + str(device_item))

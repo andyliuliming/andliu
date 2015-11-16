@@ -42,6 +42,7 @@ class UbuntuPatching(AbstractPatching):
         self.blkid_path = '/sbin/blkid'
         self.cryptsetup_path = '/sbin/cryptsetup'
         self.dd_path = '/bin/dd'
+        self.e2fsck_path = '/sbin/e2fsck'
         self.echo_path = '/bin/echo'
         self.lsblk_path = '/bin/lsblk'
         self.lsscsi_path = '/usr/bin/lsscsi'
