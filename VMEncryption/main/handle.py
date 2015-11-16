@@ -64,7 +64,7 @@ def main():
     MyPatching = GetMyPatching(logger)
     hutil.patching = MyPatching
     
-    encryption_environment = EncryptionEnvironment(MyPatching)
+    encryption_environment = EncryptionEnvironment(patching=MyPatching,logger=logger)
     if MyPatching == None:
         hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.os_not_supported), 'the os is not supported')
 
@@ -114,8 +114,16 @@ def enable():
                 if(crypt_items is not None):
                     for i in range(0, len(crypt_items)):
                         crypt_item = crypt_items[i]
+                        #add walkarounf for the centos 7.0
+                        se_linux_status = encryption_environment.get_se_linux()
+                        if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
+                            if(se_linux_status.lower() == 'enforcing'):
+                                encryption_environment.disable_se_linux()
                         luks_open_result = disk_util.luks_open(passphrase_file=existed_passphrase_file,dev_path=crypt_item.dev_path,mapper_name=crypt_item.mapper_name,header_file=crypt_item.luks_header_path)
                         logger.log("luks open result is " + str(luks_open_result))
+                        if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
+                            if(se_linux_status.lower() == 'enforcing'):
+                                encryption_environment.enable_se_linux()
                         if(crypt_item.mount_point != 'None'):
                             disk_util.mount_crypt_item(crypt_item, existed_passphrase_file)
                         else:
@@ -222,13 +230,13 @@ def enable_encryption_format(passphrase, encryption_queue, disk_util):
                 encrypt_error = None
                 try:
                     se_linux_status = encryption_environment.get_se_linux()
-                    if(MyPatching.distro_info[0].lower()=='centos' and MyPatching.distro_info[1].startswith('7.0')):
-                        if(se_linux_status.lower()=='enforcing'):
+                    if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
+                        if(se_linux_status.lower() == 'enforcing'):
                             encryption_environment.disable_se_linux()
                     encrypt_error = disk_util.encrypt_disk(device_to_encrypt, passphrase, mapper_name, header_file=None)
                 finally:
-                    if(MyPatching.distro_info[0].lower()=='centos' and MyPatching.distro_info[1].startswith('7.0')):
-                        if(se_linux_status.lower()=='enforcing'):
+                    if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
+                        if(se_linux_status.lower() == 'enforcing'):
                             encryption_environment.enable_se_linux()
                 if(encrypt_error is not None and encrypt_error.errorcode == CommonVariables.success):
                     #TODO: let customer specify it in the parameter
@@ -343,12 +351,12 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                     #walkaround for the centos 7.0
                     try:
                         se_linux_status = encryption_environment.get_se_linux()
-                        if(MyPatching.distro_info[0].lower()=='centos' and MyPatching.distro_info[1].startswith('7.0')):
+                        if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
                             if(se_linux_status.lower() == 'enforcing'):
                                 encryption_environment.disable_se_linux()
                         encrypt_error = disk_util.encrypt_disk(device_path, passphrase_file, mapper_name,header_file=luks_header_file)
                     finally:
-                        if(MyPatching.distro_info[0].lower()=='centos' and MyPatching.distro_info[1].startswith('7.0')):
+                        if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
                             if(se_linux_status.lower() == 'enforcing'):
                                 encryption_environment.enable_se_linux()
                     if(encrypt_error is not None and encrypt_error.errorcode == CommonVariables.success):

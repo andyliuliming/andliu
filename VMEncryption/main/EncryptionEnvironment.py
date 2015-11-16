@@ -24,8 +24,9 @@ import subprocess
 from subprocess import *
 class EncryptionEnvironment(object):
     """description of class"""
-    def __init__(self,patching):
+    def __init__(self,patching,logger):
         self.patching = patching
+        self.logger = logger
         self.encryption_config_path = '/var/lib/azure_disk_encryption_config/'
         self.encryption_config_file_path = os.path.join(self.encryption_config_path,'azure_crypt_config.ini')
         self.azure_crypt_mount_config_path = os.path.join(self.encryption_config_path,'azure_crypt_mount')
@@ -39,11 +40,13 @@ class EncryptionEnvironment(object):
         return identity.strip().lower()
 
     def disable_se_linux(self):
+        self.logger.log("disabling se linux")
         proc = Popen([self.patching.setenforce_path,'0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         returnCode = proc.wait()
         return returnCode
 
     def enable_se_linux(self):
+        self.logger.log("enabling se linux")
         proc = Popen([self.patching.setenforce_path,'1'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         returnCode = proc.wait()
         return returnCode
