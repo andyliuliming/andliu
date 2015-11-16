@@ -64,8 +64,7 @@ def main():
     MyPatching = GetMyPatching(logger)
     hutil.patching = MyPatching
     
-    encryption_environment = EncryptionEnvironment()
-    encryption_environment.patching = MyPatching
+    encryption_environment = EncryptionEnvironment(MyPatching)
     if MyPatching == None:
         hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.os_not_supported), 'the os is not supported')
 
