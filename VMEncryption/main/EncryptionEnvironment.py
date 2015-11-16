@@ -20,12 +20,30 @@
 #
 import os
 import os.path
+import subprocess
+from subprocess import *
 class EncryptionEnvironment(object):
     """description of class"""
-    def __init__(self):
+    def __init__(self,patching):
+        self.patching = patching
         self.encryption_config_path = '/var/lib/azure_disk_encryption_config/'
         self.encryption_config_file_path = os.path.join(self.encryption_config_path,'azure_crypt_config.ini')
         self.azure_crypt_mount_config_path = os.path.join(self.encryption_config_path,'azure_crypt_mount')
         self.azure_crypt_request_queue_path = os.path.join(self.encryption_config_path,'azure_crypt_request_queue.ini')
         self.azure_crypt_current_transactional_copy_path = os.path.join(self.encryption_config_path,'azure_crypt_copy_progress.ini')
         self.luks_header_base_path = os.path.join(self.encryption_config_path,'azureluksheader')
+
+    def get_se_linux(self):
+        proc = Popen([self.patching.getenforce_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        identity, err = proc.communicate()
+        return identity.strip().lower()
+
+    def disable_se_linux(self):
+        proc = Popen([self.patching.setenforce_path,'0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        returnCode = proc.wait()
+        return returnCode
+
+    def enable_se_linux(self):
+        proc = Popen([self.patching.setenforce_path,'1'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        returnCode = proc.wait()
+        return returnCode

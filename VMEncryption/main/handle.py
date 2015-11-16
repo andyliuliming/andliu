@@ -59,11 +59,13 @@ def main():
     HandlerUtil.LoggerInit('/var/log/waagent.log','/dev/stdout')
     HandlerUtil.waagent.Log("%s started to handle." % (CommonVariables.extension_name))
     
-    encryption_environment = EncryptionEnvironment()
     hutil = HandlerUtil.HandlerUtility(HandlerUtil.waagent.Log, HandlerUtil.waagent.Error, CommonVariables.extension_name)
     logger = BackupLogger(hutil)
     MyPatching = GetMyPatching(logger)
     hutil.patching = MyPatching
+    
+    encryption_environment = EncryptionEnvironment()
+    encryption_environment.patching = MyPatching
     if MyPatching == None:
         hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.os_not_supported), 'the os is not supported')
 
@@ -217,8 +219,19 @@ def enable_encryption_format(passphrase, encryption_queue, disk_util):
                 logger.log("encrypting " + str(device_item))
                 device_to_encrypt = os.path.join("/dev/", device_item.name)
                 encrypted_device_path = os.path.join(CommonVariables.dev_mapper_root,mapper_name)
-                encrypt_error = disk_util.encrypt_disk(device_to_encrypt, passphrase, mapper_name, header_file=None)
-                if(encrypt_error.errorcode == CommonVariables.success):
+                #TODO add walkaround
+                encrypt_error = None
+                try:
+                    se_linux_status = encryption_environment.get_se_linux()
+                    if(MyPatching.distro_info[0].lower()=='centos' and MyPatching.distro_info[1].startswith('7.0')):
+                        if(se_linux_status.lower()=='enforcing'):
+                            encryption_environment.disable_se_linux()
+                    encrypt_error = disk_util.encrypt_disk(device_to_encrypt, passphrase, mapper_name, header_file=None)
+                finally:
+                    if(MyPatching.distro_info[0].lower()=='centos' and MyPatching.distro_info[1].startswith('7.0')):
+                        if(se_linux_status.lower()=='enforcing'):
+                            encryption_environment.enable_se_linux()
+                if(encrypt_error is not None and encrypt_error.errorcode == CommonVariables.success):
                     #TODO: let customer specify it in the parameter
                     file_system = CommonVariables.default_file_system
                     disk_util.format_disk(encrypted_device_path, file_system)
@@ -312,6 +325,7 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                     copy_result = disk_util.copy(source_dev_name=device_path,copy_total_size=CommonVariables.default_block_size,destination = tmpfile_created.name)
                     if(copy_result == CommonVariables.process_success):
                         encrypt_error = disk_util.encrypt_disk(dev_path=device_path,passphrase_file=passphrase_file,mapper_name=mapper_name,header_file=None)
+                        # get the luks_header_size
                         if(encrypt_error.code == CommonVariables.success):
                             copy_result = disk_util.copy(source_dev_name=device_path,copy_total_size=(device_item.size - luks_header_size),destination=device_mapper_path,from_end=True)
                             if(copy_result == CommonVariables.process_success):
@@ -326,8 +340,19 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                         logger.log("copy the header block failed, return code is: " + str(copy_result))
                 else:
                     luks_header_file = disk_util.create_luks_header(mapper_name)
-                    encrypt_error = disk_util.encrypt_disk(device_path, passphrase_file, mapper_name,header_file=luks_header_file)
-                    if(encrypt_error.errorcode == CommonVariables.success):
+                    encrypt_error = None
+                    #walkaround for the centos 7.0
+                    try:
+                        se_linux_status = encryption_environment.get_se_linux()
+                        if(MyPatching.distro_info[0].lower()=='centos' and MyPatching.distro_info[1].startswith('7.0')):
+                            if(se_linux_status.lower() == 'enforcing'):
+                                encryption_environment.disable_se_linux()
+                        encrypt_error = disk_util.encrypt_disk(device_path, passphrase_file, mapper_name,header_file=luks_header_file)
+                    finally:
+                        if(MyPatching.distro_info[0].lower()=='centos' and MyPatching.distro_info[1].startswith('7.0')):
+                            if(se_linux_status.lower() == 'enforcing'):
+                                encryption_environment.enable_se_linux()
+                    if(encrypt_error is not None and encrypt_error.errorcode == CommonVariables.success):
                         logger.log("start copying data " + str(device_item))
                         copy_result = disk_util.copy(source_dev_name=device_item.name,copy_total_size= device_item.size,destination= device_mapper_path,from_end=False)
                         if(copy_result != CommonVariables.success):

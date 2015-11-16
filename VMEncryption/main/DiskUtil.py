@@ -174,7 +174,7 @@ class DiskUtil(object):
             self.logger.log('cryptsetup luksFormat returnCode is ' + str(returnCode))
             return error
 
-        returnCode = self.luks_open(passphrase_file=passphrase_file, dev_path=dev_path, mapper_name=mapper_name,header_file= header_file)
+        returnCode = self.luks_open(passphrase_file=passphrase_file, dev_path=dev_path, mapper_name=mapper_name, header_file= header_file)
         if(returnCode != CommonVariables.process_success):
             error.errorcode = returnCode
             error.code = CommonVariables.luks_open_error
@@ -191,7 +191,7 @@ class DiskUtil(object):
         return returnCode
 
     def expand_fs(self,dev_path):
-        expandfs_cmd = self.patching.resize2fs_path + " " + dev_path
+        expandfs_cmd = self.patching.resize2fs_path + " " + str(dev_path)
         self.logger.log("expand_fs command is:" + expandfs_cmd)
         expandfs_cmd_args = shlex.split(expandfs_cmd)
         expandfs_p = Popen(expandfs_cmd_args)
@@ -199,7 +199,7 @@ class DiskUtil(object):
         return returnCode
 
     def shrink_fs(self,dev_path):
-        shrinkfs_cmd = self.patching.resize2fs_path + ' -M ' + dev_path
+        shrinkfs_cmd = self.patching.resize2fs_path + ' -M ' + str(dev_path)
         self.logger.log("shrink_fs command is:" + shrinkfs_cmd)
         shrinkfs_cmd_args = shlex.split(shrinkfs_cmd)
         shrinkfs_p = Popen(shrinkfs_cmd_args)
