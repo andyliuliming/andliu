@@ -319,7 +319,7 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                         continue
                     check_fs_result = disk_util.check_fs(dev_path = device_path)
                     if(check_fs_result != CommonVariables.process_success):
-                        logger.log(msg=("check fs result failed with code " + check_fs_result + " for: " + str(device_path)),level=CommonVariables.ErrorLevel)
+                        logger.log(msg=("check fs result failed with code " + str(check_fs_result) + " for: " + str(device_path)),level=CommonVariables.ErrorLevel)
                         continue
                     luks_header_size = 4096 * 512
                     shrinkfs_result = disk_util.shrink_fs(device_path)
