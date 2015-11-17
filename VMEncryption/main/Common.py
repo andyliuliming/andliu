@@ -147,23 +147,3 @@ class CryptItem(object):
         
     def __str__(self):
         return "name: " + str(self.mapper_name) + " dev_path:" + str(self.dev_path) + " mount_point:" + str(self.mount_point) + " file_system:" + str(self.file_system) + " luks_header_path:" + str(self.luks_header_path)
-
-class DiskPartition(object):
-    def __init__(self):
-        self.dev_path = ""
-        self.start = 0
-        self.end = 0
-        self.size = 0
-        self.name = ""
-        self.type = ""
-        self.uuid_path = ""
-
-class EncryptionItem(object):
-    def __init__(self):
-        self.exist_disk_path = None
-        """
-        flag whether we just format it
-        """
-        self.encryption_dev_root_path = None
-        self.origin_disk_partitions = None
-        self.target_disk_partitions = None

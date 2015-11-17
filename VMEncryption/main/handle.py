@@ -40,7 +40,6 @@ import uuid
 from Utils import HandlerUtil
 from Common import *
 from ExtensionParameter import ExtensionParameter
-from ExtensionParameter import EncryptionItem
 from DiskUtil import DiskUtil
 from BackupLogger import BackupLogger
 from KeyVaultUtil import KeyVaultUtil
@@ -115,7 +114,7 @@ def enable():
                     for i in range(0, len(crypt_items)):
                         crypt_item = crypt_items[i]
                         #add walkarounf for the centos 7.0
-                        se_linux_status=None
+                        se_linux_status = None
                         if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
                             se_linux_status = encryption_environment.get_se_linux()
                             if(se_linux_status.lower() == 'enforcing'):
@@ -219,6 +218,8 @@ def not_support_header_option_distro(patching):
         return True
     if(patching.distro_info[0].lower() == "redhat" and patching.distro_info[1].startswith('6.')):
         return True
+    if(patching.distro_info[0].lower() == "suse" and patching.distro_info[1].startswith('11')):
+        return True
     return False
 
 def enable_encryption_format(passphrase, encryption_queue, disk_util):
@@ -255,7 +256,7 @@ def enable_encryption_format(passphrase, encryption_queue, disk_util):
                     #TODO: let customer specify it in the parameter
                     file_system = CommonVariables.default_file_system
                     format_disk_result = disk_util.format_disk(encrypted_device_path, file_system)
-                    if(format_disk_result!=CommonVariables.process_success):
+                    if(format_disk_result != CommonVariables.process_success):
                         logger.log(msg=("format disk " + str(encrypted_device_path) + " failed " + str(format_disk_result)),level = CommonVariables.ErrorLevel)
                     crypt_item_to_update = CryptItem()
                     crypt_item_to_update.mapper_name = mapper_name
@@ -297,7 +298,7 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
 
         if(not should_skip):
             umount_status_code = CommonVariables.success
-            if(device_item.mountpoint != ""):
+            if(device_item.mountpoint is not None and device_item.mountpoint != ""):
                 umount_status_code = disk_util.umount(device_item.mountpoint)
             if(umount_status_code != CommonVariables.success):
                 logger.log("error occured when do the umount for " + str(device_item.mountpoint) + str(umount_status_code))
@@ -328,7 +329,7 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                     #                                dd if=/tmp/file1
                     #                                of=/dev/mapper/uuid bs=2M
                     #                                count=1
-                    logger.log(msg="this is the centos 6 or redhat 6 series , need special handling.",level=CommonVariables.WarningLevel)
+                    logger.log(msg="this is the centos 6 or redhat 6 or sles 11 series , need special handling.",level=CommonVariables.WarningLevel)
                     # we only support ext file systems.
                     if(not device_item.fstype.lower().startswith("ext")):
                         logger.log(msg="we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7",level=CommonVariables.WarningLevel)
@@ -384,7 +385,10 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                         if(copy_result != CommonVariables.success):
                             error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
                             logger.log(msg=("the copying result is " + copy_result + " so skip the mounting"),level=CommonVariables.ErrorLevel)
-                            #hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.copy_data_error), error_message)
+                            #hutil.do_exit(0, 'Enable',
+                            #CommonVariables.extension_error_status,
+                            #str(CommonVariables.copy_data_error),
+                            #error_message)
                             continue
                         else:
                             crypt_item_to_update = CryptItem()
@@ -408,7 +412,6 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                         logger.log(msg=("the encrypton for " + str(device_item) + " failed"),level=CommonVariables.ErrorLevel)
                         continue
                         #hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(encrypt_error.code),encrypt_error.info)
-
 def daemon():
     hutil.do_parse_context('Executing')
     try:

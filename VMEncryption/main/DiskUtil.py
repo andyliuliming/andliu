@@ -26,6 +26,7 @@ import sys
 from subprocess import *
 import shutil
 import uuid
+import glob
 from TransactionalCopyTask import TransactionalCopyTask
 from Common import *
 
@@ -144,7 +145,7 @@ class DiskUtil(object):
     def check_fs(self,dev_path):
         self.logger.log("checking fs:" + str(dev_path))
         check_fs_cmd = self.patching.e2fsck_path + " -f -y " + dev_path
-        self.logger.log("check fs command is "+str(check_fs_cmd))
+        self.logger.log("check fs command is " + str(check_fs_cmd))
         check_fs_cmd_args = shlex.split(check_fs_cmd)
         check_fs_cmd_p = Popen(check_fs_cmd_args)
         returnCode = check_fs_cmd_p.wait()
@@ -284,61 +285,123 @@ class DiskUtil(object):
         sdx_path = self.query_dev_sdx_path_by_scsi_id(scsi_number)
         return self.query_dev_uuid_path_by_sdx_path(sdx_path)
 
-    def get_device_items(self, dev_path):
-        self.logger.log("getting the blk info from " + str(dev_path))
+    def get_device_items_property(self, dev_name, property_name):
+        get_property_cmd = self.patching.lsblk_path + " /dev/" + dev_name + " -b -nl -o NAME," + property_name
+        get_property_cmd_args = shlex.split(get_property_cmd)
+        get_property_cmd_p = Popen(get_property_cmd_args,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        output,err = get_property_cmd_p.communicate()
+        lines = output.splitlines()
+        for i in range(0,len(lines)):
+            item_value_str = lines[i].strip()
+            if(item_value_str != ""):
+                disk_info_item_array = item_value_str.split()
+                if(dev_name == disk_info_item_array[0]):
+                    if(len(disk_info_item_array) > 1):
+                        return disk_info_item_array[1]
+        return None
+
+    def get_device_items_sles(self,dev_path):
+        self.logger.log(msg=("getting the blk info from " + str(dev_path)))
         device_items = []
+        #first get all the device names
         if(dev_path is None):
-            p = Popen([self.patching.lsblk_path, '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            get_device_cmd = self.patching.lsblk_path + " -b -nl -o NAME"
         else:
-            p = Popen([self.patching.lsblk_path, '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE',dev_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            get_device_cmd = self.patching.lsblk_path + " -b -nl -o NAME " + dev_path
+        get_device_cmd_args = shlex.split(get_device_cmd)
+        p = Popen(get_device_cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out_lsblk_output, err = p.communicate()
-        out_lsblk_output = str(out_lsblk_output)
-        self.logger.log("out_lsblk_output:\n" + str(out_lsblk_output))
         lines = out_lsblk_output.splitlines()
         for i in range(0,len(lines)):
             item_value_str = lines[i].strip()
             if(item_value_str != ""):
                 disk_info_item_array = item_value_str.split()
                 device_item = DeviceItem()
-                disk_info_item_array_length = len(disk_info_item_array)
-                for j in range(0, disk_info_item_array_length):
-                    disk_info_property = disk_info_item_array[j]
-                    property_item_pair = disk_info_property.split('=')
-                    if(property_item_pair[0] == 'SIZE'):
-                        device_item.size = int(property_item_pair[1].strip('"'))
-
-                    if(property_item_pair[0] == 'NAME'):
-                        device_item.name = property_item_pair[1].strip('"')
-
-                    if(property_item_pair[0] == 'TYPE'):
-                        device_item.type = property_item_pair[1].strip('"')
-
-                    if(property_item_pair[0] == 'FSTYPE'):
-                        device_item.fstype = property_item_pair[1].strip('"')
-                        
-                    if(property_item_pair[0] == 'MOUNTPOINT'):
-                        device_item.mountpoint = property_item_pair[1].strip('"')
-
-                    if(property_item_pair[0] == 'LABEL'):
-                        device_item.label = property_item_pair[1].strip('"')
-
-                    if(property_item_pair[0] == 'UUID'):
-                        device_item.uuid = property_item_pair[1].strip('"')
-
-                    if(property_item_pair[0] == 'MODEL'):
-                        device_item.model = property_item_pair[1].strip('"')
-
+                device_item.name = disk_info_item_array[0]
                 device_items.append(device_item)
+
+        for i in range(0,len(device_items)):
+            device_item = device_items[i]
+            device_item.fstype = self.get_device_items_property(dev_name=device_item.name,property_name='FSTYPE')
+            device_item.mountpoint = self.get_device_items_property(dev_name=device_item.name,property_name='MOUNTPOINT')
+            device_item.label = self.get_device_items_property(dev_name=device_item.name,property_name='LABEL')
+            device_item.uuid = self.get_device_items_property(dev_name=device_item.name,property_name='UUID')
+            #get the type of device
+            model_file_path = '/sys/block/' + device_item.name + '/device/model'
+            if(os.path.exists(model_file_path)):
+                with open(model_file_path,'r') as f:
+                    device_item.model = f.read().strip()
+            if(device_item.model == 'Virtual Disk'):
+                self.logger.log(msg="model is virtual disk")
+                device_item.type = 'disk'
+            if(device_item.type != 'disk'):
+                partition_files = glob.glob('/sys/block/*/' + device_item.name + '/partition')
+                self.logger.log(msg="partition files exists")
+                if(partition_files is not None and len(partition_files) > 0):
+                    device_item.type = 'part'
+            device_item.size = int(self.get_device_items_property(dev_name=device_item.name,property_name='SIZE'))
         return device_items
+
+
+    def get_device_items(self, dev_path):
+        if(self.patching.distro_info[0].lower() == 'suse' and self.patching.distro_info[1] == '11'):
+            return self.get_device_items_sles(dev_path)
+        else:
+            self.logger.log(msg=("getting the blk info from " + str(dev_path)))
+            device_items = []
+            if(dev_path is None):
+                p = Popen([self.patching.lsblk_path, '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            else:
+                p = Popen([self.patching.lsblk_path, '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE',dev_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out_lsblk_output, err = p.communicate()
+            out_lsblk_output = str(out_lsblk_output)
+            self.logger.log(msg=str(err),level=CommonVariables.ErrorLevel)
+            self.logger.log(msg=("out_lsblk_output:\n" + str(out_lsblk_output)))
+            lines = out_lsblk_output.splitlines()
+            for i in range(0,len(lines)):
+                item_value_str = lines[i].strip()
+                if(item_value_str != ""):
+                    disk_info_item_array = item_value_str.split()
+                    device_item = DeviceItem()
+                    disk_info_item_array_length = len(disk_info_item_array)
+                    for j in range(0, disk_info_item_array_length):
+                        disk_info_property = disk_info_item_array[j]
+                        property_item_pair = disk_info_property.split('=')
+                        if(property_item_pair[0] == 'SIZE'):
+                            device_item.size = int(property_item_pair[1].strip('"'))
+
+                        if(property_item_pair[0] == 'NAME'):
+                            device_item.name = property_item_pair[1].strip('"')
+
+                        if(property_item_pair[0] == 'TYPE'):
+                            device_item.type = property_item_pair[1].strip('"')
+
+                        if(property_item_pair[0] == 'FSTYPE'):
+                            device_item.fstype = property_item_pair[1].strip('"')
+                        
+                        if(property_item_pair[0] == 'MOUNTPOINT'):
+                            device_item.mountpoint = property_item_pair[1].strip('"')
+
+                        if(property_item_pair[0] == 'LABEL'):
+                            device_item.label = property_item_pair[1].strip('"')
+
+                        if(property_item_pair[0] == 'UUID'):
+                            device_item.uuid = property_item_pair[1].strip('"')
+
+                        if(property_item_pair[0] == 'MODEL'):
+                            device_item.model = property_item_pair[1].strip('"')
+
+                    device_items.append(device_item)
+            return device_items
     
     def should_skip_for_inplace_encryption(self, device_item):
         """
         TYPE="raid0"
-        TYPE="partition"
+        TYPE="part"
         TYPE="crypt"
 
         first check whether there's one file system on it.
-        if the type is disk, then to check whether it have child-items, say the partition, lvm or crypt luks.
+        if the type is disk, then to check whether it have child-items, say the part, lvm or crypt luks.
         if the answer is yes, then skip it.
         """
         if(device_item.fstype == None or device_item.fstype == ""):
