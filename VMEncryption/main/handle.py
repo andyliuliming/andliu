@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -254,7 +254,9 @@ def enable_encryption_format(passphrase, encryption_queue, disk_util):
                 if(encrypt_error is not None and encrypt_error.errorcode == CommonVariables.success):
                     #TODO: let customer specify it in the parameter
                     file_system = CommonVariables.default_file_system
-                    disk_util.format_disk(encrypted_device_path, file_system)
+                    format_disk_result = disk_util.format_disk(encrypted_device_path, file_system)
+                    if(format_disk_result!=CommonVariables.process_success):
+                        logger.log(msg=("format disk " + str(encrypted_device_path) + " failed " + str(format_disk_result)),level = CommonVariables.ErrorLevel)
                     crypt_item_to_update = CryptItem()
                     crypt_item_to_update.mapper_name = mapper_name
                     crypt_item_to_update.dev_path = device_to_encrypt
@@ -446,6 +448,9 @@ def daemon():
             """
             if the key is not created successfully, the encrypted file system should not 
             """
+            mount_all_result = disk_util.mount_all()
+            if(mount_all_result != CommonVariables.process_success):
+                logger.log(msg=("mount all failed with code " + str(mount_all_result)),level=CommonVariables.ErrorLevel)
 
             if(encryption_queue.current_command() == CommonVariables.EnableEncryption):
                 enable_encryption_all_in_place(bek_passphrase_file, encryption_queue, disk_util, bek_util)
@@ -453,7 +458,7 @@ def daemon():
                 enable_encryption_format(bek_passphrase_file, encryption_queue, disk_util)
             else:
                 #TODO we should exit.
-                logger.log("command " + str(encryption_queue.current_command()) + " not supported")
+                logger.log(msg=("command " + str(encryption_queue.current_command()) + " not supported"),level=CommonVariables.ErrorLevel)
         bek_util.umount_azure_passhprase(encryption_config)
 
     except Exception as e:

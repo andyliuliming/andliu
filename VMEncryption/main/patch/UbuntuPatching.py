@@ -57,8 +57,8 @@ class UbuntuPatching(AbstractPatching):
         install the sg_dd because the default dd do not support the sparse write
         """
         if(self.distro_info[0].lower() == "ubuntu" and self.distro_info[1] == "12.04"):
-            common_extras = ['cryptsetup-bin','lsscsi','gdisk','udevadm','sg_dd']
+            common_extras = ['cryptsetup-bin','lsscsi','gdisk']
         else:
-            common_extras = ['cryptsetup-bin','lsscsi','gdisk','udevadm']
+            common_extras = ['cryptsetup-bin','lsscsi','gdisk']
         for extra in common_extras:
             self.logger.log("installation for " + extra + 'result is ' + str(subprocess.call(['apt-get', 'install','-y', extra])))

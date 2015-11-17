@@ -48,43 +48,7 @@ class DiskUtil(object):
         copy_task.clear_mem_fs()
         return returnCode
 
-    def get_disk_partition_table_type(self, dev_path):
-        p = subprocess.Popen(['udevadm', 'info', '-q', 'property', '-n',dev_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        udevadm_output, err = p.communicate()
-        # todo handle this error case.
-        udevadm_output = str(udevadm_output)
-        property_info_lines = udevadm_output.splitlines()
-        for i in range(0,len(property_info_lines)):
-            property_name = property_info_lines[i].split("=")[0]
-            if(property_name == "ID_PART_TABLE_TYPE"):
-                return property_info_lines[i].split("=")[1]
-        return None
-
-    def get_disk_partitions(self, dev_path):
-        #TODO check the dev path parameter
-        disk_partitions = []
-        blk_items = self.get_device_items(dev_path)
-        for i in range(0,len(blk_items)):
-            if(blk_items[i].type == "part"):
-                disk_partitions.append(blk_items[i])
-        return disk_partitions
-
-    def clone_partition_table(self, target_dev, source_dev):
-        self.logger.log("cloning the partition table from " + str(source_dev) + " to " + str(target_dev))
-        if(self.get_disk_partition_table_type(source_dev) == "dos"):
-            commandToExecute = self.patching.bash_path + ' -c "' + 'sfdisk -d ' + source_dev + ' | sfdisk --force ' + target_dev + '"'
-            proc = Popen(commandToExecute, shell=True)
-            returnCode = proc.wait()
-            return returnCode
-        elif(self.get_disk_partition_table_type(target_dev) == "gpt"):
-            commandToExecute = self.patching.bash_path + ' -c "' + 'sgdisk -R=' + target_dev + ' ' + source_dev + + '"'
-            proc = Popen(commandToExecute, shell=True)
-            returnCode = proc.wait()
-            return returnCode
-        return None
-
     def format_disk(self, dev_path, filesystem):
-        error = EncryptionError()
         mkfs_command = ""
         if(filesystem == "ext4"):
             mkfs_command = "mkfs.ext4"
@@ -99,12 +63,7 @@ class DiskUtil(object):
         mkfs_cmd_args = shlex.split(mkfs_cmd)
         proc = Popen(mkfs_cmd_args)
         returnCode = proc.wait()
-        if(returnCode != 0):
-            error.errorcode = returnCode
-            error.code = CommonVariables.mkfs_error
-            error.info = "command to execute is " + commandToExecute
-            self.logger.log('mkfs_command returnCode is ' + str(returnCode))
-        return error
+        return returnCode
 
     def make_sure_path_exists(self,path):
         mkdir_cmd = self.patching.mkdir_path + ' -p ' + path
@@ -207,10 +166,10 @@ class DiskUtil(object):
         returnCode = shrinkfs_p.wait()
         return returnCode
 
-    """
-    return the return code of the process for error handling.
-    """
     def luks_format(self,passphrase_file,dev_path,header_file):
+        """
+        return the return code of the process for error handling.
+        """
         self.hutil.log("dev path to cryptsetup luksFormat " + str(dev_path))
         if(header_file is not None):
             cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + dev_path + ' --header ' + header_file + ' -d ' + passphrase_file + ' -q'
@@ -222,10 +181,10 @@ class DiskUtil(object):
         returnCode = cryptsetup_p.wait()
         return returnCode
 
-    """
-    return the return code of the process for error handling.
-    """
     def luks_open(self,passphrase_file,dev_path,mapper_name,header_file):
+        """
+        return the return code of the process for error handling.
+        """
         self.hutil.log("dev mapper name to cryptsetup luksOpen " + (mapper_name))
         if(header_file is not None):
             cryptsetup_cmd = self.patching.cryptsetup_path + ' luksOpen ' + dev_path + ' ' + mapper_name + ' --header ' + header_file + ' -d ' + passphrase_file + ' -q'
@@ -248,10 +207,10 @@ class DiskUtil(object):
         with open("/etc/fstab",'w') as wf:
             wf.write(new_mount_content)
 
-    """
-    mount the file system.
-    """
     def mount_filesystem(self,dev_path,mount_point,file_system=None):
+        """
+        mount the file system.
+        """
         returnCode = -1
         if file_system == None:
             mount_cmd = self.patching.mount_path + ' ' + dev_path + ' ' + mount_point
@@ -281,18 +240,12 @@ class DiskUtil(object):
         return returnCode
 
     def mount_all(self):
-        error = EncryptionError()
         mount_all_cmd = self.patching.mount_path + ' -a'
         self.logger.log("command to execute :" + mount_all_cmd)
         mount_all_cmd_args = shlex.split(mount_all_cmd)
         proc = Popen(mount_all_cmd_args)
         returnCode = proc.wait()
-        if(returnCode != CommonVariables.process_success):
-            error.errorcode = returnCode
-            error.code = CommonVariables.mount_error
-            error.info = "commandToExecute is " + commandToExecute
-            self.logger.log('mount returnCode is ' + str(returnCode))
-        return error
+        return returnCode
 
     def query_dev_sdx_path_by_scsi_id(self,scsi_number): 
         p = Popen([self.patching.lsscsi_path, scsi_number], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -305,19 +258,10 @@ class DiskUtil(object):
         sdx_path = vals[len(vals) - 1]
         return sdx_path
 
-    def is_blank_disk(self,dev_path):
-        blk_items = self.get_device_items(dev_path)
-        for i in range(0,len(blk_items)):
-            blk_item = blk_items[i]
-            if(blk_item.fstype != "" or blk_item.type != "disk"):
-                self.logger.log("the device  " + str(dev_path) + "is not blank blk item is " + str(blk_item))
-                return False
-        return True
-
-    """
-    the behaviour is if we could get the uuid, then return, if not, just return the sdx.
-    """
     def query_dev_uuid_path_by_sdx_path(self, sdx_path):
+        """
+        the behaviour is if we could get the uuid, then return, if not, just return the sdx.
+        """
         self.logger.log("querying the sdx path of:" + str(sdx_path))
         #blkid path
         p = Popen([self.patching.blkid_path,sdx_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
