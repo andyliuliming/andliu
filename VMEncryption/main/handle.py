@@ -139,6 +139,10 @@ def enable():
                 exit_without_status_report()
                 #hutil.do_exit(0,'Enable',CommonVariables.extension_error_status,str(CommonVariables.passphrase_file_not_found),'The
                 #passphrase could not get.')
+        """
+        TODO: resuming the encryption for rebooting scenario
+        """
+
 
         encryption_marker = EncryptionMark(logger, encryption_environment)
         if encryption_marker.is_encryption_marked():
@@ -207,8 +211,15 @@ def enable():
                 hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.encrypttion_already_enabled), str(kek_secret_id_created))
 
     except Exception as e:
-        hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
+        logger.log(msg="Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()),level=CommonVariables.ErrorLevel)
         hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,str(CommonVariables.unknown_error), 'Enable failed.')
+
+def not_support_header_option_distro(patching):
+    if(patching.distro_info[0].lower() == "centos" and patching.distro_info[1].startswith('6.')):
+        return True
+    if(patching.distro_info[0].lower() == "redhat" and patching.distro_info[1].startswith('6.')):
+        return True
+    return False
 
 def enable_encryption_format(passphrase, encryption_queue, disk_util):
     encryption_parameters = encryption_queue.encryptionDiskFormatQuery()
@@ -294,7 +305,8 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                 logger.log("encrypting " + str(device_item))
                 device_path = os.path.join("/dev/", device_item.name)
                 device_mapper_path = os.path.join(CommonVariables.dev_mapper_root, mapper_name)
-                if(MyPatching.distro_info[0].lower() == "centos" and MyPatching.distro_info[1].startswith('6.')):
+                no_header_file_support = not_support_header_option_distro(MyPatching)
+                if(no_header_file_support):
                     # 1.  check the file system e2fsck -f /dev/sdd
                     # 2.  resize2fs to resize the fs
                     # 3.  backup the first header of the
@@ -314,10 +326,10 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                     #                                dd if=/tmp/file1
                     #                                of=/dev/mapper/uuid bs=2M
                     #                                count=1
-                    logger.log(msg="this is the centos 6 serios, need special handling.",level=CommonVariables.WarningLevel)
+                    logger.log(msg="this is the centos 6 or redhat 6 series , need special handling.",level=CommonVariables.WarningLevel)
                     # we only support ext file systems.
                     if(not device_item.fstype.lower().startswith("ext")):
-                        logger.log(msg="we only support ext file systems for centos 6.5/6.6/6.7",level=CommonVariables.WarningLevel)
+                        logger.log(msg="we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7",level=CommonVariables.WarningLevel)
                         continue
                     check_fs_result = disk_util.check_fs(dev_path = device_path)
                     if(check_fs_result != CommonVariables.process_success):
