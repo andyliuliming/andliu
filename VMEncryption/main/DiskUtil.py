@@ -172,15 +172,29 @@ class DiskUtil(object):
         return the return code of the process for error handling.
         """
         self.hutil.log("dev path to cryptsetup luksFormat " + str(dev_path))
-        if(header_file is not None):
-            cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + dev_path + ' --header ' + header_file + ' -d ' + passphrase_file + ' -q'
+        #walkaround for sles sp3
+        if(self.patching.distro_info[0].lower() == 'suse' and self.patching.distro_info[1] == '11'):
+            passphrase_cmd = self.patching.cat_path + ' ' + passphrase_file
+            passphrase_cmd_args = shlex.split(passphrase_cmd)
+            self.logger.log("passphrase_cmd is:" + passphrase_cmd)
+            passphrase_p = Popen(passphrase_cmd_args,stdout=subprocess.PIPE)
+
+            cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + dev_path + ' -q'
+            self.logger.log("cryptsetup_cmd is:" + cryptsetup_cmd)
+            cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
+            cryptsetup_p = Popen(cryptsetup_cmd_args,stdin=passphrase_p.stdout)
+            returnCode = cryptsetup_p.wait()
+            return returnCode
         else:
-            cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + dev_path + ' -d ' + passphrase_file + ' -q'
-        self.logger.log("cryptsetup_cmd is:" + cryptsetup_cmd)
-        cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
-        cryptsetup_p = Popen(cryptsetup_cmd_args)
-        returnCode = cryptsetup_p.wait()
-        return returnCode
+            if(header_file is not None):
+                cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + dev_path + ' --header ' + header_file + ' -d ' + passphrase_file + ' -q'
+            else:
+                cryptsetup_cmd = self.patching.cryptsetup_path + ' luksFormat ' + dev_path + ' -d ' + passphrase_file + ' -q'
+            self.logger.log("cryptsetup_cmd is:" + cryptsetup_cmd)
+            cryptsetup_cmd_args = shlex.split(cryptsetup_cmd)
+            cryptsetup_p = Popen(cryptsetup_cmd_args)
+            returnCode = cryptsetup_p.wait()
+            return returnCode
 
     def luks_open(self,passphrase_file,dev_path,mapper_name,header_file):
         """

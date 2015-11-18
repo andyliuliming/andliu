@@ -40,6 +40,7 @@ class UbuntuPatching(AbstractPatching):
         self.base64_path = '/usr/bin/base64'
         self.bash_path = '/bin/bash'
         self.blkid_path = '/sbin/blkid'
+        self.cat_path = '/bin/cat'
         self.cryptsetup_path = '/sbin/cryptsetup'
         self.dd_path = '/bin/dd'
         self.e2fsck_path = '/sbin/e2fsck'
