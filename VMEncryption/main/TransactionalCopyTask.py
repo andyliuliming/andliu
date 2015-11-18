@@ -94,14 +94,17 @@ class TransactionalCopyTask(object):
         total_size = self.source_total_size
         last_slice_size = total_size % self.block_size
         total_slice_size = (total_size - last_slice_size) / self.block_size
-
+        
         origin_device_path = os.path.join("/dev/",self.source_dev_name)
         returnCode = CommonVariables.success
 
         copy_command = None
         self.transactional_copy_config.save_config(CommonVariables.CurrentDeviceNameKey,self.source_dev_name)
         self.transactional_copy_config.save_config(CommonVariables.CurrentSliceSizeKey,self.block_size)
-        self.transactional_copy_config.save_config(CommonVariables.CurrentTotalSizeKey,(total_slice_size + 1))
+        if(last_slice_size>0):
+            self.transactional_copy_config.save_config(CommonVariables.CurrentTotalSizeKey,(total_slice_size + 1))
+        else:
+            self.transactional_copy_config.save_config(CommonVariables.CurrentTotalSizeKey,(total_slice_size))
         if(self.from_end):
             #copy from end to the beginning.
             if(last_slice_size > 0):
