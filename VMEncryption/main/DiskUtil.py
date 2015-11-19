@@ -40,7 +40,9 @@ class DiskUtil(object):
         self.vmbus_sys_path = '/sys/bus/vmbus/devices'
 
     def copy(self, source_dev_full_path, copy_total_size, destination,from_end=False):
-        copy_task = TransactionalCopyTask(logger=self.logger,disk_util=self, source_dev_full_path=source_dev_full_path, copy_total_size=copy_total_size, destination=destination, patching=self.patching,encryption_environment= self.encryption_environment,from_end=from_end)
+        copy_task = TransactionalCopyTask(logger=self.logger,disk_util=self, \
+            source_dev_full_path=source_dev_full_path, copy_total_size=copy_total_size, destination=destination,\
+            patching=self.patching,encryption_environment= self.encryption_environment,from_end=from_end)
         mem_fs_result = copy_task.prepare_mem_fs()
         if(mem_fs_result != CommonVariables.process_success):
             return CommonVariables.copy_data_error

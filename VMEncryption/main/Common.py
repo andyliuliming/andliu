@@ -82,9 +82,10 @@ class CommonVariables:
     """
     encryption phase devinitions
     """
-    EncryptionPhaseBackupHeader='BackupHeader'
-    EncryptionPhaseCopyData='CopyData'
-    EncryptionPhaseRecoverHeader='RecoverHeader'
+    EncryptionPhaseBackupHeader = 'BackupHeader'
+    EncryptionPhaseCopyData = 'CopyData'
+    EncryptionPhaseRecoverHeader = 'RecoverHeader'
+    EncryptionPhaseEncryptDevice = 'EncryptDevice'
 
     """
     transactional copy keys
