@@ -11,6 +11,7 @@ class OnGoingItemConfig(object):
         self.mapper_name = None
         self.luks_header_file_path = None
         self.phase = None
+        self.header_slice_file_path = None
         self.ongoing_item_config = ConfigUtil(encryption_environment.azure_crypt_ongoing_item_config_path,'azure_crypt_ongoing_item_config',logger)
 
     def config_file_exists(self):
@@ -28,6 +29,9 @@ class OnGoingItemConfig(object):
     def get_phase(self):
         return self.ongoing_item_config.get_config(CommonVariables.OngoingItemPhaseKey)
 
+    def get_header_slice_file_path(self):
+        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemHeaderSliceFilePathKey)
+
     def commit(self):
         key_value_pairs = []
         dev_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemDevPathKey,self.dev_path)
@@ -38,6 +42,8 @@ class OnGoingItemConfig(object):
         key_value_pairs.append(header_file_pair)
         phase_pair = ConfigKeyValuePair(CommonVariables.OngoingItemPhaseKey,self.phase)
         key_value_pairs.append(phase_pair)
+        header_slice_file_pair = ConfigKeyValuePair(CommonVariables.OngoingItemHeaderSliceFilePathKey,self.header_slice_file_path)
+        key_value_pairs.append(header_slice_file_pair)
         self.encryption_config.save_configs(key_value_pairs)
 
     def clear_config(self):

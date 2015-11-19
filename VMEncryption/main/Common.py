@@ -77,13 +77,14 @@ class CommonVariables:
     OngoingItemHeaderFilePathKey = 'HeaderFilePath'
     OngoingItemDevPathKey = 'DevicePath'
     OngoingItemPhaseKey = 'Phase'
+    OngoingItemHeaderSliceFilePathKey = 'HeaderSliceFilePath'
 
     """
     encryption phase devinitions
     """
-    #CopyPhase_Header = '1'
-    #CopyPhase_Data = '2'
-    #CopyPhase_Data2 = '3'
+    EncryptionPhaseBackupHeader='BackupHeader'
+    EncryptionPhaseCopyData='CopyData'
+    EncryptionPhaseRecoverHeader='RecoverHeader'
 
     """
     transactional copy keys
