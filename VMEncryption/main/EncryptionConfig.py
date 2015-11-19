@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VM Backup extension
 #
@@ -24,9 +24,9 @@ from ConfigParser import ConfigParser
 from ConfigUtil import ConfigUtil
 from ConfigUtil import ConfigKeyValuePair
 class EncryptionConfig(object):
-    def __init__(self, encryptionEnvironment,logger):
-        self.encryptionEnvironment = encryptionEnvironment
-        self.encryption_config = ConfigUtil(encryptionEnvironment.encryption_config_file_path,'azure_crypt_config',logger)
+    def __init__(self, encryption_environment,logger):
+        self.encryptionEnvironment = encryption_environment
+        self.encryption_config = ConfigUtil(encryption_environment.encryption_config_file_path,'azure_crypt_config',logger)
         self.passphrase_file_name = None
         self.bek_filesystem = None
         self.volume_type = None

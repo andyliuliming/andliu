@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -39,8 +39,8 @@ class DiskUtil(object):
         self.ide_class_id = "{32412632-86cb-44a2-9b5c-50d1417354f5}"
         self.vmbus_sys_path = '/sys/bus/vmbus/devices'
 
-    def copy(self, source_dev_name, copy_total_size, destination,from_end=False):
-        copy_task = TransactionalCopyTask(logger=self.logger,disk_util=self, source_dev_name=source_dev_name, copy_total_size=copy_total_size, destination=destination, patching=self.patching,encryption_environment= self.encryption_environment,from_end=from_end)
+    def copy(self, source_dev_full_path, copy_total_size, destination,from_end=False):
+        copy_task = TransactionalCopyTask(logger=self.logger,disk_util=self, source_dev_full_path=source_dev_full_path, copy_total_size=copy_total_size, destination=destination, patching=self.patching,encryption_environment= self.encryption_environment,from_end=from_end)
         mem_fs_result = copy_task.prepare_mem_fs()
         if(mem_fs_result != CommonVariables.process_success):
             return CommonVariables.copy_data_error
@@ -100,18 +100,26 @@ class DiskUtil(object):
         return crypt_items
 
     def update_crypt_item(self,crypt_item):
-        if not os.path.exists(self.encryption_environment.azure_crypt_mount_config_path):
-            with open(self.encryption_environment.azure_crypt_mount_config_path,'w') as wf:
-                wf.write("")
+        """
+        TODO we should judge that the second time.
+        format is like this:
+        <target name> <source device> <key file> <options>
+        """
+        try:
+            if not os.path.exists(self.encryption_environment.azure_crypt_mount_config_path):
+                with open(self.encryption_environment.azure_crypt_mount_config_path,'w') as wf:
+                    wf.write("")
 
-        mount_content_item = crypt_item.mapper_name + " " + crypt_item.dev_path + " " + crypt_item.luks_header_path + " " + crypt_item.mount_point + " " + crypt_item.file_system
-        with open(self.encryption_environment.azure_crypt_mount_config_path,'r') as f:
-            existing_content = f.read()
-            new_mount_content = existing_content + "\n" + mount_content_item
-        with open(self.encryption_environment.azure_crypt_mount_config_path,'w') as wf:
-            existing_content+="\n" + mount_content_item
-            wf.write(new_mount_content)
-        # <target name> <source device> <key file> <options>
+            mount_content_item = crypt_item.mapper_name + " " + crypt_item.dev_path + " " + crypt_item.luks_header_path + " " + crypt_item.mount_point + " " + crypt_item.file_system
+            with open(self.encryption_environment.azure_crypt_mount_config_path,'r') as f:
+                existing_content = f.read()
+                new_mount_content = existing_content + "\n" + mount_content_item
+            with open(self.encryption_environment.azure_crypt_mount_config_path,'w') as wf:
+                existing_content+="\n" + mount_content_item
+                wf.write(new_mount_content)
+            return True
+        except Exception as e:
+            return False
 
     def create_luks_header(self,mapper_name):
         luks_header_file_path = self.encryption_environment.luks_header_base_path + mapper_name
@@ -121,8 +129,11 @@ class DiskUtil(object):
             commandToExecute = self.patching.bash_path + ' -c "' + self.patching.dd_path + ' if=/dev/zero bs=33554432 count=1 > ' + luks_header_file_path + '"'
             proc = Popen(commandToExecute, shell=True)
             returnCode = proc.wait()
-            self.logger.log("result of make luks header result is " + str(returnCode))
-            return luks_header_file_path
+            if(returnCode == CommonVariables.process_success):
+                return luks_header_file_path
+            else:
+                self.logger.log(msg=("make luks header failed and return code is " + str(returnCode)),level=CommonVariables.ErrorLevel)
+                return None
 
     def encrypt_disk(self, dev_path, passphrase_file, mapper_name, header_file):
         error = EncryptionError()
@@ -422,30 +433,33 @@ class DiskUtil(object):
             return True
         else:
             if(device_item.size < CommonVariables.min_filesystem_size_support):
-                self.logger.log("the device size is too small," + str(device_item.size) + " so skip it")
+                self.logger.log(msg="the device size is too small," + str(device_item.size) + " so skip it.",level=CommonVariables.WarningLevel)
                 return True
 
             supported_device_type = ["disk","part","raid0","raid1","raid5","raid10"]
             if(device_item.type not in supported_device_type):
-                self.logger.log("the device type: " + str(device_item.type) + " is not supported yet, so skip it")
+                self.logger.log(msg="the device type: " + str(device_item.type) + " is not supported yet, so skip it.",level=CommonVariables.WarningLevel)
                 return True
 
+            if(device_item.uuid == None or device_item.uuid == ""):
+                self.logger.log(msg="the device do not have the related uuid, so skip it.",level=CommonVariables.WarningLevel)
+                return True
             sub_items = self.get_device_items("/dev/" + device_item.name)
             if(len(sub_items) > 1):
-                self.logger.log("there's sub items for the device: " + str(device_item.name) + ", so skip it")
+                self.logger.log(msg=("there's sub items for the device: " + str(device_item.name) + ", so skip it."),level=CommonVariables.WarningLevel)
                 return True
 
             azure_blk_items = self.get_azure_devices()
             if(device_item.type == "crypt"):
-                self.logger.log("device_item.type is " + str(device_item.type) + ", so skip it")
+                self.logger.log(msg=("device_item.type is " + str(device_item.type) + ", so skip it."),level=CommonVariables.WarningLevel)
                 return True
 
             if(device_item.mountpoint == "/"):
-                self.logger.log("the mountpoint is root " + str(device_item) + ", so skip it")
+                self.logger.log(msg=("the mountpoint is root " + str(device_item) + ", so skip it."),level=CommonVariables.WarningLevel)
                 return True
             for azure_blk_item in azure_blk_items:
                 if(azure_blk_item.name == device_item.name):
-                    self.logger.log("the mountpoint is the azure disk root or resource, so skip it.")
+                    self.logger.log(msg="the mountpoint is the azure disk root or resource, so skip it.")
                     return True
             return False
 

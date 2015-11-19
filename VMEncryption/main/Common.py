@@ -32,6 +32,7 @@ class CommonVariables:
     """
     default_block_size = 52428800
     min_filesystem_size_support = 52428800*3
+    #TODO for the sles 11, we should use the ext3
     default_file_system = 'ext4'
     default_mount_name = 'encrypted_disk'
     dev_mapper_root = '/dev/mapper/'
@@ -70,6 +71,14 @@ class CommonVariables:
     EncryptionDiskFormatQueryKey = 'DiskFormatQuery'
 
     """
+    crypt ongoing item config keys
+    """
+    OngoingItemMapperNameKey = 'MapperName'
+    OngoingItemHeaderFilePathKey = 'HeaderFilePath'
+    OngoingItemDevPathKey = 'DevicePath'
+
+
+    """
     transactional copy keys
     """
     CurrentDeviceNameKey = 'current_device_name'
@@ -84,7 +93,9 @@ class CommonVariables:
     WarningLevel = 'Warning'
     ErrorLevel = 'Error'
 
-    # error code
+    """
+    error codes
+    """
     extension_success_status = 'success'
     extension_error_status = 'error'
     process_success = 0

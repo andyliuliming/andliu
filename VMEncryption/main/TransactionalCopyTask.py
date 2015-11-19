@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -33,13 +33,13 @@ class TransactionalCopyTask(object):
     copy_total_size is in byte, skip_target_size is also in byte
     slice_size is in byte 50M
     """
-    def __init__(self,logger,disk_util, source_dev_name, copy_total_size, destination, patching, encryption_environment,\
+    def __init__(self,logger,disk_util, source_dev_full_path, copy_total_size, destination, patching, encryption_environment,\
                     block_size=CommonVariables.default_block_size,skip_source_block=0,skip_target_block=0,from_end=False):
         """
         copy_total_size is in bytes.
         """
         self.command_executer = CommandExecuter(logger)
-        self.source_dev_name = source_dev_name
+        self.source_dev_full_path = source_dev_full_path
         self.source_total_size = copy_total_size
         self.destination = destination
         self.encryption_environment = encryption_environment
@@ -87,7 +87,7 @@ class TransactionalCopyTask(object):
             self.logger.log(str(dd_cmd) + ' is ' + str(returnCode))
         return returnCode
 
-    def begin_copy(self):
+    def begin_copy(self,resume_copy=False):
         """
         check the device_item size first, cut it 
         """
@@ -95,52 +95,55 @@ class TransactionalCopyTask(object):
         last_slice_size = total_size % self.block_size
         total_slice_size = (total_size - last_slice_size) / self.block_size
         
-        origin_device_path = os.path.join("/dev/",self.source_dev_name)
         returnCode = CommonVariables.success
 
         copy_command = None
-        self.transactional_copy_config.save_config(CommonVariables.CurrentDeviceNameKey,self.source_dev_name)
-        self.transactional_copy_config.save_config(CommonVariables.CurrentSliceSizeKey,self.block_size)
-        if(last_slice_size>0):
-            self.transactional_copy_config.save_config(CommonVariables.CurrentTotalSizeKey,(total_slice_size + 1))
-        else:
-            self.transactional_copy_config.save_config(CommonVariables.CurrentTotalSizeKey,(total_slice_size))
-        if(self.from_end):
-            #copy from end to the beginning.
-            if(last_slice_size > 0):
-                copy_command = self.patching.dd_path
-                copy_result = self.copy_internal(copy_command=copy_command,from_device=origin_device_path,to_device=self.destination,skip=total_slice_size,size=last_slice_size)
-                if(copy_result == CommonVariables.process_success):
-                    self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,(total_slice_size + 1))
-                else:
-                    return copy_result
+        if(resume_copy and transactional_copy_config.config_file_exists()):
 
-            for i in range(0,total_slice_size):
-                copy_command = self.patching.dd_path
-                skip_block = (total_slice_size - i - 1)
-                copy_result = self.copy_internal(copy_command=copy_command,from_device=origin_device_path,to_device=self.destination,skip=skip_block,size=self.block_size)
-                if(copy_result == CommonVariables.process_success):
-                    self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,i)
-                else:
-                    return copy_result
-            return CommonVariables.process_success
+            pass
         else:
-            for i in range(0, total_slice_size):
-                copy_command = self.patching.dd_path
-                copy_result = self.copy_internal(copy_command=copy_command,from_device=origin_device_path,to_device=self.destination,skip=i,size=self.block_size)
-                if(copy_result == CommonVariables.process_success):
-                    self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,i)
-                else:
-                    return copy_result
-
-            """
-            copy the bytes not align with the slice_size
-            """
+            self.transactional_copy_config.save_config(CommonVariables.CurrentDeviceNameKey,self.source_dev_full_path)
+            self.transactional_copy_config.save_config(CommonVariables.CurrentSliceSizeKey,self.block_size)
             if(last_slice_size > 0):
-                copy_command = self.patching.dd_path
-                copy_result = self.copy_internal(copy_command=copy_command,from_device=origin_device_path,to_device=self.destination,skip=total_slice_size,size=last_slice_size)
-                if(copy_result == CommonVariables.process_success):
-                    self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,(total_slice_size + 1))
-                else:
-                    return copy_result
-            return CommonVariables.process_success
+                self.transactional_copy_config.save_config(CommonVariables.CurrentTotalSizeKey,(total_slice_size + 1))
+            else:
+                self.transactional_copy_config.save_config(CommonVariables.CurrentTotalSizeKey,(total_slice_size))
+            if(self.from_end):
+                #copy from end to the beginning.
+                if(last_slice_size > 0):
+                    copy_command = self.patching.dd_path
+                    copy_result = self.copy_internal(copy_command=copy_command,from_device=self.source_dev_full_path,to_device=self.destination,skip=total_slice_size,size=last_slice_size)
+                    if(copy_result == CommonVariables.process_success):
+                        self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,(total_slice_size + 1))
+                    else:
+                        return copy_result
+
+                for i in range(0,total_slice_size):
+                    copy_command = self.patching.dd_path
+                    skip_block = (total_slice_size - i - 1)
+                    copy_result = self.copy_internal(copy_command=copy_command,from_device=self.source_dev_full_path,to_device=self.destination,skip=skip_block,size=self.block_size)
+                    if(copy_result == CommonVariables.process_success):
+                        self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,i)
+                    else:
+                        return copy_result
+                return CommonVariables.process_success
+            else:
+                for i in range(0, total_slice_size):
+                    copy_command = self.patching.dd_path
+                    copy_result = self.copy_internal(copy_command=copy_command,from_device=self.source_dev_full_path,to_device=self.destination,skip=i,size=self.block_size)
+                    if(copy_result == CommonVariables.process_success):
+                        self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,i)
+                    else:
+                        return copy_result
+
+                """
+                copy the bytes not align with the slice_size
+                """
+                if(last_slice_size > 0):
+                    copy_command = self.patching.dd_path
+                    copy_result = self.copy_internal(copy_command=copy_command,from_device=self.source_dev_full_path,to_device=self.destination,skip=total_slice_size,size=last_slice_size)
+                    if(copy_result == CommonVariables.process_success):
+                        self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,(total_slice_size + 1))
+                    else:
+                        return copy_result
+                return CommonVariables.process_success

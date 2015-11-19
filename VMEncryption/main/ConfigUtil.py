@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -28,7 +28,7 @@ class ConfigKeyValuePair(object):
         self.prop_value = prop_value
 
 class ConfigUtil(object):
-    def __init__(self, config_file_path, section_name,logger):
+    def __init__(self, config_file_path, section_name, logger):
         """
         this should not create the config file with path: config_file_path
         """
