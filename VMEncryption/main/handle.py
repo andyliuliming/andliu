@@ -320,7 +320,12 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
     logger.log(msg=("encrypting device item" + str(device_item)))
     # we only support ext file systems.
     if(current_phase == CommonVariables.EncryptionPhaseBackupHeader):
-        pass
+        chk_shrink_result = disk_util.check_shrink_fs(dev_path=dev_uuid_path)
+        if(chk_shrink_result == CommonVariables.process_success):
+            pass
+        else:
+            logger.log(msg=("check shrink fs failed with code " + str(chk_shrink_result) + " for: " + str(dev_uuid_path)),level=CommonVariables.ErrorLevel)
+            return
     elif(current_phase == CommonVariables.EncryptionPhaseEncryptDevice):
         pass
     elif(current_phase == CommonVariables.EncryptionPhaseCopyData):
@@ -330,15 +335,6 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
 
     if(not device_item.fstype.lower() in ["ext2","ext3","ext4"]):
         logger.log(msg="we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7",level=CommonVariables.WarningLevel)
-        return
-    check_fs_result = disk_util.check_fs(dev_path = dev_uuid_path)
-    if(check_fs_result != CommonVariables.process_success):
-        logger.log(msg=("check fs result failed with code " + str(check_fs_result) + " for: " + str(dev_uuid_path)),level=CommonVariables.ErrorLevel)
-    
-    #TODO expand the fs though the encryption failed.
-    shrinkfs_result = disk_util.shrink_fs(dev_uuid_path)
-    if(shrinkfs_result != CommonVariables.process_success):
-        logger.log(msg=("shrink file system failed, return code is: " + str(shrinkfs_result)),level=CommonVariables.ErrorLevel)
         return
 
     luks_header_size = 4096 * 512
@@ -381,6 +377,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
             ongoing_item_config.clear_config()
         else:
             logger.log(msg=("expand fs result is: " + str(expand_fs_result)),level=CommonVariables.ErrorLevel)
+            return
 
 def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk_util, bek_util, ongoing_item_config=None):
     """

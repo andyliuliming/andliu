@@ -173,6 +173,14 @@ class DiskUtil(object):
         returnCode = shrinkfs_p.wait()
         return returnCode
 
+    def check_shrink_fs(self,dev_path):
+        returnCode = self.check_fs(dev_path)
+        if(returnCode == CommonVariables.process_success):
+            returnCode = self.shrink_fs(dev_path)
+            return returnCode
+        else:
+            return returnCode
+
     def luks_format(self,passphrase_file,dev_path,header_file):
         """
         return the return code of the process for error handling.
