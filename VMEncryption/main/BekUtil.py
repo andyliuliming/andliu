@@ -58,10 +58,10 @@ class BekUtil(object):
             if(str(azure_device.fstype).lower() == str(bek_filesystem).lower()):
                 #TODO handle the failure case
                 self.disk_util.make_sure_path_exists(self.bek_filesystem_mount_point)
-                self.disk_util.mount_filesystem(os.path.join('/dev/' + azure_device.name), self.bek_filesystem_mount_point, bek_filesystem)
+                self.disk_util.mount_filesystem(os.path.join('/dev/', azure_device.name), self.bek_filesystem_mount_point, bek_filesystem)
                 #search for the passphrase file.
                 if(os.path.exists(os.path.join(self.bek_filesystem_mount_point, bek_filename))):
-                    return os.path.join(self.bek_filesystem_mount_point,bek_filename)
+                    return os.path.join(self.bek_filesystem_mount_point, bek_filename)
         return None
 
     def umount_azure_passhprase(self, encryption_config):
@@ -79,7 +79,7 @@ class BekUtil(object):
             if(str(azure_device.fstype).lower() == str(bek_filesystem).lower()):
                 #TODO handle the failure case
                 self.disk_util.make_sure_path_exists(self.bek_filesystem_mount_point)
-                self.disk_util.mount_filesystem(os.path.join('/dev/' + azure_device.name), self.bek_filesystem_mount_point, bek_filesystem)
+                self.disk_util.mount_filesystem(os.path.join('/dev/', azure_device.name), self.bek_filesystem_mount_point, bek_filesystem)
                 #search for the passphrase file.
                 if(os.path.exists(os.path.join(self.bek_filesystem_mount_point,bek_filename))):
                     self.disk_util.umount(self.bek_filesystem_mount_point)

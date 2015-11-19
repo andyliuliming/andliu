@@ -136,22 +136,15 @@ class DiskUtil(object):
                 return None
 
     def encrypt_disk(self, dev_path, passphrase_file, mapper_name, header_file):
-        error = EncryptionError()
         returnCode = self.luks_format(passphrase_file=passphrase_file, dev_path=dev_path, header_file=header_file)
         if(returnCode != CommonVariables.process_success):
-            error.errorcode = returnCode
-            error.code = CommonVariables.luks_format_error
-            error.info = "luks format failed, devpath is " + str(dev_path)
-            self.logger.log(msg=('cryptsetup luksFormat returnCode is ' + str(returnCode)),level=CommonVariables.ErrorLevel)
-            return error
-
-        returnCode = self.luks_open(passphrase_file=passphrase_file, dev_path=dev_path, mapper_name=mapper_name, header_file= header_file)
-        if(returnCode != CommonVariables.process_success):
-            error.errorcode = returnCode
-            error.code = CommonVariables.luks_open_error
-            error.info = "luks open failed, devpath is " + str(dev_path) + " dev_mapper_name is " + str(mapper_name)
-            self.logger.log(msg=('cryptsetup luksOpen returnCode is ' + str(returnCode)),level=CommonVariables.ErrorLevel)
-        return error
+            self.logger.log(msg=('cryptsetup luksFormat failed, returnCode is ' + str(returnCode)),level=CommonVariables.ErrorLevel)
+            return returnCode
+        else:
+            returnCode = self.luks_open(passphrase_file=passphrase_file, dev_path=dev_path, mapper_name=mapper_name, header_file= header_file)
+            if(returnCode != CommonVariables.process_success):
+                self.logger.log(msg=('cryptsetup luksOpen failed, returnCode is ' + str(returnCode)),level=CommonVariables.ErrorLevel)
+            return returnCode
 
     def check_fs(self,dev_path):
         self.logger.log("checking fs:" + str(dev_path))

@@ -24,7 +24,6 @@ import os.path
 import sys
 from subprocess import *
 from CommandExecuter import CommandExecuter
-from Common import EncryptionError
 from Common import CommonVariables
 from ConfigUtil import ConfigUtil
 

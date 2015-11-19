@@ -133,15 +133,6 @@ class TestHooks:
     use_hard_code_passphrase = False
     hard_code_passphrase = "Quattro!"
 
-class EncryptionError(object):
-    def __init__(self):
-        self.errorcode = CommonVariables.success
-        self.state = None
-        self.code = CommonVariables.success
-        self.info = None
-    def __str__(self):
-        return "errorcode: " + str(self.errorcode) + " state:" + str(self.state) + " code:" + str(self.code) + " info:" + str(self.info)
-
 class DeviceItem(object):
     def __init__(self):
         #NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL
