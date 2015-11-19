@@ -212,7 +212,7 @@ class DiskUtil(object):
         return the return code of the process for error handling.
         """
         self.hutil.log("dev mapper name to cryptsetup luksOpen " + (mapper_name))
-        if(header_file is not None):
+        if(header_file is not None or header_file == ""):
             cryptsetup_cmd = self.patching.cryptsetup_path + ' luksOpen ' + dev_path + ' ' + mapper_name + ' --header ' + header_file + ' -d ' + passphrase_file + ' -q'
         else:
             cryptsetup_cmd = self.patching.cryptsetup_path + ' luksOpen ' + dev_path + ' ' + mapper_name + ' -d ' + passphrase_file + ' -q'

@@ -387,6 +387,7 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                 else:
                     luks_header_file = disk_util.create_luks_header(mapper_name)
                     if(luks_header_file is None):
+                        logger.log(msg="create header file failed",level=CommonVariables.ErrorLevel)
                         continue
                     encrypt_error = None
                     try:
@@ -479,6 +480,38 @@ def daemon():
                 # open the device mapper
                 # resume the copy, we should start from the last item copied to
                 # system
+
+                #current_phase = on_going_item_config.get_phase()
+
+                #device_path = on_going_item_config.get_dev_path()
+                #mapper_name = on_going_item_config.get_mapper_name()
+                ## if we can get into the phase which we can open the item, then
+                ## open it.
+                #luks_header_file = on_going_item_config.get_header_file_path()
+
+                #luks_open_result = disk_util.luks_open(passphrase_file=bek_passphrase_file,dev_path=device_path,mapper_name=mapper_name,header_file=luks_header_file)
+                #if(luks_open_result == CommonVariables.process_success):
+                #    pass
+                #    #TransactionalCopyTask(logger=logger,disk_util=disk_util,source_dev_full_path=
+                #else:
+                #    pass
+                #no_header_file_support = not_support_header_option_distro(MyPatching)
+                #if(no_header_file_support):
+
+                #se_linux_status = None
+                #if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
+                #    se_linux_status = encryption_environment.get_se_linux()
+                #    if(se_linux_status.lower() == 'enforcing'):
+                #        encryption_environment.disable_se_linux()
+
+                #luks_open_result = disk_util.luks_open(passphrase_file=existed_passphrase_file,dev_path=crypt_item.dev_path,mapper_name=crypt_item.mapper_name,header_file=crypt_item.luks_header_path)
+                #logger.log("luks open result is " + str(luks_open_result))
+                #if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
+                #    if(se_linux_status is not None and se_linux_status.lower() == 'enforcing'):
+                #        encryption_environment.enable_se_linux()
+
+
+
                 pass
             """
             if the key is not created successfully, the encrypted file system should not 

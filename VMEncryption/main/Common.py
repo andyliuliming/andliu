@@ -31,7 +31,7 @@ class CommonVariables:
     disk/file system related
     """
     default_block_size = 52428800
-    min_filesystem_size_support = 52428800*3
+    min_filesystem_size_support = 52428800 * 3
     #TODO for the sles 11, we should use the ext3
     default_file_system = 'ext4'
     default_mount_name = 'encrypted_disk'
@@ -76,7 +76,14 @@ class CommonVariables:
     OngoingItemMapperNameKey = 'MapperName'
     OngoingItemHeaderFilePathKey = 'HeaderFilePath'
     OngoingItemDevPathKey = 'DevicePath'
+    OngoingItemPhaseKey = 'Phase'
 
+    """
+    encryption phase devinitions
+    """
+    #CopyPhase_Header = '1'
+    #CopyPhase_Data = '2'
+    #CopyPhase_Data2 = '3'
 
     """
     transactional copy keys

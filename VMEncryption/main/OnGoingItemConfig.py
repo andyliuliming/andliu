@@ -10,7 +10,7 @@ class OnGoingItemConfig(object):
         self.dev_path = None
         self.mapper_name = None
         self.luks_header_file_path = None
-        self.phase_name = None
+        self.phase = None
         self.ongoing_item_config = ConfigUtil(encryption_environment.azure_crypt_ongoing_item_config_path,'azure_crypt_ongoing_item_config',logger)
 
     def config_file_exists(self):
@@ -25,6 +25,9 @@ class OnGoingItemConfig(object):
     def get_header_file_path(self):
         return self.ongoing_item_config.get_config(CommonVariables.OngoingItemHeaderFilePathKey)
 
+    def get_phase(self):
+        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemPhaseKey)
+
     def commit(self):
         key_value_pairs = []
         dev_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemDevPathKey,self.dev_path)
@@ -33,6 +36,8 @@ class OnGoingItemConfig(object):
         key_value_pairs.append(mapper_name_pair)
         header_file_pair = ConfigKeyValuePair(CommonVariables.OngoingItemHeaderFilePathKey,self.luks_header_file_path)
         key_value_pairs.append(header_file_pair)
+        phase_pair = ConfigKeyValuePair(CommonVariables.OngoingItemPhaseKey,self.phase)
+        key_value_pairs.append(phase_pair)
         self.encryption_config.save_configs(key_value_pairs)
 
     def clear_config(self):
@@ -43,6 +48,3 @@ class OnGoingItemConfig(object):
         except OSError as e:
             self.logger.log("Failed to clear_queue with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
             return False
-
-
-
