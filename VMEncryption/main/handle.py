@@ -320,6 +320,11 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
     logger.log(msg=("encrypting device item" + str(device_item)))
     # we only support ext file systems.
     if(current_phase == CommonVariables.EncryptionPhaseBackupHeader):
+        
+        if(not device_item.fstype.lower() in ["ext2","ext3","ext4"]):
+            logger.log(msg="we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7",level=CommonVariables.WarningLevel)
+            return
+
         chk_shrink_result = disk_util.check_shrink_fs(dev_path=dev_uuid_path)
         if(chk_shrink_result == CommonVariables.process_success):
             pass
@@ -333,9 +338,6 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
     elif(current_phase == CommonVariables.EncryptionPhaseRecoverHeader):
         pass
 
-    if(not device_item.fstype.lower() in ["ext2","ext3","ext4"]):
-        logger.log(msg="we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7",level=CommonVariables.WarningLevel)
-        return
 
     luks_header_size = 4096 * 512
 
