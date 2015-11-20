@@ -391,7 +391,8 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
     if(ongoing_item_config is None):
         ongoing_item_config = OnGoingItemConfig(encryption_environment=encryption_environment,logger=logger)
         ongoing_item_config.dev_path = os.path.join('/dev/disk/by-uuid',device_item.uuid)
-        ongoing_item_config.mapper_name = str(uuid.uuid4())
+        mapper_name=str(uuid.uuid4())
+        ongoing_item_config.mapper_name = mapper_name
         luks_header_file = disk_util.create_luks_header(mapper_name=mapper_name)
         if(luks_header_file is None):
             logger.log(msg="create header file failed",level=CommonVariables.ErrorLevel)
