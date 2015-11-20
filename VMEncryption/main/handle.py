@@ -157,7 +157,7 @@ def enable():
             """
             trying to mount the crypted items.
             """
-            disk_util = DiskUtil(hutil=hutil,patching= MyPatching, logger=logger, encryption_environemnt=encryption_environment)
+            disk_util = DiskUtil(hutil=hutil,patching= MyPatching, logger=logger, encryption_environment=encryption_environment)
             bek_util = BekUtil(disk_util, logger)
 
             #make sure the azure disk config path exists.
