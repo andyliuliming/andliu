@@ -32,6 +32,7 @@ import string
 import subprocess
 import sys
 import datetime
+import time
 import tempfile
 import traceback
 import urllib2
@@ -121,15 +122,13 @@ def enable():
 
     # we should restrict the time span in 10 minutes.
     if(hutil is not None and hutil._context is not None and hutil._context._settings_file is not None):
-        freshest_time = os.path.getmtime(hutil._context._settings_file)
-        utcNow = datetime.datetime.utcnow()
-        timespan = utcNow - freshest_time
+        setting_file_timestamp = os.path.getmtime(hutil._context._settings_file)
+        utcNow = time.time()
+        timespan_in_seconds = utcNow - setting_file_timestamp
         TEN_MINUTES = 10 * 60 # in seconds
         # handle the machine identity for the restoration scenario.
-        backup_logger.log('timespan is ' + str(timespan))
-        total_span_in_seconds = timespan.days * 24 * 60 * 60 + timespan.seconds
-
-        if(abs(total_span_in_seconds) > TEN_MINUTES):
+        logger.log(msg="utcNow is "+str(utcNow)+" and setting file timestamp is "+ str(setting_file_timestamp))
+        if(abs(timespan_in_seconds) > TEN_MINUTES):
             logger.log(msg="timestamp for the current setting file is not in valid period",level=CommonVariables.WarningLevel)
             exit_without_status_report()
     else:
