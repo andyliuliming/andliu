@@ -72,17 +72,21 @@ def mark_encryption(extension_parameter):
     encryption_marker.commit()
 
 def none_or_empty(obj):
-    if(obj is None or obj==""):
+    if(obj is None or obj == ""):
         return True
     else:
         return False
 
-def mark_crypt_ongoing_item(dev_uuid_path,mapper_name,luks_header_file):
-    ongoing_item_config = OnGoingItemConfig(encryption_environment=encryption_environment,logger=logger)
-    ongoing_item_config.dev_path = dev_uuid_path
-    ongoing_item_config.mapper_name = mapper_name
-    ongoing_item_config.luks_header_file_path = luks_header_file
-    ongoing_item_config.commit()
+def toggle_se_linux_for_centos7(disable):
+    if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
+        if(disable):
+            se_linux_status = encryption_environment.get_se_linux()
+            if(se_linux_status.lower() == 'enforcing'):
+                encryption_environment.disable_se_linux()
+                return True
+        else:
+            encryption_environment.enable_se_linux()
+    return False
 
 def main():
     global hutil,MyPatching,logger,encryption_environment
@@ -375,94 +379,90 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                 else:
                     logger.log(msg=("expand fs result is: " + str(expand_fs_result)),level=CommonVariables.ErrorLevel)
                     return
+            else:
+                logger.log(msg=("recover header failed result is: " + str(copy_result)),level=CommonVariables.ErrorLevel)
+                return
 
 def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk_util, bek_util, ongoing_item_config=None):
     """
     if ongoing_item_config is not None, then this is a resume case.
     """
     current_phase = CommonVariables.EncryptionPhaseEncryptDevice
-    if(ongoing_item_config is not None):
-        mapper_name = ongoing_item_config.get_mapper_name()
-        dev_uuid_path = ongoing_item_config.get_dev_path()
-        device_mapper_path = os.path.join(CommonVariables.dev_mapper_root, mapper_name)
-        luks_header_file = ongoing_item_config.get_header_file_path()
-        current_phase = ongoing_item_config.get_phase()
-    else:
-        mapper_name = str(uuid.uuid4())
-        dev_uuid_path = os.path.join('/dev/disk/by-uuid',device_item.uuid)
-        device_mapper_path = os.path.join(CommonVariables.dev_mapper_root, mapper_name)
+    if(ongoing_item_config is None):
+        ongoing_item_config = OnGoingItemConfig(encryption_environment=encryption_environment,logger=logger)
+        ongoing_item_config.dev_path = os.path.join('/dev/disk/by-uuid',device_item.uuid)
+        ongoing_item_config.mapper_name = str(uuid.uuid4())
         luks_header_file = disk_util.create_luks_header(mapper_name=mapper_name)
-        
-        ongoing_item_config = OnGoingItemConfig(encryption_environment=encryption_environment,logger=logger)
-        ongoing_item_config.dev_path = dev_uuid_path
-        ongoing_item_config.mapper_name = mapper_name
-        ongoing_item_config.luks_header_file_path = luks_header_file
-        ongoing_item_config.phase = CommonVariables.EncryptionPhaseEncryptDevice
-        ongoing_item_config.commit()
+        if(luks_header_file is None):
+            logger.log(msg="create header file failed",level=CommonVariables.ErrorLevel)
+            return
+        else:
+            ongoing_item_config.luks_header_file_path = luks_header_file
+            ongoing_item_config.phase = CommonVariables.EncryptionPhaseEncryptDevice
+            ongoing_item_config.commit()
 
-    if(luks_header_file is None):
-        logger.log(msg="create header file failed",level=CommonVariables.ErrorLevel)
-        return
-    try:
-        se_linux_status = None
-        # walkaround for the centos 7.0
-        if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
-            se_linux_status = encryption_environment.get_se_linux()
-            if(se_linux_status.lower() == 'enforcing'):
-                encryption_environment.disable_se_linux()
+    while(current_phase != CommonVariables.EncryptionPhaseDone):
         if(current_phase == CommonVariables.EncryptionPhaseEncryptDevice):
-            encrypt_result = disk_util.encrypt_disk(dev_path=dev_uuid_path,passphrase_file = passphrase_file, mapper_name=mapper_name,header_file=luks_header_file)
-            if(encrypt_result!=CommonVariables.process_success):
-                logger.log(msg=("the encrypton for " + str(device_item) + " failed"),level=CommonVariables.ErrorLevel)
-                return
-        else:
-            open_result = disk_util.luks_open(passphrase_file=passphrase_file,dev_path=dev_uuid_path,mapper_name=mapper_name,header_file=luks_header_file)
-            if(open_result != CommonVariables.process_success):
-                logger.log(msg=("the luks open for " + str(device_item) + " failed"),level=CommonVariables.ErrorLevel)
-                return
-    finally:
-        if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
-            if(se_linux_status is not None and se_linux_status.lower() == 'enforcing'):
-                encryption_environment.enable_se_linux()
+            disabled = False
+            try:
+                mapper_name = ongoing_item_config.get_mapper_name()
+                dev_uuid_path = ongoing_item_config.get_dev_path()
+                luks_header_file = ongoing_item_config.get_header_file_path()
+                disabled = toggle_se_linux_for_centos7(True)
+                encrypt_result = disk_util.encrypt_disk(dev_path=dev_uuid_path,passphrase_file = passphrase_file, \
+                                                        mapper_name=mapper_name,header_file=luks_header_file)
+                if(encrypt_result != CommonVariables.process_success):
+                    logger.log(msg=("the encrypton for " + str(device_item) + " failed"),level=CommonVariables.ErrorLevel)
+                    return
+                else:
+                    ongoing_item_config.phase = CommonVariables.EncryptionPhaseCopyData
+                    ongoing_item_config.commit()
+                    current_phase = CommonVariables.EncryptionPhaseCopyData
+            finally:
+                toggle_se_linux_for_centos7(False)
+        elif(current_phase == CommonVariables.EncryptionPhaseCopyData):
+            disabled = False
+            try:
+                mapper_name = ongoing_item_config.get_mapper_name()
+                dev_uuid_path = ongoing_item_config.get_dev_path()
+                luks_header_file = ongoing_item_config.get_header_file_path()
+                disabled = toggle_se_linux_for_centos7(True)
+                if(not os.path.exists(os.path.join("/dev/mapper",mapper_name))):
+                    open_result = disk_util.luks_open(passphrase_file=passphrase_file,dev_path=dev_uuid_path, \
+                                                            mapper_name=mapper_name,header_file=luks_header_file)
 
-    dev_uuid_path = os.path.join('/dev/disk/by-uuid', device_item.uuid)
-    mark_crypt_ongoing_item(dev_uuid_path=dev_uuid_path,mapper_name=mapper_name,luks_header_file=luks_header_file)
-    logger.log("start copying data " + str(device_item))
-    if(ongoing_item_config is not None):
-        copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size= device_item.size,destination= device_mapper_path,from_end=False)
-    else:
-        ongoing_item_config = OnGoingItemConfig(encryption_environment=encryption_environment,logger=logger)
-        ongoing_item_config.dev_path = dev_uuid_path
-        ongoing_item_config.mapper_name = mapper_name
-        ongoing_item_config.phase = CommonVariables.EncryptionPhaseCopyData
-        ongoing_item_config.commit()
-        # resume this!!
-        copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size= device_item.size,destination= device_mapper_path,from_end=False)
-    if(copy_result != CommonVariables.success):
-        error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
-        logger.log(msg=("the copying result is " + copy_result + " so skip the mounting"),level=CommonVariables.ErrorLevel)
-        return
-    else:
-        ongoing_item_config.clear_config()
-        crypt_item_to_update = CryptItem()
-        crypt_item_to_update.mapper_name = mapper_name
-        crypt_item_to_update.dev_path = dev_uuid_path
-        crypt_item_to_update.luks_header_path = luks_header_file
-        crypt_item_to_update.file_system = device_item.fstype
-        # if the original mountpoint is empty, then leave
-        # it as None
-        if device_item.mountpoint == "" or device_item.mountpoint == None:
-            crypt_item_to_update.mount_point = "None"
-        else:
-            crypt_item_to_update.mount_point = device_item.mountpoint
-        update_crypt_item_result = disk_util.update_crypt_item(crypt_item_to_update)
-        if(not update_crypt_item_result):
-            logger.log(msg="update crypt item failed",level=CommonVariables.ErrorLevel)
-        if(crypt_item_to_update.mount_point != "None"):
-            disk_util.mount_filesystem(device_mapper_path, device_item.mountpoint)
-        else:
-            logger.log("the crypt_item_to_update.mount_point is None, so we do not mount it.")
-    
+                    if(open_result != CommonVariables.process_success):
+                        logger.log(msg=("the luks open for " + str(device_item) + " failed"),level=CommonVariables.ErrorLevel)
+                        return
+
+                copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size= device_item.size,destination= device_mapper_path,from_end=False)
+                if(copy_result != CommonVariables.success):
+                    error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
+                    logger.log(msg=("the copying result is " + copy_result + " so skip the mounting"),level=CommonVariables.ErrorLevel)
+                    return
+                else:
+                    ongoing_item_config.clear_config()
+                    crypt_item_to_update = CryptItem()
+                    crypt_item_to_update.mapper_name = mapper_name
+                    crypt_item_to_update.dev_path = dev_uuid_path
+                    crypt_item_to_update.luks_header_path = luks_header_file
+                    crypt_item_to_update.file_system = device_item.fstype
+                    # if the original mountpoint is empty, then leave
+                    # it as None
+                    if device_item.mountpoint == "" or device_item.mountpoint == None:
+                        crypt_item_to_update.mount_point = "None"
+                    else:
+                        crypt_item_to_update.mount_point = device_item.mountpoint
+                    update_crypt_item_result = disk_util.update_crypt_item(crypt_item_to_update)
+                    if(not update_crypt_item_result):
+                        logger.log(msg="update crypt item failed",level=CommonVariables.ErrorLevel)
+                    if(crypt_item_to_update.mount_point != "None"):
+                        disk_util.mount_filesystem(device_mapper_path, device_item.mountpoint)
+                    else:
+                        logger.log("the crypt_item_to_update.mount_point is None, so we do not mount it.")
+                    current_phase = CommonVariables.EncryptionPhaseDone
+            finally:
+                toggle_se_linux_for_centos7(False)
 
 def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util, bek_util):
     logger.log(msg="executing the enableencryption_all_inplace command.")
@@ -488,9 +488,9 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                 logger.log("error occured when do the umount for " + str(device_item.mountpoint) + str(umount_status_code))
             else:
                 encrypted_items.append(device_item.name)
-                
+
                 logger.log(msg=("encrypting " + str(device_item)))
-               
+
                 no_header_file_support = not_support_header_option_distro(MyPatching)
                 if(no_header_file_support):
                     logger.log(msg="this is the centos 6 or redhat 6 or sles 11 series , need special handling.",level=CommonVariables.WarningLevel)
