@@ -63,14 +63,6 @@ def not_support_header_option_distro(patching):
         return True
     return False
 
-def mark_encryption(extension_parameter):
-    encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
-    encryption_marker.command = extension_parameter.command
-    encryption_marker.volume_type = extension_parameter.VolumeType
-    encryption_marker.diskFormatQuery = extension_parameter.DiskFormatQuery
-    #mark it for next reboot.
-    encryption_marker.commit()
-
 def none_or_empty(obj):
     if(obj is None or obj == ""):
         return True
@@ -203,6 +195,11 @@ def enable():
             else:
                 if(encryption_config.config_file_exists() and existed_passphrase_file is not None):
                     logger.log(msg="config file exists and passphrase file exists.",level=CommonVariables.WarningLevel)
+                    encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
+                    encryption_marker.command = extension_parameter.command
+                    encryption_marker.volume_type = extension_parameter.VolumeType
+                    encryption_marker.diskFormatQuery = extension_parameter.DiskFormatQuery
+                    encryption_marker.commit()
                     start_daemon()
                 else:
                     """
@@ -242,7 +239,12 @@ def enable():
                             encryption_config.bek_filesystem = CommonVariables.BekVolumeFileSystem
                             encryption_config.secret_id = kek_secret_id_created
                             encryption_config.commit()
-                    mark_encryption(extension_parameter=extension_parameter)
+                    encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
+                    encryption_marker.command = extension_parameter.command
+                    encryption_marker.volume_type = extension_parameter.VolumeType
+                    encryption_marker.diskFormatQuery = extension_parameter.DiskFormatQuery
+                    #mark it for next restart.
+                    encryption_marker.commit()
 
         except Exception as e:
             logger.log(msg="Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()),level=CommonVariables.ErrorLevel)
