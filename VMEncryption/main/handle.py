@@ -306,80 +306,75 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
     if ongoing_item_config is not None, then this is a resume case.
     """
     current_phase = CommonVariables.EncryptionPhaseBackupHeader
-    if(ongoing_item_config is not None):
-        mapper_name = ongoing_item_config.get_mapper_name()
-        dev_uuid_path = ongoing_item_config.get_dev_path()
-        device_mapper_path = os.path.join(CommonVariables.dev_mapper_root, mapper_name)
-        # throw error when luks_header_file is not none for this:luks_header_file = ongoing_item_config.get_header_file_path()
-        current_phase = ongoing_item_config.get_phase()
-    else:
-        mapper_name = str(uuid.uuid4())
-        dev_uuid_path = os.path.join('/dev/disk/by-uuid',device_item.uuid)
-        device_mapper_path = os.path.join(CommonVariables.dev_mapper_root, mapper_name)
-    
+    if(ongoing_item_config is None):
+        ongoing_item_config = OnGoingItemConfig(encryption_environment=encryption_environment,logger=logger)
+        ongoing_item_config.dev_path = os.path.join('/dev/disk/by-uuid', device_item.uuid)
+        ongoing_item_config.mapper_name = str(uuid.uuid4())
+        ongoing_item_config.luks_header_file_path = None
+        ongoing_item_config.phase = CommonVariables.EncryptionPhaseBackupHeader
+        ongoing_item_config.commit()
+
     logger.log(msg=("encrypting device item" + str(device_item)))
     # we only support ext file systems.
-    if(current_phase == CommonVariables.EncryptionPhaseBackupHeader):
-        
-        if(not device_item.fstype.lower() in ["ext2","ext3","ext4"]):
-            logger.log(msg="we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7",level=CommonVariables.WarningLevel)
-            return
+    current_phase = ongoing_item_config.get_phase()
+    while(current_phase != CommonVariables.EncryptionPhaseDone):
+        if(current_phase == CommonVariables.EncryptionPhaseBackupHeader):
+            if(not device_item.fstype.lower() in ["ext2","ext3","ext4"]):
+                logger.log(msg="we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7",level=CommonVariables.WarningLevel)
+                return
+            chk_shrink_result = disk_util.check_shrink_fs(dev_path=dev_uuid_path)
+            if(chk_shrink_result != CommonVariables.process_success):
+                logger.log(msg=("check shrink fs failed with code " + str(chk_shrink_result) + " for: " + str(dev_uuid_path)),level=CommonVariables.ErrorLevel)
+                return
+            else:
+                luks_header_size = 4096 * 512
+                tmpfile_created = tempfile.NamedTemporaryFile()
+                tmpfile_created.close()
 
-        chk_shrink_result = disk_util.check_shrink_fs(dev_path=dev_uuid_path)
-        if(chk_shrink_result == CommonVariables.process_success):
-            pass
-        else:
-            logger.log(msg=("check shrink fs failed with code " + str(chk_shrink_result) + " for: " + str(dev_uuid_path)),level=CommonVariables.ErrorLevel)
-            return
-    elif(current_phase == CommonVariables.EncryptionPhaseEncryptDevice):
-        pass
-    elif(current_phase == CommonVariables.EncryptionPhaseCopyData):
-        pass
-    elif(current_phase == CommonVariables.EncryptionPhaseRecoverHeader):
-        pass
+                ongoing_item_config.header_slice_file_path = tmpfile_created.name
+                ongoing_item_config.commit()
 
+                copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size=CommonVariables.default_block_size,destination = tmpfile_created.name)
 
-    luks_header_size = 4096 * 512
+                if(copy_result != CommonVariables.process_success):
+                    logger.log(msg=("copy the header block failed, return code is: " + str(copy_result)),level=CommonVariables.ErrorLevel)
+                    return
+                else:
+                    ongoing_item_config.phase = CommonVariables.EncryptionPhaseEncryptDevice
+                    ongoing_item_config.commit()
+                    current_phase = CommonVariables.EncryptionPhaseEncryptDevice
+        elif(current_phase == CommonVariables.EncryptionPhaseEncryptDevice):
+            encrypt_result = disk_util.encrypt_disk(dev_path=dev_uuid_path,passphrase_file=passphrase_file,mapper_name=mapper_name,header_file=None)
+            # get the luks_header_size
+            if(encrypt_result != CommonVariables.process_success):
+                logger.log(msg="encrypt file system failed.",level=CommonVariables.ErrorLevel)
+                return
+            else:
+                ongoing_item_config.phase = CommonVariables.EncryptionPhaseCopyData
+                ongoing_item_config.commit()
+                current_phase = CommonVariables.EncryptionPhaseCopyData
+        elif(current_phase == CommonVariables.EncryptionPhaseCopyData):
+            ongoing_item_config.phase = CommonVariables.EncryptionPhaseCopyData
+            ongoing_item_config.commit()
+            copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size=(device_item.size - luks_header_size),destination=device_mapper_path,from_end=True)
+            if(copy_result != CommonVariables.process_success):
+                logger.log(msg=("copy the main content block failed, return code is: " + str(copy_result)),level=CommonVariables.ErrorLevel)
+                return
+            else:
+                ongoing_item_config.phase = CommonVariables.EncryptionPhaseRecoverHeader
+                ongoing_item_config.commit()
+                current_phase = CommonVariables.EncryptionPhaseRecoverHeader
 
-    tmpfile_created = tempfile.NamedTemporaryFile()
-    tmpfile_created.close()
-
-    ongoing_item_config = OnGoingItemConfig(encryption_environment=encryption_environment,logger=logger)
-    ongoing_item_config.dev_path = dev_uuid_path
-    ongoing_item_config.mapper_name = mapper_name
-    ongoing_item_config.luks_header_file_path = None
-    ongoing_item_config.phase = CommonVariables.EncryptionPhaseBackupHeader
-    ongoing_item_config.header_slice_file_path = tmpfile_created.name
-    ongoing_item_config.commit()
-
-    copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size=CommonVariables.default_block_size,destination = tmpfile_created.name)
-
-    if(copy_result != CommonVariables.process_success):
-        logger.log(msg=("copy the header block failed, return code is: " + str(copy_result)),level=CommonVariables.ErrorLevel)
-        return
-    encrypt_result = disk_util.encrypt_disk(dev_path=dev_uuid_path,passphrase_file=passphrase_file,mapper_name=mapper_name,header_file=None)
-    # get the luks_header_size
-    if(encrypt_result != CommonVariables.process_success):
-        logger.log(msg="encrypt file system failed.",level=CommonVariables.ErrorLevel)
-        return
-
-    ongoing_item_config.phase = CommonVariables.EncryptionPhaseCopyData
-    ongoing_item_config.commit()
-    copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size=(device_item.size - luks_header_size),destination=device_mapper_path,from_end=True)
-    if(copy_result != CommonVariables.process_success):
-        logger.log(msg=("copy the main content block failed, return code is: " + str(copy_result)),level=CommonVariables.ErrorLevel)
-        return
-
-    ongoing_item_config.phase = CommonVariables.EncryptionPhaseRecoverHeader
-    ongoing_item_config.commit()
-    copy_result = disk_util.copy(tmpfile_created.name, CommonVariables.default_block_size, device_mapper_path, from_end=False)
-    if(copy_result == CommonVariables.process_success):
-        expand_fs_result = disk_util.expand_fs(dev_path=device_mapper_path)
-        if(expand_fs_result == CommonVariables.process_success):
-            ongoing_item_config.clear_config()
-        else:
-            logger.log(msg=("expand fs result is: " + str(expand_fs_result)),level=CommonVariables.ErrorLevel)
-            return
+        elif(current_phase == CommonVariables.EncryptionPhaseRecoverHeader):
+            copy_result = disk_util.copy(tmpfile_created.name, CommonVariables.default_block_size, device_mapper_path, from_end=False)
+            if(copy_result == CommonVariables.process_success):
+                expand_fs_result = disk_util.expand_fs(dev_path=device_mapper_path)
+                if(expand_fs_result == CommonVariables.process_success):
+                    ongoing_item_config.clear_config()
+                    current_phase = CommonVariables.EncryptionPhaseDone
+                else:
+                    logger.log(msg=("expand fs result is: " + str(expand_fs_result)),level=CommonVariables.ErrorLevel)
+                    return
 
 def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk_util, bek_util, ongoing_item_config=None):
     """

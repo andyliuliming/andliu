@@ -86,6 +86,7 @@ class CommonVariables:
     EncryptionPhaseCopyData = 'CopyData'
     EncryptionPhaseRecoverHeader = 'RecoverHeader'
     EncryptionPhaseEncryptDevice = 'EncryptDevice'
+    EncryptionPhaseDone = 'Done'
 
     """
     transactional copy keys
