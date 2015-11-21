@@ -132,6 +132,7 @@ def enable():
             logger.log(msg="timestamp for the current setting file is not in valid period",level=CommonVariables.WarningLevel)
             exit_without_status_report()
     else:
+        logger.log(msg="context is not right or settings file not found",level=CommonVariables.ErrorLevel)
         exit_without_status_report()
 
     # handle the re-call scenario.  the re-call would resume?
@@ -165,7 +166,7 @@ def enable():
             """
             trying to mount the crypted items.
             """
-            disk_util = DiskUtil(hutil=hutil,patching= MyPatching, logger=logger, encryption_environment=encryption_environment)
+            disk_util = DiskUtil(hutil=hutil, patching= MyPatching, logger=logger, encryption_environment=encryption_environment)
             bek_util = BekUtil(disk_util, logger)
 
             #make sure the azure disk config path exists.
@@ -255,6 +256,7 @@ def enable():
                             encryption_config.bek_filesystem = CommonVariables.BekVolumeFileSystem
                             encryption_config.secret_id = kek_secret_id_created
                             encryption_config.commit()
+                    
                     encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
                     encryption_marker.command = extension_parameter.command
                     encryption_marker.volume_type = extension_parameter.VolumeType
@@ -262,6 +264,13 @@ def enable():
                     #mark it for next restart.
                     encryption_marker.commit()
 
+                    if(kek_secret_id_created != None):
+                        hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.success), str(kek_secret_id_created))
+                    else:
+                        """
+                        the enabling called again. the passphrase would be re-used.
+                        """
+                        hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.encrypttion_already_enabled), str(kek_secret_id_created))
         except Exception as e:
             logger.log(msg="Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()),level=CommonVariables.ErrorLevel)
             hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,str(CommonVariables.unknown_error), 'Enable failed.')
@@ -507,9 +516,7 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                 logger.log("error occured when do the umount for " + str(device_item.mountpoint) + str(umount_status_code))
             else:
                 encrypted_items.append(device_item.name)
-
                 logger.log(msg=("encrypting " + str(device_item)))
-
                 no_header_file_support = not_support_header_option_distro(MyPatching)
                 if(no_header_file_support):
                     logger.log(msg="this is the centos 6 or redhat 6 or sles 11 series , need special handling.",level=CommonVariables.WarningLevel)
@@ -518,6 +525,7 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                 else:
                     encrypt_inplace_with_seperate_header_file(passphrase_file=passphrase_file,device_item=device_item,disk_util=disk_util,bek_util=bek_util)
                     continue
+
 
 def daemon():
     hutil.do_parse_context('Executing')
@@ -577,20 +585,18 @@ def daemon():
             elif(encryption_marker.get_current_command() == CommonVariables.EnableEncryptionFormat):
                 enable_encryption_format(bek_passphrase_file, encryption_marker, disk_util)
             else:
-                #TODO we should exit.
                 logger.log(msg=("command " + str(encryption_marker.get_current_command()) + " not supported"), level=CommonVariables.ErrorLevel)
         bek_util.umount_azure_passhprase(encryption_config)
 
     except Exception as e:
         # mount the file systems back.
         hutil.error("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
-        #hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status, '1',
-        #'Enable failed.')
     finally:
         encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
         #TODO not remove it, backed it up.
         encryption_marker.clear_config()
         logger.log("finally in daemon")
+    hutil.do_exit(exit_code=0,operation='Enable',status=CommonVariables.extension_success_status,code=str(CommonVariables.success),message="the encryption task finished, please take a look at the log file.")
 
 def start_daemon():
     args = [os.path.join(os.getcwd(), __file__), "-daemon"]
@@ -603,7 +609,7 @@ def start_daemon():
     #throw Broke pipe exeception when parent process exit.
     devnull = open(os.devnull, 'w')
     child = subprocess.Popen(args, stdout=devnull, stderr=devnull)
-    hutil.do_exit(0, 'Enable', 'transitioning', '0', 'Launching the script...')
+    hutil.do_exit(exit_code = 0, operation='Enable', status= 'transitioning', code = '0', message='Encrypting the disks...')
 
 def uninstall():
     hutil.do_parse_context('Uninstall')
