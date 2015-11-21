@@ -82,6 +82,29 @@ def toggle_se_linux_for_centos7(disable):
             encryption_environment.enable_se_linux()
     return False
 
+def mount_encrypted_disks(disk_util, bek_util,passphrase_file,encryption_config):
+    #make sure the azure disk config path exists.
+    crypt_items = disk_util.get_crypt_items()
+    if(crypt_items is not None):
+        for i in range(0, len(crypt_items)):
+            crypt_item = crypt_items[i]
+            #add walkaround for the centos 7.0
+            se_linux_status = None
+            if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
+                se_linux_status = encryption_environment.get_se_linux()
+                if(se_linux_status.lower() == 'enforcing'):
+                    encryption_environment.disable_se_linux()
+            luks_open_result = disk_util.luks_open(passphrase_file=passphrase_file,dev_path=crypt_item.dev_path,mapper_name=crypt_item.mapper_name,header_file=crypt_item.luks_header_path)
+            logger.log("luks open result is " + str(luks_open_result))
+            if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
+                if(se_linux_status is not None and se_linux_status.lower() == 'enforcing'):
+                    encryption_environment.enable_se_linux()
+            if(crypt_item.mount_point != 'None'):
+                disk_util.mount_crypt_item(crypt_item, passphrase_file)
+            else:
+                logger.log(msg=('mount_point is None so skipping mount for the item ' + str(crypt_item)),level=CommonVariables.WarningLevel)
+    bek_util.umount_azure_passhprase(encryption_config)
+
 def main():
     global hutil,MyPatching,logger,encryption_environment
     HandlerUtil.LoggerInit('/var/log/waagent.log','/dev/stdout')
@@ -120,6 +143,25 @@ def enable():
     # would be killed by the wala in 5 minutes.
     logger.log('enabling...')
 
+
+    """
+    trying to mount the crypted items.
+    """
+    disk_util = DiskUtil(hutil=hutil, patching= MyPatching, logger=logger, encryption_environment=encryption_environment)
+    bek_util = BekUtil(disk_util, logger)
+    
+    existed_passphrase_file = None
+    encryption_config = EncryptionConfig(encryption_environment=encryption_environment, logger=logger)
+    config_path_result = disk_util.make_sure_path_exists(encryption_environment.encryption_config_path)
+    if(config_path_result != CommonVariables.process_success):
+        logger.log(msg="azure encryption path creation failed.",level=CommonVariables.ErrorLevel)
+    if(encryption_config.config_file_exists()):
+        existed_passphrase_file = bek_util.get_bek_passphrase_file(encryption_config)
+        if(existed_passphrase_file is not None):
+            mount_encrypted_disks(disk_util=disk_util,bek_util=bek_util,encryption_config=encryption_config,passphrase_file=existed_passphrase_file)
+        else:
+            exit_without_status_report()
+
     # we should restrict the time span in 10 minutes.
     if(hutil is not None and hutil._context is not None and hutil._context._settings_file is not None):
         setting_file_timestamp = os.path.getmtime(hutil._context._settings_file)
@@ -154,126 +196,84 @@ def enable():
                 # failed this time to wait for customers' retry.
                 exit_without_status_report()
         hutil.exit_if_enabled()
-    else:
-        try:
-            protected_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('protectedSettings')
-            public_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('publicSettings')
-            extension_parameter = ExtensionParameter(hutil, protected_settings, public_settings)
+    
+    try:
+        protected_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('protectedSettings')
+        public_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('publicSettings')
+        extension_parameter = ExtensionParameter(hutil, protected_settings, public_settings)
 
-            encryption_config = EncryptionConfig(encryption_environment=encryption_environment, logger=logger)
-            existed_passphrase_file = None
-            kek_secret_id_created = None
-            """
-            trying to mount the crypted items.
-            """
-            disk_util = DiskUtil(hutil=hutil, patching= MyPatching, logger=logger, encryption_environment=encryption_environment)
-            bek_util = BekUtil(disk_util, logger)
+        kek_secret_id_created = None
 
-            #make sure the azure disk config path exists.
-            config_path_result = disk_util.make_sure_path_exists(encryption_environment.encryption_config_path)
-            if(config_path_result != CommonVariables.process_success):
-                logger.log(msg="azure encryption path creation failed.",level=CommonVariables.ErrorLevel)
-            if(encryption_config.config_file_exists()):
-                existed_passphrase_file = bek_util.get_bek_passphrase_file(encryption_config)
-                if(existed_passphrase_file != None):
-                    crypt_items = disk_util.get_crypt_items()
-                    if(crypt_items is not None):
-                        for i in range(0, len(crypt_items)):
-                            crypt_item = crypt_items[i]
-                            #add walkaround for the centos 7.0
-                            se_linux_status = None
-                            if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
-                                se_linux_status = encryption_environment.get_se_linux()
-                                if(se_linux_status.lower() == 'enforcing'):
-                                    encryption_environment.disable_se_linux()
-                            luks_open_result = disk_util.luks_open(passphrase_file=existed_passphrase_file,dev_path=crypt_item.dev_path,mapper_name=crypt_item.mapper_name,header_file=crypt_item.luks_header_path)
-                            logger.log("luks open result is " + str(luks_open_result))
-                            if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
-                                if(se_linux_status is not None and se_linux_status.lower() == 'enforcing'):
-                                    encryption_environment.enable_se_linux()
-                            if(crypt_item.mount_point != 'None'):
-                                disk_util.mount_crypt_item(crypt_item, existed_passphrase_file)
-                            else:
-                                logger.log(msg=('mount_point is None so skipping mount for the item ' + str(crypt_item)),level=CommonVariables.WarningLevel)
-                    bek_util.umount_azure_passhprase(encryption_config)
-                else:
-                    """
-                    the config exists, and the passphrase not get is a error case.
-                    """
-                    logger.log(msg="the config file exists, but we could not get the passphrase according to it.",level=CommonVariables.ErrorLevel)
-                    bek_util.umount_azure_passhprase(encryption_config)
-                    exit_without_status_report()
-
-            encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
-            if encryption_marker.config_file_exists():
-                # verify the encryption mark
-                logger.log(msg="encryption mark is there, starting daemon.",level=CommonVariables.InfoLevel)
+        encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
+        if encryption_marker.config_file_exists():
+            # verify the encryption mark
+            logger.log(msg="encryption mark is there, starting daemon.",level=CommonVariables.InfoLevel)
+            start_daemon()
+        else:
+            if(encryption_config.config_file_exists() and existed_passphrase_file is not None):
+                logger.log(msg="config file exists and passphrase file exists.",level=CommonVariables.WarningLevel)
+                encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
+                encryption_marker.command = extension_parameter.command
+                encryption_marker.volume_type = extension_parameter.VolumeType
+                encryption_marker.diskFormatQuery = extension_parameter.DiskFormatQuery
+                encryption_marker.commit()
                 start_daemon()
             else:
-                if(encryption_config.config_file_exists() and existed_passphrase_file is not None):
-                    logger.log(msg="config file exists and passphrase file exists.",level=CommonVariables.WarningLevel)
-                    encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
-                    encryption_marker.command = extension_parameter.command
-                    encryption_marker.volume_type = extension_parameter.VolumeType
-                    encryption_marker.diskFormatQuery = extension_parameter.DiskFormatQuery
-                    encryption_marker.commit()
-                    start_daemon()
+                """
+                creating the secret, the secret would be transferred to a bek volume after the updatevm called in powershell.
+                """
+                #store the luks passphrase in the secret.
+                keyVaultUtil = KeyVaultUtil(logger)
+
+                """
+                validate the parameters
+                """
+                if(extension_parameter.VolumeType != 'Data'):
+                    hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status,str(CommonVariables.volue_type_not_support), 'VolumeType ' + str(extension_parameter.VolumeType) + ' is not supported.')
+
+                if(extension_parameter.command not in [CommonVariables.EnableEncryption, CommonVariables.EnableEncryptionFormat]):
+                    hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status,str(CommonVariables.command_not_support), 'Command ' + str(extension_parameter.command) + ' is not supported.')
+
+                """
+                this is the fresh call case
+                """
+                #handle the passphrase related
+                if(existed_passphrase_file == None):
+                    if(extension_parameter.passphrase is None or extension_parameter.passphrase == ""):
+                        extension_parameter.passphrase = bek_util.generate_passphrase(extension_parameter.KeyEncryptionAlgorithm)
+                    kek_secret_id_created = keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
+                        KeyVaultURL = extension_parameter.KeyVaultURL,\
+                        KeyEncryptionKeyURL = extension_parameter.KeyEncryptionKeyURL,\
+                        AADClientID = extension_parameter.AADClientID,\
+                        KeyEncryptionAlgorithm = extension_parameter.KeyEncryptionAlgorithm,\
+                        AADClientSecret = extension_parameter.AADClientSecret,\
+                        DiskEncryptionKeyFileName = extension_parameter.DiskEncryptionKeyFileName)
+
+                    if(kek_secret_id_created == None):
+                        hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.create_encryption_secret_failed), 'Enable failed.')
+                    else:
+                        encryption_config.passphrase_file_name = extension_parameter.DiskEncryptionKeyFileName
+                        encryption_config.bek_filesystem = CommonVariables.BekVolumeFileSystem
+                        encryption_config.secret_id = kek_secret_id_created
+                        encryption_config.commit()
+                    
+                encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
+                encryption_marker.command = extension_parameter.command
+                encryption_marker.volume_type = extension_parameter.VolumeType
+                encryption_marker.diskFormatQuery = extension_parameter.DiskFormatQuery
+                #mark it for next restart.
+                encryption_marker.commit()
+
+                if(kek_secret_id_created != None):
+                    hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.success), str(kek_secret_id_created))
                 else:
                     """
-                    creating the secret, the secret would be transferred to a bek volume after the updatevm called in powershell.
+                    the enabling called again. the passphrase would be re-used.
                     """
-                    #store the luks passphrase in the secret.
-                    keyVaultUtil = KeyVaultUtil(logger)
-
-                    """
-                    validate the parameters
-                    """
-                    if(extension_parameter.VolumeType != 'Data'):
-                        hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status,str(CommonVariables.volue_type_not_support), 'VolumeType ' + str(extension_parameter.VolumeType) + ' is not supported.')
-
-                    if(extension_parameter.command not in [CommonVariables.EnableEncryption, CommonVariables.EnableEncryptionFormat]):
-                        hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status,str(CommonVariables.command_not_support), 'Command ' + str(extension_parameter.command) + ' is not supported.')
-
-                    """
-                    this is the fresh call case
-                    """
-                    #handle the passphrase related
-                    if(existed_passphrase_file == None):
-                        if(extension_parameter.passphrase is None or extension_parameter.passphrase == ""):
-                            extension_parameter.passphrase = bek_util.generate_passphrase(extension_parameter.KeyEncryptionAlgorithm)
-                        kek_secret_id_created = keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
-                            KeyVaultURL = extension_parameter.KeyVaultURL,\
-                            KeyEncryptionKeyURL = extension_parameter.KeyEncryptionKeyURL,\
-                            AADClientID = extension_parameter.AADClientID,\
-                            KeyEncryptionAlgorithm = extension_parameter.KeyEncryptionAlgorithm,\
-                            AADClientSecret = extension_parameter.AADClientSecret,\
-                            DiskEncryptionKeyFileName = extension_parameter.DiskEncryptionKeyFileName)
-
-                        if(kek_secret_id_created == None):
-                            hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.create_encryption_secret_failed), 'Enable failed.')
-                        else:
-                            encryption_config.passphrase_file_name = extension_parameter.DiskEncryptionKeyFileName
-                            encryption_config.bek_filesystem = CommonVariables.BekVolumeFileSystem
-                            encryption_config.secret_id = kek_secret_id_created
-                            encryption_config.commit()
-                    
-                    encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
-                    encryption_marker.command = extension_parameter.command
-                    encryption_marker.volume_type = extension_parameter.VolumeType
-                    encryption_marker.diskFormatQuery = extension_parameter.DiskFormatQuery
-                    #mark it for next restart.
-                    encryption_marker.commit()
-
-                    if(kek_secret_id_created != None):
-                        hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.success), str(kek_secret_id_created))
-                    else:
-                        """
-                        the enabling called again. the passphrase would be re-used.
-                        """
-                        hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.encrypttion_already_enabled), str(kek_secret_id_created))
-        except Exception as e:
-            logger.log(msg="Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()),level=CommonVariables.ErrorLevel)
-            hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,str(CommonVariables.unknown_error), 'Enable failed.')
+                    hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.encrypttion_already_enabled), str(kek_secret_id_created))
+    except Exception as e:
+        logger.log(msg="Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()),level=CommonVariables.ErrorLevel)
+        hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,str(CommonVariables.unknown_error), 'Enable failed.')
 
 def enable_encryption_format(passphrase, encryption_queue, disk_util):
     encryption_parameters = encryption_queue.get_encryption_disk_format_query()
