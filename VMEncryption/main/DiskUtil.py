@@ -210,7 +210,7 @@ class DiskUtil(object):
             returnCode = cryptsetup_p.wait()
             return returnCode
 
-    def luks_open(self,passphrase_file,dev_path,mapper_name,header_file):
+    def luks_open(self, passphrase_file, dev_path, mapper_name, header_file):
         """
         return the return code of the process for error handling.
         """
