@@ -44,7 +44,7 @@ class OnGoingItemConfig(object):
         key_value_pairs.append(phase_pair)
         header_slice_file_pair = ConfigKeyValuePair(CommonVariables.OngoingItemHeaderSliceFilePathKey,self.header_slice_file_path)
         key_value_pairs.append(header_slice_file_pair)
-        self.encryption_config.save_configs(key_value_pairs)
+        self.ongoing_item_config.save_configs(key_value_pairs)
 
     def clear_config(self):
         try:
