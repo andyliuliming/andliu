@@ -82,6 +82,22 @@ def toggle_se_linux_for_centos7(disable):
             encryption_environment.enable_se_linux()
     return False
 
+def install():
+    hutil.do_parse_context('Install')
+    hutil.do_exit(0, 'Install', CommonVariables.extension_success_status, str(CommonVariables.success), 'Install Succeeded')
+
+def uninstall():
+    hutil.do_parse_context('Uninstall')
+    hutil.do_exit(0,'Uninstall',CommonVariables.extension_success_status,'0', 'Uninstall succeeded')
+
+def disable():
+    hutil.do_parse_context('Disable')
+    hutil.do_exit(0,'Disable',CommonVariables.extension_success_status,'0', 'Disable Succeeded')
+
+def update():
+    hutil.do_parse_context('Upadate')
+    hutil.do_exit(0,'Update',CommonVariables.extension_success_status,'0', 'Update Succeeded')
+
 def mount_encrypted_disks(disk_util, bek_util,passphrase_file,encryption_config):
     #make sure the azure disk config path exists.
     crypt_items = disk_util.get_crypt_items()
@@ -133,16 +149,11 @@ def main():
         elif re.match("^([-/]*)(daemon)", a):
             daemon()
 
-def install():
-    hutil.do_parse_context('Install')
-    hutil.do_exit(0, 'Install', CommonVariables.extension_success_status, str(CommonVariables.success), 'Install Succeeded')
-
 def enable():
     hutil.do_parse_context('Enable')
     # we need to start another subprocess to do it, because the initial process
     # would be killed by the wala in 5 minutes.
     logger.log('enabling...')
-
 
     """
     trying to mount the crypted items.
@@ -211,7 +222,7 @@ def enable():
             start_daemon()
         else:
             if(encryption_config.config_file_exists() and existed_passphrase_file is not None):
-                logger.log(msg="config file exists and passphrase file exists.",level=CommonVariables.WarningLevel)
+                logger.log(msg="config file exists and passphrase file exists.", level=CommonVariables.WarningLevel)
                 encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
                 encryption_marker.command = extension_parameter.command
                 encryption_marker.volume_type = extension_parameter.VolumeType
@@ -610,18 +621,6 @@ def start_daemon():
     devnull = open(os.devnull, 'w')
     child = subprocess.Popen(args, stdout=devnull, stderr=devnull)
     hutil.do_exit(exit_code = 0, operation='Enable', status= 'transitioning', code = '0', message='Encrypting the disks...')
-
-def uninstall():
-    hutil.do_parse_context('Uninstall')
-    hutil.do_exit(0,'Uninstall',CommonVariables.extension_success_status,'0', 'Uninstall succeeded')
-
-def disable():
-    hutil.do_parse_context('Disable')
-    hutil.do_exit(0,'Disable',CommonVariables.extension_success_status,'0', 'Disable Succeeded')
-
-def update():
-    hutil.do_parse_context('Upadate')
-    hutil.do_exit(0,'Update',CommonVariables.extension_success_status,'0', 'Update Succeeded')
 
 if __name__ == '__main__' :
     main()
