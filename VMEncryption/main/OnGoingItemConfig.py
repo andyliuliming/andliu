@@ -7,18 +7,19 @@ from ConfigUtil import ConfigKeyValuePair
 class OnGoingItemConfig(object):
     def __init__(self, encryption_environment,logger):
         self.encryption_environment = encryption_environment
-        self.dev_path = None
+        self.dev_uuid_path = None
         self.mapper_name = None
         self.luks_header_file_path = None
         self.phase = None
         self.header_slice_file_path = None
+        self.fstype = None
         self.ongoing_item_config = ConfigUtil(encryption_environment.azure_crypt_ongoing_item_config_path,'azure_crypt_ongoing_item_config',logger)
 
     def config_file_exists(self):
         return self.ongoing_item_config.config_file_exists()
 
-    def get_dev_path(self):
-        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemDevPathKey)
+    def get_dev_uuid_path(self):
+        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemDevUUIDPathKey)
 
     def get_mapper_name(self):
         return self.ongoing_item_config.get_config(CommonVariables.OngoingItemMapperNameKey)
@@ -32,18 +33,29 @@ class OnGoingItemConfig(object):
     def get_header_slice_file_path(self):
         return self.ongoing_item_config.get_config(CommonVariables.OngoingItemHeaderSliceFilePathKey)
 
+    def get_file_system(self):
+        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemFileSystemKey)
+
     def commit(self):
         key_value_pairs = []
-        dev_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemDevPathKey,self.dev_path)
+        dev_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemDevUUIDPathKey,self.dev_uuid_path)
         key_value_pairs.append(dev_path_pair)
+
         mapper_name_pair = ConfigKeyValuePair(CommonVariables.OngoingItemMapperNameKey,self.mapper_name)
         key_value_pairs.append(mapper_name_pair)
+
         header_file_pair = ConfigKeyValuePair(CommonVariables.OngoingItemHeaderFilePathKey,self.luks_header_file_path)
         key_value_pairs.append(header_file_pair)
+
         phase_pair = ConfigKeyValuePair(CommonVariables.OngoingItemPhaseKey,self.phase)
         key_value_pairs.append(phase_pair)
+
         header_slice_file_pair = ConfigKeyValuePair(CommonVariables.OngoingItemHeaderSliceFilePathKey,self.header_slice_file_path)
         key_value_pairs.append(header_slice_file_pair)
+
+        file_system_pair=ConfigKeyValuePair(CommonVariables.OngoingItemFileSystemKey,self.fstype)
+        key_value_pairs.append(file_system_pair)
+
         self.ongoing_item_config.save_configs(key_value_pairs)
 
     def clear_config(self):

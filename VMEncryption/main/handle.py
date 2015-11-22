@@ -350,7 +350,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
     current_phase = CommonVariables.EncryptionPhaseBackupHeader
     if(ongoing_item_config is None):
         ongoing_item_config = OnGoingItemConfig(encryption_environment=encryption_environment,logger=logger)
-        ongoing_item_config.dev_path = os.path.join('/dev/disk/by-uuid', device_item.uuid)
+        ongoing_item_config.dev_uuid_path = os.path.join('/dev/disk/by-uuid', device_item.uuid)
         ongoing_item_config.mapper_name = str(uuid.uuid4())
         ongoing_item_config.luks_header_file_path = None
         ongoing_item_config.phase = CommonVariables.EncryptionPhaseBackupHeader
@@ -410,16 +410,34 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
         elif(current_phase == CommonVariables.EncryptionPhaseRecoverHeader):
             copy_result = disk_util.copy(tmpfile_created.name, CommonVariables.default_block_size, device_mapper_path, from_end=False)
             if(copy_result == CommonVariables.process_success):
-                expand_fs_result = disk_util.expand_fs(dev_path=device_mapper_path)
-                if(expand_fs_result == CommonVariables.process_success):
-                    ongoing_item_config.clear_config()
-                    current_phase = CommonVariables.EncryptionPhaseDone
+                ongoing_item_config.clear_config()
+                crypt_item_to_update = CryptItem()
+                crypt_item_to_update.mapper_name = mapper_name
+                crypt_item_to_update.dev_path = dev_uuid_path
+                crypt_item_to_update.luks_header_path = luks_header_file
+                crypt_item_to_update.file_system = device_item.fstype
+                # if the original mountpoint is empty, then leave
+                # it as None
+                if device_item.mountpoint == "" or device_item.mountpoint == None:
+                    crypt_item_to_update.mount_point = "None"
                 else:
+                    crypt_item_to_update.mount_point = device_item.mountpoint
+                update_crypt_item_result = disk_util.update_crypt_item(crypt_item_to_update)
+                if(not update_crypt_item_result):
+                    logger.log(msg="update crypt item failed",level=CommonVariables.ErrorLevel)
+                if(crypt_item_to_update.mount_point != "None"):
+                    disk_util.mount_filesystem(device_mapper_path, device_item.mountpoint)
+                else:
+                    logger.log("the crypt_item_to_update.mount_point is None, so we do not mount it.")
+                current_phase = CommonVariables.EncryptionPhaseDone
+                expand_fs_result = disk_util.expand_fs(dev_path=device_mapper_path)
+                if(expand_fs_result != CommonVariables.process_success):
                     logger.log(msg=("expand fs result is: " + str(expand_fs_result)),level=CommonVariables.ErrorLevel)
                     return
             else:
                 logger.log(msg=("recover header failed result is: " + str(copy_result)),level=CommonVariables.ErrorLevel)
                 return
+        # mount the item
 
 def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk_util, bek_util, ongoing_item_config=None):
     """
@@ -428,9 +446,10 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
     current_phase = CommonVariables.EncryptionPhaseEncryptDevice
     if(ongoing_item_config is None):
         ongoing_item_config = OnGoingItemConfig(encryption_environment=encryption_environment,logger=logger)
-        ongoing_item_config.dev_path = os.path.join('/dev/disk/by-uuid',device_item.uuid)
+        ongoing_item_config.dev_uuid_path = os.path.join('/dev/disk/by-uuid',device_item.uuid)
         mapper_name=str(uuid.uuid4())
         ongoing_item_config.mapper_name = mapper_name
+        ongoing_item_config.fstype = device_item.fstype
         luks_header_file = disk_util.create_luks_header(mapper_name=mapper_name)
         if(luks_header_file is None):
             logger.log(msg="create header file failed",level=CommonVariables.ErrorLevel)
@@ -445,7 +464,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
             disabled = False
             try:
                 mapper_name = ongoing_item_config.get_mapper_name()
-                dev_uuid_path = ongoing_item_config.get_dev_path()
+                dev_uuid_path = ongoing_item_config.get_dev_uuid_path()
                 luks_header_file = ongoing_item_config.get_header_file_path()
                 disabled = toggle_se_linux_for_centos7(True)
                 encrypt_result = disk_util.encrypt_disk(dev_path=dev_uuid_path,passphrase_file = passphrase_file, \
@@ -463,10 +482,10 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
             disabled = False
             try:
                 mapper_name = ongoing_item_config.get_mapper_name()
-                dev_uuid_path = ongoing_item_config.get_dev_path()
+                dev_uuid_path = ongoing_item_config.get_dev_uuid_path()
                 luks_header_file = ongoing_item_config.get_header_file_path()
                 disabled = toggle_se_linux_for_centos7(True)
-                device_mapper_path = os.path.join("/dev/mapper",mapper_name)
+                device_mapper_path = os.path.join("/dev/mapper", mapper_name)
                 if(not os.path.exists()):
                     open_result = disk_util.luks_open(passphrase_file=passphrase_file,dev_path=dev_uuid_path, \
                                                             mapper_name=mapper_name,header_file=luks_header_file)
@@ -487,7 +506,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                     crypt_item_to_update.mapper_name = mapper_name
                     crypt_item_to_update.dev_path = dev_uuid_path
                     crypt_item_to_update.luks_header_path = luks_header_file
-                    crypt_item_to_update.file_system = device_item.fstype
+                    crypt_item_to_update.file_system = ongoing_item_config.get_file_system()
                     # if the original mountpoint is empty, then leave
                     # it as None
                     if device_item.mountpoint == "" or device_item.mountpoint == None:
@@ -581,6 +600,7 @@ def daemon():
             """
             ongoing_item_config = OnGoingItemConfig(encryption_environment=encryption_environment, logger=logger)
             if(ongoing_item_config.config_file_exists()):
+                #disk_util.get_device_items(ongoing_item_config.get_dev_path())
                 header_file_path = ongoing_item_config.get_header_file_path()
                 if(none_or_empty(header_file_path)):
                     encrypt_inplace_without_seperate_header_file(passphrase_file=bek_passphrase_file,device_item=device_item,\

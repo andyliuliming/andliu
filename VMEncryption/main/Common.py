@@ -75,9 +75,10 @@ class CommonVariables:
     """
     OngoingItemMapperNameKey = 'MapperName'
     OngoingItemHeaderFilePathKey = 'HeaderFilePath'
-    OngoingItemDevPathKey = 'DevicePath'
+    OngoingItemDevUUIDPathKey = 'DevicePath'
     OngoingItemPhaseKey = 'Phase'
     OngoingItemHeaderSliceFilePathKey = 'HeaderSliceFilePath'
+    OngoingItemFileSystemKey = 'FileSystem'
 
     """
     encryption phase devinitions
