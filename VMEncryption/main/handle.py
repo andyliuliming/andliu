@@ -360,7 +360,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
         ongoing_item_config.luks_header_file_path = None
         ongoing_item_config.file_system = device_item.file_system
         ongoing_item_config.mount_point = device_item.mount_point
-        ongoing_item_config.deivce_size = device_item.size
+        ongoing_item_config.device_size = device_item.size
         ongoing_item_config.phase = CommonVariables.EncryptionPhaseBackupHeader
         ongoing_item_config.commit()
 
@@ -460,6 +460,8 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
         mapper_name = str(uuid.uuid4())
         ongoing_item_config.mapper_name = mapper_name
         ongoing_item_config.file_system = device_item.file_system
+        ongoing_item_config.mount_point = device_item.mount_point
+        ongoing_item_config.device_size = device_item.size
         ongoing_item_config.mount_point = device_item.mount_point
         luks_header_file = disk_util.create_luks_header(mapper_name=mapper_name)
         if(luks_header_file is None):
