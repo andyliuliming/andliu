@@ -53,39 +53,6 @@ class TransactionalCopyTask(object):
         self.slice_file_path = self.tmpfs_mount_point + "/slice_file"
         self.transactional_copy_config = ConfigUtil(encryption_environment.azure_crypt_current_transactional_copy_path,'azure_crypt_copy_config',logger)
     
-    def prepare_mem_fs(self):
-        self.disk_util.make_sure_path_exists(self.tmpfs_mount_point)
-        commandToExecute = self.patching.mount_path + " -t tmpfs -o size=" + str(self.block_size + 1024) + " tmpfs " + self.tmpfs_mount_point
-        self.logger.log("prepare mem fs script is: " + str(commandToExecute))
-        returnCode = self.command_executer.Execute(commandToExecute)
-        return returnCode
-
-    def clear_mem_fs(self):
-        commandToExecute = self.patching.umount_path + " " + self.tmpfs_mount_point
-        returnCode = self.command_executer.Execute(commandToExecute)
-        return returnCode
-
-    """
-    TODO: if the copy failed?
-    """
-    def copy_internal(self,copy_command,from_device,to_device,skip,size):
-        """
-        first, copy the data to the middle cache
-        """
-        dd_cmd = str(copy_command) + ' if=' + from_device + ' of=' + self.slice_file_path + ' bs=' + str(size) + ' skip=' + str(skip) + ' count=1'
-        returnCode = self.command_executer.Execute(dd_cmd)
-        if(returnCode != 0):
-            self.logger.log(str(dd_cmd) + ' is ' + str(returnCode))
-
-        """
-        second, copy the data in the middle cache to the target device.
-        """
-        dd_cmd = str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1'
-        returnCode = self.command_executer.Execute(dd_cmd)
-        if(returnCode != 0):
-            self.logger.log(str(dd_cmd) + ' is ' + str(returnCode))
-        return returnCode
-
     def begin_copy(self,resume_copy=False):
         """
         check the device_item size first, cut it 
@@ -146,3 +113,44 @@ class TransactionalCopyTask(object):
                     else:
                         return copy_result
                 return CommonVariables.process_success
+
+    """
+    TODO: if the copy failed?
+    """
+    def copy_internal(self,copy_command,from_device,to_device,skip,size):
+        """
+        first, copy the data to the middle cache
+        """
+        dd_cmd = str(copy_command) + ' if=' + from_device + ' of=' + self.slice_file_path + ' bs=' + str(size) + ' skip=' + str(skip) + ' count=1'
+        returnCode = self.command_executer.Execute(dd_cmd)
+        if(returnCode != 0):
+            self.logger.log(str(dd_cmd) + ' is ' + str(returnCode))
+
+        """
+        second, copy the data in the middle cache to the target device.
+        """
+        backup_slice_item_cmd=str(copy_command) + ' if=' + self.slice_file_path + ' of=' + self.encryption_environment.copy_slice_item_backup_file + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1'
+        backup_slice_args = shlex.split(backup_slice_item_cmd)
+        backup_process = Popen(backup_slice_args)
+
+        dd_cmd = str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1'
+        returnCode = self.command_executer.Execute(dd_cmd)
+        if(returnCode != 0):
+            self.logger.log(str(dd_cmd) + ' is ' + str(returnCode))
+        else:
+            backup_process.kill()
+            if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
+                os.remove(self.encryption_environment.copy_slice_item_backup_file)
+        return returnCode
+
+    def prepare_mem_fs(self):
+        self.disk_util.make_sure_path_exists(self.tmpfs_mount_point)
+        commandToExecute = self.patching.mount_path + " -t tmpfs -o size=" + str(self.block_size + 1024) + " tmpfs " + self.tmpfs_mount_point
+        self.logger.log("prepare mem fs script is: " + str(commandToExecute))
+        returnCode = self.command_executer.Execute(commandToExecute)
+        return returnCode
+
+    def clear_mem_fs(self):
+        commandToExecute = self.patching.umount_path + " " + self.tmpfs_mount_point
+        returnCode = self.command_executer.Execute(commandToExecute)
+        return returnCode

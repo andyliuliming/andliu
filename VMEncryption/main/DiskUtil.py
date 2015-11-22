@@ -370,7 +370,6 @@ class DiskUtil(object):
             device_item.size = int(self.get_device_items_property(dev_name=device_item.name,property_name='SIZE'))
         return device_items
 
-
     def get_device_items(self, dev_path):
         if(self.patching.distro_info[0].lower() == 'suse' and self.patching.distro_info[1] == '11'):
             return self.get_device_items_sles(dev_path)
@@ -383,8 +382,9 @@ class DiskUtil(object):
                 p = Popen([self.patching.lsblk_path, '-b', '-n','-P','-o','NAME,TYPE,FSTYPE,MOUNTPOINT,LABEL,UUID,MODEL,SIZE',dev_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out_lsblk_output, err = p.communicate()
             out_lsblk_output = str(out_lsblk_output)
-            self.logger.log(msg=str(err),level=CommonVariables.ErrorLevel)
-            self.logger.log(msg=("out_lsblk_output:\n" + str(out_lsblk_output)))
+            error_msg = str(err)
+            if(error_msg is not None and error_msg.strip() != ""):
+                self.logger.log(msg=str(err),level=CommonVariables.ErrorLevel)
             lines = out_lsblk_output.splitlines()
             for i in range(0,len(lines)):
                 item_value_str = lines[i].strip()
