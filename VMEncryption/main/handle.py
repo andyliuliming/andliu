@@ -492,7 +492,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                 luks_header_file = ongoing_item_config.get_header_file_path()
                 disabled = toggle_se_linux_for_centos7(True)
                 device_mapper_path = os.path.join("/dev/mapper", mapper_name)
-                if(not os.path.exists()):
+                if(not os.path.exists(device_mapper_path)):
                     open_result = disk_util.luks_open(passphrase_file=passphrase_file,dev_path=dev_uuid_path, \
                                                             mapper_name=mapper_name,header_file=luks_header_file)
 
