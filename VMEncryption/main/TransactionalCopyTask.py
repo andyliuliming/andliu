@@ -26,6 +26,7 @@ from subprocess import *
 from CommandExecuter import CommandExecuter
 from Common import CommonVariables
 from ConfigUtil import ConfigUtil
+from TransactionalCopyConfig import TransactionalCopyConfig
 
 class TransactionalCopyTask(object):
     """
@@ -51,7 +52,6 @@ class TransactionalCopyTask(object):
         self.disk_util = disk_util
         self.tmpfs_mount_point = "/mnt/azure_encrypt_tmpfs"
         self.slice_file_path = self.tmpfs_mount_point + "/slice_file"
-        self.transactional_copy_config = ConfigUtil(encryption_environment.azure_crypt_current_transactional_copy_path,'azure_crypt_copy_config',logger)
     
     def begin_copy(self,resume_copy=False):
         """
@@ -62,25 +62,31 @@ class TransactionalCopyTask(object):
         total_slice_size = (total_size - last_slice_size) / self.block_size
         
         returnCode = CommonVariables.success
+        transactional_copy_config = TransactionalCopyConfig(encryption_environment=self.encryption_environment,logger=self.logger)
 
         copy_command = None
         if(resume_copy and transactional_copy_config.config_file_exists()):
-
-            pass
-        else:
-            self.transactional_copy_config.save_config(CommonVariables.CurrentDeviceNameKey,self.source_dev_full_path)
-            self.transactional_copy_config.save_config(CommonVariables.CurrentSliceSizeKey,self.block_size)
-            if(last_slice_size > 0):
-                self.transactional_copy_config.save_config(CommonVariables.CurrentTotalSizeKey,(total_slice_size + 1))
+            if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
+                pass
             else:
-                self.transactional_copy_config.save_config(CommonVariables.CurrentTotalSizeKey,(total_slice_size))
+                pass
+        else:
+            transactional_copy_config.source_dev_full_path=self.source_dev_full_path
+            transactional_copy_config.block_size=self.block_size
+
+            if(last_slice_size > 0):
+                transactional_copy_config.total_size=total_slice_size+1
+            else:
+                transactional_copy_config.total_size=total_slice_size
+            transactional_copy_config.commit()
             if(self.from_end):
                 #copy from end to the beginning.
                 if(last_slice_size > 0):
                     copy_command = self.patching.dd_path
                     copy_result = self.copy_internal(copy_command=copy_command,from_device=self.source_dev_full_path,to_device=self.destination,skip=total_slice_size,size=last_slice_size)
                     if(copy_result == CommonVariables.process_success):
-                        self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,(total_slice_size + 1))
+                        transactional_copy_config.current_slice_index = total_slice_size + 1
+                        transactional_copy_config.commit()
                     else:
                         return copy_result
 
@@ -89,7 +95,8 @@ class TransactionalCopyTask(object):
                     skip_block = (total_slice_size - i - 1)
                     copy_result = self.copy_internal(copy_command=copy_command,from_device=self.source_dev_full_path,to_device=self.destination,skip=skip_block,size=self.block_size)
                     if(copy_result == CommonVariables.process_success):
-                        self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,i)
+                        transactional_copy_config.current_slice_index = i
+                        transactional_copy_config.commit()
                     else:
                         return copy_result
                 return CommonVariables.process_success
@@ -98,7 +105,8 @@ class TransactionalCopyTask(object):
                     copy_command = self.patching.dd_path
                     copy_result = self.copy_internal(copy_command=copy_command,from_device=self.source_dev_full_path,to_device=self.destination,skip=i,size=self.block_size)
                     if(copy_result == CommonVariables.process_success):
-                        self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,i)
+                        transactional_copy_config.current_slice_index = i
+                        transactional_copy_config.commit()
                     else:
                         return copy_result
 
@@ -109,7 +117,8 @@ class TransactionalCopyTask(object):
                     copy_command = self.patching.dd_path
                     copy_result = self.copy_internal(copy_command=copy_command,from_device=self.source_dev_full_path,to_device=self.destination,skip=total_slice_size,size=last_slice_size)
                     if(copy_result == CommonVariables.process_success):
-                        self.transactional_copy_config.save_config(CommonVariables.CurrentSliceIndexKey,(total_slice_size + 1))
+                        transactional_copy_config.current_slice_index = total_slice_size + 1
+                        transactional_copy_config.commit()
                     else:
                         return copy_result
                 return CommonVariables.process_success

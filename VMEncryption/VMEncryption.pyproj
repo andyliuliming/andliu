@@ -82,6 +82,9 @@
     <Compile Include="main\patch\SuSEPatching.py" />
     <Compile Include="main\patch\UbuntuPatching.py" />
     <Compile Include="main\patch\__init__.py" />
+    <Compile Include="main\TransactionalCopyConfig.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="main\Utils\HandlerUtil.py" />
     <Compile Include="main\Utils\WAAgentUtil.py" />
     <Compile Include="main\Utils\__init__.py" />
