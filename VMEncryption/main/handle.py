@@ -52,6 +52,7 @@ from EncryptionMarkConfig import EncryptionMarkConfig
 from EncryptionEnvironment import EncryptionEnvironment
 from MachineIdentity import MachineIdentity
 from OnGoingItemConfig import OnGoingItemConfig
+from __builtin__ import int
 #Main function is the only entrence to this extension handler
 
 def install():
@@ -504,7 +505,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                         logger.log(msg=("the luks open for " + str(dev_uuid_path) + " failed"),level=CommonVariables.ErrorLevel)
                         return
                 
-                device_size = ongoing_item_config.get_device_size()
+                device_size = int(ongoing_item_config.get_device_size().strip())
                 copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size= device_size, \
                                             destination= device_mapper_path,from_end=False)
                 if(copy_result != CommonVariables.success):
