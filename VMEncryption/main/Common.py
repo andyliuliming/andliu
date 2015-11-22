@@ -80,6 +80,7 @@ class CommonVariables:
     OngoingItemHeaderSliceFilePathKey = 'HeaderSliceFilePath'
     OngoingItemFileSystemKey = 'FileSystem'
     OngoingItemMountPointKey = 'MountPoint'
+    OngoingItemDeviceSizeKey = 'Size'
 
     """
     encryption phase devinitions

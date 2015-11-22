@@ -13,7 +13,8 @@ class OnGoingItemConfig(object):
         self.phase = None
         self.header_slice_file_path = None
         self.file_system = None
-        self.mount_point=None 
+        self.mount_point = None 
+        self.deivce_size = None
         self.ongoing_item_config = ConfigUtil(encryption_environment.azure_crypt_ongoing_item_config_path,'azure_crypt_ongoing_item_config',logger)
 
     def config_file_exists(self):
@@ -40,6 +41,9 @@ class OnGoingItemConfig(object):
     def get_mount_point(self):
         return self.ongoing_item_config.get_config(CommonVariables.OngoingItemMountPointKey)
 
+    def get_device_size(self):
+        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemDeviceSizeKey)
+
     def commit(self):
         key_value_pairs = []
         dev_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemDevUUIDPathKey,self.dev_uuid_path)
@@ -62,6 +66,9 @@ class OnGoingItemConfig(object):
 
         mount_point_pair = ConfigKeyValuePair(CommonVariables.OngoingItemMountPointKey,self.mount_point)
         key_value_pairs.append(mount_point_pair)
+
+        device_size_pair=ConfigKeyValuePair(CommonVariables.OngoingItemDeviceSizeKey,self.deivce_size)
+        key_value_pairs.append(device_size_pair)
 
         self.ongoing_item_config.save_configs(key_value_pairs)
 

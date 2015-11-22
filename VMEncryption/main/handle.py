@@ -355,15 +355,16 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
         ongoing_item_config.luks_header_file_path = None
         ongoing_item_config.file_system = device_item.file_system
         ongoing_item_config.mount_point = device_item.mount_point
+        ongoing_item_config.deivce_size = device_item.size
         ongoing_item_config.phase = CommonVariables.EncryptionPhaseBackupHeader
         ongoing_item_config.commit()
 
-    logger.log(msg=("encrypting device item" + str(device_item)))
+    logger.log(msg=("encrypting device item" + str(ongoing_item_config.get_dev_uuid_path())))
     # we only support ext file systems.
     current_phase = ongoing_item_config.get_phase()
     while(current_phase != CommonVariables.EncryptionPhaseDone):
         if(current_phase == CommonVariables.EncryptionPhaseBackupHeader):
-            if(not device_item.file_system.lower() in ["ext2","ext3","ext4"]):
+            if(not ongoing_item_config.get_file_system().lower() in ["ext2","ext3","ext4"]):
                 logger.log(msg="we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7",level=CommonVariables.WarningLevel)
                 return
             chk_shrink_result = disk_util.check_shrink_fs(dev_path=dev_uuid_path)
@@ -400,7 +401,8 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
         elif(current_phase == CommonVariables.EncryptionPhaseCopyData):
             ongoing_item_config.phase = CommonVariables.EncryptionPhaseCopyData
             ongoing_item_config.commit()
-            copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size=(device_item.size - luks_header_size),destination=device_mapper_path,from_end=True)
+            device_size = int(ongoing_item_config.get_device_size().strip())
+            copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size=(device_size - luks_header_size),destination=device_mapper_path,from_end=True)
             if(copy_result != CommonVariables.process_success):
                 logger.log(msg=("copy the main content block failed, return code is: " + str(copy_result)),level=CommonVariables.ErrorLevel)
                 return
@@ -498,7 +500,8 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                         logger.log(msg=("the luks open for " + str(dev_uuid_path) + " failed"),level=CommonVariables.ErrorLevel)
                         return
                 
-                copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size= device_item.size, \
+                device_size = ongoing_item_config.get_device_size()
+                copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size= device_size, \
                                             destination= device_mapper_path,from_end=False)
                 if(copy_result != CommonVariables.success):
                     error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
@@ -608,10 +611,10 @@ def daemon():
                 #disk_util.get_device_items(ongoing_item_config.get_dev_path())
                 header_file_path = ongoing_item_config.get_header_file_path()
                 if(none_or_empty(header_file_path)):
-                    encrypt_inplace_without_seperate_header_file(passphrase_file=bek_passphrase_file,device_item=device_item,\
+                    encrypt_inplace_without_seperate_header_file(passphrase_file=bek_passphrase_file,device_item=None,\
                         disk_util=disk_util,bek_util=bek_util,ongoing_item_config=ongoing_item_config)
                 else:
-                    encrypt_inplace_with_seperate_header_file(passphrase_file=bek_passphrase_file,device_item=device_item,\
+                    encrypt_inplace_with_seperate_header_file(passphrase_file=bek_passphrase_file,device_item=None,\
                         disk_util=disk_util,bek_util=bek_util,ongoing_item_config=ongoing_item_config)
             """
             if the key is not created successfully, the encrypted file system should not 
