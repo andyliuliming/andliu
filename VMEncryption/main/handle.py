@@ -53,6 +53,23 @@ from EncryptionEnvironment import EncryptionEnvironment
 from MachineIdentity import MachineIdentity
 from OnGoingItemConfig import OnGoingItemConfig
 #Main function is the only entrence to this extension handler
+
+def install():
+    hutil.do_parse_context('Install')
+    hutil.do_exit(0, 'Install', CommonVariables.extension_success_status, str(CommonVariables.success), 'Install Succeeded')
+
+def uninstall():
+    hutil.do_parse_context('Uninstall')
+    hutil.do_exit(0,'Uninstall',CommonVariables.extension_success_status,'0', 'Uninstall succeeded')
+
+def disable():
+    hutil.do_parse_context('Disable')
+    hutil.do_exit(0,'Disable',CommonVariables.extension_success_status,'0', 'Disable Succeeded')
+
+def update():
+    hutil.do_parse_context('Upadate')
+    hutil.do_exit(0,'Update',CommonVariables.extension_success_status,'0', 'Update Succeeded')
+
 def exit_without_status_report():
     sys.exit(0)
 
@@ -81,22 +98,6 @@ def toggle_se_linux_for_centos7(disable):
         else:
             encryption_environment.enable_se_linux()
     return False
-
-def install():
-    hutil.do_parse_context('Install')
-    hutil.do_exit(0, 'Install', CommonVariables.extension_success_status, str(CommonVariables.success), 'Install Succeeded')
-
-def uninstall():
-    hutil.do_parse_context('Uninstall')
-    hutil.do_exit(0,'Uninstall',CommonVariables.extension_success_status,'0', 'Uninstall succeeded')
-
-def disable():
-    hutil.do_parse_context('Disable')
-    hutil.do_exit(0,'Disable',CommonVariables.extension_success_status,'0', 'Disable Succeeded')
-
-def update():
-    hutil.do_parse_context('Upadate')
-    hutil.do_exit(0,'Update',CommonVariables.extension_success_status,'0', 'Update Succeeded')
 
 def mount_encrypted_disks(disk_util, bek_util,passphrase_file,encryption_config):
     #make sure the azure disk config path exists.
@@ -148,6 +149,14 @@ def main():
             update()
         elif re.match("^([-/]*)(daemon)", a):
             daemon()
+
+def mark_encryption(command,volume_type,disk_format_query):
+    encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
+    encryption_marker.command = command
+    encryption_marker.volume_type = volume_type
+    encryption_marker.diskFormatQuery = disk_format_query
+    encryption_marker.commit()
+    return encryption_marker
 
 def enable():
     hutil.do_parse_context('Enable')
@@ -223,11 +232,9 @@ def enable():
         else:
             if(encryption_config.config_file_exists() and existed_passphrase_file is not None):
                 logger.log(msg="config file exists and passphrase file exists.", level=CommonVariables.WarningLevel)
-                encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
-                encryption_marker.command = extension_parameter.command
-                encryption_marker.volume_type = extension_parameter.VolumeType
-                encryption_marker.diskFormatQuery = extension_parameter.DiskFormatQuery
-                encryption_marker.commit()
+                encryption_marker=mark_encryption(command=extension_parameter.command, \
+                                                  volume_type=extension_parameter.VolumeType, \
+                                                  disk_format_query=extension_parameter.DiskFormatQuery)
                 start_daemon()
             else:
                 """
@@ -267,13 +274,10 @@ def enable():
                         encryption_config.bek_filesystem = CommonVariables.BekVolumeFileSystem
                         encryption_config.secret_id = kek_secret_id_created
                         encryption_config.commit()
-                    
-                encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
-                encryption_marker.command = extension_parameter.command
-                encryption_marker.volume_type = extension_parameter.VolumeType
-                encryption_marker.diskFormatQuery = extension_parameter.DiskFormatQuery
-                #mark it for next restart.
-                encryption_marker.commit()
+   
+                encryption_marker=mark_encryption(command=extension_parameter.command, \
+                                                  volume_type=extension_parameter.VolumeType, \
+                                                  disk_format_query=extension_parameter.DiskFormatQuery)
 
                 if(kek_secret_id_created != None):
                     hutil.do_exit(0, 'Enable', CommonVariables.extension_success_status, str(CommonVariables.success), str(kek_secret_id_created))
