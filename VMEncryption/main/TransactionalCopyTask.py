@@ -60,24 +60,27 @@ class TransactionalCopyTask(object):
         total_size = self.source_total_size
         last_slice_size = total_size % self.block_size
         total_slice_size = (total_size - last_slice_size) / self.block_size
-        
+
         returnCode = CommonVariables.success
         transactional_copy_config = TransactionalCopyConfig(encryption_environment=self.encryption_environment,logger=self.logger)
 
         copy_command = None
-        if(resume_copy and transactional_copy_config.config_file_exists()):
-            if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
-                pass
+        current_slice_index = 0
+        if(transactional_copy_config.config_file_exists()):
+            current_source_dev_full_path = transactional_copy_config.get_current_source_dev_path()
+            if(current_source_dev_full_path == self.source_dev_full_path):
+                current_slice_index=transactional_copy_config.get_current_slice_index()
             else:
-                pass
+                self.logger.log(msg="not this device for resume")
+                #if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
         else:
-            transactional_copy_config.source_dev_full_path=self.source_dev_full_path
-            transactional_copy_config.block_size=self.block_size
+            transactional_copy_config.source_dev_full_path = self.source_dev_full_path
+            transactional_copy_config.block_size = self.block_size
 
             if(last_slice_size > 0):
-                transactional_copy_config.total_size=total_slice_size+1
+                transactional_copy_config.total_size = total_slice_size + 1
             else:
-                transactional_copy_config.total_size=total_slice_size
+                transactional_copy_config.total_size = total_slice_size
             transactional_copy_config.commit()
             if(self.from_end):
                 #copy from end to the beginning.
@@ -138,7 +141,7 @@ class TransactionalCopyTask(object):
         """
         second, copy the data in the middle cache to the target device.
         """
-        backup_slice_item_cmd=str(copy_command) + ' if=' + self.slice_file_path + ' of=' + self.encryption_environment.copy_slice_item_backup_file + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1'
+        backup_slice_item_cmd = str(copy_command) + ' if=' + self.slice_file_path + ' of=' + self.encryption_environment.copy_slice_item_backup_file + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1'
         backup_slice_args = shlex.split(backup_slice_item_cmd)
         backup_process = Popen(backup_slice_args)
 

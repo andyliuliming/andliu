@@ -35,11 +35,26 @@ class TransactionalCopyConfig(object):
         self.total_size = None
         self.current_slice_index = None
         self.from_end = None
+        # we should have different file for different device.
         self.transactional_copy_config = ConfigUtil(encryption_environment.azure_crypt_current_transactional_copy_path,'azure_crypt_copy_config',logger)
-
 
     def config_file_exists(self):
         return self.transactional_copy_config.config_file_exists()
+
+    def get_total_size(self):
+        return self.transactional_copy_config.get_config(CommonVariables.CurrentTotalSizeKey)
+
+    def get_slice_size(self):
+        return self.transactional_copy_config.get_config(CommonVariables.CurrentSliceSizeKey)
+
+    def get_current_slice_index(self):
+        return self.transactional_copy_config.get_config(CommonVariables.CurrentSliceIndexKey)
+
+    def get_current_source_dev_path(self):
+        return self.transactional_copy_config.get_config(CommonVariables.CurrentDeviceNameKey)
+
+    def get_current_from_end(self):
+        return self.transactional_copy_config.get_config(CommonVariables.CurrentFromEndKey)
 
     def commit(self):
         key_value_pairs = []
@@ -55,7 +70,7 @@ class TransactionalCopyConfig(object):
         current_slice_index_pair = ConfigKeyValuePair(CommonVariables.CurrentSliceIndexKey,self.current_slice_index)
         key_value_pairs.append(current_slice_index_pair)
 
-        from_end_pair=ConfigKeyValuePair(CommonVariables.CurrentFromEndKey,self.from_end)
+        from_end_pair = ConfigKeyValuePair(CommonVariables.CurrentFromEndKey,self.from_end)
         key_value_pairs.append(from_end_pair)
 
         self.transactional_copy_config.save_configs(key_value_pairs)

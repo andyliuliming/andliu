@@ -610,6 +610,10 @@ def daemon():
             logger.log("trying to install the extras")
             MyPatching.install_extras()
 
+            mount_all_result = disk_util.mount_all()
+            
+            if(mount_all_result != CommonVariables.process_success):
+                logger.log(msg=("mount all failed with code " + str(mount_all_result)), level=CommonVariables.ErrorLevel)
             """
             TODO: resuming the encryption for rebooting suddenly scenario
             we need the special handling is because the half done device can be a error state: say, the file system header missing.so it could be 
@@ -617,7 +621,6 @@ def daemon():
             """
             ongoing_item_config = OnGoingItemConfig(encryption_environment=encryption_environment, logger=logger)
             if(ongoing_item_config.config_file_exists()):
-                #disk_util.get_device_items(ongoing_item_config.get_dev_path())
                 header_file_path = ongoing_item_config.get_header_file_path()
                 if(none_or_empty(header_file_path)):
                     encrypt_inplace_without_seperate_header_file(passphrase_file=bek_passphrase_file,device_item=None,\
@@ -626,18 +629,17 @@ def daemon():
                     encrypt_inplace_with_seperate_header_file(passphrase_file=bek_passphrase_file,device_item=None,\
                         disk_util=disk_util,bek_util=bek_util,ongoing_item_config=ongoing_item_config)
             """
-            if the key is not created successfully, the encrypted file system should not 
+            if the resuming failed, we should fail.
             """
-            mount_all_result = disk_util.mount_all()
-            if(mount_all_result != CommonVariables.process_success):
-                logger.log(msg=("mount all failed with code " + str(mount_all_result)), level=CommonVariables.ErrorLevel)
-
-            if(encryption_marker.get_current_command() == CommonVariables.EnableEncryption):
-                enable_encryption_all_in_place(bek_passphrase_file, encryption_marker, disk_util, bek_util)
-            elif(encryption_marker.get_current_command() == CommonVariables.EnableEncryptionFormat):
-                enable_encryption_format(bek_passphrase_file, encryption_marker, disk_util)
+            if(ongoing_item_config.get_phase()!=CommonVariables.EncryptionPhaseDone):
+                logger.log(msg="resuming encryption failed, so skip.",level=CommonVariables.ErrorLevel)
             else:
-                logger.log(msg=("command " + str(encryption_marker.get_current_command()) + " not supported"), level=CommonVariables.ErrorLevel)
+                if(encryption_marker.get_current_command() == CommonVariables.EnableEncryption):
+                    enable_encryption_all_in_place(bek_passphrase_file, encryption_marker, disk_util, bek_util)
+                elif(encryption_marker.get_current_command() == CommonVariables.EnableEncryptionFormat):
+                    enable_encryption_format(bek_passphrase_file, encryption_marker, disk_util)
+                else:
+                    logger.log(msg=("command " + str(encryption_marker.get_current_command()) + " not supported"), level=CommonVariables.ErrorLevel)
         bek_util.umount_azure_passhprase(encryption_config)
 
     except Exception as e:
