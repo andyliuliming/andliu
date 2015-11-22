@@ -583,9 +583,11 @@ def daemon():
             if(ongoing_item_config.config_file_exists()):
                 header_file_path = ongoing_item_config.get_header_file_path()
                 if(none_or_empty(header_file_path)):
-                    encrypt_inplace_without_seperate_header_file(passphrase_file,device_item,disk_util,bek_util=bek_util,ongoing_item_config=ongoing_item_config)
+                    encrypt_inplace_without_seperate_header_file(passphrase_file=bek_passphrase_file,device_item=device_item,\
+                        disk_util=disk_util,bek_util=bek_util,ongoing_item_config=ongoing_item_config)
                 else:
-                    encrypt_inplace_with_seperate_header_file(passphrase_file,device_item,disk_util,bek_util=bek_util,ongoing_item_config=ongoing_item_config)
+                    encrypt_inplace_with_seperate_header_file(passphrase_file=bek_passphrase_file,device_item=device_item,\
+                        disk_util=disk_util,bek_util=bek_util,ongoing_item_config=ongoing_item_config)
             """
             if the key is not created successfully, the encrypted file system should not 
             """
