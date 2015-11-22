@@ -350,8 +350,8 @@ class DiskUtil(object):
 
         for i in range(0,len(device_items)):
             device_item = device_items[i]
-            device_item.fstype = self.get_device_items_property(dev_name=device_item.name,property_name='FSTYPE')
-            device_item.mountpoint = self.get_device_items_property(dev_name=device_item.name,property_name='MOUNTPOINT')
+            device_item.file_system = self.get_device_items_property(dev_name=device_item.name,property_name='FSTYPE')
+            device_item.mount_point = self.get_device_items_property(dev_name=device_item.name,property_name='MOUNTPOINT')
             device_item.label = self.get_device_items_property(dev_name=device_item.name,property_name='LABEL')
             device_item.uuid = self.get_device_items_property(dev_name=device_item.name,property_name='UUID')
             #get the type of device
@@ -405,10 +405,10 @@ class DiskUtil(object):
                             device_item.type = property_item_pair[1].strip('"')
 
                         if(property_item_pair[0] == 'FSTYPE'):
-                            device_item.fstype = property_item_pair[1].strip('"')
+                            device_item.file_system = property_item_pair[1].strip('"')
                         
                         if(property_item_pair[0] == 'MOUNTPOINT'):
-                            device_item.mountpoint = property_item_pair[1].strip('"')
+                            device_item.mount_point = property_item_pair[1].strip('"')
 
                         if(property_item_pair[0] == 'LABEL'):
                             device_item.label = property_item_pair[1].strip('"')
@@ -432,7 +432,7 @@ class DiskUtil(object):
         if the type is disk, then to check whether it have child-items, say the part, lvm or crypt luks.
         if the answer is yes, then skip it.
         """
-        if(device_item.fstype == None or device_item.fstype == ""):
+        if(device_item.file_system == None or device_item.file_system == ""):
             return True
         else:
             if(device_item.size < CommonVariables.min_filesystem_size_support):
@@ -457,7 +457,7 @@ class DiskUtil(object):
                 self.logger.log(msg=("device_item.type is " + str(device_item.type) + ", so skip it."),level=CommonVariables.WarningLevel)
                 return True
 
-            if(device_item.mountpoint == "/"):
+            if(device_item.mount_point == "/"):
                 self.logger.log(msg=("the mountpoint is root " + str(device_item) + ", so skip it."),level=CommonVariables.WarningLevel)
                 return True
             for azure_blk_item in azure_blk_items:

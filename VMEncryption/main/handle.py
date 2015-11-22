@@ -298,7 +298,7 @@ def enable_encryption_format(passphrase, encryption_queue, disk_util):
             continue
         else:
             device_item = devices[0]
-            if(device_item.fstype == "" and device_item.type == "disk"):
+            if(device_item.file_system == "" and device_item.type == "disk"):
                 mapper_name = str(uuid.uuid4())
                 logger.log("encrypting " + str(device_item))
                 device_to_encrypt = os.path.join("/dev/disk/by-uuid", device_item.uuid)
@@ -353,6 +353,8 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
         ongoing_item_config.dev_uuid_path = os.path.join('/dev/disk/by-uuid', device_item.uuid)
         ongoing_item_config.mapper_name = str(uuid.uuid4())
         ongoing_item_config.luks_header_file_path = None
+        ongoing_item_config.file_system = device_item.file_system
+        ongoing_item_config.mount_point = device_item.mount_point
         ongoing_item_config.phase = CommonVariables.EncryptionPhaseBackupHeader
         ongoing_item_config.commit()
 
@@ -361,7 +363,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
     current_phase = ongoing_item_config.get_phase()
     while(current_phase != CommonVariables.EncryptionPhaseDone):
         if(current_phase == CommonVariables.EncryptionPhaseBackupHeader):
-            if(not device_item.fstype.lower() in ["ext2","ext3","ext4"]):
+            if(not device_item.file_system.lower() in ["ext2","ext3","ext4"]):
                 logger.log(msg="we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7",level=CommonVariables.WarningLevel)
                 return
             chk_shrink_result = disk_util.check_shrink_fs(dev_path=dev_uuid_path)
@@ -415,18 +417,19 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                 crypt_item_to_update.mapper_name = mapper_name
                 crypt_item_to_update.dev_path = dev_uuid_path
                 crypt_item_to_update.luks_header_path = luks_header_file
-                crypt_item_to_update.file_system = device_item.fstype
+                crypt_item_to_update.file_system = ongoing_item_config.get_file_system()
                 # if the original mountpoint is empty, then leave
                 # it as None
-                if device_item.mountpoint == "" or device_item.mountpoint == None:
+                mount_point = ongoing_item_config.get_mount_point()
+                if mount_point == "" or mount_point == None:
                     crypt_item_to_update.mount_point = "None"
                 else:
-                    crypt_item_to_update.mount_point = device_item.mountpoint
+                    crypt_item_to_update.mount_point = mount_point
                 update_crypt_item_result = disk_util.update_crypt_item(crypt_item_to_update)
                 if(not update_crypt_item_result):
                     logger.log(msg="update crypt item failed",level=CommonVariables.ErrorLevel)
                 if(crypt_item_to_update.mount_point != "None"):
-                    disk_util.mount_filesystem(device_mapper_path, device_item.mountpoint)
+                    disk_util.mount_filesystem(device_mapper_path, ongoing_item_config.get_mount_point())
                 else:
                     logger.log("the crypt_item_to_update.mount_point is None, so we do not mount it.")
                 current_phase = CommonVariables.EncryptionPhaseDone
@@ -447,9 +450,10 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
     if(ongoing_item_config is None):
         ongoing_item_config = OnGoingItemConfig(encryption_environment=encryption_environment,logger=logger)
         ongoing_item_config.dev_uuid_path = os.path.join('/dev/disk/by-uuid',device_item.uuid)
-        mapper_name=str(uuid.uuid4())
+        mapper_name = str(uuid.uuid4())
         ongoing_item_config.mapper_name = mapper_name
-        ongoing_item_config.fstype = device_item.fstype
+        ongoing_item_config.file_system = device_item.file_system
+        ongoing_item_config.mount_point = device_item.mount_point
         luks_header_file = disk_util.create_luks_header(mapper_name=mapper_name)
         if(luks_header_file is None):
             logger.log(msg="create header file failed",level=CommonVariables.ErrorLevel)
@@ -470,7 +474,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                 encrypt_result = disk_util.encrypt_disk(dev_path=dev_uuid_path,passphrase_file = passphrase_file, \
                                                         mapper_name=mapper_name,header_file=luks_header_file)
                 if(encrypt_result != CommonVariables.process_success):
-                    logger.log(msg=("the encrypton for " + str(device_item) + " failed"),level=CommonVariables.ErrorLevel)
+                    logger.log(msg=("the encrypton for " + str(dev_uuid_path) + " failed"),level=CommonVariables.ErrorLevel)
                     return
                 else:
                     ongoing_item_config.phase = CommonVariables.EncryptionPhaseCopyData
@@ -491,7 +495,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                                                             mapper_name=mapper_name,header_file=luks_header_file)
 
                     if(open_result != CommonVariables.process_success):
-                        logger.log(msg=("the luks open for " + str(device_item) + " failed"),level=CommonVariables.ErrorLevel)
+                        logger.log(msg=("the luks open for " + str(dev_uuid_path) + " failed"),level=CommonVariables.ErrorLevel)
                         return
                 
                 copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size= device_item.size, \
@@ -509,15 +513,16 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                     crypt_item_to_update.file_system = ongoing_item_config.get_file_system()
                     # if the original mountpoint is empty, then leave
                     # it as None
-                    if device_item.mountpoint == "" or device_item.mountpoint == None:
+                    mount_point = ongoing_item_config.get_mount_point()
+                    if mount_point == "" or mount_point == None:
                         crypt_item_to_update.mount_point = "None"
                     else:
-                        crypt_item_to_update.mount_point = device_item.mountpoint
+                        crypt_item_to_update.mount_point = mount_point
                     update_crypt_item_result = disk_util.update_crypt_item(crypt_item_to_update)
                     if(not update_crypt_item_result):
                         logger.log(msg="update crypt item failed",level=CommonVariables.ErrorLevel)
                     if(crypt_item_to_update.mount_point != "None"):
-                        disk_util.mount_filesystem(device_mapper_path, device_item.mountpoint)
+                        disk_util.mount_filesystem(device_mapper_path, mount_point)
                     else:
                         logger.log("the crypt_item_to_update.mount_point is None, so we do not mount it.")
                     current_phase = CommonVariables.EncryptionPhaseDone
@@ -542,10 +547,10 @@ def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util,
                 should_skip = True
         if(not should_skip):
             umount_status_code = CommonVariables.success
-            if(device_item.mountpoint is not None and device_item.mountpoint != ""):
-                umount_status_code = disk_util.umount(device_item.mountpoint)
+            if(device_item.mount_point is not None and device_item.mount_point != ""):
+                umount_status_code = disk_util.umount(device_item.mount_point)
             if(umount_status_code != CommonVariables.success):
-                logger.log("error occured when do the umount for " + str(device_item.mountpoint) + str(umount_status_code))
+                logger.log("error occured when do the umount for " + str(device_item.mount_point) + str(umount_status_code))
             else:
                 encrypted_items.append(device_item.name)
                 logger.log(msg=("encrypting " + str(device_item)))

@@ -55,7 +55,7 @@ class BekUtil(object):
 
         for i in range(0,len(azure_devices)):
             azure_device = azure_devices[i]
-            if(str(azure_device.fstype).lower() == str(bek_filesystem).lower()):
+            if(str(azure_device.file_system).lower() == str(bek_filesystem).lower()):
                 #TODO handle the failure case
                 self.disk_util.make_sure_path_exists(self.bek_filesystem_mount_point)
                 self.disk_util.mount_filesystem(os.path.join('/dev/', azure_device.name), self.bek_filesystem_mount_point, bek_filesystem)
@@ -76,7 +76,7 @@ class BekUtil(object):
 
         for i in range(0,len(azure_devices)):
             azure_device = azure_devices[i]
-            if(str(azure_device.fstype).lower() == str(bek_filesystem).lower()):
+            if(str(azure_device.file_system).lower() == str(bek_filesystem).lower()):
                 #TODO handle the failure case
                 self.disk_util.make_sure_path_exists(self.bek_filesystem_mount_point)
                 self.disk_util.mount_filesystem(os.path.join('/dev/', azure_device.name), self.bek_filesystem_mount_point, bek_filesystem)

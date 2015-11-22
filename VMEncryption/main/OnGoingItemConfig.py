@@ -12,7 +12,8 @@ class OnGoingItemConfig(object):
         self.luks_header_file_path = None
         self.phase = None
         self.header_slice_file_path = None
-        self.fstype = None
+        self.file_system = None
+        self.mount_point=None 
         self.ongoing_item_config = ConfigUtil(encryption_environment.azure_crypt_ongoing_item_config_path,'azure_crypt_ongoing_item_config',logger)
 
     def config_file_exists(self):
@@ -36,6 +37,9 @@ class OnGoingItemConfig(object):
     def get_file_system(self):
         return self.ongoing_item_config.get_config(CommonVariables.OngoingItemFileSystemKey)
 
+    def get_mount_point(self):
+        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemMountPointKey)
+
     def commit(self):
         key_value_pairs = []
         dev_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemDevUUIDPathKey,self.dev_uuid_path)
@@ -53,8 +57,11 @@ class OnGoingItemConfig(object):
         header_slice_file_pair = ConfigKeyValuePair(CommonVariables.OngoingItemHeaderSliceFilePathKey,self.header_slice_file_path)
         key_value_pairs.append(header_slice_file_pair)
 
-        file_system_pair=ConfigKeyValuePair(CommonVariables.OngoingItemFileSystemKey,self.fstype)
+        file_system_pair = ConfigKeyValuePair(CommonVariables.OngoingItemFileSystemKey,self.file_system)
         key_value_pairs.append(file_system_pair)
+
+        mount_point_pair = ConfigKeyValuePair(CommonVariables.OngoingItemMountPointKey,self.mount_point)
+        key_value_pairs.append(mount_point_pair)
 
         self.ongoing_item_config.save_configs(key_value_pairs)
 
