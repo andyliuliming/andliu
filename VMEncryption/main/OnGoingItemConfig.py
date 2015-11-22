@@ -80,3 +80,7 @@ class OnGoingItemConfig(object):
         except OSError as e:
             self.logger.log("Failed to clear_queue with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
             return False
+
+    def __str__(self):
+        return "dev_uuid_path is %s, mapper_name is %s, luks_header_file_path is %s, phase is %s, header_slice_file_path is %s, file system is %s, mount_point is %s, device size is %s" %(\
+            self.dev_uuid_path,self.mapper_name,self.luks_header_file_path,self.phase,self.header_slice_file_path,self.file_system,self.mount_point,self.device_size)

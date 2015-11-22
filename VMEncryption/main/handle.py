@@ -363,7 +363,8 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
         ongoing_item_config.device_size = device_item.size
         ongoing_item_config.phase = CommonVariables.EncryptionPhaseBackupHeader
         ongoing_item_config.commit()
-
+    else:
+        logger.log(msg="ongoing item config is not none, this is resuming"+str(ongoing_item_config),level=CommonVariables.WarningLevel)
     logger.log(msg=("encrypting device item" + str(ongoing_item_config.get_dev_uuid_path())))
     # we only support ext file systems.
     current_phase = ongoing_item_config.get_phase()
@@ -471,7 +472,8 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
             ongoing_item_config.luks_header_file_path = luks_header_file
             ongoing_item_config.phase = CommonVariables.EncryptionPhaseEncryptDevice
             ongoing_item_config.commit()
-
+    else:
+        logger.log(msg="ongoing item config is not none, this is resuming"+str(ongoing_item_config),level=CommonVariables.WarningLevel)
     while(current_phase != CommonVariables.EncryptionPhaseDone):
         if(current_phase == CommonVariables.EncryptionPhaseEncryptDevice):
             disabled = False
