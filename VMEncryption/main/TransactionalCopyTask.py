@@ -53,7 +53,7 @@ class TransactionalCopyTask(object):
         self.tmpfs_mount_point = "/mnt/azure_encrypt_tmpfs"
         self.slice_file_path = self.tmpfs_mount_point + "/slice_file"
     
-    def begin_copy(self,resume_copy=False):
+    def begin_copy(self):
         """
         check the device_item size first, cut it 
         """
