@@ -478,6 +478,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
             ongoing_item_config.commit()
     else:
         logger.log(msg="ongoing item config is not none, this is resuming" + str(ongoing_item_config),level=CommonVariables.WarningLevel)
+        current_phase = ongoing_item_config.get_phase()
     while(current_phase != CommonVariables.EncryptionPhaseDone):
         if(current_phase == CommonVariables.EncryptionPhaseEncryptDevice):
             disabled = False
