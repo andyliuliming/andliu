@@ -507,16 +507,16 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                 disabled = toggle_se_linux_for_centos7(True)
                 device_mapper_path = os.path.join("/dev/mapper", mapper_name)
                 if(not os.path.exists(device_mapper_path)):
-                    open_result = disk_util.luks_open(passphrase_file=passphrase_file,dev_path=dev_uuid_path, \
-                                                            mapper_name=mapper_name,header_file=luks_header_file)
+                    open_result = disk_util.luks_open(passphrase_file = passphrase_file, dev_path = dev_uuid_path, \
+                                                            mapper_name = mapper_name, header_file = luks_header_file)
 
                     if(open_result != CommonVariables.process_success):
                         logger.log(msg=("the luks open for " + str(dev_uuid_path) + " failed"),level=CommonVariables.ErrorLevel)
                         return current_phase
                 
                 device_size = int(ongoing_item_config.get_device_size().strip())
-                copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size= device_size, \
-                                            destination= device_mapper_path,from_end=False)
+                copy_result = disk_util.copy(source_dev_full_path = dev_uuid_path, copy_total_size = device_size, \
+                                            destination = device_mapper_path, from_end = False)
                 if(copy_result != CommonVariables.success):
                     error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
                     logger.log(msg=("the copying result is " + copy_result + " so skip the mounting"),level=CommonVariables.ErrorLevel)

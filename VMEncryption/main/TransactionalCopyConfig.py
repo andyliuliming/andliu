@@ -58,19 +58,19 @@ class TransactionalCopyConfig(object):
 
     def commit(self):
         key_value_pairs = []
-        total_size_pair = ConfigKeyValuePair(CommonVariables.CurrentTotalSizeKey,self.total_size)
+        total_size_pair = ConfigKeyValuePair(CommonVariables.CurrentTotalSizeKey, self.total_size)
         key_value_pairs.append(total_size_pair)
 
-        slice_size_pair = ConfigKeyValuePair(CommonVariables.CurrentSliceSizeKey,self.block_size)
+        slice_size_pair = ConfigKeyValuePair(CommonVariables.CurrentSliceSizeKey, self.block_size)
         key_value_pairs.append(slice_size_pair)
 
-        source_dev_full_path_pair = ConfigKeyValuePair(CommonVariables.CurrentDeviceNameKey,self.source_dev_full_path)
-        key_value_pairs.append(source_dev_full_path)
+        source_dev_full_path_pair = ConfigKeyValuePair(CommonVariables.CurrentDeviceNameKey, self.source_dev_full_path)
+        key_value_pairs.append(source_dev_full_path_pair)
 
-        current_slice_index_pair = ConfigKeyValuePair(CommonVariables.CurrentSliceIndexKey,self.current_slice_index)
+        current_slice_index_pair = ConfigKeyValuePair(CommonVariables.CurrentSliceIndexKey, self.current_slice_index)
         key_value_pairs.append(current_slice_index_pair)
 
-        from_end_pair = ConfigKeyValuePair(CommonVariables.CurrentFromEndKey,self.from_end)
+        from_end_pair = ConfigKeyValuePair(CommonVariables.CurrentFromEndKey, self.from_end)
         key_value_pairs.append(from_end_pair)
 
         self.transactional_copy_config.save_configs(key_value_pairs)
