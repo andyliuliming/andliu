@@ -26,11 +26,12 @@ from ConfigUtil import ConfigKeyValuePair
 class EncryptionConfig(object):
     def __init__(self, encryption_environment,logger):
         self.encryptionEnvironment = encryption_environment
-        self.encryption_config = ConfigUtil(encryption_environment.encryption_config_file_path,'azure_crypt_config',logger)
         self.passphrase_file_name = None
         self.bek_filesystem = None
         self.volume_type = None
         self.secret_id = None
+        self.encryption_config = ConfigUtil(encryption_environment.encryption_config_file_path,'azure_crypt_config',logger)
+
 
     def config_file_exists(self):
         return self.encryption_config.config_file_exists()

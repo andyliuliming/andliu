@@ -59,7 +59,8 @@ class ConfigUtil(object):
         if(not config.has_section(self.azure_crypt_config_section)):
             config.add_section(self.azure_crypt_config_section)
         for key_value_pair in key_value_pairs:
-            config.set(self.azure_crypt_config_section, key_value_pair.prop_name, key_value_pair.prop_value)
+            if(key_value_pair.prop_value is not None):
+                config.set(self.azure_crypt_config_section, key_value_pair.prop_name, key_value_pair.prop_value)
         with open(self.config_file_path, 'wb') as configfile:
             config.write(configfile)
 

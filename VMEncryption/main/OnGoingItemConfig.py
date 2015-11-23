@@ -73,46 +73,46 @@ class OnGoingItemConfig(object):
 
     def commit(self):
         key_value_pairs = []
-        dev_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemDevUUIDPathKey,self.dev_uuid_path)
+        dev_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemDevUUIDPathKey, self.dev_uuid_path)
         key_value_pairs.append(dev_path_pair)
 
-        mapper_name_pair = ConfigKeyValuePair(CommonVariables.OngoingItemMapperNameKey,self.mapper_name)
+        mapper_name_pair = ConfigKeyValuePair(CommonVariables.OngoingItemMapperNameKey, self.mapper_name)
         key_value_pairs.append(mapper_name_pair)
 
-        header_file_pair = ConfigKeyValuePair(CommonVariables.OngoingItemHeaderFilePathKey,self.luks_header_file_path)
+        header_file_pair = ConfigKeyValuePair(CommonVariables.OngoingItemHeaderFilePathKey, self.luks_header_file_path)
         key_value_pairs.append(header_file_pair)
 
-        phase_pair = ConfigKeyValuePair(CommonVariables.OngoingItemPhaseKey,self.phase)
+        phase_pair = ConfigKeyValuePair(CommonVariables.OngoingItemPhaseKey, self.phase)
         key_value_pairs.append(phase_pair)
 
-        header_slice_file_pair = ConfigKeyValuePair(CommonVariables.OngoingItemHeaderSliceFilePathKey,self.header_slice_file_path)
+        header_slice_file_pair = ConfigKeyValuePair(CommonVariables.OngoingItemHeaderSliceFilePathKey, self.header_slice_file_path)
         key_value_pairs.append(header_slice_file_pair)
 
-        file_system_pair = ConfigKeyValuePair(CommonVariables.OngoingItemFileSystemKey,self.file_system)
+        file_system_pair = ConfigKeyValuePair(CommonVariables.OngoingItemFileSystemKey, self.file_system)
         key_value_pairs.append(file_system_pair)
 
-        mount_point_pair = ConfigKeyValuePair(CommonVariables.OngoingItemMountPointKey,self.mount_point)
+        mount_point_pair = ConfigKeyValuePair(CommonVariables.OngoingItemMountPointKey, self.mount_point)
         key_value_pairs.append(mount_point_pair)
 
-        device_size_pair = ConfigKeyValuePair(CommonVariables.OngoingItemDeviceSizeKey,self.device_size)
+        device_size_pair = ConfigKeyValuePair(CommonVariables.OngoingItemDeviceSizeKey, self.device_size)
         key_value_pairs.append(device_size_pair)
 
-        current_slice_index_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentSliceIndexKey,self.current_slice_index)
+        current_slice_index_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentSliceIndexKey, self.current_slice_index)
         key_value_pairs.append(current_slice_index_pair)
 
-        from_end_pair = ConfigKeyValuePair(CommonVariables.OngoingItemFromEndKey,self.from_end)
+        from_end_pair = ConfigKeyValuePair(CommonVariables.OngoingItemFromEndKey, self.from_end)
         key_value_pairs.append(from_end_pair)
 
-        current_source_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentSourcePathKey,self.current_source_path)
+        current_source_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentSourcePathKey, self.current_source_path)
         key_value_pairs.append(current_source_path_pair)
 
-        current_destination_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentDestinationKey,self.current_destination)
+        current_destination_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentDestinationKey, self.current_destination)
         key_value_pairs.append(current_destination_pair)
 
-        current_total_copy_size_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentTotalCopySizeKey,self.current_total_copy_size)
+        current_total_copy_size_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentTotalCopySizeKey, self.current_total_copy_size)
         key_value_pairs.append(current_total_copy_size_pair)
 
-        current_block_size_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentBlockSizeKey,self.current_block_size)
+        current_block_size_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentBlockSizeKey, self.current_block_size)
         key_value_pairs.append(current_block_size_pair)
 
         self.ongoing_item_config.save_configs(key_value_pairs)
