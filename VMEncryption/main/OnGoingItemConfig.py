@@ -11,10 +11,19 @@ class OnGoingItemConfig(object):
         self.mapper_name = None
         self.luks_header_file_path = None
         self.phase = None
-        self.header_slice_file_path = None
         self.file_system = None
         self.mount_point = None 
         self.device_size = None
+        self.from_end = None
+        
+        self.header_slice_file_path = None
+
+        self.current_block_size = None
+        self.current_source_path = None
+        self.current_total_copy_size = None
+        self.current_slice_index = None
+        self.current_destination = None
+
         self.ongoing_item_config = ConfigUtil(encryption_environment.azure_crypt_ongoing_item_config_path,'azure_crypt_ongoing_item_config',logger)
 
     def config_file_exists(self):
@@ -44,6 +53,24 @@ class OnGoingItemConfig(object):
     def get_device_size(self):
         return self.ongoing_item_config.get_config(CommonVariables.OngoingItemDeviceSizeKey)
 
+    def get_current_slice_index(self):
+        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemCurrentSliceIndexKey)
+
+    def get_from_end(self):
+        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemFromEndKey)
+
+    def get_current_block_size(self):
+        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemCurrentBlockSizeKey)
+
+    def get_current_source_path(self):
+        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemCurrentSourcePathKey)
+
+    def get_current_destination(self):
+        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemCurrentDestinationKey)
+    
+    def get_current_total_copy_size(self):
+        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemCurrentTotalCopySizeKey)
+
     def commit(self):
         key_value_pairs = []
         dev_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemDevUUIDPathKey,self.dev_uuid_path)
@@ -69,6 +96,24 @@ class OnGoingItemConfig(object):
 
         device_size_pair=ConfigKeyValuePair(CommonVariables.OngoingItemDeviceSizeKey,self.device_size)
         key_value_pairs.append(device_size_pair)
+
+        current_slice_index_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentSliceIndexKey,self.current_slice_index)
+        key_value_pairs.append(current_slice_index_pair)
+
+        from_end_pair = ConfigKeyValuePair(CommonVariables.OngoingItemFromEndKey,self.from_end)
+        key_value_pairs.append(from_end_pair)
+
+        current_source_path_pair=ConfigKeyValuePair(CommonVariables.OngoingItemCurrentSourcePathKey,self.current_source_path)
+        key_value_pairs.append(current_source_path_pair)
+
+        current_destination_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentDestinationKey,self.current_destination)
+        key_value_pairs.append(current_destination_pair)
+
+        current_total_copy_size_pair =ConfigKeyValuePair(CommonVariables.OngoingItemCurrentTotalCopySizeKey,self.current_total_copy_size)
+        key_value_pairs.append(current_total_copy_size)
+
+        current_block_size_pair=ConfigKeyValuePair(CommonVariables.OngoingItemCurrentBlockSizeKey,self.current_block_size)
+        key_value_pairs.append(current_block_size_pair)
 
         self.ongoing_item_config.save_configs(key_value_pairs)
 

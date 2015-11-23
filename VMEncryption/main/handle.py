@@ -355,7 +355,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
     """
     current_phase = CommonVariables.EncryptionPhaseBackupHeader
     if(ongoing_item_config is None):
-        ongoing_item_config = OnGoingItemConfig(encryption_environment=encryption_environment,logger=logger)
+        ongoing_item_config = OnGoingItemConfig(encryption_environment = encryption_environment, logger = logger)
         ongoing_item_config.dev_uuid_path = os.path.join('/dev/disk/by-uuid', device_item.uuid)
         ongoing_item_config.mapper_name = str(uuid.uuid4())
         ongoing_item_config.luks_header_file_path = None
@@ -365,7 +365,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
         ongoing_item_config.phase = CommonVariables.EncryptionPhaseBackupHeader
         ongoing_item_config.commit()
     else:
-        logger.log(msg="ongoing item config is not none, this is resuming" + str(ongoing_item_config),level=CommonVariables.WarningLevel)
+        logger.log(msg="ongoing item config is not none, this is resuming" + str(ongoing_item_config), level = CommonVariables.WarningLevel)
 
     logger.log(msg=("encrypting device item:" + str(ongoing_item_config.get_dev_uuid_path())))
     # we only support ext file systems.
@@ -373,21 +373,24 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
     while(current_phase != CommonVariables.EncryptionPhaseDone):
         if(current_phase == CommonVariables.EncryptionPhaseBackupHeader):
             if(not ongoing_item_config.get_file_system().lower() in ["ext2","ext3","ext4"]):
-                logger.log(msg="we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7",level=CommonVariables.WarningLevel)
+                logger.log(msg="we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7", level = CommonVariables.WarningLevel)
                 return current_phase
             chk_shrink_result = disk_util.check_shrink_fs(dev_path=dev_uuid_path)
             if(chk_shrink_result != CommonVariables.process_success):
-                logger.log(msg=("check shrink fs failed with code " + str(chk_shrink_result) + " for: " + str(dev_uuid_path)),level=CommonVariables.ErrorLevel)
+                logger.log(msg=("check shrink fs failed with code " + str(chk_shrink_result) + " for: " + str(dev_uuid_path)), level = CommonVariables.ErrorLevel)
                 return current_phase
             else:
-                luks_header_size = 4096 * 512
-                tmpfile_created = tempfile.NamedTemporaryFile()
-                tmpfile_created.close()
-
+                ongoing_item_config.from_end = False
                 ongoing_item_config.header_slice_file_path = tmpfile_created.name
+                ongoing_item_config.dev_uuid_path = dev_uuid_path
+                ongoing_item_config.current_source_path = ongoing_item_config.dev_uuid_path
+                ongoing_item_config.current_destination = encryption_environment.copy_header_slice_file_path
+                ongoing_item_config.current_total_copy_size = CommonVariables.default_block_size
                 ongoing_item_config.commit()
+                if(os.path.exists(encryption_environment.copy_header_slice_file_path)):
+                    os.remove(encryption_environment.copy_header_slice_file_path)
 
-                copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size=CommonVariables.default_block_size,destination = tmpfile_created.name)
+                copy_result = disk_util.copy(ongoing_item_config=ongoing_item_config)
 
                 if(copy_result != CommonVariables.process_success):
                     logger.log(msg=("copy the header block failed, return code is: " + str(copy_result)),level=CommonVariables.ErrorLevel)
@@ -397,20 +400,29 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                     ongoing_item_config.commit()
                     current_phase = CommonVariables.EncryptionPhaseEncryptDevice
         elif(current_phase == CommonVariables.EncryptionPhaseEncryptDevice):
-            encrypt_result = disk_util.encrypt_disk(dev_path=dev_uuid_path,passphrase_file=passphrase_file,mapper_name=mapper_name,header_file=None)
+            encrypt_result = disk_util.encrypt_disk(dev_path = dev_uuid_path, passphrase_file = passphrase_file, mapper_name = mapper_name, header_file = None)
             # get the luks_header_size
             if(encrypt_result != CommonVariables.process_success):
-                logger.log(msg="encrypt file system failed.",level=CommonVariables.ErrorLevel)
+                logger.log(msg = "encrypt file system failed.", level = CommonVariables.ErrorLevel)
                 return current_phase
             else:
                 ongoing_item_config.phase = CommonVariables.EncryptionPhaseCopyData
                 ongoing_item_config.commit()
                 current_phase = CommonVariables.EncryptionPhaseCopyData
+
         elif(current_phase == CommonVariables.EncryptionPhaseCopyData):
+            luks_header_size = 4096 * 512
             ongoing_item_config.phase = CommonVariables.EncryptionPhaseCopyData
+            ongoing_item_config.from_end = True
+            current_source_path = ongoing_item_config.get_dev_uuid_path()
+            ongoing_item_config.current_source_path = current_source_path
+            ongoing_item_config.current_destination = device_mapper_path
+            ongoing_item_config.current_total_copy_size = (device_size - luks_header_size)
             ongoing_item_config.commit()
+
             device_size = int(ongoing_item_config.get_device_size().strip())
-            copy_result = disk_util.copy(source_dev_full_path=dev_uuid_path,copy_total_size=(device_size - luks_header_size),destination=device_mapper_path,from_end=True)
+
+            copy_result = disk_util.copy(ongoing_item_config = ongoing_item_config)
             if(copy_result != CommonVariables.process_success):
                 logger.log(msg=("copy the main content block failed, return code is: " + str(copy_result)),level=CommonVariables.ErrorLevel)
                 return current_phase
@@ -420,7 +432,15 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                 current_phase = CommonVariables.EncryptionPhaseRecoverHeader
 
         elif(current_phase == CommonVariables.EncryptionPhaseRecoverHeader):
-            copy_result = disk_util.copy(tmpfile_created.name, CommonVariables.default_block_size, device_mapper_path, from_end=False)
+            ongoing_item_config.from_end = False
+            backed_up_header_slice_file_path = ongoing_item_config.get_header_slice_file_path()
+            ongoing_item_config.current_source_path = backed_up_header_slice_file_path
+            device_mapper_path = os.path.join('/dev/mapper/' + ongoing_item_config.get_mapper_name())
+            ongoing_item_config.current_destination = device_mapper_path
+            ongoing_item_config.current_total_copy_size = CommonVariables.default_block_size
+            ongoing_item_config.commit()
+
+            copy_result = disk_util.copy(ongoing_item_config = ongoing_item_config)
             if(copy_result == CommonVariables.process_success):
                 ongoing_item_config.clear_config()
                 crypt_item_to_update = CryptItem()
@@ -437,7 +457,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                     crypt_item_to_update.mount_point = mount_point
                 update_crypt_item_result = disk_util.update_crypt_item(crypt_item_to_update)
                 if(not update_crypt_item_result):
-                    logger.log(msg="update crypt item failed",level=CommonVariables.ErrorLevel)
+                    logger.log(msg="update crypt item failed",level = CommonVariables.ErrorLevel)
                 
                 current_phase = CommonVariables.EncryptionPhaseDone
                 expand_fs_result = disk_util.expand_fs(dev_path=device_mapper_path)
@@ -448,10 +468,10 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                     logger.log("the crypt_item_to_update.mount_point is None, so we do not mount it.")
 
                 if(expand_fs_result != CommonVariables.process_success):
-                    logger.log(msg=("expand fs result is: " + str(expand_fs_result)),level=CommonVariables.ErrorLevel)
+                    logger.log(msg=("expand fs result is: " + str(expand_fs_result)),level = CommonVariables.ErrorLevel)
                     return current_phase
             else:
-                logger.log(msg=("recover header failed result is: " + str(copy_result)),level=CommonVariables.ErrorLevel)
+                logger.log(msg=("recover header failed result is: " + str(copy_result)),level = CommonVariables.ErrorLevel)
                 return current_phase
 
 def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk_util, bek_util, ongoing_item_config=None):
@@ -516,11 +536,17 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                         return current_phase
                 
                 device_size = int(ongoing_item_config.get_device_size().strip())
-                copy_result = disk_util.copy(source_dev_full_path = dev_uuid_path, copy_total_size = device_size, \
-                                            destination = device_mapper_path, from_end = False)
+
+                ongoing_item_config.current_source_path = dev_uuid_path
+                ongoing_item_config.current_destination = device_mapper_path
+                ongoing_item_config.current_total_copy_size = device_size
+                ongoing_item_config.from_end=False
+                ongoing_item_config.commit()
+
+                copy_result = disk_util.copy(ongoing_item_config = ongoing_item_config)
                 if(copy_result != CommonVariables.success):
                     error_message = "the copying result is " + copy_result + " so skip the mounting"
-                    logger.log(msg=(error_message),level=CommonVariables.ErrorLevel)
+                    logger.log(msg = (error_message), level = CommonVariables.ErrorLevel)
                     return current_phase
                 else:
                     ongoing_item_config.clear_config()
@@ -538,7 +564,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                         crypt_item_to_update.mount_point = mount_point
                     update_crypt_item_result = disk_util.update_crypt_item(crypt_item_to_update)
                     if(not update_crypt_item_result):
-                        logger.log(msg="update crypt item failed",level=CommonVariables.ErrorLevel)
+                        logger.log(msg="update crypt item failed",level = CommonVariables.ErrorLevel)
                     if(crypt_item_to_update.mount_point != "None"):
                         disk_util.mount_filesystem(device_mapper_path, mount_point)
                     else:

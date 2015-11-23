@@ -81,6 +81,11 @@ class CommonVariables:
     OngoingItemFileSystemKey = 'FileSystem'
     OngoingItemMountPointKey = 'MountPoint'
     OngoingItemDeviceSizeKey = 'Size'
+    OngoingItemCurrentSliceIndexKey = 'CurrentSliceIndex'
+    OngoingItemFromEndKey = 'FromEnd'
+    OngoingItemCurrentDestinationKey = 'CurrentDestination'
+    OngoingItemCurrentTotalCopySizeKey = 'CurrentTotalCopySize'
+    OngoingItemCurrentBlockSizeKey = 'CurrentBlockSize'
 
     """
     encryption phase devinitions

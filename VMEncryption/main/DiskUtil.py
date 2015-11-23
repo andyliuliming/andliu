@@ -39,10 +39,8 @@ class DiskUtil(object):
         self.ide_class_id = "{32412632-86cb-44a2-9b5c-50d1417354f5}"
         self.vmbus_sys_path = '/sys/bus/vmbus/devices'
 
-    def copy(self, source_dev_full_path, copy_total_size, destination,from_end=False):
-        copy_task = TransactionalCopyTask(logger = self.logger,disk_util = self, \
-            source_dev_full_path = source_dev_full_path, copy_total_size = copy_total_size, destination = destination,\
-            patching = self.patching, encryption_environment = self.encryption_environment, from_end = from_end)
+    def copy(self, ongoing_item_config):
+        copy_task = TransactionalCopyTask(logger = self.logger, disk_util = self, ongoing_item_config = ongoing_item_config, encryption_environment = self.encryption_environment)
         try:
             mem_fs_result = copy_task.prepare_mem_fs()
             if(mem_fs_result != CommonVariables.process_success):
