@@ -519,8 +519,8 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                 copy_result = disk_util.copy(source_dev_full_path = dev_uuid_path, copy_total_size = device_size, \
                                             destination = device_mapper_path, from_end = False)
                 if(copy_result != CommonVariables.success):
-                    error_message = error_message + "the copying result is " + copy_result + " so skip the mounting"
-                    logger.log(msg=("the copying result is " + copy_result + " so skip the mounting"),level=CommonVariables.ErrorLevel)
+                    error_message = "the copying result is " + copy_result + " so skip the mounting"
+                    logger.log(msg=(error_message),level=CommonVariables.ErrorLevel)
                     return current_phase
                 else:
                     ongoing_item_config.clear_config()

@@ -133,6 +133,7 @@ class CommonVariables:
     volue_type_not_support = 17
     copy_data_error = 18
     encryption_failed = 19
+    tmpfs_error = 20
     unknown_error = 100
 
 class TestHooks:
