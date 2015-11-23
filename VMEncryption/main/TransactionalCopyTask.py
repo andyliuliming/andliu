@@ -69,7 +69,7 @@ class TransactionalCopyTask(object):
         if(transactional_copy_config.config_file_exists()):
             current_source_dev_full_path = transactional_copy_config.get_current_source_dev_path()
             if(current_source_dev_full_path == self.source_dev_full_path):
-                current_slice_index=transactional_copy_config.get_current_slice_index()
+                current_slice_index = transactional_copy_config.get_current_slice_index()
             else:
                 self.logger.log(msg="not this device for resume")
                 #if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
@@ -135,7 +135,7 @@ class TransactionalCopyTask(object):
         """
         dd_cmd = str(copy_command) + ' if=' + from_device + ' of=' + self.slice_file_path + ' bs=' + str(size) + ' skip=' + str(skip) + ' count=1'
         returnCode = self.command_executer.Execute(dd_cmd)
-        if(returnCode != 0):
+        if(returnCode != CommonVariables.process_success):
             self.logger.log(str(dd_cmd) + ' is ' + str(returnCode))
 
         """
@@ -147,9 +147,10 @@ class TransactionalCopyTask(object):
 
         dd_cmd = str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1'
         returnCode = self.command_executer.Execute(dd_cmd)
-        if(returnCode != 0):
+        if(returnCode != CommonVariables.process_success):
             self.logger.log(str(dd_cmd) + ' is ' + str(returnCode))
         else:
+            #the copy done correctly, so clear the backup slice file item.
             backup_process.kill()
             if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
                 os.remove(self.encryption_environment.copy_slice_item_backup_file)

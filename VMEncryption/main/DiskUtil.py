@@ -51,15 +51,15 @@ class DiskUtil(object):
         copy_task.clear_mem_fs()
         return returnCode
 
-    def format_disk(self, dev_path, filesystem):
+    def format_disk(self, dev_path, file_system):
         mkfs_command = ""
-        if(filesystem == "ext4"):
+        if(file_system == "ext4"):
             mkfs_command = "mkfs.ext4"
-        elif(filesystem == "ext3"):
+        elif(file_system == "ext3"):
             mkfs_command = "mkfs.ext3"
-        elif(filesystem == "xfs"):
+        elif(file_system == "xfs"):
             mkfs_command = "mkfs.xfs"
-        elif(filesystem == "btrfs"):
+        elif(file_system == "btrfs"):
             mkfs_command = "mkfs.btrfs"
         mkfs_cmd = mkfs_command + ' ' + dev_path
         self.logger.log("command to execute :" + mkfs_cmd)
