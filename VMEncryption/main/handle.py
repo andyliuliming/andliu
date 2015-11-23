@@ -416,14 +416,15 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
         elif(current_phase == CommonVariables.EncryptionPhaseCopyData):
             luks_header_size = 4096 * 512
             current_source_path = ongoing_item_config.get_dev_uuid_path()
+            current_slice_index = ongoing_item_config.get_current_slice_index()
+            if(current_slice_index == None):
+                ongoing_item_config.current_slice_index = 0
             ongoing_item_config.current_destination = device_mapper_path
             ongoing_item_config.current_source_path = current_source_path
             ongoing_item_config.current_total_copy_size = (device_size - luks_header_size)
             ongoing_item_config.from_end = True
             ongoing_item_config.phase = CommonVariables.EncryptionPhaseCopyData
             ongoing_item_config.commit()
-
-            device_size = int(ongoing_item_config.get_device_size().strip())
 
             copy_result = disk_util.copy(ongoing_item_config = ongoing_item_config)
             if(copy_result != CommonVariables.process_success):
@@ -437,6 +438,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
         elif(current_phase == CommonVariables.EncryptionPhaseRecoverHeader):
             ongoing_item_config.from_end = False
             backed_up_header_slice_file_path = ongoing_item_config.get_header_slice_file_path()
+            ongoing_item_config.current_slice_index = 0
             ongoing_item_config.current_source_path = backed_up_header_slice_file_path
             device_mapper_path = os.path.join('/dev/mapper/' + ongoing_item_config.get_mapper_name())
             ongoing_item_config.current_destination = device_mapper_path
@@ -542,6 +544,9 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                 
                 device_size = int(ongoing_item_config.get_device_size().strip())
 
+                current_slice_index = ongoing_item_config.get_current_slice_index()
+                if(current_slice_index == None):
+                    ongoing_item_config.current_slice_index = 0
                 ongoing_item_config.current_source_path = dev_uuid_path
                 ongoing_item_config.current_destination = device_mapper_path
                 ongoing_item_config.current_total_copy_size = device_size
