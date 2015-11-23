@@ -83,6 +83,7 @@ class TransactionalCopyTask(object):
             else:
                 transactional_copy_config.total_size = total_slice_size
             transactional_copy_config.commit()
+
             if(self.from_end):
                 #copy from end to the beginning.
                 if(last_slice_size > 0):
@@ -94,7 +95,7 @@ class TransactionalCopyTask(object):
                     else:
                         return copy_result
 
-                for i in range(0,total_slice_size):
+                for i in range(0, total_slice_size):
                     copy_command = self.patching.dd_path
                     skip_block = (total_slice_size - i - 1)
                     copy_result = self.copy_internal(copy_command=copy_command,from_device=self.source_dev_full_path,to_device=self.destination,skip=skip_block,size=self.block_size)
@@ -104,10 +105,13 @@ class TransactionalCopyTask(object):
                     else:
                         return copy_result
                 return CommonVariables.process_success
+
             else:
                 for i in range(0, total_slice_size):
                     copy_command = self.patching.dd_path
-                    copy_result = self.copy_internal(copy_command=copy_command,from_device=self.source_dev_full_path,to_device=self.destination,skip=i,size=self.block_size)
+                    copy_result = self.copy_internal(copy_command=copy_command,\
+                                                     from_device=self.source_dev_full_path,to_device=self.destination,\
+                                                     skip=i,size=self.block_size)
                     if(copy_result == CommonVariables.process_success):
                         transactional_copy_config.current_slice_index = i
                         transactional_copy_config.commit()
@@ -119,7 +123,9 @@ class TransactionalCopyTask(object):
                 """
                 if(last_slice_size > 0):
                     copy_command = self.patching.dd_path
-                    copy_result = self.copy_internal(copy_command=copy_command,from_device=self.source_dev_full_path,to_device=self.destination,skip=total_slice_size,size=last_slice_size)
+                    copy_result = self.copy_internal(copy_command=copy_command,\
+                                                     from_device=self.source_dev_full_path, to_device=self.destination,\
+                                                     skip=total_slice_size,size=last_slice_size)
                     if(copy_result == CommonVariables.process_success):
                         transactional_copy_config.current_slice_index = total_slice_size + 1
                         transactional_copy_config.commit()
