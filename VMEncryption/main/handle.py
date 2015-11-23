@@ -189,7 +189,7 @@ def enable():
         timespan_in_seconds = utcNow - setting_file_timestamp
         TEN_MINUTES = 10 * 60 # in seconds
         # handle the machine identity for the restoration scenario.
-        logger.log(msg="utcNow is " + str(utcNow) + " and setting file timestamp is " + str(setting_file_timestamp))
+        logger.log(msg="utcNow is " + str(utcNow) + " and setting file timestamp is " + str(setting_file_timestamp) +" and timespan_in_seconds is "+str(timespan_in_seconds))
         if(abs(timespan_in_seconds) > TEN_MINUTES):
             logger.log(msg="timestamp for the current setting file is not in valid period",level=CommonVariables.WarningLevel)
             exit_without_status_report()
@@ -357,6 +357,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
     if(ongoing_item_config is None):
         ongoing_item_config = OnGoingItemConfig(encryption_environment = encryption_environment, logger = logger)
         ongoing_item_config.current_block_size = CommonVariables.default_block_size
+        ongoing_item_config.current_slice_index = 0
         ongoing_item_config.device_size = device_item.size
         ongoing_item_config.dev_uuid_path = os.path.join('/dev/disk/by-uuid', device_item.uuid)
         ongoing_item_config.file_system = device_item.file_system
@@ -381,6 +382,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                 logger.log(msg=("check shrink fs failed with code " + str(chk_shrink_result) + " for: " + str(dev_uuid_path)), level = CommonVariables.ErrorLevel)
                 return current_phase
             else:
+                ongoing_item_config.current_slice_index = 0
                 ongoing_item_config.current_source_path = ongoing_item_config.dev_uuid_path
                 ongoing_item_config.current_destination = encryption_environment.copy_header_slice_file_path
                 ongoing_item_config.current_total_copy_size = CommonVariables.default_block_size
@@ -484,6 +486,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
         ongoing_item_config = OnGoingItemConfig(encryption_environment=encryption_environment,logger=logger)
         mapper_name = str(uuid.uuid4())
         ongoing_item_config.current_block_size = CommonVariables.default_block_size
+        ongoing_item_config.current_slice_index = 0
         ongoing_item_config.dev_uuid_path = os.path.join('/dev/disk/by-uuid',device_item.uuid)
         ongoing_item_config.device_size = device_item.size
         ongoing_item_config.file_system = device_item.file_system
