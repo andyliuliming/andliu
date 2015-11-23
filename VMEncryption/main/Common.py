@@ -85,6 +85,7 @@ class CommonVariables:
     OngoingItemFromEndKey = 'FromEnd'
     OngoingItemCurrentDestinationKey = 'CurrentDestination'
     OngoingItemCurrentTotalCopySizeKey = 'CurrentTotalCopySize'
+    OngoingItemCurrentSourcePathKey = 'CurrentSourcePath'
     OngoingItemCurrentBlockSizeKey = 'CurrentBlockSize'
 
     """
