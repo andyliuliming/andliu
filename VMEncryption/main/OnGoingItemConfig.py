@@ -94,7 +94,7 @@ class OnGoingItemConfig(object):
         mount_point_pair = ConfigKeyValuePair(CommonVariables.OngoingItemMountPointKey,self.mount_point)
         key_value_pairs.append(mount_point_pair)
 
-        device_size_pair=ConfigKeyValuePair(CommonVariables.OngoingItemDeviceSizeKey,self.device_size)
+        device_size_pair = ConfigKeyValuePair(CommonVariables.OngoingItemDeviceSizeKey,self.device_size)
         key_value_pairs.append(device_size_pair)
 
         current_slice_index_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentSliceIndexKey,self.current_slice_index)
@@ -103,16 +103,16 @@ class OnGoingItemConfig(object):
         from_end_pair = ConfigKeyValuePair(CommonVariables.OngoingItemFromEndKey,self.from_end)
         key_value_pairs.append(from_end_pair)
 
-        current_source_path_pair=ConfigKeyValuePair(CommonVariables.OngoingItemCurrentSourcePathKey,self.current_source_path)
+        current_source_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentSourcePathKey,self.current_source_path)
         key_value_pairs.append(current_source_path_pair)
 
         current_destination_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentDestinationKey,self.current_destination)
         key_value_pairs.append(current_destination_pair)
 
-        current_total_copy_size_pair =ConfigKeyValuePair(CommonVariables.OngoingItemCurrentTotalCopySizeKey,self.current_total_copy_size)
-        key_value_pairs.append(current_total_copy_size)
+        current_total_copy_size_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentTotalCopySizeKey,self.current_total_copy_size)
+        key_value_pairs.append(current_total_copy_size_pair)
 
-        current_block_size_pair=ConfigKeyValuePair(CommonVariables.OngoingItemCurrentBlockSizeKey,self.current_block_size)
+        current_block_size_pair = ConfigKeyValuePair(CommonVariables.OngoingItemCurrentBlockSizeKey,self.current_block_size)
         key_value_pairs.append(current_block_size_pair)
 
         self.ongoing_item_config.save_configs(key_value_pairs)
