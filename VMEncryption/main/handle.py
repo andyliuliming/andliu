@@ -290,8 +290,8 @@ def enable():
         logger.log(msg="Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()),level=CommonVariables.ErrorLevel)
         hutil.do_exit(0, 'Enable',CommonVariables.extension_error_status,str(CommonVariables.unknown_error), 'Enable failed.')
 
-def enable_encryption_format(passphrase, encryption_queue, disk_util):
-    encryption_parameters = encryption_queue.get_encryption_disk_format_query()
+def enable_encryption_format(passphrase, encryption_marker, disk_util):
+    encryption_parameters = encryption_marker.get_encryption_disk_format_query()
 
     encryption_format_items = json.loads(encryption_parameters)
     for encryption_item in encryption_format_items:
@@ -547,7 +547,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
             finally:
                 toggle_se_linux_for_centos7(False)
 
-def enable_encryption_all_in_place(passphrase_file, encryption_queue, disk_util, bek_util):
+def enable_encryption_all_in_place(passphrase_file, encryption_marker, disk_util, bek_util):
     """
     if return None for the success case, or return the device item which failed.
     """
@@ -653,15 +653,15 @@ def daemon():
             else:
                 failed_item = None
                 if(encryption_marker.get_current_command() == CommonVariables.EnableEncryption):
-                    failed_item = enable_encryption_all_in_place(bek_passphrase_file, encryption_marker, disk_util, bek_util)
+                    failed_item = enable_encryption_all_in_place(passphrase_file= bek_passphrase_file, encryption_marker = encryption_marker, disk_util = disk_util, bek_util = bek_util)
                 elif(encryption_marker.get_current_command() == CommonVariables.EnableEncryptionFormat):
-                    failed_item = enable_encryption_format(bek_passphrase_file, encryption_marker, disk_util)
+                    failed_item = enable_encryption_format(passphrase = bek_passphrase_file, encryption_marker = encryption_marker, disk_util = disk_util)
                 else:
                     logger.log(msg = ("command " + str(encryption_marker.get_current_command()) + " not supported"), level = CommonVariables.ErrorLevel)
                     #TODO do exit here
                 if(failed_item != None):
                     hutil.do_exit(exit_code = 0, operation = 'Enable', status = CommonVariables.extension_error_status, code = CommonVariables.encryption_failed,\
-                                  message = 'encryption failed for ' + str(failed_item) + ' failed.')
+                                  message = 'encryption failed for ' + str(failed_item))
     except Exception as e:
         # mount the file systems back.
         logger.log(msg=("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc())),level = CommonVariables.ErrorLevel)
