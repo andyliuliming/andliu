@@ -54,8 +54,8 @@ class TransactionalCopyTask(object):
 
         total_size = self.ongoing_item_config.get_current_total_copy_size()
         block_size = self.ongoing_item_config.get_current_block_size()
-        last_slice_size = total_size % self.block_size
-        total_slice_size = (total_size - last_slice_size) / self.block_size
+        last_slice_size = total_size % block_size
+        total_slice_size = (total_size - last_slice_size) / block_size
         from_end = self.ongoing_item_config.get_from_end()
         source_dev_full_path = self.ongoing_item_config.get_current_source_path()
         destination = self.ongoing_item_config.get_current_destination()
@@ -78,7 +78,7 @@ class TransactionalCopyTask(object):
             for i in range(0, total_slice_size):
                 copy_command = self.patching.dd_path
                 skip_block = (total_slice_size - i - 1)
-                copy_result = self.copy_internal(copy_command=copy_command,from_device=source_dev_full_path,to_device=destination,skip=skip_block,size=self.block_size)
+                copy_result = self.copy_internal(copy_command=copy_command,from_device=source_dev_full_path,to_device=destination,skip=skip_block,size=block_size)
                 if(copy_result == CommonVariables.process_success):
                     ongoing_item_config.current_slice_index = i
                     ongoing_item_config.commit()
