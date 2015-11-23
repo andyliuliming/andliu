@@ -34,7 +34,7 @@ class TransactionalCopyTask(object):
     copy_total_size is in byte, skip_target_size is also in byte
     slice_size is in byte 50M
     """
-    def __init__(self,logger,disk_util, ongoing_item_config, patching, encryption_environment):
+    def __init__(self, logger, disk_util, ongoing_item_config, patching, encryption_environment):
         """
         copy_total_size is in bytes.
         """
