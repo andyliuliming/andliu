@@ -677,6 +677,7 @@ def daemon():
     finally:
         encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
         #TODO not remove it, backed it up.
+        logger.log("clearing the encryption mark.")
         encryption_marker.clear_config()
         bek_util.umount_azure_passhprase(encryption_config)
         logger.log("finally in daemon")
