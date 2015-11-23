@@ -132,6 +132,7 @@ class CommonVariables:
     command_not_support = 16
     volue_type_not_support = 17
     copy_data_error = 18
+    encryption_failed = 19
     unknown_error = 100
 
 class TestHooks:
