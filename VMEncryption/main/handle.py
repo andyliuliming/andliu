@@ -650,6 +650,8 @@ def daemon():
             """
             if(ongoing_item_config.get_phase() != CommonVariables.EncryptionPhaseDone):
                 logger.log(msg="resuming encryption failed, so skip.",level=CommonVariables.ErrorLevel)
+                hutil.do_exit(exit_code = 0, operation='Enable', status = CommonVariables.extension_error_status,code=str(CommonVariables.encryption_failed), \
+                              message = "resuming encryption failed, please take a look at the log file for details.")
             else:
                 failed_item = None
                 if(encryption_marker.get_current_command() == CommonVariables.EnableEncryption):
@@ -662,17 +664,23 @@ def daemon():
                 if(failed_item != None):
                     hutil.do_exit(exit_code = 0, operation = 'Enable', status = CommonVariables.extension_error_status, code = CommonVariables.encryption_failed,\
                                   message = 'encryption failed for ' + str(failed_item))
+                else:
+                    hutil.do_exit(exit_code = 0, operation='Enable', status = CommonVariables.extension_success_status,code=str(CommonVariables.success), \
+                              message = "encryption task finisned, please take a look at the log file for details.")
     except Exception as e:
         # mount the file systems back.
-        logger.log(msg=("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc())),level = CommonVariables.ErrorLevel)
+        error_msg = ("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
+        logger.log(msg = error_msg, level = CommonVariables.ErrorLevel)
+        hutil.do_exit(exit_code = 0, operation='Enable', status = CommonVariables.extension_error_status,code=str(CommonVariables.encryption_failed), \
+                              message = error_msg)
+
     finally:
         encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
         #TODO not remove it, backed it up.
         encryption_marker.clear_config()
         bek_util.umount_azure_passhprase(encryption_config)
         logger.log("finally in daemon")
-    hutil.do_exit(exit_code = 0, operation='Enable', status = CommonVariables.extension_success_status,code=str(CommonVariables.success), message = "the encryption task finished, please take a look at the log file for details.")
-
+    
 def start_daemon():
     args = [os.path.join(os.getcwd(), __file__), "-daemon"]
     logger.log("start_daemon with args:" + str(args))
