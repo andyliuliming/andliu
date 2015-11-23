@@ -40,6 +40,13 @@ class TransactionalCopyTask(object):
         """
         self.command_executer = CommandExecuter(logger)
         self.ongoing_item_config= ongoing_item_config
+        self.total_size = self.ongoing_item_config.get_current_total_copy_size()
+        self.block_size = self.ongoing_item_config.get_current_block_size()
+        self.source_dev_full_path = self.ongoing_item_config.get_current_source_path()
+        self.destination = self.ongoing_item_config.get_current_destination()
+        self.current_slice_index = self.ongoing_item_config.get_current_slice_index()
+        self.from_end = self.ongoing_item_config.get_from_end()
+
         self.encryption_environment = encryption_environment
         self.logger = logger
         self.patching = patching
@@ -52,23 +59,19 @@ class TransactionalCopyTask(object):
         check the device_item size first, cut it 
         """
 
-        total_size = self.ongoing_item_config.get_current_total_copy_size()
-        block_size = self.ongoing_item_config.get_current_block_size()
-        last_slice_size = total_size % block_size
-        total_slice_size = (total_size - last_slice_size) / block_size
-        from_end = self.ongoing_item_config.get_from_end()
-        source_dev_full_path = self.ongoing_item_config.get_current_source_path()
-        destination = self.ongoing_item_config.get_current_destination()
-        current_slice_index = self.ongoing_item_config.get_current_slice_index()
+        
+        last_slice_size = self.total_size % self.block_size
+        total_slice_size = (self.total_size - last_slice_size) / self.block_size
+        
         returnCode = CommonVariables.success
 
         copy_command = None
 
-        if(from_end.lower()=='true'):
+        if(self.from_end.lower()=='true'):
             #copy from end to the beginning.
             if(last_slice_size > 0):
                 copy_command = self.patching.dd_path
-                copy_result = self.copy_internal(copy_command=copy_command,from_device=source_dev_full_path,to_device=destination,skip=total_slice_size,size=last_slice_size)
+                copy_result = self.copy_internal(copy_command=copy_command,from_device=self.source_dev_full_path,to_device=self.destination,skip=total_slice_size,size=last_slice_size)
                 if(copy_result == CommonVariables.process_success):
                     ongoing_item_config.current_slice_index = total_slice_size + 1
                     ongoing_item_config.commit()
@@ -78,7 +81,7 @@ class TransactionalCopyTask(object):
             for i in range(0, total_slice_size):
                 copy_command = self.patching.dd_path
                 skip_block = (total_slice_size - i - 1)
-                copy_result = self.copy_internal(copy_command=copy_command,from_device=source_dev_full_path,to_device=destination,skip=skip_block,size=block_size)
+                copy_result = self.copy_internal(copy_command=copy_command,from_device=self.source_dev_full_path,to_device=self.destination,skip=skip_block,size=self.block_size)
                 if(copy_result == CommonVariables.process_success):
                     ongoing_item_config.current_slice_index = i
                     ongoing_item_config.commit()
@@ -90,8 +93,8 @@ class TransactionalCopyTask(object):
             for i in range(0, total_slice_size):
                 copy_command = self.patching.dd_path
                 copy_result = self.copy_internal(copy_command=copy_command,\
-                                                    from_device=source_dev_full_path,to_device=destination,\
-                                                    skip=i,size=block_size)
+                                                    from_device=self.source_dev_full_path,to_device=self.destination,\
+                                                    skip=i,size=self.block_size)
                 if(copy_result == CommonVariables.process_success):
                     ongoing_item_config.current_slice_index = i
                     ongoing_item_config.commit()
@@ -104,7 +107,7 @@ class TransactionalCopyTask(object):
             if(last_slice_size > 0):
                 copy_command = self.patching.dd_path
                 copy_result = self.copy_internal(copy_command=copy_command,\
-                                                    from_device=source_dev_full_path, to_device=destination,\
+                                                    from_device=self.source_dev_full_path, to_device=self.destination,\
                                                     skip=total_slice_size, size=last_slice_size)
                 if(copy_result == CommonVariables.process_success):
                     ongoing_item_config.current_slice_index = total_slice_size + 1
