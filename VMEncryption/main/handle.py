@@ -542,7 +542,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                         logger.log(msg=("the luks open for " + str(dev_uuid_path) + " failed"),level=CommonVariables.ErrorLevel)
                         return current_phase
                 
-                device_size = int(ongoing_item_config.get_device_size().strip())
+                device_size = ongoing_item_config.get_device_size()
 
                 current_slice_index = ongoing_item_config.get_current_slice_index()
                 if(current_slice_index == None):
