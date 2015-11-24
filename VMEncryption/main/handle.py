@@ -359,7 +359,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
         ongoing_item_config.current_block_size = CommonVariables.default_block_size
         ongoing_item_config.current_slice_index = 0
         ongoing_item_config.device_size = device_item.size
-        ongoing_item_config.dev_uuid_path = os.path.join('/dev/disk/by-uuid', device_item.uuid)
+        ongoing_item_config.dev_uuid_path = os.path.join('/dev',device_item.name)#os.path.join('/dev/disk/by-uuid', device_item.uuid)
         ongoing_item_config.file_system = device_item.file_system
         ongoing_item_config.luks_header_file_path = None
         ongoing_item_config.mapper_name = str(uuid.uuid4())
