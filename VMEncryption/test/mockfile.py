@@ -41,10 +41,30 @@ import urllib2
 import urlparse
 import uuid
 
+def fillsize():
+    write_str = "!" * 1023 + '\n'
+    write_str_len=len(write_str)
+    output_path = sys.argv[2]
+    size = int(sys.argv[3])
+    written_size=0
+    with open(output_path, "w") as f:
+        while written_size<=size:
+            try:
+                f.write(write_str)
+                f.flush()
+                written_size+=write_str_len
+            except IOError as err:
+                if err.errno == errno.ENOSPC:
+                    write_str_len = len(write_str)
+                    if write_str_len > 1:
+                        write_str = write_str[:write_str_len / 2]
+                    else:
+                        break
+                else:
+                    raise
 
-
-def fill():
-    write_str = "!" * 1024 + '\n'
+def fillfile():
+    write_str = "!" * 1023 + '\n'
     output_path = sys.argv[2]
     with open(output_path, "w") as f:
         while True:
@@ -62,7 +82,7 @@ def fill():
                     raise
 
 def check():
-    write_str = "!" * 1024 + '\n'
+    write_str = "!" * 1023 + '\n'
     output_path = sys.argv[2]
     with open(output_path, "r") as f:
         read_str='\n'
@@ -73,10 +93,12 @@ def check():
             
 def main():
     for a in sys.argv[1:]:
-        if re.match("^([-/]*)(fill)", a):
-            fill()
+        if re.match("^([-/]*)(fillfile)", a):
+            fillfile()
         elif re.match("^([-/]*)(check)", a):
             check()
+        elif re.match("^([-/]*)(fillsize)", a):
+            fillsize()
 
 if __name__ == '__main__' :
     main()
