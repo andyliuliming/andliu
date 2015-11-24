@@ -51,16 +51,16 @@ class OnGoingItemConfig(object):
         return self.ongoing_item_config.get_config(CommonVariables.OngoingItemMountPointKey)
 
     def get_device_size(self):
-        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemDeviceSizeKey)
+        return long(self.ongoing_item_config.get_config(CommonVariables.OngoingItemDeviceSizeKey))
 
     def get_current_slice_index(self):
-        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemCurrentSliceIndexKey)
+        return long(self.ongoing_item_config.get_config(CommonVariables.OngoingItemCurrentSliceIndexKey))
 
     def get_from_end(self):
         return self.ongoing_item_config.get_config(CommonVariables.OngoingItemFromEndKey)
 
     def get_current_block_size(self):
-        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemCurrentBlockSizeKey)
+        return long(self.ongoing_item_config.get_config(CommonVariables.OngoingItemCurrentBlockSizeKey))
 
     def get_current_source_path(self):
         return self.ongoing_item_config.get_config(CommonVariables.OngoingItemCurrentSourcePathKey)
@@ -69,7 +69,7 @@ class OnGoingItemConfig(object):
         return self.ongoing_item_config.get_config(CommonVariables.OngoingItemCurrentDestinationKey)
     
     def get_current_total_copy_size(self):
-        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemCurrentTotalCopySizeKey)
+        return long(self.ongoing_item_config.get_config(CommonVariables.OngoingItemCurrentTotalCopySizeKey))
 
     def commit(self):
         key_value_pairs = []
