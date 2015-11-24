@@ -82,8 +82,8 @@ class TransactionalCopyTask(object):
                         return copy_result
 
                 self.current_slice_index += 1
-                ongoing_item_config.current_slice_index = self.current_slice_index
-                ongoing_item_config.commit()
+                self.ongoing_item_config.current_slice_index = self.current_slice_index
+                self.ongoing_item_config.commit()
 
             return CommonVariables.process_success
         else:
@@ -106,8 +106,8 @@ class TransactionalCopyTask(object):
                         return copy_result
 
                 self.current_slice_index += 1
-                ongoing_item_config.current_slice_index = self.current_slice_index
-                ongoing_item_config.commit()
+                self.ongoing_item_config.current_slice_index = self.current_slice_index
+                self.ongoing_item_config.commit()
             return CommonVariables.process_success
 
     """
