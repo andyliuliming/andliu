@@ -678,17 +678,12 @@ def daemon():
                 else:
                     encryption_result_phase = encrypt_inplace_with_seperate_header_file(passphrase_file = bek_passphrase_file, device_item = None,\
                         disk_util = disk_util, bek_util = bek_util, ongoing_item_config = ongoing_item_config)
-
-                if(encryption_result_phase != CommonVariables.EncryptionPhaseDone):
-                    hutil.do_exit(exit_code = 0, operation = 'Enable', status = CommonVariables.extension_error_status, code = CommonVariables.encryption_failed,\
-                                  message = 'resuming encryption for ' + str(ongoing_item_config.dev_uuid_path) + ' failed.')
                 """
                 if the resuming failed, we should fail.
                 """
-                if(ongoing_item_config.get_phase() != CommonVariables.EncryptionPhaseDone):
-                    logger.log(msg="resuming encryption failed, so skip.",level = CommonVariables.ErrorLevel)
-                    hutil.do_exit(exit_code = 0, operation='Enable', status = CommonVariables.extension_error_status,code = str(CommonVariables.encryption_failed), \
-                                  message = "resuming encryption failed, please take a look at the log file for details.")
+                if(encryption_result_phase != CommonVariables.EncryptionPhaseDone):
+                    hutil.do_exit(exit_code = 0, operation = 'Enable', status = CommonVariables.extension_error_status, code = CommonVariables.encryption_failed,\
+                                  message = 'resuming encryption for ' + str(ongoing_item_config.dev_uuid_path) + ' failed.')
                 else:
                     ongoing_item_config.clear_config()
             else:
