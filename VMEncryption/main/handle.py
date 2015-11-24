@@ -381,6 +381,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                 logger.log(msg = "we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7", level = CommonVariables.WarningLevel)
                 return current_phase
             chk_shrink_result = disk_util.check_shrink_fs(dev_path=dev_uuid_path)
+            #TODO check whether there's 2 megabyte space for the header file.
             if(chk_shrink_result != CommonVariables.process_success):
                 logger.log(msg = ("check shrink fs failed with code " + str(chk_shrink_result) + " for: " + str(dev_uuid_path)), level = CommonVariables.ErrorLevel)
                 return current_phase
