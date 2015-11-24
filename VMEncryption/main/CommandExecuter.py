@@ -32,6 +32,7 @@ class CommandExecuter(object):
         self.logger = logger
 
     def Execute(self,command_to_execute):
+        self.logger.log("Executing:" + command_to_execute)
         args = shlex.split(command_to_execute)
         proc = Popen(args)
         returnCode = proc.wait()
