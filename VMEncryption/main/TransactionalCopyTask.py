@@ -135,6 +135,7 @@ class TransactionalCopyTask(object):
         backup_slice_item_cmd = str(copy_command) + ' if=' + self.slice_file_path + ' of=' + self.encryption_environment.copy_slice_item_backup_file + ' bs=' + str(block_size) + ' seek=' + str(skip) + ' count=' + str(count)
         backup_slice_args = shlex.split(backup_slice_item_cmd)
         backup_process = Popen(backup_slice_args)
+        self.logger.log("backup_slice_item_cmd is " + str(backup_slice_item_cmd))
 
         dd_cmd = str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(block_size) + ' seek=' + str(skip) + ' count=' + str(count)
         returnCode = self.command_executer.Execute(dd_cmd)
