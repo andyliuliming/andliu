@@ -324,7 +324,7 @@ def enable_encryption_format(passphrase, encryption_marker, disk_util):
                     file_system = CommonVariables.default_file_system
                     format_disk_result = disk_util.format_disk(dev_path = encrypted_device_path,file_system = file_system)
                     if(format_disk_result != CommonVariables.process_success):
-                        logger.log(msg=("format disk " + str(encrypted_device_path) + " failed " + str(format_disk_result)),level = CommonVariables.ErrorLevel)
+                        logger.log(msg = ("format disk " + str(encrypted_device_path) + " failed " + str(format_disk_result)),level = CommonVariables.ErrorLevel)
                     crypt_item_to_update = CryptItem()
                     crypt_item_to_update.mapper_name = mapper_name
                     crypt_item_to_update.dev_path = device_to_encrypt
@@ -421,8 +421,6 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
             current_source_path = ongoing_item_config.get_dev_uuid_path()
             current_slice_index = ongoing_item_config.get_current_slice_index()
             device_mapper_path = os.path.join(CommonVariables.dev_mapper_root, mapper_name)
-            if(current_slice_index == None):
-                ongoing_item_config.current_slice_index = 0
             ongoing_item_config.current_destination = device_mapper_path
             ongoing_item_config.current_source_path = current_source_path
             ongoing_item_config.current_total_copy_size = (device_size - luks_header_size)
