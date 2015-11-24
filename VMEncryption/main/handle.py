@@ -373,6 +373,9 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
     # we only support ext file systems.
     current_phase = ongoing_item_config.get_phase()
     while(current_phase != CommonVariables.EncryptionPhaseDone):
+        dev_uuid_path = ongoing_item_config.get_dev_uuid_path()
+        mapper_name = ongoing_item_config.get_mapper_name()
+        device_size = ongoing_item_config.get_device_size()
         if(current_phase == CommonVariables.EncryptionPhaseBackupHeader):
             if(not ongoing_item_config.get_file_system().lower() in ["ext2","ext3","ext4"]):
                 logger.log(msg="we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7", level = CommonVariables.WarningLevel)
@@ -383,12 +386,12 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                 return current_phase
             else:
                 ongoing_item_config.current_slice_index = 0
-                ongoing_item_config.current_source_path = ongoing_item_config.dev_uuid_path
+                ongoing_item_config.current_source_path = dev_uuid_path
                 ongoing_item_config.current_destination = encryption_environment.copy_header_slice_file_path
                 ongoing_item_config.current_total_copy_size = CommonVariables.default_block_size
                 ongoing_item_config.dev_uuid_path = dev_uuid_path
                 ongoing_item_config.from_end = False
-                ongoing_item_config.header_slice_file_path = tmpfile_created.name
+                ongoing_item_config.header_slice_file_path = encryption_environment.copy_header_slice_file_path
                 ongoing_item_config.commit()
                 if(os.path.exists(encryption_environment.copy_header_slice_file_path)):
                     os.remove(encryption_environment.copy_header_slice_file_path)
@@ -417,6 +420,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
             luks_header_size = 4096 * 512
             current_source_path = ongoing_item_config.get_dev_uuid_path()
             current_slice_index = ongoing_item_config.get_current_slice_index()
+            device_mapper_path = os.path.join(CommonVariables.dev_mapper_root, mapper_name)
             if(current_slice_index == None):
                 ongoing_item_config.current_slice_index = 0
             ongoing_item_config.current_destination = device_mapper_path
@@ -440,7 +444,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
             backed_up_header_slice_file_path = ongoing_item_config.get_header_slice_file_path()
             ongoing_item_config.current_slice_index = 0
             ongoing_item_config.current_source_path = backed_up_header_slice_file_path
-            device_mapper_path = os.path.join(CommonVariables.dev_mapper_root, ongoing_item_config.get_mapper_name())
+            device_mapper_path = os.path.join(CommonVariables.dev_mapper_root, mapper_name)
             ongoing_item_config.current_destination = device_mapper_path
             ongoing_item_config.current_total_copy_size = CommonVariables.default_block_size
             ongoing_item_config.commit()
@@ -450,7 +454,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                 crypt_item_to_update = CryptItem()
                 crypt_item_to_update.mapper_name = mapper_name
                 crypt_item_to_update.dev_path = dev_uuid_path
-                crypt_item_to_update.luks_header_path = luks_header_file
+                crypt_item_to_update.luks_header_path = "None"
                 crypt_item_to_update.file_system = ongoing_item_config.get_file_system()
                 # if the original mountpoint is empty, then leave
                 # it as None
@@ -474,7 +478,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                 ongoing_item_config.clear_config()
                 if(expand_fs_result != CommonVariables.process_success):
                     logger.log(msg=("expand fs result is: " + str(expand_fs_result)),level = CommonVariables.ErrorLevel)
-                    return current_phase
+                return current_phase
             else:
                 logger.log(msg=("recover header failed result is: " + str(copy_result)),level = CommonVariables.ErrorLevel)
                 return current_phase
