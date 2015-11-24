@@ -157,6 +157,7 @@ class TransactionalCopyTask(object):
             #the copy done correctly, so clear the backup slice file item.
             backup_process.kill()
             if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
+                self.logger.log(msg = "clean up the backup file")
                 os.remove(self.encryption_environment.copy_slice_item_backup_file)
         return returnCode
 
