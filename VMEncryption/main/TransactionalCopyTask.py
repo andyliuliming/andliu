@@ -64,11 +64,17 @@ class TransactionalCopyTask(object):
         returnCode = CommonVariables.success
 
         copy_command = self.patching.dd_path
-        # first, try recover the items backed up
-        # then copy the next slice.
         if(self.from_end.lower() == 'true'):
             while(self.current_slice_index < total_slice_size):
                 skip_block = (total_slice_size - self.current_slice_index - 1)
+
+                if(self.current_slice_index > 0):
+                    if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
+                        copy_slice_item_backup_file_size = os.path.getsize(self.encryption_environment.copy_slice_item_backup_file)
+                        self.logger.log(msg="the copy slice item backup file exists, so recover it first " + str(copy_slice_item_backup_file_size))
+                    else:
+                        self.logger.log(msg="the current slice index is bigger than 0, but the copy slice item backup file not exists")
+
                 if(self.current_slice_index == 0):
                     if(last_slice_size > 0):
                         block_size_of_last_slice = 512
@@ -76,12 +82,12 @@ class TransactionalCopyTask(object):
                         count_of_last_slice = last_slice_size / block_size_of_last_slice
 
                         copy_result = self.copy_internal(copy_command = copy_command, from_device = self.source_dev_full_path, to_device = self.destination, \
-                                                         skip = skip_of_last_slice, block_size=block_size_of_last_slice, count=count_of_last_slice)
+                                                         skip = skip_of_last_slice, block_size = block_size_of_last_slice, count = count_of_last_slice)
                         if(copy_result != CommonVariables.process_success):
                             return copy_result
                 else:
                     copy_result = self.copy_internal(copy_command = copy_command, from_device = self.source_dev_full_path, to_device = self.destination, \
-                                                     skip=skip_block, block_size=self.block_size)
+                                                     skip = skip_block, block_size = self.block_size)
                     if(copy_result != CommonVariables.process_success):
                         return copy_result
 
