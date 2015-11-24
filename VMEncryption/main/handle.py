@@ -472,6 +472,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                 else:
                     logger.log("the crypt_item_to_update.mount_point is None, so we do not mount it.")
 
+                ongoing_item_config.clear_config()
                 if(expand_fs_result != CommonVariables.process_success):
                     logger.log(msg=("expand fs result is: " + str(expand_fs_result)),level = CommonVariables.ErrorLevel)
                     return current_phase
@@ -580,6 +581,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                     else:
                         logger.log("the crypt_item_to_update.mount_point is None, so we do not mount it.")
                     current_phase = CommonVariables.EncryptionPhaseDone
+                    ongoing_item_config.clear_config()
                     return current_phase
             finally:
                 toggle_se_linux_for_centos7(False)
@@ -689,6 +691,8 @@ def daemon():
                     logger.log(msg="resuming encryption failed, so skip.",level=CommonVariables.ErrorLevel)
                     hutil.do_exit(exit_code = 0, operation='Enable', status = CommonVariables.extension_error_status,code=str(CommonVariables.encryption_failed), \
                                   message = "resuming encryption failed, please take a look at the log file for details.")
+                else:
+                    ongoing_item_config.clear_config()
             else:
                 failed_item = None
                 if(encryption_marker.get_current_command() == CommonVariables.EnableEncryption):
