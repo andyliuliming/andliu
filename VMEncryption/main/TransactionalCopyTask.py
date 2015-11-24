@@ -73,7 +73,7 @@ class TransactionalCopyTask(object):
 
                 if(self.current_slice_index == 0):
                     if(last_slice_size > 0):
-                        copy_result = self.copy_internal(copy_command=copy_command, from_device=self.source_dev_full_path, to_device=self.destination, skip=skip_block, size=last_slice_size)
+                        copy_result = self.copy_internal(copy_command=copy_command, from_device=self.source_dev_full_path, to_device=self.destination, skip=skip_block, size=last_slice_size,extra_options=" -skip_bytes -seek_bytes")
                         if(copy_result != CommonVariables.process_success):
                             return copy_result
                 else:
