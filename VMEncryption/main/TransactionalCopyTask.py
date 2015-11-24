@@ -68,16 +68,20 @@ class TransactionalCopyTask(object):
         # then copy the next slice.
         if(self.from_end.lower() == 'true'):
             while(self.current_slice_index < total_slice_size):
-
                 skip_block = (total_slice_size - self.current_slice_index - 1)
-
                 if(self.current_slice_index == 0):
                     if(last_slice_size > 0):
-                        copy_result = self.copy_internal(copy_command=copy_command, from_device=self.source_dev_full_path, to_device=self.destination, skip=skip_block, size=last_slice_size,extra_options=" -skip_bytes -seek_bytes")
+                        block_size_of_last_slice = 512
+                        skip_of_last_slice = (skip_block * self.block_size) / block_size_of_last_slice
+                        count_of_last_slice = last_slice_size / block_size_of_last_slice
+
+                        copy_result = self.copy_internal(copy_command = copy_command, from_device = self.source_dev_full_path, to_device = self.destination, \
+                                                         skip = skip_of_last_slice, block_size=block_size_of_last_slice, count=count_of_last_slice)
                         if(copy_result != CommonVariables.process_success):
                             return copy_result
                 else:
-                    copy_result = self.copy_internal(copy_command=copy_command, from_device=self.source_dev_full_path, to_device=self.destination, skip=skip_block, size=self.block_size)
+                    copy_result = self.copy_internal(copy_command = copy_command, from_device = self.source_dev_full_path, to_device = self.destination, \
+                                                     skip=skip_block, block_size=self.block_size)
                     if(copy_result != CommonVariables.process_success):
                         return copy_result
 
@@ -93,15 +97,18 @@ class TransactionalCopyTask(object):
 
                 if(self.current_slice_index == (total_slice_size - 1)):
                     if(last_slice_size > 0):
+                        block_size_of_last_slice = 512
+                        skip_of_last_slice = (skip_block * self.block_size) / block_size_of_last_slice
+                        count_of_last_slice = last_slice_size / block_size_of_last_slice
                         copy_result = self.copy_internal(copy_command = copy_command,\
                                                         from_device = self.source_dev_full_path, to_device = self.destination,\
-                                                        skip=(skip_block*self.block_size), size=last_slice_size,extra_options=" -skip_bytes -seek_bytes")
+                                                        skip=(skip_of_last_slice), block_size=block_size_of_last_slice,count=count_of_last_slice)
                         if(copy_result != CommonVariables.process_success):
                             return copy_result
                 else:
                     copy_result = self.copy_internal(copy_command = copy_command,\
                                                     from_device = self.source_dev_full_path, to_device = self.destination,\
-                                                    skip=skip_block,size = self.block_size)
+                                                    skip = skip_block,block_size = self.block_size)
                     if(copy_result != CommonVariables.process_success):
                         return copy_result
 
@@ -113,11 +120,11 @@ class TransactionalCopyTask(object):
     """
     TODO: if the copy failed?
     """
-    def copy_internal(self, copy_command, from_device, to_device, skip, size, extra_options=""):
+    def copy_internal(self, copy_command, from_device, to_device, skip, block_size, count=1):
         """
         first, copy the data to the middle cache
         """
-        dd_cmd = str(copy_command) + ' if=' + from_device + ' of=' + self.slice_file_path + ' bs=' + str(size) + ' skip=' + str(skip) + ' count=1 '+str(extra_options)
+        dd_cmd = str(copy_command) + ' if=' + from_device + ' of=' + self.slice_file_path + ' bs=' + str(block_size) + ' skip=' + str(skip) + ' count=' + str(count)
         returnCode = self.command_executer.Execute(dd_cmd)
         if(returnCode != CommonVariables.process_success):
             self.logger.log(str(dd_cmd) + ' is ' + str(returnCode))
@@ -125,11 +132,11 @@ class TransactionalCopyTask(object):
         """
         second, copy the data in the middle cache to the target device.
         """
-        backup_slice_item_cmd = str(copy_command) + ' if=' + self.slice_file_path + ' of=' + self.encryption_environment.copy_slice_item_backup_file + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1 ' + str(extra_options)
+        backup_slice_item_cmd = str(copy_command) + ' if=' + self.slice_file_path + ' of=' + self.encryption_environment.copy_slice_item_backup_file + ' bs=' + str(block_size) + ' seek=' + str(skip) + ' count=' + str(count)
         backup_slice_args = shlex.split(backup_slice_item_cmd)
         backup_process = Popen(backup_slice_args)
 
-        dd_cmd = str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(size) + ' seek=' + str(skip) + ' count=1 '+str(extra_options)
+        dd_cmd = str(copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(block_size) + ' seek=' + str(skip) + ' count=' + str(count)
         returnCode = self.command_executer.Execute(dd_cmd)
         if(returnCode != CommonVariables.process_success):
             self.logger.log(str(dd_cmd) + ' is ' + str(returnCode))

@@ -688,8 +688,8 @@ def daemon():
                 if the resuming failed, we should fail.
                 """
                 if(ongoing_item_config.get_phase() != CommonVariables.EncryptionPhaseDone):
-                    logger.log(msg="resuming encryption failed, so skip.",level=CommonVariables.ErrorLevel)
-                    hutil.do_exit(exit_code = 0, operation='Enable', status = CommonVariables.extension_error_status,code=str(CommonVariables.encryption_failed), \
+                    logger.log(msg="resuming encryption failed, so skip.",level = CommonVariables.ErrorLevel)
+                    hutil.do_exit(exit_code = 0, operation='Enable', status = CommonVariables.extension_error_status,code = str(CommonVariables.encryption_failed), \
                                   message = "resuming encryption failed, please take a look at the log file for details.")
                 else:
                     ongoing_item_config.clear_config()
@@ -706,13 +706,13 @@ def daemon():
                     hutil.do_exit(exit_code = 0, operation = 'Enable', status = CommonVariables.extension_error_status, code = CommonVariables.encryption_failed,\
                                   message = 'encryption failed for ' + str(failed_item))
                 else:
-                    hutil.do_exit(exit_code = 0, operation='Enable', status = CommonVariables.extension_success_status,code=str(CommonVariables.success), \
+                    hutil.do_exit(exit_code = 0, operation ='Enable', status = CommonVariables.extension_success_status,code = str(CommonVariables.success), \
                               message = "encryption task finisned, please take a look at the log file for details.")
     except Exception as e:
         # mount the file systems back.
         error_msg = ("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
         logger.log(msg = error_msg, level = CommonVariables.ErrorLevel)
-        hutil.do_exit(exit_code = 0, operation='Enable', status = CommonVariables.extension_error_status,code=str(CommonVariables.encryption_failed), \
+        hutil.do_exit(exit_code = 0, operation = 'Enable', status = CommonVariables.extension_error_status, code = str(CommonVariables.encryption_failed), \
                               message = error_msg)
 
     finally:

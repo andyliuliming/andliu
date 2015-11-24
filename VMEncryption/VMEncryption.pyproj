@@ -87,6 +87,9 @@
     <Compile Include="main\Utils\__init__.py" />
     <Compile Include="main\__init__.py" />
     <Compile Include="setup.py" />
+    <Compile Include="test\mockfile.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="test\test.py">
       <SubType>Code</SubType>
     </Compile>
