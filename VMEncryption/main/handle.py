@@ -447,7 +447,6 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
 
             copy_result = disk_util.copy(ongoing_item_config = ongoing_item_config)
             if(copy_result == CommonVariables.process_success):
-                ongoing_item_config.clear_config()
                 crypt_item_to_update = CryptItem()
                 crypt_item_to_update.mapper_name = mapper_name
                 crypt_item_to_update.dev_path = dev_uuid_path
@@ -560,7 +559,6 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                     logger.log(msg = (error_message), level = CommonVariables.ErrorLevel)
                     return current_phase
                 else:
-                    ongoing_item_config.clear_config()
                     crypt_item_to_update = CryptItem()
                     crypt_item_to_update.mapper_name = mapper_name
                     crypt_item_to_update.dev_path = dev_uuid_path
