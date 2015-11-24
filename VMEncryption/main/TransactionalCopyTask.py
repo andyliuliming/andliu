@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -65,17 +65,17 @@ class TransactionalCopyTask(object):
 
         copy_command = self.patching.dd_path
         if(self.from_end.lower() == 'true'):
+            if(self.current_slice_index > 0):
+                if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
+                    copy_slice_item_backup_file_size = os.path.getsize(self.encryption_environment.copy_slice_item_backup_file)
+                    self.logger.log(msg = "the copy slice item backup file exists, so recover it first " + str(copy_slice_item_backup_file_size))
+                else:
+                    self.logger.log(msg = "the current slice index is bigger than 0, but the copy slice item backup file not exists")
+
             while(self.current_slice_index < total_slice_size):
                 skip_block = (total_slice_size - self.current_slice_index - 1)
 
-                if(self.current_slice_index > 0):
-                    if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
-                        copy_slice_item_backup_file_size = os.path.getsize(self.encryption_environment.copy_slice_item_backup_file)
-                        self.logger.log(msg="the copy slice item backup file exists, so recover it first " + str(copy_slice_item_backup_file_size))
-
-                    else:
-                        self.logger.log(msg="the current slice index is bigger than 0, but the copy slice item backup file not exists")
-
+                
                 if(self.current_slice_index == 0):
                     if(last_slice_size > 0):
                         block_size_of_last_slice = 512
@@ -98,8 +98,13 @@ class TransactionalCopyTask(object):
 
             return CommonVariables.process_success
         else:
+            if(self.current_slice_index > 0):
+                if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
+                        copy_slice_item_backup_file_size = os.path.getsize(self.encryption_environment.copy_slice_item_backup_file)
+                        self.logger.log(msg="the copy slice item backup file exists, so recover it first " + str(copy_slice_item_backup_file_size))
+                else:
+                    self.logger.log(msg="the current slice index is bigger than 0, but the copy slice item backup file not exists")
             while(self.current_slice_index < total_slice_size):
-
                 skip_block = self.current_slice_index
 
                 if(self.current_slice_index == (total_slice_size - 1)):
