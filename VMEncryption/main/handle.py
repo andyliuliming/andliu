@@ -556,7 +556,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
 
                 copy_result = disk_util.copy(ongoing_item_config = ongoing_item_config)
                 if(copy_result != CommonVariables.success):
-                    error_message = "the copying result is " + copy_result + " so skip the mounting"
+                    error_message = "the copying result is " + str(copy_result) + " so skip the mounting"
                     logger.log(msg = (error_message), level = CommonVariables.ErrorLevel)
                     return current_phase
                 else:
@@ -616,7 +616,7 @@ def enable_encryption_all_in_place(passphrase_file, encryption_marker, disk_util
                 logger.log(msg=("encrypting " + str(device_item)))
                 no_header_file_support = not_support_header_option_distro(MyPatching)
                 if(no_header_file_support):
-                    logger.log(msg="this is the centos 6 or redhat 6 or sles 11 series , need special handling.",level=CommonVariables.WarningLevel)
+                    logger.log(msg="this is the centos 6 or redhat 6 or sles 11 series , need special handling.", level=CommonVariables.WarningLevel)
                     encryption_result_phase = encrypt_inplace_without_seperate_header_file(passphrase_file=passphrase_file,device_item=device_item,disk_util=disk_util,bek_util=bek_util)
                 else:
                     encryption_result_phase = encrypt_inplace_with_seperate_header_file(passphrase_file=passphrase_file,device_item=device_item,disk_util=disk_util,bek_util=bek_util)
