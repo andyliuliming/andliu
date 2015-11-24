@@ -367,7 +367,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
         ongoing_item_config.phase = CommonVariables.EncryptionPhaseBackupHeader
         ongoing_item_config.commit()
     else:
-        logger.log(msg="ongoing item config is not none, this is resuming" + str(ongoing_item_config), level = CommonVariables.WarningLevel)
+        logger.log(msg = "ongoing item config is not none, this is resuming" + str(ongoing_item_config), level = CommonVariables.WarningLevel)
 
     logger.log(msg=("encrypting device item:" + str(ongoing_item_config.get_dev_uuid_path())))
     # we only support ext file systems.
@@ -378,11 +378,11 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
         device_size = ongoing_item_config.get_device_size()
         if(current_phase == CommonVariables.EncryptionPhaseBackupHeader):
             if(not ongoing_item_config.get_file_system().lower() in ["ext2","ext3","ext4"]):
-                logger.log(msg="we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7", level = CommonVariables.WarningLevel)
+                logger.log(msg = "we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7", level = CommonVariables.WarningLevel)
                 return current_phase
             chk_shrink_result = disk_util.check_shrink_fs(dev_path=dev_uuid_path)
             if(chk_shrink_result != CommonVariables.process_success):
-                logger.log(msg=("check shrink fs failed with code " + str(chk_shrink_result) + " for: " + str(dev_uuid_path)), level = CommonVariables.ErrorLevel)
+                logger.log(msg = ("check shrink fs failed with code " + str(chk_shrink_result) + " for: " + str(dev_uuid_path)), level = CommonVariables.ErrorLevel)
                 return current_phase
             else:
                 ongoing_item_config.current_slice_index = 0
@@ -396,7 +396,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                 if(os.path.exists(encryption_environment.copy_header_slice_file_path)):
                     os.remove(encryption_environment.copy_header_slice_file_path)
 
-                copy_result = disk_util.copy(ongoing_item_config=ongoing_item_config)
+                copy_result = disk_util.copy(ongoing_item_config = ongoing_item_config)
 
                 if(copy_result != CommonVariables.process_success):
                     logger.log(msg=("copy the header block failed, return code is: " + str(copy_result)),level=CommonVariables.ErrorLevel)
@@ -407,7 +407,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                     current_phase = CommonVariables.EncryptionPhaseEncryptDevice
         elif(current_phase == CommonVariables.EncryptionPhaseEncryptDevice):
             encrypt_result = disk_util.encrypt_disk(dev_path = dev_uuid_path, passphrase_file = passphrase_file, mapper_name = mapper_name, header_file = None)
-            # get the luks_header_size
+            # after the encrypt_disk without seperate header, then the uuid would change.
             if(encrypt_result != CommonVariables.process_success):
                 logger.log(msg = "encrypt file system failed.", level = CommonVariables.ErrorLevel)
                 return current_phase

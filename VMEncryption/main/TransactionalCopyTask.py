@@ -72,6 +72,7 @@ class TransactionalCopyTask(object):
                     if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
                         copy_slice_item_backup_file_size = os.path.getsize(self.encryption_environment.copy_slice_item_backup_file)
                         self.logger.log(msg="the copy slice item backup file exists, so recover it first " + str(copy_slice_item_backup_file_size))
+
                     else:
                         self.logger.log(msg="the current slice index is bigger than 0, but the copy slice item backup file not exists")
 
