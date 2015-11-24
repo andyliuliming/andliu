@@ -98,15 +98,6 @@ class CommonVariables:
     EncryptionPhaseDone = 'Done'
 
     """
-    transactional copy keys
-    """
-    CurrentDeviceNameKey = 'current_device_name'
-    CurrentSliceSizeKey = 'current_slice_size'
-    CurrentTotalSizeKey = 'total_size'
-    CurrentSliceIndexKey = 'current_slice_index'
-    CurrentFromEndKey = 'from_end'
-
-    """
     logs related
     """
     InfoLevel = 'Info'

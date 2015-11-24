@@ -440,7 +440,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
             backed_up_header_slice_file_path = ongoing_item_config.get_header_slice_file_path()
             ongoing_item_config.current_slice_index = 0
             ongoing_item_config.current_source_path = backed_up_header_slice_file_path
-            device_mapper_path = os.path.join('/dev/mapper/' + ongoing_item_config.get_mapper_name())
+            device_mapper_path = os.path.join(CommonVariables.dev_mapper_root, ongoing_item_config.get_mapper_name())
             ongoing_item_config.current_destination = device_mapper_path
             ongoing_item_config.current_total_copy_size = CommonVariables.default_block_size
             ongoing_item_config.commit()
