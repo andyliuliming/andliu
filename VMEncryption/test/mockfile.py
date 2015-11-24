@@ -42,9 +42,9 @@ import urlparse
 import uuid
 
 
-write_str = "!" * 1024 + '\n'
 
 def fill():
+    write_str = "!" * 1024 + '\n'
     output_path = sys.argv[2]
     with open(output_path, "w") as f:
         while True:
@@ -62,9 +62,11 @@ def fill():
                     raise
 
 def check():
+    write_str = "!" * 1024 + '\n'
     output_path = sys.argv[2]
     with open(output_path, "r") as f:
-        while True:
+        read_str='\n'
+        while read_str != "":
             read_str = f.readline()
             if(write_str != read_str):
                 print("NOT EQUALS!!!")
