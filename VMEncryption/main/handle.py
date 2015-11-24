@@ -681,7 +681,7 @@ def daemon():
 
                 if(encryption_result_phase != CommonVariables.EncryptionPhaseDone):
                     hutil.do_exit(exit_code = 0, operation = 'Enable', status = CommonVariables.extension_error_status, code = CommonVariables.encryption_failed,\
-                                  message = 'resuming encryption for ' + str(ongoing_item_config.dev_uuid_path) + 'failed.')
+                                  message = 'resuming encryption for ' + str(ongoing_item_config.dev_uuid_path) + ' failed.')
                 """
                 if the resuming failed, we should fail.
                 """
