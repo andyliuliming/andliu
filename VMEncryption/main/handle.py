@@ -550,7 +550,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                 ongoing_item_config.current_source_path = dev_uuid_path
                 ongoing_item_config.current_destination = device_mapper_path
                 ongoing_item_config.current_total_copy_size = device_size
-                ongoing_item_config.from_end=False
+                ongoing_item_config.from_end = True
                 ongoing_item_config.commit()
 
                 copy_result = disk_util.copy(ongoing_item_config = ongoing_item_config)
