@@ -332,9 +332,9 @@ def enable_encryption_format(passphrase, encryption_marker, disk_util):
                     crypt_item_to_update.file_system = file_system
 
                     if(encryption_item["name"] is not None):
-                        crypt_item_to_update.mount_point = "/mnt/" + str(encryption_item["name"])
+                        crypt_item_to_update.mount_point = os.path.join("/mnt/", str(encryption_item["name"]))
                     else:
-                        crypt_item_to_update.mount_point = "/mnt/" + mapper_name
+                        crypt_item_to_update.mount_point = os.path.join("/mnt/", mapper_name)
 
                     disk_util.make_sure_path_exists(crypt_item_to_update.mount_point)
                     update_crypt_item_result = disk_util.update_crypt_item(crypt_item_to_update)
@@ -431,7 +431,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
 
             copy_result = disk_util.copy(ongoing_item_config = ongoing_item_config)
             if(copy_result != CommonVariables.process_success):
-                logger.log(msg=("copy the main content block failed, return code is: " + str(copy_result)),level=CommonVariables.ErrorLevel)
+                logger.log(msg = ("copy the main content block failed, return code is: " + str(copy_result)),level = CommonVariables.ErrorLevel)
                 return current_phase
             else:
                 ongoing_item_config.phase = CommonVariables.EncryptionPhaseRecoverHeader
@@ -544,7 +544,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                     if(open_result != CommonVariables.process_success):
                         logger.log(msg=("the luks open for " + str(dev_uuid_path) + " failed"),level=CommonVariables.ErrorLevel)
                         return current_phase
-                
+
                 device_size = ongoing_item_config.get_device_size()
 
                 current_slice_index = ongoing_item_config.get_current_slice_index()
