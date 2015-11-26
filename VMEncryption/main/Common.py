@@ -131,6 +131,7 @@ class CommonVariables:
     copy_data_error = 18
     encryption_failed = 19
     tmpfs_error = 20
+    backup_slice_file_error = 21
     unknown_error = 100
 
 class TestHooks:

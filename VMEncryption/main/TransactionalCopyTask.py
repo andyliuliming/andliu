@@ -73,22 +73,20 @@ class TransactionalCopyTask(object):
                 returnCode = self.command_executer.Execute(dd_cmd)
                 if(returnCode != CommonVariables.process_success):
                     return returnCode
+            dd_cmd = str(self.copy_command) + ' if=' + self.encryption_environment.copy_slice_item_backup_file + ' of=' + self.destination \
+                        + ' bs=' + str(block_size_of_slice_item_backup) + ' seek=' + str(original_device_skip_count) + ' count=' + str(total_count)
+            returnCode = self.command_executer.Execute(dd_cmd)
+            if(returnCode != CommonVariables.process_success):
+                return returnCode
             else:
-                dd_cmd = str(self.copy_command) + ' if=' + self.encryption_environment.copy_slice_item_backup_file + ' of=' + self.destination \
-                            + ' bs=' + str(block_size_of_slice_item_backup) + ' seek=' + str(original_device_skip_count) + ' count=' + str(total_count)
-                returnCode = self.command_executer.Execute(dd_cmd)
-                if(returnCode != CommonVariables.process_success):
-                    return returnCode
-                else:
-                    self.current_slice_index += 1
-                    self.ongoing_item_config.current_slice_index = self.current_slice_index
-                    self.ongoing_item_config.commit()
-                    os.remove(self.encryption_environment.copy_slice_item_backup_file)
-                    return returnCode
+                self.current_slice_index += 1
+                self.ongoing_item_config.current_slice_index = self.current_slice_index
+                self.ongoing_item_config.commit()
+                os.remove(self.encryption_environment.copy_slice_item_backup_file)
+                return returnCode
         else:
-            self.logger.log(msg="copy_slice_item_backup_file_size is bigger than original_total_copy_size",level=CommonVariables.ErrorLevel)
-
-        return CommonVariables.process_success
+            self.logger.log(msg="copy_slice_item_backup_file_size is bigger than original_total_copy_size ",level=CommonVariables.ErrorLevel)
+            return CommonVariables.backup_slice_file_error
 
     def resume_copy(self):
         if(self.from_end.lower() == 'true'):
@@ -126,8 +124,8 @@ class TransactionalCopyTask(object):
         check the device_item size first, cut it
         """
         returnCode = CommonVariables.success
+        self.resume_copy()
         if(self.from_end.lower() == 'true'):
-            self.resume_copy()
             while(self.current_slice_index < self.total_slice_size):
                 skip_block = (self.total_slice_size - self.current_slice_index - 1)
 
@@ -150,7 +148,6 @@ class TransactionalCopyTask(object):
 
             return CommonVariables.process_success
         else:
-            self.resume_copy()
             while(self.current_slice_index < self.total_slice_size):
                 skip_block = self.current_slice_index
 
