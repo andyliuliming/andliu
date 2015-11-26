@@ -27,6 +27,7 @@ from ConfigUtil import ConfigKeyValuePair
 class OnGoingItemConfig(object):
     def __init__(self, encryption_environment,logger):
         self.encryption_environment = encryption_environment
+        self.logger = logger
         self.dev_uuid_path = None
         self.mapper_name = None
         self.luks_header_file_path = None
