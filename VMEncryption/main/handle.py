@@ -171,7 +171,7 @@ def enable():
     bek_util = BekUtil(disk_util, logger)
     
     existed_passphrase_file = None
-    encryption_config = EncryptionConfig(encryption_environment=encryption_environment, logger=logger)
+    encryption_config = EncryptionConfig(encryption_environment=encryption_environment, logger = logger)
     config_path_result = disk_util.make_sure_path_exists(encryption_environment.encryption_config_path)
     if(config_path_result != CommonVariables.process_success):
         logger.log(msg="azure encryption path creation failed.",level=CommonVariables.ErrorLevel)
@@ -664,7 +664,7 @@ def daemon():
             MyPatching.install_extras()
 
             mount_all_result = disk_util.mount_all()
-            
+
             if(mount_all_result != CommonVariables.process_success):
                 logger.log(msg=("mount all failed with code " + str(mount_all_result)), level=CommonVariables.ErrorLevel)
             """
@@ -718,7 +718,7 @@ def daemon():
         encryption_marker.clear_config()
         bek_util.umount_azure_passhprase(encryption_config)
         logger.log("finally in daemon")
-    
+
 def start_daemon():
     args = [os.path.join(os.getcwd(), __file__), "-daemon"]
     logger.log("start_daemon with args:" + str(args))
@@ -728,9 +728,14 @@ def start_daemon():
 
     #Redirect stdout and stderr to /dev/null.  Otherwise daemon process will
     #throw Broke pipe exeception when parent process exit.
+
     devnull = open(os.devnull, 'w')
     child = subprocess.Popen(args, stdout=devnull, stderr=devnull)
-    hutil.do_exit(exit_code = 0, operation = 'Enable', status = 'transitioning', code = '0', message = 'Encrypting the disks...')
+    encryption_config = EncryptionConfig(encryption_environment,logger)
+    if(encryption_config.config_file_exists()):
+        hutil.do_exit(exit_code = 0, operation = 'Enable', status = CommonVariables.extension_success_status, code = str(CommonVariables.success), message = encryption_config.get_secret_id())
+    else:
+        hutil.do_exit(exit_code = 0, operation = 'Enable', status = CommonVariables.extension_error_status, code = str(CommonVariables.encryption_failed), message = 'encryption config not found.')
 
 if __name__ == '__main__' :
     main()
