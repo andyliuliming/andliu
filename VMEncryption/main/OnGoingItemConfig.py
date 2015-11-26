@@ -140,12 +140,15 @@ class OnGoingItemConfig(object):
     def clear_config(self):
         try:
             if(os.path.exists(self.encryption_environment.azure_crypt_ongoing_item_config_path)):
-               os.remove(self.encryption_environment.azure_crypt_ongoing_item_config_path)
+                self.logger.log(msg="remove the config file " + str(self.encryption_environment.azure_crypt_ongoing_item_config_path))
+                os.remove(self.encryption_environment.azure_crypt_ongoing_item_config_path)
+            else:
+                self.logger.log(msg=("the config file not exist " + str(self.encryption_environment.azure_crypt_ongoing_item_config_path)),level = CommonVariables.WarningLevel)
             return True
         except OSError as e:
             self.logger.log("Failed to clear_queue with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
             return False
 
     def __str__(self):
-        return "dev_uuid_path is %s, mapper_name is %s, luks_header_file_path is %s, phase is %s, header_slice_file_path is %s, file system is %s, mount_point is %s, device size is %s" %(\
+        return "dev_uuid_path is %s, mapper_name is %s, luks_header_file_path is %s, phase is %s, header_slice_file_path is %s, file system is %s, mount_point is %s, device size is %s" % (\
             self.dev_uuid_path,self.mapper_name,self.luks_header_file_path,self.phase,self.header_slice_file_path,self.file_system,self.mount_point,self.device_size)

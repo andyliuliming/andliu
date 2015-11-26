@@ -702,8 +702,7 @@ def daemon():
                     hutil.do_exit(exit_code = 0, operation = 'Enable', status = CommonVariables.extension_error_status, code = CommonVariables.encryption_failed,\
                                   message = 'encryption failed for ' + str(failed_item))
                 else:
-                    hutil.do_exit(exit_code = 0, operation ='Enable', status = CommonVariables.extension_success_status,code = str(CommonVariables.success), \
-                              message = "encryption task finisned, please take a look at the log file for details.")
+                    hutil.do_exit(exit_code = 0, operation = 'Enable', status = CommonVariables.extension_success_status, code = str(CommonVariables.success), message = encryption_config.get_secret_id())
     except Exception as e:
         # mount the file systems back.
         error_msg = ("Failed to enable the extension with error: %s, stack trace: %s" % (str(e), traceback.format_exc()))
@@ -728,15 +727,15 @@ def start_daemon():
 
     #Redirect stdout and stderr to /dev/null.  Otherwise daemon process will
     #throw Broke pipe exeception when parent process exit.
+    devnull = open(os.devnull, 'w')
+    child = subprocess.Popen(args, stdout=devnull, stderr=devnull)
+    
     encryption_config = EncryptionConfig(encryption_environment,logger)
     if(encryption_config.config_file_exists()):
         hutil.do_exit(exit_code = 0, operation = 'Enable', status = CommonVariables.extension_success_status, code = str(CommonVariables.success), message = encryption_config.get_secret_id())
     else:
         hutil.do_exit(exit_code = 0, operation = 'Enable', status = CommonVariables.extension_error_status, code = str(CommonVariables.encryption_failed), message = 'encryption config not found.')
 
-    devnull = open(os.devnull, 'w')
-    child = subprocess.Popen(args, stdout=devnull, stderr=devnull)
-    
 
 if __name__ == '__main__' :
     main()
