@@ -108,16 +108,19 @@ class DiskUtil(object):
         <target name> <source device> <key file> <options>
         """
         try:
-            if not os.path.exists(self.encryption_environment.azure_crypt_mount_config_path):
-                with open(self.encryption_environment.azure_crypt_mount_config_path,'w') as wf:
-                    wf.write("")
-
             mount_content_item = crypt_item.mapper_name + " " + crypt_item.dev_path + " " + crypt_item.luks_header_path + " " + crypt_item.mount_point + " " + crypt_item.file_system
-            with open(self.encryption_environment.azure_crypt_mount_config_path,'r') as f:
-                existing_content = f.read()
-                new_mount_content = existing_content + "\n" + mount_content_item
+
+            if os.path.exists(self.encryption_environment.azure_crypt_mount_config_path):
+                with open(self.encryption_environment.azure_crypt_mount_config_path,'r') as f:
+                    existing_content = f.read()
+                    if(existing_content.strip()!=""):
+                        new_mount_content = existing_content + "\n" + mount_content_item
+                    else:
+                        new_mount_content = mount_content_item
+            else:
+                new_mount_content = mount_content_item
+
             with open(self.encryption_environment.azure_crypt_mount_config_path,'w') as wf:
-                existing_content+="\n" + mount_content_item
                 wf.write(new_mount_content)
             return True
         except Exception as e:

@@ -94,21 +94,24 @@ class TransactionalCopyTask(object):
         else:
             skip_block = self.current_slice_index
 
+        returnCode = CommonVariables.process_success
+
         if(self.current_slice_index == 0):
             if(self.last_slice_size > 0):
                 if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
                     copy_slice_item_backup_file_size = os.path.getsize(self.encryption_environment.copy_slice_item_backup_file)
-                    self.resume_copy_internal(copy_slice_item_backup_file_size,skip_block=skip_block,original_total_copy_size=self.last_slice_size)
+                    returnCode = self.resume_copy_internal(copy_slice_item_backup_file_size,skip_block=skip_block, original_total_copy_size=self.last_slice_size)
                 else:
-                    self.logger.log(msg = "unfortunately the slice item backup file not exists.", level = CommonVariables.WarningLevel)
+                    self.logger.log(msg = "1. the slice item backup file not exists.", level = CommonVariables.WarningLevel)
             else:
                 self.logger.log(msg = "the last slice", level = CommonVariables.WarningLevel)
         else:
             if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
                 copy_slice_item_backup_file_size = os.path.getsize(self.encryption_environment.copy_slice_item_backup_file)
-                self.resume_copy_internal(copy_slice_item_backup_file_size,skip_block=skip_block,original_total_copy_size=self.block_size)
+                returnCode = self.resume_copy_internal(copy_slice_item_backup_file_size,skip_block=skip_block, original_total_copy_size=self.block_size)
             else:
-                self.logger.log(msg = "unfortunately the slice item backup file not exists.", level = CommonVariables.WarningLevel)
+                self.logger.log(msg = "2. unfortunately the slice item backup file not exists.", level = CommonVariables.WarningLevel)
+        return returnCode
 
     def copy_last_slice(self,skip_block):
         block_size_of_last_slice = 512
