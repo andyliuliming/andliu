@@ -363,6 +363,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
         ongoing_item_config.luks_header_file_path = None
         ongoing_item_config.mapper_name = str(uuid.uuid4())
         ongoing_item_config.mount_point = device_item.mount_point
+        ongoing_item_config.original_dev_name_path = os.path.join('/dev', device_item.name)
         ongoing_item_config.original_dev_path = os.path.join('/dev', device_item.name)
         ongoing_item_config.phase = CommonVariables.EncryptionPhaseBackupHeader
         ongoing_item_config.commit()
@@ -452,7 +453,8 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
             if(copy_result == CommonVariables.process_success):
                 crypt_item_to_update = CryptItem()
                 crypt_item_to_update.mapper_name = mapper_name
-                crypt_item_to_update.dev_path = original_dev_path
+                original_dev_name_path = ongoing_item_config.get_original_dev_name_path()
+                crypt_item_to_update.dev_path = original_dev_name_path
                 crypt_item_to_update.luks_header_path = "None"
                 crypt_item_to_update.file_system = ongoing_item_config.get_file_system()
                 # if the original mountpoint is empty, then leave
@@ -498,6 +500,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
         ongoing_item_config.mapper_name = mapper_name
         ongoing_item_config.mount_point = device_item.mount_point
         ongoing_item_config.mount_point = device_item.mount_point
+        ongoing_item_config.original_dev_name_path = os.path.join('/dev/', device_item.name)
         ongoing_item_config.original_dev_path = os.path.join('/dev/disk/by-uuid', device_item.uuid)
         luks_header_file = disk_util.create_luks_header(mapper_name=mapper_name)
         if(luks_header_file is None):
@@ -565,7 +568,8 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                 else:
                     crypt_item_to_update = CryptItem()
                     crypt_item_to_update.mapper_name = mapper_name
-                    crypt_item_to_update.dev_path = original_dev_path
+                    original_dev_name_path = ongoing_item_config.get_original_dev_name_path()
+                    crypt_item_to_update.dev_path = original_dev_name_path
                     crypt_item_to_update.luks_header_path = luks_header_file
                     crypt_item_to_update.file_system = ongoing_item_config.get_file_system()
                     # if the original mountpoint is empty, then leave

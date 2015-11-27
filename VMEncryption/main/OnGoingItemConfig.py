@@ -28,6 +28,7 @@ class OnGoingItemConfig(object):
     def __init__(self, encryption_environment,logger):
         self.encryption_environment = encryption_environment
         self.logger = logger
+        self.original_dev_name_path = None
         self.original_dev_path = None
         self.mapper_name = None
         self.luks_header_file_path = None
@@ -49,6 +50,9 @@ class OnGoingItemConfig(object):
 
     def config_file_exists(self):
         return self.ongoing_item_config.config_file_exists()
+
+    def get_original_dev_name_path(self):
+        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemOriginalDevNamePathKey)
 
     def get_original_dev_path(self):
         return self.ongoing_item_config.get_config(CommonVariables.OngoingItemOriginalDevPathKey)
@@ -94,6 +98,9 @@ class OnGoingItemConfig(object):
 
     def commit(self):
         key_value_pairs = []
+        original_dev_name_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemOriginalDevNamePathKey, self.original_dev_name_path)
+        key_value_pairs.append(original_dev_name_path_pair)
+
         original_dev_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemOriginalDevPathKey, self.original_dev_path)
         key_value_pairs.append(original_dev_path_pair)
 
