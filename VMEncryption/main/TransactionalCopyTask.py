@@ -186,7 +186,7 @@ class TransactionalCopyTask(object):
             return returnCode
         else:
             slice_file_size = os.path.getsize(self.slice_file_path)
-            self.logger.log("slice_file_size is "+str(slice_file_size))
+            self.logger.log(msg=("slice_file_size is " + str(slice_file_size)))
             """
             second, copy the data in the middle cache to the backup slice.
             """
