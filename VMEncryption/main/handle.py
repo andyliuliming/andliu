@@ -468,7 +468,10 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                 update_crypt_item_result = disk_util.update_crypt_item(crypt_item_to_update)
                 if(not update_crypt_item_result):
                     logger.log(msg="update crypt item failed",level = CommonVariables.ErrorLevel)
-                
+
+                if(os.path.exists(encryption_environment.copy_header_slice_file_path)):
+                    os.remove(encryption_environment.copy_header_slice_file_path)
+
                 current_phase = CommonVariables.EncryptionPhaseDone
                 ongoing_item_config.phase = current_phase
                 ongoing_item_config.commit()
@@ -478,6 +481,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                     disk_util.mount_filesystem(device_mapper_path, ongoing_item_config.get_mount_point())
                 else:
                     logger.log("the crypt_item_to_update.mount_point is None, so we do not mount it.")
+
                 ongoing_item_config.clear_config()
                 if(expand_fs_result != CommonVariables.process_success):
                     logger.log(msg=("expand fs result is: " + str(expand_fs_result)),level = CommonVariables.ErrorLevel)
