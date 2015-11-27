@@ -182,30 +182,36 @@ class TransactionalCopyTask(object):
         dd_cmd = str(self.copy_command) + ' if=' + from_device + ' of=' + self.slice_file_path + ' bs=' + str(block_size) + ' skip=' + str(skip) + ' count=' + str(count)
         returnCode = self.command_executer.Execute(dd_cmd)
         if(returnCode != CommonVariables.process_success):
-            self.logger.log(str(dd_cmd) + ' is ' + str(returnCode))
-
-        """
-        second, copy the data in the middle cache to the backup slice.
-        """
-        backup_slice_item_cmd = str(self.copy_command) + ' if=' + self.slice_file_path + ' of=' + self.encryption_environment.copy_slice_item_backup_file + ' bs=' + str(block_size) + ' count=' + str(count)
-        backup_slice_args = shlex.split(backup_slice_item_cmd)
-        backup_process = Popen(backup_slice_args)
-        self.logger.log("backup_slice_item_cmd is " + str(backup_slice_item_cmd))
-
-        """
-        third, copy the data in the middle cache to the target device.
-        """
-        dd_cmd = str(self.copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(block_size) + ' seek=' + str(seek) + ' count=' + str(count)
-        returnCode = self.command_executer.Execute(dd_cmd)
-        if(returnCode != CommonVariables.process_success):
-            self.logger.log(str(dd_cmd) + ' is ' + str(returnCode))
+            self.logger.log(msg=(str(dd_cmd) + ' is ' + str(returnCode)), level = CommonVariables.ErrorLevel)
+            return returnCode
         else:
-            #the copy done correctly, so clear the backup slice file item.
-            backup_process.kill()
-            if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
-                self.logger.log(msg = "clean up the backup file")
-                os.remove(self.encryption_environment.copy_slice_item_backup_file)
-        return returnCode
+            slice_file_size = os.path.getsize(self.slice_file_path)
+            self.logger.log("slice_file_size is "+str(slice_file_size))
+            """
+            second, copy the data in the middle cache to the backup slice.
+            """
+            backup_slice_item_cmd = str(self.copy_command) + ' if=' + self.slice_file_path + ' of=' + self.encryption_environment.copy_slice_item_backup_file + ' bs=' + str(block_size) + ' count=' + str(count)
+            backup_slice_args = shlex.split(backup_slice_item_cmd)
+            backup_process = Popen(backup_slice_args)
+            self.logger.log("backup_slice_item_cmd is " + str(backup_slice_item_cmd))
+
+            """
+            third, copy the data in the middle cache to the target device.
+            """
+            dd_cmd = str(self.copy_command) + ' if=' + self.slice_file_path + ' of=' + to_device + ' bs=' + str(block_size) + ' seek=' + str(seek) + ' count=' + str(count)
+            returnCode = self.command_executer.Execute(dd_cmd)
+            if(returnCode != CommonVariables.process_success):
+                self.logger.log(msg=(str(dd_cmd) + ' is ' + str(returnCode)), level = CommonVariables.ErrorLevel)
+            else:
+                #the copy done correctly, so clear the backup slice file item.
+                backup_process.kill()
+                if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
+                    self.logger.log(msg = "clean up the backup file")
+                    os.remove(self.encryption_environment.copy_slice_item_backup_file)
+                if(os.path.exists(self.slice_file_path)):
+                    self.logger.log(msg = "clean up the slice file")
+                    os.remove(self.slice_file_path)
+            return returnCode
 
     def prepare_mem_fs(self):
         self.disk_util.make_sure_path_exists(self.tmpfs_mount_point)

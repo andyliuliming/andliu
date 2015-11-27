@@ -305,7 +305,7 @@ def enable_encryption_format(passphrase, encryption_marker, disk_util):
             if(device_item.file_system == "" and device_item.type == "disk"):
                 mapper_name = str(uuid.uuid4())
                 logger.log("encrypting " + str(device_item))
-                device_to_encrypt = os.path.join("/dev/disk/by-uuid", device_item.uuid)
+                device_to_encrypt_uuid_path = os.path.join("/dev/disk/by-uuid", device_item.uuid)
                 encrypted_device_path = os.path.join(CommonVariables.dev_mapper_root,mapper_name)
                 try:
                     se_linux_status = None
@@ -313,7 +313,7 @@ def enable_encryption_format(passphrase, encryption_marker, disk_util):
                         se_linux_status = encryption_environment.get_se_linux()
                         if(se_linux_status.lower() == 'enforcing'):
                             encryption_environment.disable_se_linux()
-                    encrypt_result = disk_util.encrypt_disk(dev_path = device_to_encrypt, passphrase_file = passphrase, mapper_name = mapper_name, header_file=None)
+                    encrypt_result = disk_util.encrypt_disk(dev_path = device_to_encrypt_uuid_path, passphrase_file = passphrase, mapper_name = mapper_name, header_file=None)
                 finally:
                     if(MyPatching.distro_info[0].lower() == 'centos' and MyPatching.distro_info[1].startswith('7.0')):
                         if(se_linux_status is not None and se_linux_status.lower() == 'enforcing'):
@@ -327,7 +327,7 @@ def enable_encryption_format(passphrase, encryption_marker, disk_util):
                         logger.log(msg = ("format disk " + str(encrypted_device_path) + " failed " + str(format_disk_result)),level = CommonVariables.ErrorLevel)
                     crypt_item_to_update = CryptItem()
                     crypt_item_to_update.mapper_name = mapper_name
-                    crypt_item_to_update.dev_path = device_to_encrypt
+                    crypt_item_to_update.dev_path = device_to_encrypt_uuid_path
                     crypt_item_to_update.luks_header_path = "None"
                     crypt_item_to_update.file_system = file_system
 
@@ -359,7 +359,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
         ongoing_item_config.current_block_size = CommonVariables.default_block_size
         ongoing_item_config.current_slice_index = 0
         ongoing_item_config.device_size = device_item.size
-        ongoing_item_config.dev_uuid_path = os.path.join('/dev',device_item.name)#os.path.join('/dev/disk/by-uuid', device_item.uuid)
+        ongoing_item_config.dev_uuid_path = os.path.join('/dev',device_item.name)
         ongoing_item_config.file_system = device_item.file_system
         ongoing_item_config.luks_header_file_path = None
         ongoing_item_config.mapper_name = str(uuid.uuid4())
@@ -501,7 +501,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
         ongoing_item_config.mount_point = device_item.mount_point
         luks_header_file = disk_util.create_luks_header(mapper_name=mapper_name)
         if(luks_header_file is None):
-            logger.log(msg="create header file failed",level=CommonVariables.ErrorLevel)
+            logger.log(msg="create header file failed", level=CommonVariables.ErrorLevel)
             return current_phase
         else:
             ongoing_item_config.luks_header_file_path = luks_header_file
