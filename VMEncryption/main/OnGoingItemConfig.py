@@ -28,7 +28,7 @@ class OnGoingItemConfig(object):
     def __init__(self, encryption_environment,logger):
         self.encryption_environment = encryption_environment
         self.logger = logger
-        self.dev_uuid_path = None
+        self.original_dev_path = None
         self.mapper_name = None
         self.luks_header_file_path = None
         self.phase = None
@@ -50,8 +50,8 @@ class OnGoingItemConfig(object):
     def config_file_exists(self):
         return self.ongoing_item_config.config_file_exists()
 
-    def get_dev_uuid_path(self):
-        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemDevUUIDPathKey)
+    def get_original_dev_path(self):
+        return self.ongoing_item_config.get_config(CommonVariables.OngoingItemOriginalDevPathKey)
 
     def get_mapper_name(self):
         return self.ongoing_item_config.get_config(CommonVariables.OngoingItemMapperNameKey)
@@ -94,8 +94,8 @@ class OnGoingItemConfig(object):
 
     def commit(self):
         key_value_pairs = []
-        dev_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemDevUUIDPathKey, self.dev_uuid_path)
-        key_value_pairs.append(dev_path_pair)
+        original_dev_path_pair = ConfigKeyValuePair(CommonVariables.OngoingItemOriginalDevPathKey, self.original_dev_path)
+        key_value_pairs.append(original_dev_path_pair)
 
         mapper_name_pair = ConfigKeyValuePair(CommonVariables.OngoingItemMapperNameKey, self.mapper_name)
         key_value_pairs.append(mapper_name_pair)
@@ -152,4 +152,4 @@ class OnGoingItemConfig(object):
 
     def __str__(self):
         return "dev_uuid_path is %s, mapper_name is %s, luks_header_file_path is %s, phase is %s, header_slice_file_path is %s, file system is %s, mount_point is %s, device size is %s" % (\
-            self.dev_uuid_path,self.mapper_name,self.luks_header_file_path,self.phase,self.header_slice_file_path,self.file_system,self.mount_point,self.device_size)
+            self.original_dev_path,self.mapper_name,self.luks_header_file_path,self.phase,self.header_slice_file_path,self.file_system,self.mount_point,self.device_size)

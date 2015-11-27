@@ -75,7 +75,7 @@ class CommonVariables:
     """
     OngoingItemMapperNameKey = 'MapperName'
     OngoingItemHeaderFilePathKey = 'HeaderFilePath'
-    OngoingItemDevUUIDPathKey = 'DevicePath'
+    OngoingItemOriginalDevPathKey = 'DevicePath'
     OngoingItemPhaseKey = 'Phase'
     OngoingItemHeaderSliceFilePathKey = 'HeaderSliceFilePath'
     OngoingItemFileSystemKey = 'FileSystem'

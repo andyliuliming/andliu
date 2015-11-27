@@ -359,40 +359,40 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
         ongoing_item_config.current_block_size = CommonVariables.default_block_size
         ongoing_item_config.current_slice_index = 0
         ongoing_item_config.device_size = device_item.size
-        ongoing_item_config.dev_uuid_path = os.path.join('/dev',device_item.name)
         ongoing_item_config.file_system = device_item.file_system
         ongoing_item_config.luks_header_file_path = None
         ongoing_item_config.mapper_name = str(uuid.uuid4())
         ongoing_item_config.mount_point = device_item.mount_point
+        ongoing_item_config.original_dev_path = os.path.join('/dev', device_item.name)
         ongoing_item_config.phase = CommonVariables.EncryptionPhaseBackupHeader
         ongoing_item_config.commit()
     else:
         logger.log(msg = "ongoing item config is not none, this is resuming" + str(ongoing_item_config), level = CommonVariables.WarningLevel)
 
-    logger.log(msg=("encrypting device item:" + str(ongoing_item_config.get_dev_uuid_path())))
+    logger.log(msg=("encrypting device item:" + str(ongoing_item_config.get_original_dev_path())))
     # we only support ext file systems.
     current_phase = ongoing_item_config.get_phase()
     while(current_phase != CommonVariables.EncryptionPhaseDone):
-        dev_uuid_path = ongoing_item_config.get_dev_uuid_path()
+        original_dev_path = ongoing_item_config.get_original_dev_path()
         mapper_name = ongoing_item_config.get_mapper_name()
         device_size = ongoing_item_config.get_device_size()
         if(current_phase == CommonVariables.EncryptionPhaseBackupHeader):
             if(not ongoing_item_config.get_file_system().lower() in ["ext2","ext3","ext4"]):
                 logger.log(msg = "we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7", level = CommonVariables.WarningLevel)
                 return current_phase
-            chk_shrink_result = disk_util.check_shrink_fs(dev_path=dev_uuid_path)
+            chk_shrink_result = disk_util.check_shrink_fs(dev_path = original_dev_path)
             #TODO check whether there's 2 megabyte space for the header file.
             if(chk_shrink_result != CommonVariables.process_success):
-                logger.log(msg = ("check shrink fs failed with code " + str(chk_shrink_result) + " for: " + str(dev_uuid_path)), level = CommonVariables.ErrorLevel)
+                logger.log(msg = ("check shrink fs failed with code " + str(chk_shrink_result) + " for: " + str(original_dev_path)), level = CommonVariables.ErrorLevel)
                 return current_phase
             else:
                 ongoing_item_config.current_slice_index = 0
-                ongoing_item_config.current_source_path = dev_uuid_path
+                ongoing_item_config.current_source_path = original_dev_path
                 ongoing_item_config.current_destination = encryption_environment.copy_header_slice_file_path
                 ongoing_item_config.current_total_copy_size = CommonVariables.default_block_size
-                ongoing_item_config.dev_uuid_path = dev_uuid_path
                 ongoing_item_config.from_end = False
                 ongoing_item_config.header_slice_file_path = encryption_environment.copy_header_slice_file_path
+                ongoing_item_config.original_dev_path = original_dev_path
                 ongoing_item_config.commit()
                 if(os.path.exists(encryption_environment.copy_header_slice_file_path)):
                     os.remove(encryption_environment.copy_header_slice_file_path)
@@ -407,7 +407,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                     ongoing_item_config.commit()
                     current_phase = CommonVariables.EncryptionPhaseEncryptDevice
         elif(current_phase == CommonVariables.EncryptionPhaseEncryptDevice):
-            encrypt_result = disk_util.encrypt_disk(dev_path = dev_uuid_path, passphrase_file = passphrase_file, mapper_name = mapper_name, header_file = None)
+            encrypt_result = disk_util.encrypt_disk(dev_path = original_dev_path, passphrase_file = passphrase_file, mapper_name = mapper_name, header_file = None)
             # after the encrypt_disk without seperate header, then the uuid would change.
             if(encrypt_result != CommonVariables.process_success):
                 logger.log(msg = "encrypt file system failed.", level = CommonVariables.ErrorLevel)
@@ -419,7 +419,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
 
         elif(current_phase == CommonVariables.EncryptionPhaseCopyData):
             luks_header_size = 4096 * 512
-            current_source_path = ongoing_item_config.get_dev_uuid_path()
+            current_source_path = ongoing_item_config.get_original_dev_path()
             current_slice_index = ongoing_item_config.get_current_slice_index()
             device_mapper_path = os.path.join(CommonVariables.dev_mapper_root, mapper_name)
             ongoing_item_config.current_destination = device_mapper_path
@@ -452,7 +452,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
             if(copy_result == CommonVariables.process_success):
                 crypt_item_to_update = CryptItem()
                 crypt_item_to_update.mapper_name = mapper_name
-                crypt_item_to_update.dev_path = dev_uuid_path
+                crypt_item_to_update.dev_path = original_dev_path
                 crypt_item_to_update.luks_header_path = "None"
                 crypt_item_to_update.file_system = ongoing_item_config.get_file_system()
                 # if the original mountpoint is empty, then leave
@@ -493,12 +493,12 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
         mapper_name = str(uuid.uuid4())
         ongoing_item_config.current_block_size = CommonVariables.default_block_size
         ongoing_item_config.current_slice_index = 0
-        ongoing_item_config.dev_uuid_path = os.path.join('/dev/disk/by-uuid',device_item.uuid)
         ongoing_item_config.device_size = device_item.size
         ongoing_item_config.file_system = device_item.file_system
         ongoing_item_config.mapper_name = mapper_name
         ongoing_item_config.mount_point = device_item.mount_point
         ongoing_item_config.mount_point = device_item.mount_point
+        ongoing_item_config.original_dev_path = os.path.join('/dev/disk/by-uuid', device_item.uuid)
         luks_header_file = disk_util.create_luks_header(mapper_name=mapper_name)
         if(luks_header_file is None):
             logger.log(msg="create header file failed", level=CommonVariables.ErrorLevel)
@@ -515,13 +515,13 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
             disabled = False
             try:
                 mapper_name = ongoing_item_config.get_mapper_name()
-                dev_uuid_path = ongoing_item_config.get_dev_uuid_path()
+                original_dev_path = ongoing_item_config.get_original_dev_path()
                 luks_header_file = ongoing_item_config.get_header_file_path()
                 disabled = toggle_se_linux_for_centos7(True)
-                encrypt_result = disk_util.encrypt_disk(dev_path = dev_uuid_path,passphrase_file = passphrase_file, \
+                encrypt_result = disk_util.encrypt_disk(dev_path = original_dev_path,passphrase_file = passphrase_file, \
                                                         mapper_name = mapper_name, header_file = luks_header_file)
                 if(encrypt_result != CommonVariables.process_success):
-                    logger.log(msg=("the encrypton for " + str(dev_uuid_path) + " failed"),level=CommonVariables.ErrorLevel)
+                    logger.log(msg=("the encrypton for " + str(original_dev_path) + " failed"),level=CommonVariables.ErrorLevel)
                     return current_phase
                 else:
                     ongoing_item_config.phase = CommonVariables.EncryptionPhaseCopyData
@@ -534,16 +534,16 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
             disabled = False
             try:
                 mapper_name = ongoing_item_config.get_mapper_name()
-                dev_uuid_path = ongoing_item_config.get_dev_uuid_path()
+                original_dev_path = ongoing_item_config.get_original_dev_path()
                 luks_header_file = ongoing_item_config.get_header_file_path()
                 disabled = toggle_se_linux_for_centos7(True)
                 device_mapper_path = os.path.join("/dev/mapper", mapper_name)
                 if(not os.path.exists(device_mapper_path)):
-                    open_result = disk_util.luks_open(passphrase_file = passphrase_file, dev_path = dev_uuid_path, \
+                    open_result = disk_util.luks_open(passphrase_file = passphrase_file, dev_path = original_dev_path, \
                                                             mapper_name = mapper_name, header_file = luks_header_file)
 
                     if(open_result != CommonVariables.process_success):
-                        logger.log(msg=("the luks open for " + str(dev_uuid_path) + " failed"),level=CommonVariables.ErrorLevel)
+                        logger.log(msg=("the luks open for " + str(original_dev_path) + " failed"),level = CommonVariables.ErrorLevel)
                         return current_phase
 
                 device_size = ongoing_item_config.get_device_size()
@@ -551,7 +551,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                 current_slice_index = ongoing_item_config.get_current_slice_index()
                 if(current_slice_index == None):
                     ongoing_item_config.current_slice_index = 0
-                ongoing_item_config.current_source_path = dev_uuid_path
+                ongoing_item_config.current_source_path = original_dev_path
                 ongoing_item_config.current_destination = device_mapper_path
                 ongoing_item_config.current_total_copy_size = device_size
                 ongoing_item_config.from_end = True
@@ -565,7 +565,7 @@ def encrypt_inplace_with_seperate_header_file(passphrase_file, device_item, disk
                 else:
                     crypt_item_to_update = CryptItem()
                     crypt_item_to_update.mapper_name = mapper_name
-                    crypt_item_to_update.dev_path = dev_uuid_path
+                    crypt_item_to_update.dev_path = original_dev_path
                     crypt_item_to_update.luks_header_path = luks_header_file
                     crypt_item_to_update.file_system = ongoing_item_config.get_file_system()
                     # if the original mountpoint is empty, then leave
@@ -619,6 +619,7 @@ def enable_encryption_all_in_place(passphrase_file, encryption_marker, disk_util
                 encrypted_items.append(device_item.uuid)
                 logger.log(msg=("encrypting " + str(device_item)))
                 no_header_file_support = not_support_header_option_distro(MyPatching)
+                #TODO check the file system before encrypting it.
                 if(no_header_file_support):
                     logger.log(msg="this is the centos 6 or redhat 6 or sles 11 series , need special handling.", level=CommonVariables.WarningLevel)
                     encryption_result_phase = encrypt_inplace_without_seperate_header_file(passphrase_file=passphrase_file,device_item=device_item,disk_util=disk_util,bek_util=bek_util)
@@ -689,7 +690,7 @@ def daemon():
                 """
                 if(encryption_result_phase != CommonVariables.EncryptionPhaseDone):
                     hutil.do_exit(exit_code = 0, operation = 'Enable', status = CommonVariables.extension_error_status, code = CommonVariables.encryption_failed,\
-                                  message = 'resuming encryption for ' + str(ongoing_item_config.dev_uuid_path) + ' failed.')
+                                  message = 'resuming encryption for ' + str(ongoing_item_config.original_dev_path) + ' failed.')
                 else:
                     ongoing_item_config.clear_config()
             else:
