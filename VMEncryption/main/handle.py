@@ -373,10 +373,11 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
     logger.log(msg=("encrypting device item:" + str(ongoing_item_config.get_original_dev_path())))
     # we only support ext file systems.
     current_phase = ongoing_item_config.get_phase()
+
+    original_dev_path = ongoing_item_config.get_original_dev_path()
+    mapper_name = ongoing_item_config.get_mapper_name()
+    device_size = ongoing_item_config.get_device_size()
     while(current_phase != CommonVariables.EncryptionPhaseDone):
-        original_dev_path = ongoing_item_config.get_original_dev_path()
-        mapper_name = ongoing_item_config.get_mapper_name()
-        device_size = ongoing_item_config.get_device_size()
         if(current_phase == CommonVariables.EncryptionPhaseBackupHeader):
             if(not ongoing_item_config.get_file_system().lower() in ["ext2","ext3","ext4"]):
                 logger.log(msg = "we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7", level = CommonVariables.WarningLevel)
@@ -404,6 +405,7 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                     logger.log(msg=("copy the header block failed, return code is: " + str(copy_result)),level=CommonVariables.ErrorLevel)
                     return current_phase
                 else:
+                    ongoing_item_config.current_slice_index = 0
                     ongoing_item_config.phase = CommonVariables.EncryptionPhaseEncryptDevice
                     ongoing_item_config.commit()
                     current_phase = CommonVariables.EncryptionPhaseEncryptDevice
@@ -414,17 +416,16 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                 logger.log(msg = "encrypt file system failed.", level = CommonVariables.ErrorLevel)
                 return current_phase
             else:
+                ongoing_item_config.current_slice_index = 0
                 ongoing_item_config.phase = CommonVariables.EncryptionPhaseCopyData
                 ongoing_item_config.commit()
                 current_phase = CommonVariables.EncryptionPhaseCopyData
 
         elif(current_phase == CommonVariables.EncryptionPhaseCopyData):
             luks_header_size = 4096 * 512
-            current_source_path = ongoing_item_config.get_original_dev_path()
-            current_slice_index = ongoing_item_config.get_current_slice_index()
             device_mapper_path = os.path.join(CommonVariables.dev_mapper_root, mapper_name)
             ongoing_item_config.current_destination = device_mapper_path
-            ongoing_item_config.current_source_path = current_source_path
+            ongoing_item_config.current_source_path = original_dev_path
             ongoing_item_config.current_total_copy_size = (device_size - luks_header_size)
             ongoing_item_config.from_end = True
             ongoing_item_config.phase = CommonVariables.EncryptionPhaseCopyData
