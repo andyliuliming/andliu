@@ -151,7 +151,7 @@ class DiskUtil(object):
                 self.logger.log(msg=('cryptsetup luksOpen failed, returnCode is ' + str(returnCode)),level=CommonVariables.ErrorLevel)
             return returnCode
 
-    def check_fs(self,dev_path):
+    def check_fs(self, dev_path):
         self.logger.log("checking fs:" + str(dev_path))
         check_fs_cmd = self.patching.e2fsck_path + " -f -y " + dev_path
         self.logger.log("check fs command is " + str(check_fs_cmd))
@@ -160,7 +160,7 @@ class DiskUtil(object):
         returnCode = check_fs_cmd_p.wait()
         return returnCode
 
-    def expand_fs(self,dev_path):
+    def expand_fs(self, dev_path):
         expandfs_cmd = self.patching.resize2fs_path + " " + str(dev_path)
         self.logger.log("expand_fs command is:" + expandfs_cmd)
         expandfs_cmd_args = shlex.split(expandfs_cmd)
@@ -168,23 +168,26 @@ class DiskUtil(object):
         returnCode = expandfs_p.wait()
         return returnCode
 
-    def shrink_fs(self,dev_path):
-        shrinkfs_cmd = self.patching.resize2fs_path + ' -M ' + str(dev_path)
+    def shrink_fs(self,dev_path, size_shrink_to):
+        """
+        size_shrink_to is in sector (512 byte)
+        """
+        shrinkfs_cmd = self.patching.resize2fs_path + ' ' + str(dev_path) + ' ' + str(size_shrink_to) + 's'
         self.logger.log("shrink_fs command is:" + shrinkfs_cmd)
         shrinkfs_cmd_args = shlex.split(shrinkfs_cmd)
         shrinkfs_p = Popen(shrinkfs_cmd_args)
         returnCode = shrinkfs_p.wait()
         return returnCode
 
-    def check_shrink_fs(self,dev_path):
+    def check_shrink_fs(self,dev_path, size_shrink_to):
         returnCode = self.check_fs(dev_path)
         if(returnCode == CommonVariables.process_success):
-            returnCode = self.shrink_fs(dev_path)
+            returnCode = self.shrink_fs(dev_path = dev_path, size_shrink_to = size_shrink_to)
             return returnCode
         else:
             return returnCode
 
-    def luks_format(self,passphrase_file,dev_path,header_file):
+    def luks_format(self, passphrase_file, dev_path, header_file):
         """
         return the return code of the process for error handling.
         """

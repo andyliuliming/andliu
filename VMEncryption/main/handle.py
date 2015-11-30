@@ -377,15 +377,20 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
     original_dev_path = ongoing_item_config.get_original_dev_path()
     mapper_name = ongoing_item_config.get_mapper_name()
     device_size = ongoing_item_config.get_device_size()
+
+    luks_header_size = CommonVariables.luks_header_size
+    size_shrink_to = (device_size - luks_header_size) / CommonVariables.sector_size
+
     while(current_phase != CommonVariables.EncryptionPhaseDone):
         if(current_phase == CommonVariables.EncryptionPhaseBackupHeader):
             if(not ongoing_item_config.get_file_system().lower() in ["ext2","ext3","ext4"]):
                 logger.log(msg = "we only support ext file systems for centos 6.5/6.6/6.7 and redhat 6.7", level = CommonVariables.WarningLevel)
                 return current_phase
-            chk_shrink_result = disk_util.check_shrink_fs(dev_path = original_dev_path)
-            #TODO check whether there's 2 megabyte space for the header file.
+
+            chk_shrink_result = disk_util.check_shrink_fs(dev_path = original_dev_path,size_shrink_to = size_shrink_to)
             if(chk_shrink_result != CommonVariables.process_success):
                 logger.log(msg = ("check shrink fs failed with code " + str(chk_shrink_result) + " for: " + str(original_dev_path)), level = CommonVariables.ErrorLevel)
+                logger.log(msg = "your file system may not have enough space to do the encryption.")
                 return current_phase
             else:
                 ongoing_item_config.current_slice_index = 0
@@ -422,7 +427,6 @@ def encrypt_inplace_without_seperate_header_file(passphrase_file, device_item, d
                 current_phase = CommonVariables.EncryptionPhaseCopyData
 
         elif(current_phase == CommonVariables.EncryptionPhaseCopyData):
-            luks_header_size = 4096 * 512
             device_mapper_path = os.path.join(CommonVariables.dev_mapper_root, mapper_name)
             ongoing_item_config.current_destination = device_mapper_path
             ongoing_item_config.current_source_path = original_dev_path
@@ -631,9 +635,9 @@ def enable_encryption_all_in_place(passphrase_file, encryption_marker, disk_util
                 #TODO check the file system before encrypting it.
                 if(no_header_file_support):
                     logger.log(msg="this is the centos 6 or redhat 6 or sles 11 series , need special handling.", level=CommonVariables.WarningLevel)
-                    encryption_result_phase = encrypt_inplace_without_seperate_header_file(passphrase_file=passphrase_file,device_item=device_item,disk_util=disk_util,bek_util=bek_util)
+                    encryption_result_phase = encrypt_inplace_without_seperate_header_file(passphrase_file = passphrase_file, device_item = device_item,disk_util = disk_util, bek_util = bek_util)
                 else:
-                    encryption_result_phase = encrypt_inplace_with_seperate_header_file(passphrase_file=passphrase_file,device_item=device_item,disk_util=disk_util,bek_util=bek_util)
+                    encryption_result_phase = encrypt_inplace_with_seperate_header_file(passphrase_file = passphrase_file, device_item = device_item,disk_util = disk_util, bek_util = bek_util)
                 
                 if(encryption_result_phase == CommonVariables.EncryptionPhaseDone):
                     continue
@@ -688,6 +692,11 @@ def daemon():
             ongoing_item_config = OnGoingItemConfig(encryption_environment=encryption_environment, logger=logger)
             if(ongoing_item_config.config_file_exists()):
                 header_file_path = ongoing_item_config.get_header_file_path()
+                mount_point = ongoing_item_config.get_mount_point()
+                if(not none_or_empty(mount_point)):
+                    logger.log("mount point is not empty, trying to unmount it first." + str(mount_point))
+                    umount_status_code = disk_util.umount(mount_point)
+                    logger.log("unmount return code is " + str(umount_status_code))
                 if(none_or_empty(header_file_path)):
                     encryption_result_phase = encrypt_inplace_without_seperate_header_file(passphrase_file = bek_passphrase_file, device_item = None,\
                         disk_util = disk_util, bek_util = bek_util, ongoing_item_config = ongoing_item_config)

@@ -20,7 +20,7 @@
 #
 import os.path
 from Common import *
-from ConfigParser import ConfigParser
+from ConfigParser import *
 
 class ConfigKeyValuePair(object):
     def __init__(self,prop_name,prop_value):
@@ -67,11 +67,15 @@ class ConfigUtil(object):
     def get_config(self,prop_name):
         # write the configs, the bek file name and so on.
         if(os.path.exists(self.config_file_path)):
-            config = ConfigParser()
-            config.read(self.config_file_path)
-            # read values from a section
-            prop_value = config.get(self.azure_crypt_config_section, prop_name)
-            return prop_value
+            try:
+                config = ConfigParser()
+                config.read(self.config_file_path)
+                # read values from a section
+                prop_value = config.get(self.azure_crypt_config_section, prop_name)
+                return prop_value
+            except (NoSectionError, NoOptionError) as e:
+                self.logger.log(msg="value of prop_name:" + str(prop_name) + " not found")
+                return None
         else:
             self.logger.log("the config file " + str(self.config_file_path) + " not exists.")
             return None
