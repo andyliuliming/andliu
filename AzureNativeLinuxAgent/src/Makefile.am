@@ -1,0 +1,2 @@
+bin_PROGRAMES = AzureNativeLinuxAgent
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp
