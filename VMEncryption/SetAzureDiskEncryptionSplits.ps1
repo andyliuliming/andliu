@@ -61,11 +61,11 @@ $VirtualMachine = Set-AzureVMOSDisk -VM $VirtualMachine -Name $OSDiskName -VhdUr
 ## Create the VM in Azure
 New-AzureVM -ResourceGroupName $ResourceGroupName -Location $Location -VM $VirtualMachine
 
-
+New-AzureRmVMDiskEncryptionEnvironment -ResourceGroupName andliu-southeastasia -ApplicationDisplayName mydiskencryptionapp -ApplicationHomePage https://mydiskencryptionapp.onmicrosoft.com -IdentifierUris https://mydiskencryptionapp.onmicrosoft.com -AadClientSecret fuckyouazure -KeyVaultName mydiskencryptionvault
 #"command":"enableencryption_all_inplace",
 #"KeyEncryptionKeyURL":"https://andliukeyvault.vault.azure.net/keys/mykey",
 #        "KeyVaultURL":"https://andliukeyvault.vault.azure.net/",
 #        "AADClientID":"b7b48143-6c58-4cd4-a9e0-0a15cbda0614",
 #        "KeyEncryptionAlgorithm":"RSA1_5",
 #        "BitlockerVolumeType":"Data"
-Set-AzureDiskEncryptionExtension -ResourceGroupName "diskencryptiontst" -Name "VMEncryptionExtension" -Location "westus" -VMName "andliuencrypt" -AadClientID "b7b48143-6c58-4cd4-a9e0-0a15cbda0614" -AadClientSecret "/XazYdJ9XaMBbiQ0dwSoyue7LbkQ1OJOePGGcrG3dkA=" -KeyVaultURL "https://andliukeyvault.vault.azure.net/" -KeyEncryptionKeyURL "https://andliukeyvault.vault.azure.net/keys/mykey" -KeyEncryptionAlgorithm "RSA1_5" -VolumeType "Data" -Tag vmencryptiontag
+Set-AzureDiskEncryptionExtension -ResourceGroupName "andliu-southeastasia" -Name "andliu-southeastasia" -Location "westus" -VMName "andliuencrypt" -AadClientID "b7b48143-6c58-4cd4-a9e0-0a15cbda0614" -AadClientSecret "/XazYdJ9XaMBbiQ0dwSoyue7LbkQ1OJOePGGcrG3dkA=" -KeyVaultURL "https://andliukeyvault.vault.azure.net/" -KeyEncryptionKeyURL "https://andliukeyvault.vault.azure.net/keys/mykey" -KeyEncryptionAlgorithm "RSA1_5" -VolumeType "Data" -Tag vmencryptiontag
