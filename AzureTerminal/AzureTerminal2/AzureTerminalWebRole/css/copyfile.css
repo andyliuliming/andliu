@@ -1,0 +1,267 @@
+﻿#copy_file_dialog {
+    display: none;
+    position: absolute;
+    font-family: 'Segoe UI';
+    font-size: 13px;
+    width: 900px;
+    height: 440px;
+    background-color: white;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-top: 25px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-width: 1px;
+    border-color: rgb(169,169,169);
+    display: block;
+    border-style: solid;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#copy_file_dialog_local {
+    margin: 0px;
+    width: 400px;
+    padding: 0px;
+    position: relative;
+    float: left;
+}
+
+#copy_file_dialog_local_header {
+    margin: 0px;
+    padding: 0px;
+    height: 30px;
+    font-size: 14px;
+}
+
+#copy_file_dialog_local_selections {
+    margin: 0px;
+    padding: 0px;
+    height: 30px;
+    width: 400px;
+}
+
+
+#copy_file_dialog_local_list_view {
+    overflow: scroll;
+    height: 320px;
+    margin: 0px;
+    margin-top: 5px;
+    padding: 0px;
+    border-width: 1px;
+    border-color: rgb(169,169,169);
+    display: block;
+    border-style: solid;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+    #copy_file_dialog_local_list_view ul {
+        margin: 0px;
+        padding: 0px;
+        padding-left: 10px;
+    }
+
+        #copy_file_dialog_local_list_view ul li {
+            cursor: pointer;
+            margin: 0px;
+            padding: 0px;
+        }
+
+            #copy_file_dialog_local_list_view ul li.selected {
+                cursor: pointer;
+                margin: 0px;
+                padding: 0px;
+                color: white;
+                background-color: rgb(0, 188, 242);
+            }
+
+#copy_file_dialog_local_actions {
+    height: 50px;
+}
+
+.copy_file_dialog_button {
+    height: 23px;
+    width: 90px;
+    font-size: 13px;
+}
+
+.file {
+    background-color: rgb(230,230,230);
+}
+
+#copy_file_dialog_local_actions_refresh {
+    float: right;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+#copy_file_dialog_arrows {
+    border-width: 1px;
+    margin: 0px;
+    padding: 0px;
+    width: 100px;
+    height: 500px;
+    position: relative;
+    float: left;
+}
+
+#copy_file_to_remote_button {
+    background-color: rgba(0, 0, 0, 0);
+    background-position: -169px 0px;
+    background-image: url(../images/copybuttons.png);
+    background-repeat: no-repeat;
+    color: rgb(51, 51, 51);
+    cursor: auto;
+    display: block;
+    height: 30px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 100px;
+    margin-bottom: auto;
+    min-width: 0px;
+    width: 30px;
+    border: none;
+    border-width: 0px;
+    outline: 0;
+}
+
+    #copy_file_to_remote_button:disabled {
+        background-position: -169px 0px;
+    }
+
+    #copy_file_to_remote_button:hover {
+        background-position: -201px 0px;
+    }
+
+
+#copy_file_to_local_button {
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url(../images/copybuttons.png);
+    background-position: -233px 0px;
+    background-repeat: no-repeat;
+    color: rgb(51, 51, 51);
+    cursor: auto;
+    display: block;
+    height: 30px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 50px;
+    margin-bottom: auto;
+    min-width: 0px;
+    width: 30px;
+    border: none;
+    border-width: 0px;
+    outline: 0;
+}
+
+    #copy_file_to_local_button:hover {
+        background-position: -265px 0px;
+    }
+
+#copy_file_status {
+    font-family: 'Segoe UI';
+    font-size: 18px;
+}
+
+#copy_file_dialog_remote {
+    padding: 0px;
+    margin: 0px;
+    width: 400px;
+    position: relative;
+    float: left;
+}
+
+#copy_file_dialog_remote_header {
+    margin: 0px;
+    padding: 0px;
+    height: 30px;
+    font-size: 14px;
+}
+
+#copy_file_dialog_remote_selections {
+    margin: 0px;
+    padding: 0px;
+    width: 400px;
+    height: 30px;
+}
+
+#copy_file_dialog_remote_list_view {
+    overflow: scroll;
+    height: 320px;
+    margin: 0px;
+    margin-top: 5px;
+    padding: 0px;
+    border-width: 1px;
+    border-color: rgb(169,169,169);
+    display: block;
+    border-style: solid;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+    #copy_file_dialog_remote_list_view ul {
+        margin: 0px;
+        padding: 0px;
+        padding-left: 10px;
+    }
+
+        #copy_file_dialog_remote_list_view ul li {
+            border-width: 2px;
+            cursor: pointer;
+            margin: 0px;
+            padding: 0px;
+        }
+
+            #copy_file_dialog_remote_list_view ul li.selected {
+                cursor: pointer;
+                margin: 0px;
+                padding: 0px;
+                background-color: rgb(0, 188, 242);
+                color: white;
+            }
+
+#copy_file_dialog_remote_actions {
+    height: 50px;
+}
+
+#copy_file_dialog_remote_actions_refresh {
+    float: right;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+#copy_file_dialog_close {
+    float: right;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+
+#copy_file_disable_cover {
+    position: relative;
+    display: none;
+    background-color: grey;
+    opacity: 0.5;
+    width: 100%;
+    height: 100%;
+}

@@ -1,4 +1,0 @@
-C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\Renci.SshNet\bin\Release\Renci.SshNet.xml
-C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\Renci.SshNet\bin\Release\Renci.SshNet.dll
-C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\Renci.SshNet\obj\Release\Renci.SshNet.csprojResolveAssemblyReference.cache
-C:\Users\andliu\Documents\GitHub\andliu\AzureWebTerminal\Renci.SshNet\obj\Release\Renci.SshNet.dll

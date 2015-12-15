@@ -1,0 +1,42 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Http;
+using Microsoft.Owin.Security.OAuth;
+using Newtonsoft.Json.Serialization;
+using System.Web.OData.Builder;
+using System.Web.OData.Extensions;
+using AzureManagementLib;
+using AzureWebConsoleDomain;
+namespace AzureWebConsole
+{
+    public static class WebApiConfig
+    {
+        public static void Register(HttpConfiguration config)
+        {
+            // Web API configuration and services
+            // Configure Web API to use only bearer token authentication.
+            config.SuppressDefaultHostAuthentication();
+            config.Filters.Add(new HostAuthenticationFilter("Bearer"));
+
+            // Web API routes
+            config.MapHttpAttributeRoutes();
+
+            ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
+
+            builder.EntitySet<AzureSubscription>("AzureSubscriptions");
+            builder.EntitySet<AzureVirtualMachine>("AzureVirtualMachines");
+            builder.EntitySet<SteppingNode>("SteppingNodes");
+            builder.EntitySet<AzureWebConsoleUser>("AzureWebConsoleUsers");
+
+            config.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
+
+            config.AddODataQueryFilter();
+            config.Routes.MapHttpRoute(
+                name: "DefaultApi",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
+        }
+    }
+}

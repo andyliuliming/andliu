@@ -3,7 +3,7 @@
 # waagent is not written as a module. This wrapper module is created 
 # to use the waagent code as a module.
 #
-# Copyright 2014 Microsoft Corporation
+# Copyright 2015 Microsoft Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

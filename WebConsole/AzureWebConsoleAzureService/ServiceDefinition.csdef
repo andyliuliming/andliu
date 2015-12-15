@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ServiceDefinition name="WebConsoleAzureService" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2015-04.2.6">
+  <WebRole name="AzureWebConsoleWebRole" vmsize="Small">
+    <Sites>
+      <Site name="Web">
+        <Bindings>
+          <Binding name="Endpoint1" endpointName="HTTPEndpoint" />
+          <Binding name="Endpoint2" endpointName="HTTPSEndpoint" />
+        </Bindings>
+      </Site>
+    </Sites>
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
+      <Setting name="RedirectUri" />
+      <Setting name="ClientID" />
+      <Setting name="AzureManagementResource" />
+      <Setting name="ClientSecret" />
+      <Setting name="AzureWebConsoleModelContainer" />
+      <Setting name="AllowedCrossDomainHost" />
+      <Setting name="AuthString" />
+      <Setting name="AzureGraphAPI" />
+      <Setting name="ServiceRootAPI" />
+      <Setting name="idaTenant" />
+      <Setting name="idaAudience" />
+      <Setting name="idaAADInstance" />
+    </ConfigurationSettings>
+    <Endpoints>
+      <InputEndpoint name="HTTPEndpoint" protocol="http" port="80" />
+      <InputEndpoint name="HTTPSEndpoint" protocol="https" port="443" certificate="AzureWebConsoleCert" />
+    </Endpoints>
+    <Certificates>
+      <Certificate name="AzureWebConsoleCert" storeLocation="LocalMachine" storeName="My" />
+    </Certificates>
+  </WebRole>
+  <WebRole name="AzureWebConsoleSteppingNode" vmsize="Small">
+    <Sites>
+      <Site name="Web">
+        <Bindings>
+          <Binding name="Endpoint2" endpointName="HTTPSEndpoint" />
+        </Bindings>
+      </Site>
+    </Sites>
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
+      <Setting name="AllowedCrossDomainHost" />
+      <Setting name="ClientID" />
+      <Setting name="ClientSecret" />
+      <Setting name="AuthString" />
+    </ConfigurationSettings>
+    <Endpoints>
+      <InputEndpoint name="HTTPSEndpoint" protocol="https" port="81" certificate="AzureWebConsoleCert" />
+    </Endpoints>
+    <Certificates>
+      <Certificate name="AzureWebConsoleCert" storeLocation="LocalMachine" storeName="My" />
+    </Certificates>
+  </WebRole>
+</ServiceDefinition>

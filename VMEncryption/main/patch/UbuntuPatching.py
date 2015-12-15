@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Copyright 2014 Microsoft Corporation
+# Copyright 2015 Microsoft Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,27 +30,36 @@ import traceback
 import datetime
 import subprocess
 from AbstractPatching import AbstractPatching
+from Common import *
 
 
 class UbuntuPatching(AbstractPatching):
-    def __init__(self):
-        super(UbuntuPatching,self).__init__()
+    def __init__(self,logger,distro_info):
+        super(UbuntuPatching,self).__init__(distro_info)
+        self.logger = logger
+        self.base64_path = '/usr/bin/base64'
+        self.bash_path = '/bin/bash'
+        self.blkid_path = '/sbin/blkid'
+        self.cat_path = '/bin/cat'
+        self.cryptsetup_path = '/sbin/cryptsetup'
+        self.dd_path = '/bin/dd'
+        self.e2fsck_path = '/sbin/e2fsck'
+        self.echo_path = '/bin/echo'
+        self.lsblk_path = '/bin/lsblk'
+        self.lsscsi_path = '/usr/bin/lsscsi'
+        self.mkdir_path = '/bin/mkdir'
+        self.mount_path = '/bin/mount'
+        self.openssl_path = '/usr/bin/openssl'
+        self.resize2fs_path = '/sbin/resize2fs'
+        self.umount_path = '/bin/umount'
 
-    def install_extras(self, paras):
-        print("installing in ubuntu")
-        if(paras.command == "disk"):
+    def install_extras(self):
+        """
+        install the sg_dd because the default dd do not support the sparse write
+        """
+        if(self.distro_info[0].lower() == "ubuntu" and self.distro_info[1] == "12.04"):
             common_extras = ['cryptsetup-bin','lsscsi']
-            for extra in common_extras:
-                print("installation for " + extra + 'result is ' + str(subprocess.call(['apt-get', 'install','-y', extra])))
-
-            if(paras.filesystem == "btrfs"):
-                extras = ['btrfs-tools']
-                for extra in extras:
-                    print("installation for " + extra + 'result is ' + str(subprocess.call(['apt-get', 'install','-y', extra])))
-            pass
-
-        elif(paras.command == "folder"):
-            common_extras = ['ecryptfs-utils']
-            for extra in common_extras:
-                    print("installation for " + extra + 'result is ' + str(subprocess.call(['apt-get', 'install','-y', extra])))
-            pass
+        else:
+            common_extras = ['cryptsetup-bin','lsscsi']
+        for extra in common_extras:
+            self.logger.log("installation for " + extra + 'result is ' + str(subprocess.call(['apt-get', 'install','-y', extra])))

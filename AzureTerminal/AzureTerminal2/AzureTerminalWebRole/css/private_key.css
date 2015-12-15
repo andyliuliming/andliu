@@ -1,0 +1,142 @@
+﻿#private_key_wizard {
+    display: none;
+    position: absolute;
+    width: 530px;
+    height: 250px;
+    padding: 0px;
+    color: rgb(117, 117, 117);
+    background-color: white;
+    font-family: 'Segoe UI';
+    font-size: 13px;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#private_key_wizard_backspace {
+}
+
+#private_key_first_page {
+}
+
+#private_key_location {
+    width: 370px;
+}
+
+#browse_private_key_location {
+}
+
+#private_key_passphrase {
+    width: 464px;
+}
+
+#private_key_result_location {
+    width: 470px;
+}
+
+#public_key_result_location {
+    width: 470px;
+}
+
+.private_key_textfield {
+    color: rgb(13, 24, 33);
+    font-size: inherit;
+    font-family: 'Segoe UI';
+}
+
+.prvaite_key_button {
+    width: 90px;
+    height: 23px;
+    font-size: 13px;
+}
+
+.private_key_location_line {
+    width: 100%;
+}
+
+#private_key_location_second_line {
+    margin-top: 10px;
+}
+
+#private_key_location_third_line {
+    margin-top: 20px;
+    width: 400px;
+}
+
+#private_key_location_fourth_line {
+    margin-top: 5px;
+}
+
+#private_key_location_fiveth_line {
+    margin-top: 20px;
+}
+
+#create_keys_button {
+    margin-right: 10px;
+    float: right;
+}
+
+#private_key_cancel {
+    margin-right: 33px;
+    float: right;
+}
+
+#private_key_close {
+    margin-left: 384px;
+}
+
+#private_key_success_first_line {
+    width: 450px;
+}
+
+    #private_key_success_first_line p {
+    }
+
+#private_key_success_forth_line {
+    margin-top: 10px;
+}
+
+#private_key_success_sixth_line {
+    margin-top: 20px;
+}
+
+#oops_label {
+    font-size: 35px;
+}
+
+#private_key_failure_oops_paragraph {
+    width: 480px;
+}
+
+#private_keyf_failure_button {
+    margin-left: 380px;
+    margin-top: 90px;
+}
+
+#private_key_first_page > ul {
+    /*display: none;*/
+    padding-left: 30px;
+    margin-top: 25px;
+}
+
+#private_key_success_page {
+    /*display: none;*/
+    margin-top: 25px;
+}
+
+    #private_key_success_page ul {
+        padding-left: 30px;
+    }
+
+#private_key_failure_page {
+    /*display: none;*/
+}
+
+    #private_key_failure_page ul {
+        padding-left: 30px;
+    }

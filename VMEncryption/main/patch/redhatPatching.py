@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Copyright 2014 Microsoft Corporation
+# Copyright 2015 Microsoft Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,25 +30,51 @@ import traceback
 import datetime
 import subprocess
 from AbstractPatching import AbstractPatching
+from Common import *
 
 
 class redhatPatching(AbstractPatching):
-    def __init__(self):
-        super(redhatPatching,self).__init__()
-    def install_extras(self,paras):
-        print("installing in redhat")
-        if(paras.command == "disk"):
-            common_extras = ['cryptsetup','lsscsi']
-            for extra in common_extras:
-                print("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
+    def __init__(self,logger,distro_info):
+        super(redhatPatching,self).__init__(distro_info)
+        self.logger = logger
+        if(distro_info[1] == "6.7"):
+            self.base64_path = '/usr/bin/base64'
+            self.bash_path = '/bin/bash'
+            self.blkid_path = '/sbin/blkid'
+            self.cat_path = '/bin/cat'
+            self.cryptsetup_path = '/sbin/cryptsetup'
+            self.dd_path = '/bin/dd'
+            self.e2fsck_path = '/sbin/e2fsck'
+            self.echo_path = '/bin/echo'
+            self.getenforce_path = '/usr/sbin/getenforce'
+            self.setenforce_path = '/usr/sbin/setenforce'
+            self.lsblk_path = '/bin/lsblk' 
+            self.lsscsi_path = '/usr/bin/lsscsi'
+            self.mkdir_path = '/bin/mkdir'
+            self.mount_path = '/bin/mount'
+            self.openssl_path = '/usr/bin/openssl'
+            self.resize2fs_path = '/sbin/resize2fs'
+            self.umount_path = '/bin/umount'
+        else:
+            self.base64_path = '/usr/bin/base64'
+            self.bash_path = '/usr/bin/bash'
+            self.blkid_path = '/usr/bin/blkid'
+            self.cat_path = '/bin/cat'
+            self.cryptsetup_path = '/usr/sbin/cryptsetup'
+            self.dd_path = '/usr/bin/dd'
+            self.e2fsck_path = '/sbin/e2fsck'
+            self.echo_path = '/usr/bin/echo'
+            self.getenforce_path = '/usr/sbin/getenforce'
+            self.setenforce_path = '/usr/sbin/setenforce'
+            self.lsblk_path = '/usr/bin/lsblk'
+            self.lsscsi_path = '/usr/bin/lsscsi'
+            self.mkdir_path = '/usr/bin/mkdir'
+            self.mount_path = '/usr/bin/mount'
+            self.openssl_path = '/usr/bin/openssl'
+            self.resize2fs_path = '/sbin/resize2fs'
+            self.umount_path = '/usr/bin/umount'
 
-            if(paras.filesystem == "btrfs"):
-                extras = ['btrfs-tools']
-                for extra in extras:
-                    print("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
-            pass
-
-        elif(paras.command == "folder"):
-            common_extras = ['ecryptfs-utils']
-            for extra in common_extras:
-                    print("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))
+    def install_extras(self):
+        common_extras = ['cryptsetup','lsscsi']
+        for extra in common_extras:
+            self.logger.log("installation for " + extra + 'result is ' + str(subprocess.call(['yum', 'install','-y', extra])))

@@ -1,0 +1,28 @@
+﻿#sign_up_blade {
+    display: none;
+    width: 200px;
+    height: 100%;
+}
+
+#sign_up_ul {
+}
+
+#signup_button {
+    margin-top: 15px;
+    float: right;
+}
+
+    #signup_button:disabled {
+        color: grey;
+        background-color: lightgrey;
+        cursor: wait;
+    }
+
+#azure_terminal_sign_button_wrapper {
+    height: 50px;
+}
+
+#sign_up_result_status {
+    font-family: 'Segoe UI';
+    font-size: 12px;
+}

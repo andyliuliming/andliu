@@ -1,0 +1,364 @@
+package ostc.sh.webconsole.command;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+
+import ostc.sh.webconsole.OTermEnvironment;
+import ostc.sh.webconsole.filecopy.FileCopyUtil;
+import ostc.sh.webconsole.keypair.KeyGenerator;
+import ostc.sh.webconsole.ssh.OutputFlusher;
+import ostc.sh.webconsole.util.ClipBoardUtil;
+import ostc.sh.webconsole.util.Logger;
+
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.KeyPair;
+
+public class CommandExecuter implements Runnable {
+
+	private ArrayBlockingQueue<Command> commandQueue = null;
+
+	public CommandExecuter() {
+		commandQueue = new ArrayBlockingQueue<Command>(1000);
+	}
+
+	@Override
+	public void run() {
+		while (true) {
+			try {
+				Command current = commandQueue.take();
+				CommandResult commandResult = null;
+				if (current != null) {
+					switch (current.getAction()) {
+					case Actions.Login:
+						try {
+							Command command = new Command("LoginStatusChange",
+									 "ongoing" );
+							OTermEnvironment.Instance().getCommandPusher()
+									.getCommandQueue().add(command);
+							Logger.Log("trying to connect");
+
+							Logger.Log(OTermEnvironment.Instance()
+									.getIdentityInfo());
+							OTermEnvironment.Instance().getSshConnection()
+									.Connect();
+
+							OutputFlusher outputFlusher = new OutputFlusher();
+							Thread outputFlusherThread = new Thread(
+									outputFlusher);
+							outputFlusherThread.start();
+							Logger.Log("LoginStatusChange1111");
+							Command command2 = new Command("LoginStatusChange",
+									 "success" );
+
+							Logger.Log("LoginStatusChange222");
+							OTermEnvironment.Instance().getCommandPusher()
+									.getCommandQueue().add(command2);
+						} catch (JSchException e) {
+							e.printStackTrace();
+							Command command = new Command("LoginStatusChange",
+									 "" );
+							if (e.getCause() instanceof UnknownHostException)
+								command.setParameter1("unknownhost");
+							else if (e.getCause() instanceof ConnectException) {
+								command.setParameter1("connectfailed");
+							} else {
+								command.setParameter1 ("wrongusername");
+							}
+							OTermEnvironment.Instance().getCommandPusher()
+									.getCommandQueue().add(command);
+						} catch(Exception e){
+							System.err.println(e.toString());
+//							e.printStackTrace();
+						}
+						break;
+					case Actions.SignOut:
+						OTermEnvironment.Instance().getSshConnection()
+								.DisConnect();
+						OTermEnvironment.Instance().getIdentityInfo().CleanUp();
+						break;
+					case Actions.SetPort:
+						OTermEnvironment.Instance().getIdentityInfo().Port = current
+								.getParameter1();
+						break;
+					case Actions.SetUserName:
+						OTermEnvironment.Instance().getIdentityInfo().UserName = current
+								.getParameter1();
+						break;
+					case Actions.SetPassword:
+						OTermEnvironment.Instance().getIdentityInfo().Password = current
+								.getParameter1();
+						break;
+					case Actions.SetHostName:
+						OTermEnvironment.Instance().getIdentityInfo().HostName = current
+								.getParameter1();
+						break;
+					case Actions.Input:
+						try {
+							BufferedWriter writer = OTermEnvironment.Instance()
+									.getSshConnection().getShellOutputStream();
+							writer.write(current.getParameter1());
+							writer.flush();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						break;
+					case Actions.SetPrivateKey:
+						OTermEnvironment.Instance().getIdentityInfo().PrivateKey = current
+								.getParameter1();
+						;
+						break;
+					case Actions.SetSize:
+						String[] widthAndHeight = current.getParameter1()
+								.split(":");
+						int width = Integer.valueOf(widthAndHeight[0]);
+						int height = Integer.valueOf(widthAndHeight[1]);
+						OTermEnvironment.Instance().setWidth(width);
+						OTermEnvironment.Instance().setHeight(height);
+
+						Logger.Log("set size again " + width + " " + height);
+						if (OTermEnvironment.Instance().getSshConnection()
+								.isConnected()) {
+							OTermEnvironment.Instance().getSshConnection()
+									.GetChannelShell()
+									.setPtySize(width, height, 0, 0);
+						}
+						break;
+					case Actions.GetRemoteHomeFolder:
+						ChannelExec channel = null;
+						try {
+							channel = (ChannelExec) OTermEnvironment.Instance()
+									.getSshConnection().getSession()
+									.openChannel("exec");
+
+							String command = "echo ~";
+							Logger.Log(command);
+							channel.setInputStream(null);
+
+							channel.setCommand(command);
+							InputStream in = channel.getInputStream();
+							channel.connect();
+							BufferedReader br = new BufferedReader(
+									new InputStreamReader(in));
+							String line = br.readLine();
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(), new String[] {
+											"success", line });
+							channel.disconnect();
+							OTermEnvironment.Instance().getCommandPusher()
+									.getCommandResultQueue().add(commandResult);
+						} catch (Exception e) {
+							Logger.Log(e.toString());
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(),
+									new String[] { "failed" });
+							OTermEnvironment.Instance().getCommandPusher()
+									.getCommandResultQueue().add(commandResult);
+						}
+						break;
+					case Actions.GetHomeFolder:
+						String userHome = System.getProperty("user.home");
+						commandResult = new CommandResult(current.getId(),
+								current.getAction(), new String[] { userHome });
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
+						break;
+					case Actions.ListCurrentLocalFolder:
+						String currentLocalFolder = current.getParameter1();
+						List<String> localFolders = FileCopyUtil
+								.ListLocalFolder(currentLocalFolder);
+						Logger.Log("the local folders size is "
+								+ localFolders.size());
+						String[] currentLocalFolderArray = new String[localFolders
+								.size()];
+						localFolders.toArray(currentLocalFolderArray);
+						commandResult = new CommandResult(current.getId(),
+								current.getAction(), currentLocalFolderArray);
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
+						break;
+					case Actions.ListCurrentRemoteFolder:
+						String currentRemoteFolder = current.getParameter1();
+						List<String> remoteFolders = FileCopyUtil
+								.ListRemoteFolder(currentRemoteFolder);
+						String[] remoteFolderArray = new String[remoteFolders
+								.size()];
+						remoteFolders.toArray(remoteFolderArray);
+						commandResult = new CommandResult(current.getId(),
+								current.getAction(), remoteFolderArray);
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
+						break;
+					case Actions.ListLocalRootFolder:
+						List<String> localRootFolders = FileCopyUtil
+								.ListLocalFolder("");
+						Logger.Log("the local folders size is "
+								+ localRootFolders.size());
+						String[] localRootFolderArray = new String[localRootFolders
+								.size()];
+						localRootFolders.toArray(localRootFolderArray);
+						commandResult = new CommandResult(current.getId(),
+								current.getAction(), localRootFolderArray);
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
+						break;
+					case Actions.SelectCurrentLocalFolder:
+						String jumpTo = current.getParameter1();
+						List<String> localRootFoldersToSelect = FileCopyUtil
+								.ListLocalFolder(jumpTo);
+						Logger.Log("the local folders size is "
+								+ localRootFoldersToSelect.size());
+						String[] localRootFolderToSelectArray = new String[localRootFoldersToSelect
+								.size()];
+						localRootFoldersToSelect
+								.toArray(localRootFolderToSelectArray);
+						commandResult = new CommandResult(current.getId(),
+								current.getAction(),
+								localRootFolderToSelectArray);
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
+						break;
+					case Actions.ListRemoteRootFolder:
+						List<String> remoteRootFolders = FileCopyUtil
+								.ListRemoteFolder("/");
+						String[] remoteRootFolderArray = new String[remoteRootFolders
+								.size()];
+						remoteRootFolders.toArray(remoteRootFolderArray);
+						for (int i = 0; i < remoteRootFolderArray.length; i++) {
+							remoteRootFolderArray[i] = 'D' + "/"
+									+ remoteRootFolderArray[i].substring(1);
+						}
+						commandResult = new CommandResult(current.getId(),
+								current.getAction(), remoteRootFolderArray);
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
+						break;
+					case Actions.CopyToLocal:
+						Logger.Log("copy to local "
+								+ current.getParameter1() + " "
+								+ current.getParameter2());
+						try {
+							FileCopyUtil.CopyFrom(current.getParameter1(),
+									current.getParameter2(),
+									current.getParameter3());
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(),
+									new String[] { "success" });
+						} catch (Exception e) {
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(),
+									new String[] { "failed" });
+						}
+
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
+						break;
+					case Actions.CopyToRemote:
+						Logger.Log("copy to remote "
+								+ current.getParameter1() + " "
+								+ current.getParameter2());
+						try {
+							FileCopyUtil.CopyTo(current.getParameter1(),
+									current.getParameter2(),
+									current.getParameter3());
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(),
+									new String[] { "success" });
+						} catch (Exception e) {
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(),
+									new String[] { "failed" });
+						}
+						OTermEnvironment.Instance().getCommandPusher()
+								.getCommandResultQueue().add(commandResult);
+						break;
+					case Actions.GeneratePrivateKey:
+						try {
+							String privateKeyFolder = current.getParameter1();
+							String privateKeyFilename = "prvkey";
+							String publicKeyFileName = "pubkey";
+							String publicKeyExtension = ".pub";
+
+							File privateKeyFile = new File(privateKeyFolder,
+									privateKeyFilename);
+							File publicKeyFile = new File(privateKeyFolder,
+									publicKeyFileName + publicKeyExtension);
+							int i = 0;
+							while (privateKeyFile.exists()
+									|| publicKeyFile.exists()) {
+								privateKeyFile = new File(privateKeyFolder,
+										privateKeyFilename + "(" + (++i) + ")");
+								publicKeyFile = new File(privateKeyFolder,
+										publicKeyFileName + "(" + (i) + ")"
+												+ publicKeyExtension);
+							}
+							String passphrase = current.getParameter2();
+
+							if (passphrase == null) {
+								passphrase = "";
+							}
+							byte[] passphraseByteArray = passphrase.getBytes();
+							KeyGenerator generator = new KeyGenerator();
+							KeyPair keyPairGenerated = generator.Generator(
+									privateKeyFile.getAbsolutePath(),
+									publicKeyFile.getAbsolutePath(),
+									passphraseByteArray);
+							OutputStream output = new OutputStream() {
+								private StringBuilder string = new StringBuilder();
+
+								@Override
+								public void write(int b) throws IOException {
+									this.string.append((char) b);
+								}
+
+								public String toString() {
+									return this.string.toString();
+								}
+							};
+							keyPairGenerated.writePublicKey(output,
+									"public key generated by azure terminal.");
+
+							String publicKeyResult = new String(
+									output.toString());
+							ClipBoardUtil.setClipboardContents(publicKeyResult);
+
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(), new String[] {
+											"success",
+											privateKeyFile.getAbsolutePath(),
+											publicKeyFile.getAbsolutePath() });
+
+							OTermEnvironment.Instance().getCommandPusher()
+									.getCommandResultQueue().add(commandResult);
+						} catch (Exception e) {
+							Logger.Log(e.toString());
+							commandResult = new CommandResult(current.getId(),
+									current.getAction(), new String[] {
+											"failed", e.toString() });
+							OTermEnvironment.Instance().getCommandPusher()
+									.getCommandResultQueue().add(commandResult);
+						}
+						break;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public Queue<Command> getCommandQueue() {
+		return commandQueue;
+	}
+
+}

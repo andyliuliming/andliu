@@ -2,7 +2,7 @@
 #
 # AbstractPatching is the base patching class of all the linux distros
 #
-# Copyright 2014 Microsoft Corporation
+# Copyright 2015 Microsoft Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,8 +35,23 @@ class AbstractPatching(object):
     """
     AbstractPatching defines a skeleton neccesary for a concrete Patching class.
     """
-    def __init__(self):
-        #self.common_extras = ['cryptsetup-bin', 'ecryptfs-utils']
-        pass
-    def install_extras(self,paras):
+    def __init__(self,distro_info):
+        self.distro_info = distro_info
+        self.base64_path = '/usr/bin/base64'
+        self.bash_path = '/bin/bash'
+        self.blkid_path = '/usr/bin/blkid'
+        self.cat_path = '/bin/cat'
+        self.cryptsetup_path = '/usr/sbin/cryptsetup'
+        self.dd_path = '/usr/bin/dd'
+        self.e2fsck_path = '/sbin/e2fsck'
+        self.echo_path = '/usr/bin/echo'
+        self.lsblk_path = '/usr/bin/lsblk'
+        self.lsscsi_path = '/usr/bin/lsscsi'
+        self.mkdir_path = '/usr/bin/mkdir'
+        self.mount_path = '/usr/bin/mount'
+        self.openssl_path = '/usr/bin/openssl'
+        self.resize2fs_path = '/sbin/resize2fs'
+        self.umount_path = '/usr/bin/umount'
+
+    def install_extras(self):
         pass

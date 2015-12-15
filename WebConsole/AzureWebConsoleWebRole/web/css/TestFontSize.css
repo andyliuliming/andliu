@@ -1,0 +1,7 @@
+﻿#TestFontSize {
+    font-family: "Courier New", monospace;
+    position: absolute;
+    visibility: hidden;
+    font-size: 13px;
+    white-space: nowrap; /* Thanks to Herb Caudill comment */
+}
