@@ -82,7 +82,8 @@ class TransactionalCopyTask(object):
                 self.current_slice_index += 1
                 self.ongoing_item_config.current_slice_index = self.current_slice_index
                 self.ongoing_item_config.commit()
-                os.remove(self.encryption_environment.copy_slice_item_backup_file)
+                if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
+                    os.remove(self.encryption_environment.copy_slice_item_backup_file)
                 return returnCode
         else:
             self.logger.log(msg="copy_slice_item_backup_file_size is bigger than original_total_copy_size ",level=CommonVariables.ErrorLevel)
