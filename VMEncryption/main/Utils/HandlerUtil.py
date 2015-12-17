@@ -92,7 +92,7 @@ class HandlerUtility:
             for file in files:
                 try:
                     cur_seq_no = int(os.path.basename(file).split('.')[0])
-                    if(freshest_time == None):
+                    if(freshest_time is None):
                         freshest_time = os.path.getmtime(join(config_folder,file))
                         seq_no = cur_seq_no
                     else:
@@ -129,13 +129,13 @@ class HandlerUtility:
             self.error("Unable to locate " + handler_env_file)
             return None
         ctxt=waagent.GetFileContents(handler_env_file)
-        if ctxt == None :
+        if ctxt is None :
             self.error("Unable to read " + handler_env_file)
         try:
             handler_env=json.loads(ctxt)
         except:
             pass
-        if handler_env == None :
+        if handler_env is None :
             self.log("JSON error processing " + handler_env_file)
             return None
         if type(handler_env) == list:
@@ -160,7 +160,7 @@ class HandlerUtility:
         self.log("setting file path is" + self._context._settings_file)
         ctxt=None
         ctxt=waagent.GetFileContents(self._context._settings_file)
-        if ctxt == None :
+        if ctxt is None :
             error_msg = 'Unable to read ' + self._context._settings_file + '. '
             self.error(error_msg)
             return None
@@ -171,7 +171,7 @@ class HandlerUtility:
             config=json.loads(ctxt)
         except:
             self.error('JSON exception decoding ' + ctxt)
-        if config == None:
+        if config is None:
             self.error("JSON error processing " + settings_file)
         else:
             if config['runtimeSettings'][0]['handlerSettings'].has_key('protectedSettings'):
@@ -183,7 +183,7 @@ class HandlerUtility:
                 waagent.SetFileContents(f.name,config['runtimeSettings'][0]['handlerSettings']['protectedSettings'])
                 cleartxt = None
                 cleartxt = waagent.RunGetOutput(self.patching.base64_path + " -d " + f.name + " | " + self.patching.openssl_path + " smime  -inform DER -decrypt -recip " + cert + "  -inkey " + pkey)[1]
-                if cleartxt == None:
+                if cleartxt is None:
                     error_msg = "OpenSSh decode error using  thumbprint " + thumb
                     self.error(error_msg)
                     return None
@@ -273,7 +273,7 @@ class HandlerUtility:
     def do_heartbeat_report(self, heartbeat_file,status,code,message):
         # heartbeat
         health_report='[{"version":"1.0","heartbeat":{"status":"' + status+ '","code":"'+ code + '","Message":"' + message + '"}}]'
-        if waagent.SetFileContents(heartbeat_file,health_report) == None :
+        if waagent.SetFileContents(heartbeat_file,health_report) is None :
             self.error('Unable to wite heartbeat info to ' + heartbeat_file)
 
     def do_exit(self,exit_code,operation,status,code,message):

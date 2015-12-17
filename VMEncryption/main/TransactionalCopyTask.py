@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #
 # VMEncryption extension
 #
@@ -100,7 +100,9 @@ class TransactionalCopyTask(object):
             if(self.last_slice_size > 0):
                 if(os.path.exists(self.encryption_environment.copy_slice_item_backup_file)):
                     copy_slice_item_backup_file_size = os.path.getsize(self.encryption_environment.copy_slice_item_backup_file)
-                    returnCode = self.resume_copy_internal(copy_slice_item_backup_file_size,skip_block=skip_block, original_total_copy_size=self.last_slice_size)
+                    returnCode = self.resume_copy_internal(copy_slice_item_backup_file_size = copy_slice_item_backup_file_size, \
+                                                            skip_block = skip_block, \
+                                                            original_total_copy_size = self.last_slice_size)
                 else:
                     self.logger.log(msg = "1. the slice item backup file not exists.", level = CommonVariables.WarningLevel)
             else:

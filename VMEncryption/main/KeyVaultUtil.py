@@ -61,20 +61,20 @@ class KeyVaultUtil(object):
             bearerHeader = result.getheader("www-authenticate")
 
             authorize_uri = self.get_authorize_uri(bearerHeader)
-            if(authorize_uri == None):
+            if(authorize_uri is None):
                 return None
             access_token = self.get_access_token(authorize_uri,AADClientID,AADClientSecret)
-            if(access_token == None):
+            if(access_token is None):
                 return None
 
             """
             we should skip encrypting the passphrase if the KeyVaultURL and KeyEncryptionKeyURL is empty
             """
-            if(KeyEncryptionKeyURL == None or KeyEncryptionKeyURL == ""):
+            if(KeyEncryptionKeyURL is None or KeyEncryptionKeyURL == ""):
                 secret_value = passphrase_encoded
             else:
                 secret_value = self.encrypt_passphrase(access_token, passphrase_encoded,KeyVaultURL, KeyEncryptionKeyURL, AADClientID, KeyEncryptionAlgorithm, AADClientSecret)
-            if(secret_value == None):
+            if(secret_value is None):
                 return None
 
             secret_id = self.create_secret(access_token,KeyVaultURL,secret_value,KeyEncryptionAlgorithm,DiskEncryptionKeyFileName)
@@ -165,7 +165,7 @@ class KeyVaultUtil(object):
             secret_name = str(uuid.uuid4())
             secret_keyvault_uri = self.urljoin(KeyVaultURL, "secrets", secret_name)
             self.logger.log("secret_keyvault_uri is :" + str(secret_keyvault_uri) + " and keyvault_uri is :" + str(KeyVaultURL))
-            if(KeyEncryptionAlgorithm == None):
+            if(KeyEncryptionAlgorithm is None):
                 request_content = '{{"value":"{0}","attributes":{{"enabled":"true"}},"tags":{{"DiskEncryptionKeyFileName":"{1}"}}}}'\
                     .format(str(secret_value),DiskEncryptionKeyFileName)
             else:

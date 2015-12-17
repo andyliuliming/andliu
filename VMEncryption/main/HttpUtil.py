@@ -49,7 +49,7 @@ class HttpUtil(object):
         try:
             uri_obj = urlparse.urlparse(http_uri)
             #parse the uri str here
-            if(self.proxyHost == None or self.proxyPort == None):
+            if(self.proxyHost is None or self.proxyPort is None):
                 self.connection = httplib.HTTPSConnection(uri_obj.hostname)
                 if(uri_obj.query is not None):
                     self.connection.request(method = method, url=(uri_obj.path +'?'+ uri_obj.query), body = data, headers = headers)

@@ -247,7 +247,7 @@ class DiskUtil(object):
         mount the file system.
         """
         returnCode = -1
-        if file_system == None:
+        if file_system is None:
             mount_cmd = self.patching.mount_path + ' ' + dev_path + ' ' + mount_point
             self.logger.log("mount file system, execute :" + mount_cmd)
             mount_cmd_args = shlex.split(mount_cmd)
@@ -288,7 +288,7 @@ class DiskUtil(object):
         # identity sample: [5:0:0:0] disk Msft Virtual Disk 1.0 /dev/sdc
         self.logger.log("lsscsi output is: \n" + identity)
         vals = identity.split()
-        if(vals == None or len(vals) == 0):
+        if(vals is None or len(vals) == 0):
             return None
         sdx_path = vals[len(vals) - 1]
         return sdx_path
@@ -438,7 +438,7 @@ class DiskUtil(object):
         if the type is disk, then to check whether it have child-items, say the part, lvm or crypt luks.
         if the answer is yes, then skip it.
         """
-        if(device_item.file_system == None or device_item.file_system == ""):
+        if(device_item.file_system is None or device_item.file_system == ""):
             return True
         else:
             if(device_item.size < CommonVariables.min_filesystem_size_support):
@@ -450,7 +450,7 @@ class DiskUtil(object):
                 self.logger.log(msg="the device type: " + str(device_item.type) + " is not supported yet, so skip it.",level=CommonVariables.WarningLevel)
                 return True
 
-            if(device_item.uuid == None or device_item.uuid == ""):
+            if(device_item.uuid is None or device_item.uuid == ""):
                 self.logger.log(msg="the device do not have the related uuid, so skip it.",level=CommonVariables.WarningLevel)
                 return True
             sub_items = self.get_device_items("/dev/" + device_item.name)

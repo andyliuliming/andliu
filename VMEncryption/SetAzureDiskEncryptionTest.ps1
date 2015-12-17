@@ -6,19 +6,19 @@
 Add-AzureRmAccount 
 Set-AzureRmContext -SubscriptionName "OSTC Shanghai Dev"
 
-$resourceGroupName="andliu-southeastasia"
-$vmName="andliu-ubuntu14"
-$aadClientId="944d7169-e8ac-425b-958d-c07048761c7e"
-$aadClientSecret="loveyouazure"
-$keyVaultName = "mydiskencryptionvault"
-$keyVaultUrl="https://mydiskencryptionvault.vault.azure.net"
+$resourceGroupName="andliuresourcegroup2"
+$vmName="andliu-encryption"
+$aadClientId="b7b48143-6c58-4cd4-a9e0-0a15cbda0614"
+$aadClientSecret="/XazYdJ9XaMBbiQ0dwSoyue7LbkQ1OJOePGGcrG3dkA="
+$keyVaultName = "andliu"
+$keyVaultUrl="https://andliukeyvault.vault.azure.net/"
 #$location="North Central US"
-$diskEncryptionKeyVaultId="/subscriptions/c4528d9e-c99a-48bb-b12d-fde2176a43b8/resourceGroups/andliu-southeastasia/providers/Microsoft.KeyVault/vaults/mydiskencryptionvault"
-$keyEncryptionKeyVaultId="/subscriptions/c4528d9e-c99a-48bb-b12d-fde2176a43b8/resourceGroups/andliu-southeastasia/providers/Microsoft.KeyVault/vaults/mydiskencryptionvault"
+$diskEncryptionKeyVaultId="/subscriptions/c4528d9e-c99a-48bb-b12d-fde2176a43b8/resourceGroups/andliuresourcegroup2/providers/Microsoft.KeyVault/vaults/andliukeyvault"
+$keyEncryptionKeyVaultId="/subscriptions/c4528d9e-c99a-48bb-b12d-fde2176a43b8/resourceGroups/andliuresourcegroup2/providers/Microsoft.KeyVault/vaults/andliukeyvault"
 $keyEncryptionKeyUrl=$null
 $keyEncryptionAlgorithm="RSA-OAEP"
 $volumeType="Data"
-$extensionName="andliu-ubuntu14"
+$extensionName="andliu-encryption"
 $sequenceVersion = "7"
 
 #"command":"enableencryption_all_inplace",
@@ -28,6 +28,13 @@ $sequenceVersion = "7"
 #        "KeyEncryptionAlgorithm":"RSA1_5",
 #        "BitlockerVolumeType":"Data"
 
+#Set-AzureDiskEncryptionExtension -ResourceGroupName "andliu-southeastasia" 
+#-Name "andliu-southeastasia" -Location "westus" -VMName "andliuencrypt"
+# -AadClientID "b7b48143-6c58-4cd4-a9e0-0a15cbda0614"
+#  -AadClientSecret "/XazYdJ9XaMBbiQ0dwSoyue7LbkQ1OJOePGGcrG3dkA="
+#   -KeyVaultURL "https://andliukeyvault.vault.azure.net/"
+# -KeyEncryptionKeyURL "https://andliukeyvault.vault.azure.net/keys/mykey" 
+# -KeyEncryptionAlgorithm "RSA1_5" -VolumeType "Data" -Tag vmencryptiontag
 #New-AzureRmVMDiskEncryptionEnvironment -ResourceGroupName $resourceGroupName -ApplicationDisplayName mydiskencryptionapp -ApplicationHomePage https://mydiskencryptionapp.onmicrosoft.com -IdentifierUris https://mydiskencryptionapp.onmicrosoft.com -AadClientSecret $aadClientSecret -KeyVaultName $keyVaultName
 
 
