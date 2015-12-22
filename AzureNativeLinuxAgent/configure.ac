@@ -20,4 +20,6 @@ AC_PROG_CXX
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile])
+
+CXXFLAGS="$CXXFLAGS -std=c++0x"
 AC_OUTPUT
