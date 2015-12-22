@@ -91,7 +91,8 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_AzureNativeLinuxAgent_OBJECTS = AzureNativeLinuxAgent.$(OBJEXT) \
-	wnla_process.$(OBJEXT) wnla_network.$(OBJEXT)
+	wnla_process.$(OBJEXT) wnla_network.$(OBJEXT) \
+	CommandExecuter.$(OBJEXT)
 AzureNativeLinuxAgent_OBJECTS = $(am_AzureNativeLinuxAgent_OBJECTS)
 AzureNativeLinuxAgent_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_$(V))
@@ -234,7 +235,7 @@ target_alias =
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp wnla_process.cpp wnla_network.cpp
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp wnla_process.cpp wnla_network.cpp CommandExecuter.cpp
 all: all-am
 
 .SUFFIXES:
@@ -323,6 +324,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 include ./$(DEPDIR)/AzureNativeLinuxAgent.Po
+include ./$(DEPDIR)/CommandExecuter.Po
 include ./$(DEPDIR)/wnla_network.Po
 include ./$(DEPDIR)/wnla_process.Po
 

@@ -232,3 +232,6 @@ hs_err_pid*
 /AzureNativeLinuxAgent/src/*.o
 /AzureNativeLinuxAgent/stamp-h1
 /AzureNativeLinuxAgent/src/AzureNativeLinuxAgent.exe
+
+AzureNativeLinuxAgent/AzureNativeLinuxAgent.vcxproj.filters
+AzureNativeLinuxAgent/src/AzureNativeLinuxAgent
