@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="config.h" />
     <ClInclude Include="src\CommandExecuter.h" />
+    <ClInclude Include="src\CommandResult.h" />
     <ClInclude Include="src\Macros.h" />
     <ClInclude Include="src\wnla_network.h" />
     <ClInclude Include="src\wnla_process.h" />
@@ -151,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="src\AzureNativeLinuxAgent.cpp" />
     <ClCompile Include="src\CommandExecuter.cpp" />
+    <ClCompile Include="src\CommandResult.cpp" />
     <ClCompile Include="src\wnla_network.cpp" />
     <ClCompile Include="src\wnla_process.cpp" />
   </ItemGroup>

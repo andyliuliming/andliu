@@ -1,11 +1,12 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "CommandResult.h"
 class CommandExecuter
 {
 public:
     CommandExecuter();
-    std::string exec(const char* cmd);
+    CommandResult * RunGetOutput(const char* cmd);
     ~CommandExecuter();
 };
 
