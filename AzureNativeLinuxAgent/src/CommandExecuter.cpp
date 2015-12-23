@@ -6,28 +6,31 @@
 #include "CommandExecuter.h"
 #include "Macros.h"
 #include "CommandResult.h"
+using namespace std;
+
 CommandExecuter::CommandExecuter()
 {
 }
 
 CommandResult * CommandExecuter::RunGetOutput(const char* cmd) {
     CommandResult *commandResult = new CommandResult();
-    std::shared_ptr<FILE> pipe(POPEN(cmd, "r"), PCLOSE);
+    FILE* pipe = POPEN(cmd, "r");
+    //std::shared_ptr<FILE> pipe(POPEN(cmd, "r"), PCLOSE);
     if (!pipe)
     {
         commandResult->exitCode = 1;
         return commandResult;
     }
     char buffer[128];
-    std::string result = "";
-    while (!feof(pipe.get())) {
-        if (fgets(buffer, 128, pipe.get()) != NULL)
-            result += buffer;
+    string *result = new string();
+
+    while (!feof(pipe)) {
+        if (fgets(buffer, 128, pipe) != NULL)
+            result->append(buffer);
     }
-    FILE *f = pipe.get();
-    int returnCode = PCLOSE(f);
+    int returnCode = PCLOSE(pipe);
     commandResult->exitCode = returnCode;
-    commandResult->output = &result;
+    commandResult->output = result;
     return commandResult;
 }
 

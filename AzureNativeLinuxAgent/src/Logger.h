@@ -7,7 +7,7 @@ public:
         static Logger    instance;
         return instance;
     }
-
+    void Verbose(const char *msg);
     void Log(const char *msg);
 private:
     Logger() {

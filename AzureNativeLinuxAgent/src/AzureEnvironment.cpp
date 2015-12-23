@@ -3,6 +3,8 @@
 
 #include "Macros.h"
 #include <stdio.h>
+#include "NetworkRoutine.h"
+
 AzureEnvironment::AzureEnvironment()
 {
 }
@@ -18,12 +20,14 @@ void AzureEnvironment::DoDhcpWork()
     delete commandResult;
     commandResult = NULL;
 
-
+    BYTE* dhcpRequest = this->BuildDhcpRequest();
 }
 
 BYTE* AzureEnvironment::BuildDhcpRequest()
 {
     BYTE * dhcpRequest = new BYTE[244];
+    NetworkRoutine *routine = new NetworkRoutine();
+    string macAddress = routine->GetMacAddress();
 
     return dhcpRequest;
 }

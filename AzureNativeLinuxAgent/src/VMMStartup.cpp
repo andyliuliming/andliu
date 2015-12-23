@@ -9,16 +9,31 @@ VMMStartup::VMMStartup()
 }
 
 void VMMStartup::TryLoadAtapiix() {
+    Logger::getInstance().Verbose("trying to load ata_piix");
     CommandExecuter *executer = new CommandExecuter();
     CommandResult *commandResult = executer->RunGetOutput("uname -r");
 
     string krn_pth = "/lib/modules/" + *(commandResult->output) + "/kernel/drivers/ata/ata_piix.ko";
+
+    Logger::getInstance().Verbose("clear it.");
     delete commandResult;
     commandResult = NULL;
+
+    Logger::getInstance().Verbose("trying to find ata_piix");
     commandResult = executer->RunGetOutput("lsmod | grep ata_piix");
     if (commandResult->exitCode == EXIT_SUCCESS)
     {
-        Logger::getInstance().Log("");
+        Logger::getInstance().Log("Module driver for ATAPI CD-ROM is already present.");
+    }
+    else
+    {
+        delete commandResult;
+        commandResult = NULL;
+
+        if (file_exists(krn_pth)) {
+            string insertModuleCommand = "insmod " + krn_pth;
+            commandResult = executer->RunGetOutput(insertModuleCommand.c_str());
+        }
     }
 }
 
@@ -28,8 +43,6 @@ void VMMStartup::Startup() {
     if (!file_exists("/mnt/cdrom/secure")) {
 
     }
-    /*if os.path.exists('/mnt/cdrom/secure') == False:
-    CreateDir("/mnt/cdrom/secure", "root", 0700)*/
 }
 
 VMMStartup::~VMMStartup()

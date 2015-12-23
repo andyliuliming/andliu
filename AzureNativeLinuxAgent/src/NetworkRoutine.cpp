@@ -17,24 +17,24 @@ NetworkRoutine::NetworkRoutine()
 string NetworkRoutine::GetMacAddress()
 {
     #ifdef _WIN32
-    return string();
+        return string();
     #else
-    struct ifaddrs *ifap, *ifa;
-    struct sockaddr_in *sa;
-    char *addr;
+        struct ifaddrs *ifap, *ifa;
+        struct sockaddr_in *sa;
+        char *addr;
 
-    getifaddrs(&ifap);
-    for (ifa = ifap; ifa; ifa = ifa->ifa_next) {
-        if (ifa->ifa_addr->sa_family == AF_INET) {
-            sa = (struct sockaddr_in *) ifa->ifa_addr;
-            addr = inet_ntoa(sa->sin_addr);
-            printf("Interface: %s\tAddress: %s\n", ifa->ifa_name, addr);
+        getifaddrs(&ifap);
+        for (ifa = ifap; ifa; ifa = ifa->ifa_next) {
+            if (ifa->ifa_addr->sa_family == AF_INET) {
+                sa = (struct sockaddr_in *) ifa->ifa_addr;
+                addr = inet_ntoa(sa->sin_addr);
+                printf("Interface: %s\tAddress: %s\n", ifa->ifa_name, addr);
+            }
         }
-    }
 
-    freeifaddrs(ifap);
+        freeifaddrs(ifap);
+        return string();
     #endif
-    return string();
 }
 
 
