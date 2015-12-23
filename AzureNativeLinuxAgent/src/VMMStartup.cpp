@@ -39,9 +39,9 @@ void VMMStartup::TryLoadAtapiix() {
 
 void VMMStartup::Startup() {
     this->TryLoadAtapiix();
-
-    if (!file_exists("/mnt/cdrom/secure")) {
-
+    string secureMountPoint = "/mnt/cdrom/secure";
+    if (!file_exists(secureMountPoint.c_str())) {
+        make_dir(secureMountPoint.c_str());
     }
 }
 
