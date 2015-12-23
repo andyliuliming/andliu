@@ -13,3 +13,7 @@
 #define POPEN popen
 #define PCLOSE pclose
 #endif
+
+
+typedef unsigned char       BYTE;
+typedef unsigned char       UINT8, *PUINT8;

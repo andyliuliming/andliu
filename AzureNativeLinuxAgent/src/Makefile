@@ -92,8 +92,8 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_AzureNativeLinuxAgent_OBJECTS = AzureNativeLinuxAgent.$(OBJEXT) \
 	AzureEnvironment.$(OBJEXT) CommandExecuter.$(OBJEXT) \
-	CommandResult.$(OBJEXT) Logger.$(OBJEXT) VMMStartup.$(OBJEXT) \
-	wnla_process.$(OBJEXT) wnla_network.$(OBJEXT)
+	CommandResult.$(OBJEXT) Logger.$(OBJEXT) \
+	NetworkRoutine.$(OBJEXT) VMMStartup.$(OBJEXT)
 AzureNativeLinuxAgent_OBJECTS = $(am_AzureNativeLinuxAgent_OBJECTS)
 AzureNativeLinuxAgent_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_$(V))
@@ -236,7 +236,7 @@ target_alias =
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp  CommandExecuter.cpp CommandResult.cpp Logger.cpp VMMStartup.cpp  wnla_process.cpp wnla_network.cpp
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp  CommandExecuter.cpp CommandResult.cpp Logger.cpp NetworkRoutine.cpp VMMStartup.cpp
 all: all-am
 
 .SUFFIXES:
@@ -329,9 +329,8 @@ include ./$(DEPDIR)/AzureNativeLinuxAgent.Po
 include ./$(DEPDIR)/CommandExecuter.Po
 include ./$(DEPDIR)/CommandResult.Po
 include ./$(DEPDIR)/Logger.Po
+include ./$(DEPDIR)/NetworkRoutine.Po
 include ./$(DEPDIR)/VMMStartup.Po
-include ./$(DEPDIR)/wnla_network.Po
-include ./$(DEPDIR)/wnla_process.Po
 
 .cpp.o:
 	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

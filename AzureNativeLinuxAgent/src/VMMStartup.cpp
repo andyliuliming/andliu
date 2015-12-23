@@ -1,7 +1,7 @@
 #include "VMMStartup.h"
 #include "CommandExecuter.h"
 #include "Logger.h"
-#include "UtilFunctions.h"
+#include "FileFunctions.h"
 
 VMMStartup::VMMStartup()
 {
