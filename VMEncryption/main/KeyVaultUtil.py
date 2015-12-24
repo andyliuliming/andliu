@@ -62,9 +62,11 @@ class KeyVaultUtil(object):
 
             authorize_uri = self.get_authorize_uri(bearerHeader)
             if(authorize_uri is None):
+                self.logger.log("the authorize uri is None")
                 return None
-            access_token = self.get_access_token(authorize_uri,AADClientID,AADClientSecret)
+            access_token = self.get_access_token(authorize_uri, AADClientID, AADClientSecret)
             if(access_token is None):
+                self.logger.log("the access token is None")
                 return None
 
             """
@@ -75,6 +77,7 @@ class KeyVaultUtil(object):
             else:
                 secret_value = self.encrypt_passphrase(access_token, passphrase_encoded,KeyVaultURL, KeyEncryptionKeyURL, AADClientID, KeyEncryptionAlgorithm, AADClientSecret)
             if(secret_value is None):
+                self.logger.log("secret value is None")
                 return None
 
             secret_id = self.create_secret(access_token,KeyVaultURL,secret_value,KeyEncryptionAlgorithm,DiskEncryptionKeyFileName)
@@ -184,6 +187,7 @@ class KeyVaultUtil(object):
             secret_id = result_json["id"]
             http_util.connection.close()
             if(result.status != httplib.OK and result.status != httplib.ACCEPTED):
+                self.logger.log("the result status failed.")
                 return None
             return secret_id
         except Exception as e:

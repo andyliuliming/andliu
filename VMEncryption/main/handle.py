@@ -259,13 +259,16 @@ def enable():
                 if(existed_passphrase_file is None):
                     if(extension_parameter.passphrase is None or extension_parameter.passphrase == ""):
                         extension_parameter.passphrase = bek_util.generate_passphrase(extension_parameter.KeyEncryptionAlgorithm)
-                        kek_secret_id_created = keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
-                        KeyVaultURL = extension_parameter.KeyVaultURL,\
-                        KeyEncryptionKeyURL = extension_parameter.KeyEncryptionKeyURL,\
-                        AADClientID = extension_parameter.AADClientID,\
-                        KeyEncryptionAlgorithm = extension_parameter.KeyEncryptionAlgorithm,\
-                        AADClientSecret = extension_parameter.AADClientSecret,\
-                        DiskEncryptionKeyFileName = extension_parameter.DiskEncryptionKeyFileName)
+                    else:
+                        logger.log(msg="the extension_parameter.passphrase is none")
+
+                    kek_secret_id_created = keyVaultUtil.create_kek_secret(Passphrase = extension_parameter.passphrase,\
+                    KeyVaultURL = extension_parameter.KeyVaultURL,\
+                    KeyEncryptionKeyURL = extension_parameter.KeyEncryptionKeyURL,\
+                    AADClientID = extension_parameter.AADClientID,\
+                    KeyEncryptionAlgorithm = extension_parameter.KeyEncryptionAlgorithm,\
+                    AADClientSecret = extension_parameter.AADClientSecret,\
+                    DiskEncryptionKeyFileName = extension_parameter.DiskEncryptionKeyFileName)
 
                     if(kek_secret_id_created is None):
                         hutil.do_exit(0, 'Enable', CommonVariables.extension_error_status, str(CommonVariables.create_encryption_secret_failed), 'Enable failed.')
