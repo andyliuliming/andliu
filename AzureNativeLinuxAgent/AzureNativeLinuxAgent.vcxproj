@@ -170,6 +170,7 @@
     <None Include="C:\Users\andliu\Documents\GitHub\WALinuxAgent\config\waagent.conf" />
     <None Include="configure" />
     <None Include="configure.ac" />
+    <None Include="configure.scan" />
     <None Include="COPYING" />
     <None Include="GoalState.1.xml" />
     <None Include="INSTALL" />

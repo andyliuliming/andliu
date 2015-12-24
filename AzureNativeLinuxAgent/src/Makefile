@@ -96,7 +96,8 @@ am_AzureNativeLinuxAgent_OBJECTS = AzureNativeLinuxAgent.$(OBJEXT) \
 	NetworkRoutine.$(OBJEXT) Provisioner.$(OBJEXT) \
 	VMMStartup.$(OBJEXT)
 AzureNativeLinuxAgent_OBJECTS = $(am_AzureNativeLinuxAgent_OBJECTS)
-AzureNativeLinuxAgent_LDADD = $(LDADD)
+AzureNativeLinuxAgent_DEPENDENCIES =  \
+	/usr/lib/x86_64-linux-gnu/libxerces-c.so
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -160,6 +161,10 @@ AUTOCONF = ${SHELL} /home/andy/workspace/andliu/AzureNativeLinuxAgent/missing au
 AUTOHEADER = ${SHELL} /home/andy/workspace/andliu/AzureNativeLinuxAgent/missing autoheader
 AUTOMAKE = ${SHELL} /home/andy/workspace/andliu/AzureNativeLinuxAgent/missing automake-1.14
 AWK = gawk
+CC = gcc
+CCDEPMODE = depmode=gcc3
+CFLAGS = -g -O2
+CPP = gcc -E
 CPPFLAGS = 
 CXX = g++
 CXXDEPMODE = depmode=gcc3
@@ -170,7 +175,9 @@ DEPDIR = .deps
 ECHO_C = 
 ECHO_N = -n
 ECHO_T = 
+EGREP = /bin/grep -E
 EXEEXT = 
+GREP = /bin/grep
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
@@ -199,6 +206,7 @@ abs_builddir = /home/andy/workspace/andliu/AzureNativeLinuxAgent/src
 abs_srcdir = /home/andy/workspace/andliu/AzureNativeLinuxAgent/src
 abs_top_builddir = /home/andy/workspace/andliu/AzureNativeLinuxAgent
 abs_top_srcdir = /home/andy/workspace/andliu/AzureNativeLinuxAgent
+ac_ct_CC = gcc
 ac_ct_CXX = g++
 am__include = include
 am__leading_dot = .
@@ -238,6 +246,7 @@ top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
 AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp  CommandExecuter.cpp CommandResult.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp VMMStartup.cpp
+AzureNativeLinuxAgent_LDADD = /usr/lib/x86_64-linux-gnu/libxerces-c.so
 all: all-am
 
 .SUFFIXES:

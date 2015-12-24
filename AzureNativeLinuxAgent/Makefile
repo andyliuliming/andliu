@@ -79,7 +79,7 @@ subdir = .
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(srcdir)/config.h.in AUTHORS COPYING ChangeLog INSTALL NEWS \
-	README depcomp install-sh missing
+	README compile depcomp install-sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -196,6 +196,10 @@ AUTOCONF = ${SHELL} /home/andy/workspace/andliu/AzureNativeLinuxAgent/missing au
 AUTOHEADER = ${SHELL} /home/andy/workspace/andliu/AzureNativeLinuxAgent/missing autoheader
 AUTOMAKE = ${SHELL} /home/andy/workspace/andliu/AzureNativeLinuxAgent/missing automake-1.14
 AWK = gawk
+CC = gcc
+CCDEPMODE = depmode=gcc3
+CFLAGS = -g -O2
+CPP = gcc -E
 CPPFLAGS = 
 CXX = g++
 CXXDEPMODE = depmode=gcc3
@@ -206,7 +210,9 @@ DEPDIR = .deps
 ECHO_C = 
 ECHO_N = -n
 ECHO_T = 
+EGREP = /bin/grep -E
 EXEEXT = 
+GREP = /bin/grep
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
@@ -235,6 +241,7 @@ abs_builddir = /home/andy/workspace/andliu/AzureNativeLinuxAgent
 abs_srcdir = /home/andy/workspace/andliu/AzureNativeLinuxAgent
 abs_top_builddir = /home/andy/workspace/andliu/AzureNativeLinuxAgent
 abs_top_srcdir = /home/andy/workspace/andliu/AzureNativeLinuxAgent
+ac_ct_CC = gcc
 ac_ct_CXX = g++
 am__include = include
 am__leading_dot = .

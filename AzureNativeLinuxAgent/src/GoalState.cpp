@@ -5,8 +5,8 @@
 
 #else
 //linux code goes here
-//#include <xercesc/util/PlatformUtils.hpp>
-//#include <xercesc/dom/DOM.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/dom/DOM.hpp>
 #endif
 
 
