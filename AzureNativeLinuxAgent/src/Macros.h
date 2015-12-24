@@ -6,13 +6,13 @@
 #include <stdlib.h>
 #include <memory>
 #ifdef _WIN32
-//linux code goes here
+//windows code goes here
 #define POPEN _popen
 #define PCLOSE _pclose
 #define SLEEP _sleep
 #else
 #include <unistd.h>
-// windows code goes here
+//linux code goes here
 #define POPEN popen
 #define PCLOSE pclose
 #define SLEEP usleep

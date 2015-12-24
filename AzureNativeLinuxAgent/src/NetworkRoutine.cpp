@@ -7,8 +7,11 @@
 #include <sys/socket.h>
 #include <ifaddrs.h>
 #include <sys/socket.h> // Needed for the socket functions
+#include <curl/curl.h>
 #endif
 #include <stdio.h>
+
+//http://curl.haxx.se/libcurl/cplusplus/
 
 NetworkRoutine::NetworkRoutine()
 {

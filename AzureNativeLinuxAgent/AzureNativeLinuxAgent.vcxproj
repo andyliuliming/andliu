@@ -171,6 +171,7 @@
     <None Include="configure" />
     <None Include="configure.ac" />
     <None Include="COPYING" />
+    <None Include="GoalState.1.xml" />
     <None Include="INSTALL" />
     <None Include="NEWS" />
     <None Include="README" />
@@ -178,6 +179,12 @@
     <None Include="src\Makefile" />
     <None Include="src\Makefile.am" />
     <None Include="src\Makefile.in" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="ExtensionConfig.1.xml" />
+    <Xml Include="HostingEnvironmentConfig.xml" />
+    <Xml Include="ovf-env.xml" />
+    <Xml Include="ShareConfig.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
