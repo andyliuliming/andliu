@@ -91,13 +91,14 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_AzureNativeLinuxAgent_OBJECTS = AzureNativeLinuxAgent.$(OBJEXT) \
-	AzureEnvironment.$(OBJEXT) CommandExecuter.$(OBJEXT) \
-	CommandResult.$(OBJEXT) Logger.$(OBJEXT) GoalState.$(OBJEXT) \
-	NetworkRoutine.$(OBJEXT) Provisioner.$(OBJEXT) \
-	VMMStartup.$(OBJEXT)
+	AzureEnvironment.$(OBJEXT) AgentConfig.$(OBJEXT) \
+	CommandExecuter.$(OBJEXT) CommandResult.$(OBJEXT) \
+	Logger.$(OBJEXT) GoalState.$(OBJEXT) NetworkRoutine.$(OBJEXT) \
+	Provisioner.$(OBJEXT) VMMStartup.$(OBJEXT)
 AzureNativeLinuxAgent_OBJECTS = $(am_AzureNativeLinuxAgent_OBJECTS)
 AzureNativeLinuxAgent_DEPENDENCIES =  \
-	/usr/lib/x86_64-linux-gnu/libxerces-c.so
+	/usr/lib/x86_64-linux-gnu/libxerces-c.so \
+	/usr/lib/x86_64-linux-gnu/libconfig++.so
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -245,8 +246,8 @@ target_alias =
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp  CommandExecuter.cpp CommandResult.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp VMMStartup.cpp
-AzureNativeLinuxAgent_LDADD = /usr/lib/x86_64-linux-gnu/libxerces-c.so
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp CommandExecuter.cpp CommandResult.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp VMMStartup.cpp
+AzureNativeLinuxAgent_LDADD = /usr/lib/x86_64-linux-gnu/libxerces-c.so /usr/lib/x86_64-linux-gnu/libconfig++.so
 all: all-am
 
 .SUFFIXES:
@@ -334,6 +335,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+include ./$(DEPDIR)/AgentConfig.Po
 include ./$(DEPDIR)/AzureEnvironment.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent.Po
 include ./$(DEPDIR)/CommandExecuter.Po

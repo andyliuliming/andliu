@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
+    <ClInclude Include="src\AgentConfig.h" />
     <ClInclude Include="src\AzureEnvironment.h" />
     <ClInclude Include="src\CommandExecuter.h" />
     <ClInclude Include="src\CommandResult.h" />
@@ -155,6 +156,7 @@
     <ClInclude Include="src\VMMStartup.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AgentConfig.cpp" />
     <ClCompile Include="src\AzureEnvironment.cpp" />
     <ClCompile Include="src\AzureNativeLinuxAgent.cpp" />
     <ClCompile Include="src\CommandExecuter.cpp" />
@@ -168,6 +170,7 @@
   <ItemGroup>
     <None Include="AUTHORS" />
     <None Include="C:\Users\andliu\Documents\GitHub\WALinuxAgent\config\waagent.conf" />
+    <None Include="C:\Users\andliu\Downloads\c++\example.cfg" />
     <None Include="configure" />
     <None Include="configure.ac" />
     <None Include="configure.scan" />
