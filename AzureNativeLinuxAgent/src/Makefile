@@ -96,9 +96,9 @@ am_AzureNativeLinuxAgent_OBJECTS = AzureNativeLinuxAgent.$(OBJEXT) \
 	Logger.$(OBJEXT) GoalState.$(OBJEXT) NetworkRoutine.$(OBJEXT) \
 	Provisioner.$(OBJEXT) VMMStartup.$(OBJEXT)
 AzureNativeLinuxAgent_OBJECTS = $(am_AzureNativeLinuxAgent_OBJECTS)
-AzureNativeLinuxAgent_DEPENDENCIES =  \
-	/usr/lib/x86_64-linux-gnu/libxerces-c.so \
-	/usr/lib/x86_64-linux-gnu/libconfig++.so
+am__DEPENDENCIES_1 =
+AzureNativeLinuxAgent_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -185,8 +185,12 @@ INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LDFLAGS = 
+LIBCONFIGXX_CFLAGS =  
+LIBCONFIGXX_LIBS = -lconfig++  
 LIBOBJS = 
 LIBS = 
+LIBXML2_CFLAGS = -I/usr/include/libxml2  
+LIBXML2_LIBS = -lxml2  
 LTLIBOBJS = 
 MAKEINFO = ${SHELL} /home/andy/workspace/andliu/AzureNativeLinuxAgent/missing makeinfo
 MKDIR_P = /bin/mkdir -p
@@ -199,6 +203,9 @@ PACKAGE_TARNAME = azurenativelinuxagent
 PACKAGE_URL = 
 PACKAGE_VERSION = 0.1
 PATH_SEPARATOR = :
+PKG_CONFIG = /usr/bin/pkg-config
+PKG_CONFIG_LIBDIR = 
+PKG_CONFIG_PATH = 
 SET_MAKE = 
 SHELL = /bin/bash
 STRIP = 
@@ -246,8 +253,9 @@ target_alias =
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
+AzureNativeLinuxAgent_CFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS)
+AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS)
 AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp CommandExecuter.cpp CommandResult.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp VMMStartup.cpp
-AzureNativeLinuxAgent_LDADD = /usr/lib/x86_64-linux-gnu/libxerces-c.so /usr/lib/x86_64-linux-gnu/libconfig++.so
 all: all-am
 
 .SUFFIXES:

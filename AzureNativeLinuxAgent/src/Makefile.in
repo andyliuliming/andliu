@@ -96,9 +96,9 @@ am_AzureNativeLinuxAgent_OBJECTS = AzureNativeLinuxAgent.$(OBJEXT) \
 	Logger.$(OBJEXT) GoalState.$(OBJEXT) NetworkRoutine.$(OBJEXT) \
 	Provisioner.$(OBJEXT) VMMStartup.$(OBJEXT)
 AzureNativeLinuxAgent_OBJECTS = $(am_AzureNativeLinuxAgent_OBJECTS)
-AzureNativeLinuxAgent_DEPENDENCIES =  \
-	/usr/lib/x86_64-linux-gnu/libxerces-c.so \
-	/usr/lib/x86_64-linux-gnu/libconfig++.so
+am__DEPENDENCIES_1 =
+AzureNativeLinuxAgent_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -185,8 +185,12 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LDFLAGS = @LDFLAGS@
+LIBCONFIGXX_CFLAGS = @LIBCONFIGXX_CFLAGS@
+LIBCONFIGXX_LIBS = @LIBCONFIGXX_LIBS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
+LIBXML2_CFLAGS = @LIBXML2_CFLAGS@
+LIBXML2_LIBS = @LIBXML2_LIBS@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
@@ -199,6 +203,9 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -246,8 +253,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+AzureNativeLinuxAgent_CFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS)
+AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS)
 AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp CommandExecuter.cpp CommandResult.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp VMMStartup.cpp
-AzureNativeLinuxAgent_LDADD = /usr/lib/x86_64-linux-gnu/libxerces-c.so /usr/lib/x86_64-linux-gnu/libconfig++.so
 all: all-am
 
 .SUFFIXES:

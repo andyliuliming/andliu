@@ -14,17 +14,26 @@ AC_PROG_CC
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([arpa/inet.h stdlib.h sys/socket.h unistd.h])
+AC_CHECK_HEADERS([arpa/inet.h netdb.h stdlib.h string.h sys/ioctl.h sys/socket.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
 AC_C_INLINE
 
 # Checks for library functions.
-AC_CHECK_FUNCS([inet_ntoa])
+AC_CHECK_FUNCS([socket])
+
+CXXFLAGS="$CXXFLAGS -std=c++0x"
+
+#[LIBXML2], [libxml-2.0 >= 2.9],,...
+PKG_CHECK_MODULES([LIBXML2], [libxml-2.0],,
+  AC_MSG_ERROR([libxml2 not found.]))
+
+PKG_CHECK_MODULES([LIBCONFIGXX], [libconfig++],,
+  AC_MSG_ERROR([libconfig++ not found.]))
+
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile])
 
-CXXFLAGS="$CXXFLAGS -std=c++0x"
 AC_OUTPUT
