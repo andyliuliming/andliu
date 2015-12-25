@@ -3,6 +3,7 @@
 #include "Macros.h"
 #include "NetworkRoutine.h"
 #include <stdio.h>
+#include "Helpers.h"
 #ifdef _WIN32
 #include <WinSock2.h>
 #else
@@ -43,10 +44,23 @@ void AzureEnvironment::DoDhcpWork()
 
 BYTE* AzureEnvironment::BuildDhcpRequest()
 {
+    CommandExecuter *executer = new CommandExecuter();
+
     BYTE * dhcpRequest = new BYTE[244];
     NetworkRoutine *routine = new NetworkRoutine();
     string macAddress = routine->GetMacAddress();
 
+    
+    bool missingDefaultRoute = true;
+    CommandResult * commandResult = executer->RunGetOutput("route -n");
+    vector<string> splitResult;
+    string spliter = "\n";
+    /*CommandResult &refCommandResult = *commandResult;*/
+    string_split((*(commandResult->output)), spliter, &splitResult);
+    for (int i = 0; i < splitResult.size(); i++) {
+        
+    }
+    /*string routes = RunGetOutput("route -n")[1]*/
 
 
     return dhcpRequest;

@@ -105,6 +105,15 @@ string NetworkRoutine::GetMacAddress()
     #endif
 }
 
+bool NetworkRoutine::isDHCPEnabled()
+{
+    return false;
+}
+
+void NetworkRoutine::stopDHCP()
+{
+}
+
 
 NetworkRoutine::~NetworkRoutine()
 {
