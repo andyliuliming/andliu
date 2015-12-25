@@ -1,7 +1,7 @@
 #include "VMMStartup.h"
 #include "CommandExecuter.h"
 #include "Logger.h"
-#include "FileFunctions.h"
+#include "FileOperator.h"
 
 VMMStartup::VMMStartup()
 {
@@ -30,7 +30,7 @@ void VMMStartup::TryLoadAtapiix() {
         delete commandResult;
         commandResult = NULL;
 
-        if (file_exists(krn_pth)) {
+        if (FileOperator::file_exists(krn_pth)) {
             string insertModuleCommand = "insmod " + krn_pth;
             commandResult = executer->RunGetOutput(insertModuleCommand.c_str());
         }
@@ -40,8 +40,8 @@ void VMMStartup::TryLoadAtapiix() {
 void VMMStartup::Startup() {
     this->TryLoadAtapiix();
     string secureMountPoint = "/mnt/cdrom/secure";
-    if (!file_exists(secureMountPoint.c_str())) {
-        make_dir(secureMountPoint.c_str());
+    if (!FileOperator::file_exists(secureMountPoint.c_str())) {
+        FileOperator::make_dir(secureMountPoint.c_str());
     }
 }
 
