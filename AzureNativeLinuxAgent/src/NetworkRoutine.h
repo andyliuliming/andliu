@@ -32,7 +32,7 @@ class NetworkRoutine
 {
 public:
     NetworkRoutine();
-    string GetMacAddress();
+    static PUINT8 GetMacAddress();
     static PDHCPRequest BuildDHCPRequest();
     bool isDHCPEnabled();
     void stopDHCP();

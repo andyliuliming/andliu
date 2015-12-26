@@ -19,5 +19,7 @@
 #endif
 
 
-typedef unsigned char       BYTE;
+typedef unsigned char       BYTE, *PBYTE;
 typedef unsigned char       UINT8, *PUINT8;
+
+#define DHCPDISCOVER (1);

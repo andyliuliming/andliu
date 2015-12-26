@@ -33,6 +33,8 @@ void AzureEnvironment::DoDhcpWork()
 
     PDHCPRequest dhcpRequest = NetworkRoutine::BuildDHCPRequest();
 
+
+    // Configure the default routes.
     bool missingDefaultRoute = true;
     commandResult = CommandExecuter::RunGetOutput("route -n");
     vector<string> splitResult;
@@ -42,12 +44,11 @@ void AzureEnvironment::DoDhcpWork()
     for (unsigned int i = 0; i < splitResult.size(); i++) {
         cout << splitResult[i] << " ";
     }
-    /*string routes = RunGetOutput("route -n")[1]*/
+
     #ifdef _WIN32
         //TOTO: implement this in windows
     #else
-        int sck = 0;
-        sck = socket(PF_INET, SOCK_DGRAM, 0);
+
     #endif
 }
 

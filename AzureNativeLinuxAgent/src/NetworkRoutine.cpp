@@ -25,11 +25,11 @@ NetworkRoutine::NetworkRoutine()
 /*
 TODO we should get the first active network interface.
 */
-string NetworkRoutine::GetMacAddress()
+PUINT8 NetworkRoutine::GetMacAddress()
 {
-
+    PUINT8 MAC_ADDRESS = new UINT8[6];
 #ifdef _WIN32
-    return string();
+    return MAC_ADDRESS;
 #else
     char buf[8192] = { 0 };
     struct ifconf ifc = { 0 };
@@ -100,12 +100,19 @@ string NetworkRoutine::GetMacAddress()
             (unsigned char)item->ifr_hwaddr.sa_data[5]);
         printf("interface name : %s \n", item->ifr_name);
         printf("%s %s \n", ip, macp);
-        if (false) 
+        if (item->ifr_name[0] != 'l'
+            &&item->ifr_name[1] != 'o')
         {
+            MAC_ADDRESS[0] = item->ifr_hwaddr.sa_data[0];
+            MAC_ADDRESS[1] = item->ifr_hwaddr.sa_data[1];
+            MAC_ADDRESS[2] = item->ifr_hwaddr.sa_data[2];
+            MAC_ADDRESS[3] = item->ifr_hwaddr.sa_data[3];
+            MAC_ADDRESS[4] = item->ifr_hwaddr.sa_data[4];
+            MAC_ADDRESS[5] = item->ifr_hwaddr.sa_data[5];
             firstActiveNetworkMac = macp;
         }
     }
-    return string();
+    return MAC_ADDRESS;
 #endif
 }
 
@@ -121,6 +128,19 @@ PDHCPRequest NetworkRoutine::BuildDHCPRequest()
     memcpy(dhcpRequest->TransactionID, &lvalue, 4);
 
     memset(dhcpRequest->Seconds, 0, 2);
+
+    PUINT8 macAddress = NetworkRoutine::GetMacAddress();
+    memcpy(dhcpRequest->ClientHardwareAddress, macAddress, 6);
+    delete macAddress;
+
+    //99, 130, 83, 99, 53, 1, 1, 255
+    PUINT8 magicCookie = new UINT8[99, 130, 83, 99];
+    memcpy(dhcpRequest->MagicCookie, magicCookie, 4);
+    delete magicCookie;
+    dhcpRequest->MessageTypeCode = 53;
+    dhcpRequest->MessageTypeLength = 1;
+    dhcpRequest->MessageType = DHCPDISCOVER;
+    dhcpRequest->End = 255;
     return dhcpRequest;
 }
 
