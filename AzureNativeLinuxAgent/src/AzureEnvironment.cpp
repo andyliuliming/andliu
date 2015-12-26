@@ -9,6 +9,8 @@
 
 #ifdef _WIN32
 #include <WinSock2.h>
+#include<ws2tcpip.h>
+#pragma comment(lib, "Ws2_32.lib")
 #else
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -25,7 +27,7 @@ AzureEnvironment::AzureEnvironment()
 {
 }
 
-void AzureEnvironment::DoDhcpWork()
+int AzureEnvironment::DoDhcpWork()
 {
     //Open DHCP port if iptables is enabled.
     CommandResult * commandResult = CommandExecuter::RunGetOutput("iptables -D INPUT -p udp --dport 68 -j ACCEPT");
@@ -48,18 +50,12 @@ void AzureEnvironment::DoDhcpWork()
         cout << splitResult[i] << " \n";
     }
 
-
-#ifdef _WIN32
-    //TOTO: implement this in windows
-#else
-
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = inet_addr("0.0.0.0");
     addr.sin_port = htons(DHCP_UDP_PORT);
 
     int sck = 0;
-
     /* Get a socket handle. */
     sck = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (sck < 0)
@@ -67,14 +63,14 @@ void AzureEnvironment::DoDhcpWork()
         Logger::getInstance().Verbose("sck < 0 ");
         perror("socket");
     }
-
     int so_broadcast = 1;
     int so_reuseaddr = 1;
-    setsockopt(sck, SOL_SOCKET, SO_BROADCAST, &so_broadcast, sizeof(so_broadcast));
-    setsockopt(sck, SOL_SOCKET, SO_REUSEADDR, &so_reuseaddr, sizeof(so_reuseaddr));
+    setsockopt(sck, SOL_SOCKET, SO_BROADCAST, SOCKET_OPTION_P&so_broadcast, sizeof(so_broadcast));
+    setsockopt(sck, SOL_SOCKET, SO_REUSEADDR, SOCKET_OPTION_P&so_reuseaddr, sizeof(so_reuseaddr));
+
     if (bind(sck, (struct sockaddr *)&addr, sizeof(addr)) < 0)
     {
-        close(sck);
+        CLOSESOCKET(sck);
     }
     else
     {
@@ -83,7 +79,7 @@ void AzureEnvironment::DoDhcpWork()
         addr_to.sin_addr.s_addr = inet_addr("255.255.255.255");
         addr_to.sin_port = htons(DHCP_UDP_TO_PORT);
         cout << "dhcp request size is: " << sizeof(*dhcpRequest) << endl;
-        long sendResult = sendto(sck, dhcpRequest, sizeof(DHCPRequest), 0,
+        long sendResult = sendto(sck, SEND_TO_OPTION dhcpRequest, sizeof(DHCPRequest), 0,
             (struct sockaddr *)&addr_to, sizeof(addr_to));
         if (sendResult < 0)
         {
@@ -95,11 +91,11 @@ void AzureEnvironment::DoDhcpWork()
             struct timeval tv_out;
             tv_out.tv_sec = 6;
             tv_out.tv_usec = 0;
-            setsockopt(sck, SOL_SOCKET, SO_RCVTIMEO, &tv_out, sizeof(tv_out));
+            setsockopt(sck, SOL_SOCKET, SO_RCVTIMEO, SOCKET_OPTION_P&tv_out, sizeof(tv_out));
             int bufferSize = 1024;
             PBYTE buffer = new BYTE[bufferSize];
             int addr_len = sizeof(struct sockaddr_in);
-            int recvResult = recvfrom(sck, buffer, bufferSize, 0, (struct sockaddr *)&addr, (socklen_t*)&addr_len);
+            int recvResult = recvfrom(sck, RECV_TO_OPTION buffer, bufferSize, 0, (struct sockaddr *)&addr, (socklen_t*)&addr_len);
             if (recvResult < 0)
             {
                 Logger::getInstance().Verbose("recv failed.");
@@ -130,6 +126,7 @@ void AzureEnvironment::DoDhcpWork()
                 }
                 if (option == 245) {
                     Logger::getInstance().Verbose("245 got");
+
                 }
                 i += (option_length + 2);
             }
@@ -138,10 +135,7 @@ void AzureEnvironment::DoDhcpWork()
 
     }
 
-    /*sock.bind(("0.0.0.0", 68))
-        sock.sendto(sendData, ("<broadcast>", 67))
-        sock.settimeout(10)*/
-#endif
+    return 1;
 }
 
 
