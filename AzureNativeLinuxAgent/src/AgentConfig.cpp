@@ -1,30 +1,32 @@
 #include "AgentConfig.h"
 using namespace std;
 #include <iostream>
-#ifdef _WIN32
-//windows code goes here
-#else
-//linux code goes here
-#include <libconfig.h++>
-using namespace libconfig;
-#endif
+
 
 void AgentConfig::LoadConfig(const char * configFile)
 {
-    #ifdef _WIN32
-        //windows code goes here
-    #else
-        //linux code goes here
-        Config cfg;
+#ifdef _WIN32
+    //windows code goes here
+#else
+    //linux code goes here
+    this->config = new Config();
+    // Read the file. If there is an error, report it and exit.
+    try
+    {
+        this->config->readFile("./waagent.conf");
+    }
+    catch (const FileIOException &fioex)
+    {
+        std::cerr << "I/O error while reading file." << std::endl;
+    }
+#endif
+}
 
-        // Read the file. If there is an error, report it and exit.
-        try
-        {
-            cfg.readFile("./waagent.conf");
-        }
-        catch (const FileIOException &fioex)
-        {
-            std::cerr << "I/O error while reading file." << std::endl;
-        }
-    #endif
+string AgentConfig::getConfig(const char * propertyName)
+{
+#ifdef _WIN32
+    return string();
+#else
+    return this->config->lookup(propertyName);
+#endif
 }

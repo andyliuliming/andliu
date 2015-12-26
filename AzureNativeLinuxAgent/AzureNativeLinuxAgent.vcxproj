@@ -179,7 +179,6 @@
     <None Include="configure.ac" />
     <None Include="configure.scan" />
     <None Include="COPYING" />
-    <None Include="data\example.config" />
     <None Include="data\waagent.conf" />
     <None Include="INSTALL" />
     <None Include="NEWS" />
