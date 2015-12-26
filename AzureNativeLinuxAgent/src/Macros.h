@@ -22,4 +22,6 @@
 typedef unsigned char       BYTE, *PBYTE;
 typedef unsigned char       UINT8, *PUINT8;
 
-#define DHCPDISCOVER (1);
+#define DHCPDISCOVER (1)
+#define DHCP_UDP_PORT (68)
+#define DHCP_UDP_TO_PORT (67)

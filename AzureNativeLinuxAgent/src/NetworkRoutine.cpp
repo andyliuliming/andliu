@@ -63,7 +63,6 @@ PUINT8 NetworkRoutine::GetMacAddress()
     ifr = ifc.ifc_req;
     nInterfaces = ifc.ifc_len / sizeof(struct ifreq);
     printf("interfaces number %d\n", nInterfaces);
-    string firstActiveNetworkMac;
     for (i = 0; i < nInterfaces; i++)
     {
         item = &ifr[i];
@@ -90,7 +89,6 @@ PUINT8 NetworkRoutine::GetMacAddress()
         }
 
         /* display result */
-        Logger::getInstance().Verbose("printing the result:");
         sprintf(macp, " %02x:%02x:%02x:%02x:%02x:%02x",
             (unsigned char)item->ifr_hwaddr.sa_data[0],
             (unsigned char)item->ifr_hwaddr.sa_data[1],
@@ -98,18 +96,21 @@ PUINT8 NetworkRoutine::GetMacAddress()
             (unsigned char)item->ifr_hwaddr.sa_data[3],
             (unsigned char)item->ifr_hwaddr.sa_data[4],
             (unsigned char)item->ifr_hwaddr.sa_data[5]);
+
+        Logger::getInstance().Verbose("printing the result:\n");
         printf("interface name : %s \n", item->ifr_name);
-        printf("%s %s \n", ip, macp);
+        printf("%s\n %s \n", ip, macp);
         if (item->ifr_name[0] != 'l'
             &&item->ifr_name[1] != 'o')
         {
+            Logger::getInstance().Verbose(" if name is not lo, so set the mac.");
             MAC_ADDRESS[0] = item->ifr_hwaddr.sa_data[0];
             MAC_ADDRESS[1] = item->ifr_hwaddr.sa_data[1];
             MAC_ADDRESS[2] = item->ifr_hwaddr.sa_data[2];
             MAC_ADDRESS[3] = item->ifr_hwaddr.sa_data[3];
             MAC_ADDRESS[4] = item->ifr_hwaddr.sa_data[4];
             MAC_ADDRESS[5] = item->ifr_hwaddr.sa_data[5];
-            firstActiveNetworkMac = macp;
+            break;
         }
     }
     return MAC_ADDRESS;
