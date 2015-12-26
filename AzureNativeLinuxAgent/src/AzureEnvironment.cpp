@@ -3,7 +3,7 @@
 #include "Macros.h"
 #include "NetworkRoutine.h"
 #include <stdio.h>
-#include "Helpers.h"
+#include "StringUtil.h"
 #ifdef _WIN32
 #include <WinSock2.h>
 #else
@@ -24,16 +24,25 @@ AzureEnvironment::AzureEnvironment()
 void AzureEnvironment::DoDhcpWork()
 {
     //Open DHCP port if iptables is enabled.
-    CommandExecuter *executer = new CommandExecuter();
-    CommandResult * commandResult = executer->RunGetOutput("iptables -D INPUT -p udp --dport 68 -j ACCEPT");
+    CommandResult * commandResult = CommandExecuter::RunGetOutput("iptables -D INPUT -p udp --dport 68 -j ACCEPT");
     delete commandResult;
     commandResult = NULL;
-    commandResult = executer->RunGetOutput("iptables -I INPUT -p udp --dport 68 -j ACCEPT");
+    commandResult = CommandExecuter::RunGetOutput("iptables -I INPUT -p udp --dport 68 -j ACCEPT");
     delete commandResult;
     commandResult = NULL;
 
     BYTE* dhcpRequest = this->BuildDhcpRequest();
 
+    bool missingDefaultRoute = true;
+    commandResult = CommandExecuter::RunGetOutput("route -n");
+    vector<string> splitResult;
+    string spliter = "\n";
+    /*CommandResult &refCommandResult = *commandResult;*/
+    StringUtil::string_split((*(commandResult->output)), spliter, &splitResult);
+    for (int i = 0; i < splitResult.size(); i++) {
+        cout << splitResult[i] << " ";
+    }
+    /*string routes = RunGetOutput("route -n")[1]*/
     #ifdef _WIN32
         //TOTO: implement this in windows
     #else
@@ -44,23 +53,13 @@ void AzureEnvironment::DoDhcpWork()
 
 BYTE* AzureEnvironment::BuildDhcpRequest()
 {
-    CommandExecuter *executer = new CommandExecuter();
-
     BYTE * dhcpRequest = new BYTE[244];
     NetworkRoutine *routine = new NetworkRoutine();
     string macAddress = routine->GetMacAddress();
 
     
-    bool missingDefaultRoute = true;
-    CommandResult * commandResult = executer->RunGetOutput("route -n");
-    vector<string> splitResult;
-    string spliter = "\n";
-    /*CommandResult &refCommandResult = *commandResult;*/
-    string_split((*(commandResult->output)), spliter, &splitResult);
-    for (int i = 0; i < splitResult.size(); i++) {
-        
-    }
-    /*string routes = RunGetOutput("route -n")[1]*/
+
+    
 
 
     return dhcpRequest;

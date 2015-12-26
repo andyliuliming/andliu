@@ -6,7 +6,7 @@ class CommandExecuter
 {
 public:
     CommandExecuter();
-    CommandResult * RunGetOutput(const char* cmd);
+    static CommandResult * RunGetOutput(const char* cmd);
     ~CommandExecuter();
 };
 

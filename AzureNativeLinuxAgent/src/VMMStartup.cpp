@@ -13,8 +13,7 @@ VMMStartup::VMMStartup()
 
 void VMMStartup::TryLoadAtapiix() {
     Logger::getInstance().Verbose("trying to load ata_piix");
-    CommandExecuter *executer = new CommandExecuter();
-    CommandResult *commandResult = executer->RunGetOutput("uname -r");
+    CommandResult *commandResult = CommandExecuter::RunGetOutput("uname -r");
 
     string krn_pth = "/lib/modules/" + *(commandResult->output) + "/kernel/drivers/ata/ata_piix.ko";
 
@@ -23,7 +22,7 @@ void VMMStartup::TryLoadAtapiix() {
     commandResult = NULL;
 
     Logger::getInstance().Verbose("trying to find ata_piix");
-    commandResult = executer->RunGetOutput("lsmod | grep ata_piix");
+    commandResult = CommandExecuter::RunGetOutput("lsmod | grep ata_piix");
     if (commandResult->exitCode == EXIT_SUCCESS)
     {
         Logger::getInstance().Log("Module driver for ATAPI CD-ROM is already present.");
@@ -35,7 +34,7 @@ void VMMStartup::TryLoadAtapiix() {
 
         if (FileOperator::file_exists(krn_pth)) {
             string insertModuleCommand = "insmod " + krn_pth;
-            commandResult = executer->RunGetOutput(insertModuleCommand.c_str());
+            commandResult = CommandExecuter::RunGetOutput(insertModuleCommand.c_str());
         }
     }
 }

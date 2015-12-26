@@ -32,7 +32,6 @@ PKG_CHECK_MODULES([LIBXML2], [libxml-2.0],,
 PKG_CHECK_MODULES([LIBCONFIGXX], [libconfig++],,
   AC_MSG_ERROR([libconfig++ not found.]))
 
-
 AC_CONFIG_FILES([Makefile
                  src/Makefile])
 
