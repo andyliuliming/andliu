@@ -3,7 +3,7 @@
 #include "Macros.h"
 
 using namespace std;
-typedef struct _DHCPX {
+typedef struct _DHCPRequest {
     UINT8   Opcode;                     /* op:     BOOTREQUEST or BOOTREPLY */
     UINT8   HardwareAddressType;        /* htype:  ethernet */
     UINT8   HardwareAddressLength;      /* hlen:   6 (48 bit mac address) */
@@ -26,13 +26,14 @@ typedef struct _DHCPX {
     UINT8 MessageTypeLength;            /* 1 */
     UINT8 MessageType;                  /* 1 for DISCOVER */
     UINT8 End;                          /* 255 */
-} DHCPX;
+} DHCPRequest, *PDHCPRequest;
 
 class NetworkRoutine
 {
 public:
     NetworkRoutine();
     string GetMacAddress();
+    static PDHCPRequest BuildDHCPRequest();
     bool isDHCPEnabled();
     void stopDHCP();
 

@@ -1,6 +1,7 @@
 #include "NetworkRoutine.h"
 #include "Logger.h"
 #include <stdio.h>
+#include <stdlib.h>
 #ifdef _WIN32
 #include <WinSock2.h>
 #else
@@ -106,6 +107,21 @@ string NetworkRoutine::GetMacAddress()
     }
     return string();
 #endif
+}
+
+PDHCPRequest NetworkRoutine::BuildDHCPRequest()
+{
+    PDHCPRequest dhcpRequest = new DHCPRequest();
+    dhcpRequest->Opcode = 1;
+    dhcpRequest->HardwareAddressType = 1;
+    dhcpRequest->HardwareAddressLength = 6;
+    dhcpRequest->Hops = 0;
+
+    int lvalue = rand();
+    memcpy(dhcpRequest->TransactionID, &lvalue, 4);
+
+    memset(dhcpRequest->Seconds, 0, 2);
+    return dhcpRequest;
 }
 
 bool NetworkRoutine::isDHCPEnabled()

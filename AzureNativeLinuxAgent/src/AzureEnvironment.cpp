@@ -31,7 +31,7 @@ void AzureEnvironment::DoDhcpWork()
     delete commandResult;
     commandResult = NULL;
 
-    BYTE* dhcpRequest = this->BuildDhcpRequest();
+    PDHCPRequest dhcpRequest = NetworkRoutine::BuildDHCPRequest();
 
     bool missingDefaultRoute = true;
     commandResult = CommandExecuter::RunGetOutput("route -n");
@@ -39,7 +39,7 @@ void AzureEnvironment::DoDhcpWork()
     string spliter = "\n";
     /*CommandResult &refCommandResult = *commandResult;*/
     StringUtil::string_split((*(commandResult->output)), spliter, &splitResult);
-    for (int i = 0; i < splitResult.size(); i++) {
+    for (unsigned int i = 0; i < splitResult.size(); i++) {
         cout << splitResult[i] << " ";
     }
     /*string routes = RunGetOutput("route -n")[1]*/
@@ -49,20 +49,6 @@ void AzureEnvironment::DoDhcpWork()
         int sck = 0;
         sck = socket(PF_INET, SOCK_DGRAM, 0);
     #endif
-}
-
-BYTE* AzureEnvironment::BuildDhcpRequest()
-{
-    BYTE * dhcpRequest = new BYTE[244];
-    NetworkRoutine *routine = new NetworkRoutine();
-    string macAddress = routine->GetMacAddress();
-
-    
-
-    
-
-
-    return dhcpRequest;
 }
 
 
