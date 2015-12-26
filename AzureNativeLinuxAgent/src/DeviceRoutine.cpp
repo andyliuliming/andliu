@@ -1,5 +1,5 @@
 #include "DeviceRoutine.h"
-
+#include "AgentConfig.h"
 
 
 DeviceRoutine::DeviceRoutine()
@@ -8,7 +8,7 @@ DeviceRoutine::DeviceRoutine()
 
 void DeviceRoutine::setIsciTimeOut()
 {
-
+    AgentConfig::getInstance().LoadConfig(NULL);
 }
 
 

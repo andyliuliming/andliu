@@ -784,6 +784,7 @@ D["HAVE_SYS_IOCTL_H"]=" 1"
 D["HAVE_SYS_SOCKET_H"]=" 1"
 D["HAVE_UNISTD_H"]=" 1"
 D["HAVE__BOOL"]=" 1"
+D["HAVE_MEMSET"]=" 1"
 D["HAVE_SOCKET"]=" 1"
   for (key in D) D_is_set[key] = 1
   FS = ""

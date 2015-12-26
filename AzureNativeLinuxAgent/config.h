@@ -10,6 +10,9 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
 
+/* Define to 1 if you have the `memset' function. */
+#define HAVE_MEMSET 1
+
 /* Define to 1 if you have the <netdb.h> header file. */
 #define HAVE_NETDB_H 1
 
@@ -78,3 +81,6 @@
 #ifndef __cplusplus
 /* #undef inline */
 #endif
+
+/* Define to `unsigned int' if <sys/types.h> does not define. */
+/* #undef size_t */

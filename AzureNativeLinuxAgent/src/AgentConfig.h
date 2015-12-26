@@ -8,11 +8,11 @@ public:
         static AgentConfig    instance;
         return instance;
     }
+    void LoadConfig(const char * configFile);
 private:
     AgentConfig() {
     }
     AgentConfig(AgentConfig const&);              // Don't Implement.
-    void LoadConfig(const char * configFile);
     void operator=(AgentConfig const&); // Don't implement
 };
 

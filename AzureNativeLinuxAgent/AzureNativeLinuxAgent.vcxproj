@@ -175,12 +175,12 @@
   <ItemGroup>
     <None Include="AUTHORS" />
     <None Include="C:\Users\andliu\Documents\GitHub\WALinuxAgent\config\waagent.conf" />
-    <None Include="C:\Users\andliu\Downloads\c++\example.cfg" />
     <None Include="configure" />
     <None Include="configure.ac" />
     <None Include="configure.scan" />
     <None Include="COPYING" />
-    <None Include="GoalState.1.xml" />
+    <None Include="data\example.config" />
+    <None Include="data\waagent.conf" />
     <None Include="INSTALL" />
     <None Include="NEWS" />
     <None Include="README" />
@@ -190,10 +190,11 @@
     <None Include="src\Makefile.in" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="ExtensionConfig.1.xml" />
-    <Xml Include="HostingEnvironmentConfig.xml" />
-    <Xml Include="ovf-env.xml" />
-    <Xml Include="ShareConfig.xml" />
+    <Xml Include="data\ExtensionConfig.1.xml" />
+    <Xml Include="data\GoalState.1.xml" />
+    <Xml Include="data\HostingEnvironmentConfig.xml" />
+    <Xml Include="data\ovf-env.xml" />
+    <Xml Include="data\ShareConfig.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -20,7 +20,7 @@ void AgentConfig::LoadConfig(const char * configFile)
         // Read the file. If there is an error, report it and exit.
         try
         {
-            cfg.readFile("example.cfg");
+            cfg.readFile("./waagent.conf");
         }
         catch (const FileIOException &fioex)
         {
