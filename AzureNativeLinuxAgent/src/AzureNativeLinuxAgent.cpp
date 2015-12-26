@@ -4,6 +4,7 @@
 #include "Macros.h"
 #include "AzureEnvironment.h"
 #include "Logger.h"
+#include "DeviceRoutine.h"
 
 using namespace std;
 
@@ -17,12 +18,13 @@ int main(void)
     // 2. do dhcp 
     Logger::getInstance().Log("DoDhcpWork"); 
     AzureEnvironment *azureEnvironment = new AzureEnvironment();
-    azureEnvironment->DoDhcpWork();
+    int dhcpWorkResult = azureEnvironment->DoDhcpWork();
 
     // 3. check version
+    int checkResult = azureEnvironment->CheckVersion();
 
     // 4. Set SCSI timeout on SCSI disks
-
+    DeviceRoutine::setIsciTimeOut();
     // 5. GenerateTransportCert
 
     // 6. where true daemon

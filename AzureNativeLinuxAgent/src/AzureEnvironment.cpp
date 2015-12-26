@@ -138,6 +138,11 @@ int AzureEnvironment::DoDhcpWork()
     return 1;
 }
 
+int AzureEnvironment::CheckVersion()
+{
+    return 0;
+}
+
 
 AzureEnvironment::~AzureEnvironment()
 {

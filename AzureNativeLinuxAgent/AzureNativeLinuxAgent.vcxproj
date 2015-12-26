@@ -147,6 +147,7 @@
     <ClInclude Include="src\AzureEnvironment.h" />
     <ClInclude Include="src\CommandExecuter.h" />
     <ClInclude Include="src\CommandResult.h" />
+    <ClInclude Include="src\DeviceRoutine.h" />
     <ClInclude Include="src\FileOperator.h" />
     <ClInclude Include="src\GoalState.h" />
     <ClInclude Include="src\Logger.h" />
@@ -162,6 +163,7 @@
     <ClCompile Include="src\AzureNativeLinuxAgent.cpp" />
     <ClCompile Include="src\CommandExecuter.cpp" />
     <ClCompile Include="src\CommandResult.cpp" />
+    <ClCompile Include="src\DeviceRoutine.cpp" />
     <ClCompile Include="src\FileOperator.cpp" />
     <ClCompile Include="src\GoalState.cpp" />
     <ClCompile Include="src\Logger.cpp" />

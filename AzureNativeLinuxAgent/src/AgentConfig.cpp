@@ -3,19 +3,11 @@ using namespace std;
 #include <iostream>
 #ifdef _WIN32
 //windows code goes here
-
 #else
 //linux code goes here
-
 #include <libconfig.h++>
-
 using namespace libconfig;
 #endif
-
-AgentConfig::AgentConfig()
-{
-
-}
 
 void AgentConfig::LoadConfig(const char * configFile)
 {
@@ -35,9 +27,4 @@ void AgentConfig::LoadConfig(const char * configFile)
             std::cerr << "I/O error while reading file." << std::endl;
         }
     #endif
-}
-
-
-AgentConfig::~AgentConfig()
-{
 }

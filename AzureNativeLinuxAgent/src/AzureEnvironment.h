@@ -8,6 +8,7 @@ class AzureEnvironment
 public:
     AzureEnvironment();
     int DoDhcpWork();
+    int CheckVersion();
     ~AzureEnvironment();
 };
 

@@ -3,8 +3,16 @@
 class AgentConfig
 {
 public:
-    AgentConfig();
+    static AgentConfig& getInstance()
+    {
+        static AgentConfig    instance;
+        return instance;
+    }
+private:
+    AgentConfig() {
+    }
+    AgentConfig(AgentConfig const&);              // Don't Implement.
     void LoadConfig(const char * configFile);
-    ~AgentConfig();
+    void operator=(AgentConfig const&); // Don't implement
 };
 
