@@ -28,6 +28,7 @@ TODO we should get the first active network interface.
 PUINT8 NetworkRoutine::GetMacAddress()
 {
     PUINT8 MAC_ADDRESS = new UINT8[6];
+    memset(MAC_ADDRESS, 0, 6);
 #ifdef _WIN32
     return MAC_ADDRESS;
 #else
@@ -120,6 +121,7 @@ PUINT8 NetworkRoutine::GetMacAddress()
 PDHCPRequest NetworkRoutine::BuildDHCPRequest()
 {
     PDHCPRequest dhcpRequest = new DHCPRequest();
+    memset(dhcpRequest, 0, sizeof(DHCPRequest));
     dhcpRequest->Opcode = 1;
     dhcpRequest->HardwareAddressType = 1;
     dhcpRequest->HardwareAddressLength = 6;
@@ -135,7 +137,11 @@ PDHCPRequest NetworkRoutine::BuildDHCPRequest()
     delete macAddress;
 
     //99, 130, 83, 99, 53, 1, 1, 255
-    PUINT8 magicCookie = new UINT8[99, 130, 83, 99];
+    PUINT8 magicCookie = new UINT8[4];
+    magicCookie[0] = 99;
+    magicCookie[1] = 130;
+    magicCookie[2] = 83;
+    magicCookie[3] = 99;
     memcpy(dhcpRequest->MagicCookie, magicCookie, 4);
     delete magicCookie;
     dhcpRequest->MessageTypeCode = 53;

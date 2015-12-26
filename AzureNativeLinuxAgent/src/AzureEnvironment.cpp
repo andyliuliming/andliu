@@ -82,7 +82,7 @@ void AzureEnvironment::DoDhcpWork()
         addr_to.sin_family = AF_INET;
         addr_to.sin_addr.s_addr = inet_addr("255.255.255.255");
         addr_to.sin_port = htons(DHCP_UDP_TO_PORT);
-
+        cout << "dhcp request size is: " << sizeof(*dhcpRequest) << endl;
         long sendResult = sendto(sck, dhcpRequest, sizeof(DHCPRequest), 0,
             (struct sockaddr *)&addr_to, sizeof(addr_to));
         if (sendResult < 0)
