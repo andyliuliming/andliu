@@ -1,5 +1,6 @@
 #include "GoalState.h"
 #include "HttpRoutine.h"
+#include <iostream>
 #ifdef _WIN32
 //windows code goes here
 
@@ -7,8 +8,9 @@
 //linux code goes here
 #include <stdio.h>
 #include <libxml/xmlreader.h>
+#include <libxml/xmlmemory.h>
 #endif
-
+using namespace std;
 
 GoalState::GoalState()
 {
@@ -30,9 +32,13 @@ void GoalState::UpdateGoalState()
 
     /* set our custom set of headers */
 
-    HttpRoutine::Get("http://168.63.129.16/machine/?comp=goalstate", chunk);
+    string result = HttpRoutine::Get("http://168.63.129.16/machine/?comp=goalstate", chunk);
 
     curl_slist_free_all(chunk);
+
+    xmlDocPtr pdoc = xmlParseMemory(result.c_str(), result.size());
+    xmlNodePtr root = xmlDocGetRootElement(pdoc);
+    cout << "root name is " << root->name << endl;
 #endif
 }
 

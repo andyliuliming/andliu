@@ -6,7 +6,6 @@ using namespace std;
 // your windows code goes here.
 #else
 char HttpRoutine::errorBuffer[CURL_ERROR_SIZE];
-string HttpRoutine::buffer;
 #endif 
 
 HttpRoutine::HttpRoutine()
@@ -25,7 +24,7 @@ int HttpRoutine::writer(char *data, size_t size, size_t nmemb, string *writerDat
     return size * nmemb;
 }
 
-bool HttpRoutine::init(CURL *&conn, const char *url) {
+bool HttpRoutine::init(CURL *&conn, const char *url, string *buffer) {
     CURLcode code;
 
     conn = curl_easy_init();
@@ -64,7 +63,7 @@ bool HttpRoutine::init(CURL *&conn, const char *url) {
         return false;
     }
 
-    code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, &(buffer));
+    code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, buffer);
     if (code != CURLE_OK)
     {
         fprintf(stderr, "Failed to set write data [%s]\n", errorBuffer);
@@ -79,14 +78,15 @@ bool HttpRoutine::init(CURL *&conn, const char *url) {
 #ifdef _WIN32
 // your windows code.
 #else
-void HttpRoutine::Get(const char * url, struct curl_slist *chunk)
+string HttpRoutine::Get(const char * url, struct curl_slist *chunk)
 {
     //http://curl.haxx.se/libcurl/c/htmltitle.html
     CURL *conn = NULL;
     CURLcode code;
     //curl_global_init is not thread safe.
     curl_global_init(CURL_GLOBAL_DEFAULT);
-    bool initResult = init(conn, url);
+    string buffer;
+    bool initResult = init(conn, url, &buffer);
     cout << "init Result: " << initResult << endl;
     if (chunk != NULL) {
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
@@ -103,6 +103,7 @@ void HttpRoutine::Get(const char * url, struct curl_slist *chunk)
     {
         cout << buffer << endl;
     }
+    return buffer;
 }
 
 #endif

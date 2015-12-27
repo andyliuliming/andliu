@@ -16,20 +16,19 @@ private:
 #ifdef _WIN32
 #else
     static char errorBuffer[CURL_ERROR_SIZE];
-    static string buffer;
     //
     //  libcurl write callback function
     //
 
     static int writer(char *data, size_t size, size_t nmemb, string *writerData);
-    static bool init(CURL *&conn, const char *url);
+    static bool init(CURL *&conn, const char *url,string *buffer);
 
 #endif
 public:
     HttpRoutine(); 
 #ifdef _WIN32
 #else
-    static void Get(const char * url, struct curl_slist *chunk);
+    static string Get(const char * url, struct curl_slist *chunk);
 #endif
     ~HttpRoutine();
 };
