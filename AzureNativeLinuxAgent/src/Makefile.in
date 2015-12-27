@@ -93,13 +93,13 @@ PROGRAMS = $(bin_PROGRAMS)
 am_AzureNativeLinuxAgent_OBJECTS = AzureNativeLinuxAgent.$(OBJEXT) \
 	AzureEnvironment.$(OBJEXT) AgentConfig.$(OBJEXT) \
 	CommandExecuter.$(OBJEXT) CommandResult.$(OBJEXT) \
-	DeviceRoutine.$(OBJEXT) Logger.$(OBJEXT) GoalState.$(OBJEXT) \
-	NetworkRoutine.$(OBJEXT) Provisioner.$(OBJEXT) \
-	VMMStartup.$(OBJEXT)
+	DeviceRoutine.$(OBJEXT) HttpRoutine.$(OBJEXT) Logger.$(OBJEXT) \
+	GoalState.$(OBJEXT) NetworkRoutine.$(OBJEXT) \
+	Provisioner.$(OBJEXT) VMMStartup.$(OBJEXT)
 AzureNativeLinuxAgent_OBJECTS = $(am_AzureNativeLinuxAgent_OBJECTS)
 am__DEPENDENCIES_1 =
 AzureNativeLinuxAgent_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -168,6 +168,8 @@ CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CURLPP_CFLAGS = @CURLPP_CFLAGS@
+CURLPP_LIBS = @CURLPP_LIBS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
@@ -254,9 +256,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AzureNativeLinuxAgent_CFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS)
-AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS)
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp VMMStartup.cpp
+AzureNativeLinuxAgent_CFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(CURLPP_CFLAGS)
+AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS) $(CURLPP_LIBS)
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp VMMStartup.cpp
 all: all-am
 
 .SUFFIXES:
@@ -351,6 +353,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandResult.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DeviceRoutine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GoalState.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRoutine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Logger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetworkRoutine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Provisioner.Po@am__quote@

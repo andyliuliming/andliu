@@ -93,13 +93,13 @@ PROGRAMS = $(bin_PROGRAMS)
 am_AzureNativeLinuxAgent_OBJECTS = AzureNativeLinuxAgent.$(OBJEXT) \
 	AzureEnvironment.$(OBJEXT) AgentConfig.$(OBJEXT) \
 	CommandExecuter.$(OBJEXT) CommandResult.$(OBJEXT) \
-	DeviceRoutine.$(OBJEXT) Logger.$(OBJEXT) GoalState.$(OBJEXT) \
-	NetworkRoutine.$(OBJEXT) Provisioner.$(OBJEXT) \
-	VMMStartup.$(OBJEXT)
+	DeviceRoutine.$(OBJEXT) HttpRoutine.$(OBJEXT) Logger.$(OBJEXT) \
+	GoalState.$(OBJEXT) NetworkRoutine.$(OBJEXT) \
+	Provisioner.$(OBJEXT) VMMStartup.$(OBJEXT)
 AzureNativeLinuxAgent_OBJECTS = $(am_AzureNativeLinuxAgent_OBJECTS)
 am__DEPENDENCIES_1 =
 AzureNativeLinuxAgent_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -168,6 +168,8 @@ CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
 CPP = gcc -E
 CPPFLAGS = 
+CURLPP_CFLAGS =  
+CURLPP_LIBS = -Wl,-Bsymbolic-functions -Wl,-z,relro -lcurlpp -lstdc++ -lcurl  
 CXX = g++
 CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -g -O2 -std=c++0x
@@ -254,9 +256,9 @@ target_alias =
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
-AzureNativeLinuxAgent_CFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS)
-AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS)
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp VMMStartup.cpp
+AzureNativeLinuxAgent_CFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(CURLPP_CFLAGS)
+AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS) $(CURLPP_LIBS)
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp VMMStartup.cpp
 all: all-am
 
 .SUFFIXES:
@@ -351,6 +353,7 @@ include ./$(DEPDIR)/CommandExecuter.Po
 include ./$(DEPDIR)/CommandResult.Po
 include ./$(DEPDIR)/DeviceRoutine.Po
 include ./$(DEPDIR)/GoalState.Po
+include ./$(DEPDIR)/HttpRoutine.Po
 include ./$(DEPDIR)/Logger.Po
 include ./$(DEPDIR)/NetworkRoutine.Po
 include ./$(DEPDIR)/Provisioner.Po

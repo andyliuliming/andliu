@@ -12,6 +12,10 @@ GoalState::GoalState()
 {
 }
 
+void GoalState::UpdateGoalState()
+{
+}
+
 void GoalState::Parse(const char *goalStateXmlContent)
 {
 

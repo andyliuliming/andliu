@@ -150,6 +150,7 @@
     <ClInclude Include="src\DeviceRoutine.h" />
     <ClInclude Include="src\FileOperator.h" />
     <ClInclude Include="src\GoalState.h" />
+    <ClInclude Include="src\HttpRoutine.h" />
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\Macros.h" />
     <ClInclude Include="src\NetworkRoutine.h" />
@@ -166,6 +167,7 @@
     <ClCompile Include="src\DeviceRoutine.cpp" />
     <ClCompile Include="src\FileOperator.cpp" />
     <ClCompile Include="src\GoalState.cpp" />
+    <ClCompile Include="src\HttpRoutine.cpp" />
     <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\NetworkRoutine.cpp" />
     <ClCompile Include="src\Provisioner.cpp" />

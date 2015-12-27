@@ -5,7 +5,7 @@
 #include "AzureEnvironment.h"
 #include "Logger.h"
 #include "DeviceRoutine.h"
-
+#include "GoalState.h"
 using namespace std;
 
 int main(void)
@@ -16,7 +16,7 @@ int main(void)
     vmmStartUp->Startup();
 
     // 2. do dhcp 
-    Logger::getInstance().Log("DoDhcpWork"); 
+    Logger::getInstance().Log("DoDhcpWork");
     AzureEnvironment *azureEnvironment = new AzureEnvironment();
     int dhcpWorkResult = azureEnvironment->DoDhcpWork();
 
@@ -31,6 +31,8 @@ int main(void)
     while (true) {
         // a. UpdateGoalState
         // b. process goal state
+        GoalState *goalState = new GoalState();
+        goalState->UpdateGoalState();
         SLEEP(25 * 1000);
     }
 }

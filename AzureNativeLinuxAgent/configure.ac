@@ -26,12 +26,14 @@ AC_CHECK_FUNCS([memset socket])
 
 CXXFLAGS="$CXXFLAGS -std=c++0x"
 
-#[LIBXML2], [libxml-2.0 >= 2.9],,...
 PKG_CHECK_MODULES([LIBXML2], [libxml-2.0],,
   AC_MSG_ERROR([libxml2 not found.]))
 
 PKG_CHECK_MODULES([LIBCONFIGXX], [libconfig++],,
   AC_MSG_ERROR([libconfig++ not found.]))
+
+PKG_CHECK_MODULES([CURLPP], [curlpp],,
+  AC_MSG_ERROR([CURLPP not found.]))
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile])
