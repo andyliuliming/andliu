@@ -6,6 +6,7 @@ using namespace std;
 class AzureEnvironment
 {
 public:
+    string wireServerAddress;
     AzureEnvironment();
     int DoDhcpWork();
     int CheckVersion();

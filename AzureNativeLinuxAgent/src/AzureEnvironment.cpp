@@ -125,8 +125,9 @@ int AzureEnvironment::DoDhcpWork()
                     Logger::getInstance().Verbose("3 got");
                 }
                 if (option == 245) {
-                    Logger::getInstance().Verbose("245 got");
-
+                    Logger::getInstance().Verbose("245 got, so the ip is:\n");
+                    cout << (int)(buffer[i + 2]) << "." << (int)(buffer[i + 3]) << "." << (int)(buffer[i + 4]) << "." << (int)(buffer[i + 5]) << endl;
+                    wireServerAddress = "";
                 }
                 i += (option_length + 2);
             }
