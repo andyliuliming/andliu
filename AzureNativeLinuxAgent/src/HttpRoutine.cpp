@@ -2,7 +2,6 @@
 #include <iostream>
 using namespace std;
 
-
 #ifdef _WIN32
 // your windows code goes here.
 #else

@@ -5,6 +5,8 @@
 
 #else
 //linux code goes here
+#include <stdio.h>
+#include <libxml/xmlreader.h>
 #endif
 
 
