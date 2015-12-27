@@ -19,7 +19,7 @@
 //linux code goes here
 #define POPEN popen
 #define PCLOSE pclose
-#define SLEEP usleep
+#define SLEEP(x) usleep(x*1000)
 #define SOCKET_OPTION_P
 #define SEND_TO_OPTION
 #define RECV_TO_OPTION

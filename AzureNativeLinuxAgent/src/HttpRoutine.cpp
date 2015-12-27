@@ -97,7 +97,6 @@ void HttpRoutine::Get(const char * url, struct curl_slist *chunk)
     cout << "curl_easy_perform result: " << code << endl;
     curl_easy_cleanup(conn);
 
-    
     if (code != CURLE_OK)
     {
         fprintf(stderr, "Failed to get '%s' [%s]\n", url, errorBuffer);
