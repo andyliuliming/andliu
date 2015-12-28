@@ -14,6 +14,7 @@ using namespace std;
 
 GoalState::GoalState()
 {
+    goalStageFilePrefix = "/var/lib/waagent/Native_GoalState.";
 }
 
 void GoalState::UpdateGoalState()
@@ -23,12 +24,12 @@ void GoalState::UpdateGoalState()
 
     /* set our custom set of headers */
 
-    string * result = HttpRoutine::Get("http://168.63.129.16/machine/?comp=goalstate");
+    string * goalStateText = HttpRoutine::Get("http://168.63.129.16/machine/?comp=goalstate");
 
     DomParser parser;
     parser.set_throw_messages(false);
     parser.set_substitute_entities(true);
-    ustring uResult = *result;
+    ustring uResult = *goalStateText;
     parser.parse_memory(uResult);
     Node * root = parser.get_document()->get_root_node();
 
@@ -83,8 +84,9 @@ void GoalState::UpdateGoalState()
         cout << "configName: " << (this->configName) << endl;
     }
 
-    // saving the 
-
+    // saving the goal state file 
+    string goalStageFileName = this->goalStageFilePrefix + incarnation + ".xml";
+    FileOperator::save_file(goalStateText, &goalStageFileName);
     // construct the instances
     string * hostingEnvironmentConfigText = HttpRoutine::Get(this->hostingEnvironmentConfigUrl.c_str());
     hostingEnvironmentConfig = new HostingEnvironmentConfig();

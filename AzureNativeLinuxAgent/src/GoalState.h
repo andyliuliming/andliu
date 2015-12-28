@@ -16,6 +16,7 @@ private:
     string  incarnation;
     string  roleInstanceId;
     string  sharedConfigUrl;
+    string goalStageFilePrefix;
     HostingEnvironmentConfig * hostingEnvironmentConfig;
     SharedConfig *sharedConfig;
 public:
