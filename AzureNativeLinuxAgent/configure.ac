@@ -26,8 +26,8 @@ AC_CHECK_FUNCS([memset socket])
 
 CXXFLAGS="$CXXFLAGS -std=c++0x"
 
-PKG_CHECK_MODULES([LIBXML2], [libxml-2.0],,
-  AC_MSG_ERROR([libxml2 not found.]))
+PKG_CHECK_MODULES([LIBXMLPP], [libxml++-2.6],,
+  AC_MSG_ERROR([libxml++ not found.]))
 
 PKG_CHECK_MODULES([LIBCONFIGXX], [libconfig++],,
   AC_MSG_ERROR([libconfig++ not found.]))

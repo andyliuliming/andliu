@@ -5,7 +5,10 @@
 SharedConfig::SharedConfig()
 {
 }
+void SharedConfig::Parse(string * hostingEnvironmentConfigText)
+{
 
+}
 void SharedConfig::Process()
 {
 }

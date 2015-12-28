@@ -2,7 +2,6 @@
 #include "GoalState.h"
 #include "HostingEnvironmentConfig.h"
 #include "HttpRoutine.h"
-#include "XmlRoutine.h"
 
 #ifdef _WIN32
 #else
@@ -48,47 +47,58 @@ void GoalState::UpdateGoalState()
     NodeSet hostingEnvironmentConfigSet = root->find("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/HostingEnvironmentConfig/text()");
     if (hostingEnvironmentConfigSet.size() > 0) {
         const TextNode* hostingEnvironmentConfigNode = dynamic_cast<const TextNode*>(hostingEnvironmentConfigSet[0]);
-        (this->hostingEnvironmentConfig) = hostingEnvironmentConfigNode->get_content();
-        cout << "hostingEnvironmentConfig: " << (this->hostingEnvironmentConfig) << endl;
+        (this->hostingEnvironmentConfigUrl) = hostingEnvironmentConfigNode->get_content();
+        cout << "hostingEnvironmentConfigUrl: " << (this->hostingEnvironmentConfigUrl) << endl;
     }
     NodeSet sharedConfigSet = root->find("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/SharedConfig/text()");
     if (sharedConfigSet.size() > 0) {
         const TextNode* sharedConfigNode = dynamic_cast<const TextNode*>(sharedConfigSet[0]);
-        (this->sharedConfig) = sharedConfigNode->get_content();
-        cout << "sharedConfig: " << (this->sharedConfig) << endl;
+        (this->sharedConfigUrl) = sharedConfigNode->get_content();
+        cout << "sharedConfigUrl: " << (this->sharedConfigUrl) << endl;
     }
     NodeSet extensionsConfigSet = root->find("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ExtensionsConfig/text()");
     if (extensionsConfigSet.size() > 0) {
         const TextNode* extensionsConfigNode = dynamic_cast<const TextNode*>(extensionsConfigSet[0]);
-        (this->extensionsConfig) = extensionsConfigNode->get_content();
-        cout << "extensionsConfig: " << (this->extensionsConfig) << endl;
+        (this->extensionsConfigUrl) = extensionsConfigNode->get_content();
+        cout << "extensionsConfigUrl: " << (this->extensionsConfigUrl) << endl;
     }
     NodeSet fullConfigSet = root->find("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/FullConfig/text()");
     if (fullConfigSet.size() > 0) {
         const TextNode* fullConfigNode = dynamic_cast<const TextNode*>(fullConfigSet[0]);
-        (this->fullConfig) = fullConfigNode->get_content();
-        cout << "fullConfig: " << (this->fullConfig) << endl;
+        (this->fullConfigUrl) = fullConfigNode->get_content();
+        cout << "fullConfigUrl: " << (this->fullConfigUrl) << endl;
     }
+
+    NodeSet certificatesSet = root->find("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/Certificates/text()");
+    if (certificatesSet.size() > 0) {
+        const TextNode* certificatesNode = dynamic_cast<const TextNode*>(certificatesSet[0]);
+        (this->certificatesUrl) = certificatesNode->get_content();
+        cout << "certificatesUrl: " << (this->certificatesUrl) << endl;
+    }
+
     NodeSet configNameSet = root->find("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ConfigName/text()");
     if (configNameSet.size() > 0) {
         const TextNode* configNameNode = dynamic_cast<const TextNode*>(configNameSet[0]);
         (this->configName) = configNameNode->get_content();
         cout << "configName: " << (this->configName) << endl;
     }
-    NodeSet certificatesSet = root->find("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/Certificates/text()");
-    if (certificatesSet.size() > 0) {
-        const TextNode* certificatesNode = dynamic_cast<const TextNode*>(certificatesSet[0]);
-        (this->certificates) = certificatesNode->get_content();
-        cout << "certificates: " << (this->certificates) << endl;
-    }
 
     // construct the instances
+    string *hostingEnvironmentConfigText = HttpRoutine::Get(this->hostingEnvironmentConfigUrl.c_str());
+    hostingEnvironmentConfig = new HostingEnvironmentConfig();
+    hostingEnvironmentConfig->Parse(hostingEnvironmentConfigText);
+
+    string *sharedConfigText = HttpRoutine::Get(this->sharedConfigUrl.c_str());
+    sharedConfig = new SharedConfig();
+    sharedConfig->Parse(sharedConfigText);
 
 #endif
 }
 
 void GoalState::Process()
 {
+    this->hostingEnvironmentConfig->Process();
+    this->sharedConfig->Process();
 }
 
 

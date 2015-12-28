@@ -1,20 +1,23 @@
 #pragma once
 #include <string>
-
+#include "HostingEnvironmentConfig.h"
+#include "SharedConfig.h"
 using namespace std;
 
 class GoalState
 {
 private:
-    string  certificates;
+    string  certificatesUrl;
     string  configName;
     string  containerId;
-    string  extensionsConfig;
-    string  fullConfig;
-    string  hostingEnvironmentConfig;
+    string  extensionsConfigUrl;
+    string  fullConfigUrl;
+    string  hostingEnvironmentConfigUrl;
     string  incarnation;
     string  roleInstanceId;
-    string  sharedConfig;
+    string  sharedConfigUrl;
+    HostingEnvironmentConfig * hostingEnvironmentConfig;
+    SharedConfig *sharedConfig;
 public:
     GoalState();
     void UpdateGoalState();
