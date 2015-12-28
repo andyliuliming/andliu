@@ -5,7 +5,7 @@
 SharedConfig::SharedConfig()
 {
 }
-void SharedConfig::Parse(string * hostingEnvironmentConfigText)
+void SharedConfig::Parse(string * sharedConfigText)
 {
 
 }

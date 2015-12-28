@@ -1,13 +1,12 @@
 #pragma once
 #include <string>
 using namespace std;
-class HostingEnvironmentConfig
+class ExtensionsConfig
 {
 public:
-    HostingEnvironmentConfig();
+    ExtensionsConfig();
     void Parse(string * hostingEnvironmentConfigText);
     void Process();
-    
-    ~HostingEnvironmentConfig();
+    ~ExtensionsConfig();
 };
 

@@ -97,6 +97,7 @@ am_AzureNativeLinuxAgent_OBJECTS =  \
 	AzureNativeLinuxAgent-CommandExecuter.$(OBJEXT) \
 	AzureNativeLinuxAgent-CommandResult.$(OBJEXT) \
 	AzureNativeLinuxAgent-DeviceRoutine.$(OBJEXT) \
+	AzureNativeLinuxAgent-ExtensionsConfig.$(OBJEXT) \
 	AzureNativeLinuxAgent-HostingEnvironmentConfig.$(OBJEXT) \
 	AzureNativeLinuxAgent-HttpRoutine.$(OBJEXT) \
 	AzureNativeLinuxAgent-Logger.$(OBJEXT) \
@@ -104,8 +105,7 @@ am_AzureNativeLinuxAgent_OBJECTS =  \
 	AzureNativeLinuxAgent-NetworkRoutine.$(OBJEXT) \
 	AzureNativeLinuxAgent-Provisioner.$(OBJEXT) \
 	AzureNativeLinuxAgent-SharedConfig.$(OBJEXT) \
-	AzureNativeLinuxAgent-VMMStartup.$(OBJEXT) \
-	AzureNativeLinuxAgent-XmlRoutine.$(OBJEXT)
+	AzureNativeLinuxAgent-VMMStartup.$(OBJEXT)
 AzureNativeLinuxAgent_OBJECTS = $(am_AzureNativeLinuxAgent_OBJECTS)
 am__DEPENDENCIES_1 =
 AzureNativeLinuxAgent_DEPENDENCIES = $(am__DEPENDENCIES_1) \
@@ -275,7 +275,7 @@ top_builddir = ..
 top_srcdir = ..
 AzureNativeLinuxAgent_CXXFLAGS = $(LIBXMLPP_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(CURLPP_CFLAGS)
 AzureNativeLinuxAgent_LDADD = $(LIBXMLPP_LIBS) $(LIBCONFIGXX_LIBS) $(CURLPP_LIBS)
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp SharedConfig.cpp VMMStartup.cpp XmlRoutine.cpp
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionsConfig.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp SharedConfig.cpp VMMStartup.cpp
 all: all-am
 
 .SUFFIXES:
@@ -369,6 +369,7 @@ include ./$(DEPDIR)/AzureNativeLinuxAgent-AzureNativeLinuxAgent.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-CommandExecuter.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-CommandResult.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-DeviceRoutine.Po
+include ./$(DEPDIR)/AzureNativeLinuxAgent-ExtensionsConfig.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-GoalState.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-HostingEnvironmentConfig.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-HttpRoutine.Po
@@ -377,7 +378,6 @@ include ./$(DEPDIR)/AzureNativeLinuxAgent-NetworkRoutine.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-Provisioner.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-SharedConfig.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-VMMStartup.Po
-include ./$(DEPDIR)/AzureNativeLinuxAgent-XmlRoutine.Po
 
 .cpp.o:
 	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -476,6 +476,20 @@ AzureNativeLinuxAgent-DeviceRoutine.obj: DeviceRoutine.cpp
 #	$(AM_V_CXX)source='DeviceRoutine.cpp' object='AzureNativeLinuxAgent-DeviceRoutine.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-DeviceRoutine.obj `if test -f 'DeviceRoutine.cpp'; then $(CYGPATH_W) 'DeviceRoutine.cpp'; else $(CYGPATH_W) '$(srcdir)/DeviceRoutine.cpp'; fi`
+
+AzureNativeLinuxAgent-ExtensionsConfig.o: ExtensionsConfig.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-ExtensionsConfig.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-ExtensionsConfig.Tpo -c -o AzureNativeLinuxAgent-ExtensionsConfig.o `test -f 'ExtensionsConfig.cpp' || echo '$(srcdir)/'`ExtensionsConfig.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-ExtensionsConfig.Tpo $(DEPDIR)/AzureNativeLinuxAgent-ExtensionsConfig.Po
+#	$(AM_V_CXX)source='ExtensionsConfig.cpp' object='AzureNativeLinuxAgent-ExtensionsConfig.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-ExtensionsConfig.o `test -f 'ExtensionsConfig.cpp' || echo '$(srcdir)/'`ExtensionsConfig.cpp
+
+AzureNativeLinuxAgent-ExtensionsConfig.obj: ExtensionsConfig.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-ExtensionsConfig.obj -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-ExtensionsConfig.Tpo -c -o AzureNativeLinuxAgent-ExtensionsConfig.obj `if test -f 'ExtensionsConfig.cpp'; then $(CYGPATH_W) 'ExtensionsConfig.cpp'; else $(CYGPATH_W) '$(srcdir)/ExtensionsConfig.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-ExtensionsConfig.Tpo $(DEPDIR)/AzureNativeLinuxAgent-ExtensionsConfig.Po
+#	$(AM_V_CXX)source='ExtensionsConfig.cpp' object='AzureNativeLinuxAgent-ExtensionsConfig.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-ExtensionsConfig.obj `if test -f 'ExtensionsConfig.cpp'; then $(CYGPATH_W) 'ExtensionsConfig.cpp'; else $(CYGPATH_W) '$(srcdir)/ExtensionsConfig.cpp'; fi`
 
 AzureNativeLinuxAgent-HostingEnvironmentConfig.o: HostingEnvironmentConfig.cpp
 	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-HostingEnvironmentConfig.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-HostingEnvironmentConfig.Tpo -c -o AzureNativeLinuxAgent-HostingEnvironmentConfig.o `test -f 'HostingEnvironmentConfig.cpp' || echo '$(srcdir)/'`HostingEnvironmentConfig.cpp
@@ -588,20 +602,6 @@ AzureNativeLinuxAgent-VMMStartup.obj: VMMStartup.cpp
 #	$(AM_V_CXX)source='VMMStartup.cpp' object='AzureNativeLinuxAgent-VMMStartup.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-VMMStartup.obj `if test -f 'VMMStartup.cpp'; then $(CYGPATH_W) 'VMMStartup.cpp'; else $(CYGPATH_W) '$(srcdir)/VMMStartup.cpp'; fi`
-
-AzureNativeLinuxAgent-XmlRoutine.o: XmlRoutine.cpp
-	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-XmlRoutine.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-XmlRoutine.Tpo -c -o AzureNativeLinuxAgent-XmlRoutine.o `test -f 'XmlRoutine.cpp' || echo '$(srcdir)/'`XmlRoutine.cpp
-	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-XmlRoutine.Tpo $(DEPDIR)/AzureNativeLinuxAgent-XmlRoutine.Po
-#	$(AM_V_CXX)source='XmlRoutine.cpp' object='AzureNativeLinuxAgent-XmlRoutine.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-XmlRoutine.o `test -f 'XmlRoutine.cpp' || echo '$(srcdir)/'`XmlRoutine.cpp
-
-AzureNativeLinuxAgent-XmlRoutine.obj: XmlRoutine.cpp
-	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-XmlRoutine.obj -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-XmlRoutine.Tpo -c -o AzureNativeLinuxAgent-XmlRoutine.obj `if test -f 'XmlRoutine.cpp'; then $(CYGPATH_W) 'XmlRoutine.cpp'; else $(CYGPATH_W) '$(srcdir)/XmlRoutine.cpp'; fi`
-	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-XmlRoutine.Tpo $(DEPDIR)/AzureNativeLinuxAgent-XmlRoutine.Po
-#	$(AM_V_CXX)source='XmlRoutine.cpp' object='AzureNativeLinuxAgent-XmlRoutine.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-XmlRoutine.obj `if test -f 'XmlRoutine.cpp'; then $(CYGPATH_W) 'XmlRoutine.cpp'; else $(CYGPATH_W) '$(srcdir)/XmlRoutine.cpp'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
