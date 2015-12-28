@@ -6,6 +6,10 @@ SharedConfig::SharedConfig()
 {
 }
 
+void SharedConfig::Process()
+{
+}
+
 
 SharedConfig::~SharedConfig()
 {

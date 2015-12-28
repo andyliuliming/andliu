@@ -6,6 +6,10 @@ HostingEnvironmentConfig::HostingEnvironmentConfig()
 {
 }
 
+void HostingEnvironmentConfig::Process()
+{
+}
+
 
 HostingEnvironmentConfig::~HostingEnvironmentConfig()
 {

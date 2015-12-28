@@ -1,7 +1,7 @@
-#include "GoalState.h"
-#include "HttpRoutine.h"
 #include <iostream>
-
+#include "GoalState.h"
+#include "HostingEnvironmentConfig.h"
+#include "HttpRoutine.h"
 #include "XmlRoutine.h"
 using namespace std;
 
@@ -18,7 +18,7 @@ void GoalState::UpdateGoalState()
     /* Add a custom header */
     /*"x-ms-agent-name": GuestAgentName,
         "x-ms-version" : ProtocolVersion*/
-    chunk = curl_slist_append(chunk, "x-ms-agent-name: WALinuxAgent");
+    chunk = curl_slist_append(chunk, "x-ms-agent-name: AzureNativeLinuxAgent");
 
     /* Modify a header curl otherwise adds differently */
     chunk = curl_slist_append(chunk, "x-ms-version: 2012-11-30");
@@ -33,11 +33,11 @@ void GoalState::UpdateGoalState()
     xmlNodePtr root = xmlDocGetRootElement(doc);
     cout << "root name is " << root->name << endl;
 
-    const xmlChar* incarnationXpathExpr = xmlCharStrdup( "/GoalState/Incarnation[1]/text()");
+    const xmlChar* incarnationXpathExpr = xmlCharStrdup("/GoalState/Incarnation[1]/text()");
     this->incarnation = XmlRoutine::getNodeText(doc, incarnationXpathExpr);
     delete incarnationXpathExpr;
 
-    const xmlChar* containerIdXpathExpr = xmlCharStrdup( "/GoalState/Container/ContainerId/text()");
+    const xmlChar* containerIdXpathExpr = xmlCharStrdup("/GoalState/Container/ContainerId/text()");
     this->containerId = XmlRoutine::getNodeText(doc, containerIdXpathExpr);
     delete containerIdXpathExpr;
 
@@ -45,20 +45,61 @@ void GoalState::UpdateGoalState()
     this->hostingEnvironmentConfig = XmlRoutine::getNodeText(doc, hostingEnvironmentConfigXpathExpr);
     delete hostingEnvironmentConfigXpathExpr;
 
-
     const xmlChar* sharedConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/SharedConfig/text()");
     this->sharedConfig = XmlRoutine::getNodeText(doc, sharedConfigXpathExpr);
     delete sharedConfigXpathExpr;
 
+    const xmlChar* extensionsConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ExtensionsConfig/text()");
+    this->extensionsConfig = XmlRoutine::getNodeText(doc, extensionsConfigXpathExpr);
+    delete extensionsConfigXpathExpr;
+
+    const xmlChar* fullConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/FullConfig/text()");
+    this->fullConfig = XmlRoutine::getNodeText(doc, fullConfigXpathExpr);
+    delete fullConfigXpathExpr;
+
+    const xmlChar* configNameXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ConfigName/text()");
+    this->configName = XmlRoutine::getNodeText(doc, configNameXpathExpr);
+    delete configNameXpathExpr;
+
+    const xmlChar* certificatesXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/Certificates/text()");
+    this->certificates = XmlRoutine::getNodeText(doc, certificatesXpathExpr);
+    delete certificatesXpathExpr;
+
+    // construct the instances
+    
 #endif
+}
+
+void GoalState::Process()
+{
 }
 
 
 GoalState::~GoalState()
 {
+    if (this->certificates != NULL) {
+        delete this->certificates;
+        this->certificates = NULL;
+    }
+    if (this->configName != NULL) {
+        delete this->configName;
+        this->configName = NULL;
+    }
     if (this->containerId != NULL) {
         delete this->containerId;
         this->containerId = NULL;
+    }
+    if (this->extensionsConfig != NULL) {
+        delete this->extensionsConfig;
+        this->extensionsConfig = NULL;
+    }
+    if (this->fullConfig != NULL) {
+        delete this->fullConfig;
+        this->fullConfig = NULL;
+    }
+    if (this->hostingEnvironmentConfig != NULL) {
+        delete this->hostingEnvironmentConfig;
+        this->hostingEnvironmentConfig = NULL;
     }
     if (this->incarnation != NULL) {
         delete this->incarnation;
@@ -68,8 +109,8 @@ GoalState::~GoalState()
         delete this->roleInstanceId;
         this->roleInstanceId = NULL;
     }
-    if (this->hostingEnvironmentConfig != NULL) {
-        delete this->hostingEnvironmentConfig;
-        this->hostingEnvironmentConfig = NULL;
+    if (this->sharedConfig != NULL) {
+        delete this->sharedConfig;
+        this->sharedConfig = NULL;
     }
 }

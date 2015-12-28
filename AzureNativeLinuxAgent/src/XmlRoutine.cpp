@@ -30,6 +30,11 @@ string * XmlRoutine::getNodeText(xmlDocPtr doc, const xmlChar* xpathExpr)
     }
     else
     {
+        if (xpathObj->nodesetval == NULL) {
+            fprintf(stderr, "Error: node set is null for \"%s\"\n", xpathExpr);
+            xmlXPathFreeContext(xpathCtx);
+            return NULL;
+        }
         xmlNodeSetPtr nodes = xpathObj->nodesetval;
         cout << "nodes->nodeNr is: " << nodes->nodeNr << endl;
         cout << "nodes content :" << nodes->nodeTab[0]->content << endl;
