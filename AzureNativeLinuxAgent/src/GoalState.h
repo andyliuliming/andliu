@@ -5,13 +5,14 @@ using namespace std;
 class GoalState
 {
 private:
-    string roleInstanceId;
-    string incarnation;
-    string containerId;
+    string * roleInstanceId;
+    string * incarnation;
+    string * containerId;
+    string * hostingEnvironmentConfig;
+    string * sharedConfig;
 public:
     GoalState();
     void UpdateGoalState();
-    void Parse(const char * goalStateXmlContent);
     ~GoalState();
 };
 
