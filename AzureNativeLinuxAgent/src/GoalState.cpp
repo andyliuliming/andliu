@@ -9,6 +9,10 @@
 #include <stdio.h>
 #include <libxml/xmlreader.h>
 #include <libxml/xmlmemory.h>
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+#include <libxml/xpath.h>
+#include <libxml/xpathInternals.h>
 #endif
 using namespace std;
 
@@ -36,9 +40,33 @@ void GoalState::UpdateGoalState()
 
     curl_slist_free_all(chunk);
 
-    xmlDocPtr pdoc = xmlParseMemory(result.c_str(), result.size());
-    xmlNodePtr root = xmlDocGetRootElement(pdoc);
+    xmlDocPtr doc = xmlParseMemory(result.c_str(), result.size());
+    xmlNodePtr root = xmlDocGetRootElement(doc);
     cout << "root name is " << root->name << endl;
+    
+    xmlXPathContextPtr xpathCtx;
+    xmlXPathObjectPtr xpathObj;
+    xpathCtx = xmlXPathNewContext(doc);
+    if (xpathCtx == NULL) {
+        fprintf(stderr, "Error: unable to create new XPath context\n");
+        xmlFreeDoc(doc);
+    }
+
+    const xmlChar* xpathExpr = BAD_CAST "/GoalState/Container/RoleInstanceList/RoleInstance";
+    /* Evaluate xpath expression */
+    //    
+    xpathObj = xmlXPathEvalExpression(xpathExpr, xpathCtx);
+    if (xpathObj == NULL) {
+        fprintf(stderr, "Error: unable to evaluate xpath expression \"%s\"\n", xpathExpr);
+        xmlXPathFreeContext(xpathCtx);
+        xmlFreeDoc(doc);
+    }
+    else
+    {
+        xmlNodeSetPtr nodes = xpathObj->nodesetval;
+
+    }
+
 #endif
 }
 
