@@ -209,8 +209,8 @@ LIBCONFIGXX_CFLAGS = @LIBCONFIGXX_CFLAGS@
 LIBCONFIGXX_LIBS = @LIBCONFIGXX_LIBS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
-LIBXML2_CFLAGS = @LIBXML2_CFLAGS@
-LIBXML2_LIBS = @LIBXML2_LIBS@
+LIBXMLPP_CFLAGS = @LIBXMLPP_CFLAGS@
+LIBXMLPP_LIBS = @LIBXMLPP_LIBS@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
@@ -273,8 +273,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AzureNativeLinuxAgent_CXXFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(CURLPP_CFLAGS)
-AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS) $(CURLPP_LIBS)
+AzureNativeLinuxAgent_CXXFLAGS = $(LIBXMLPP_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(CURLPP_CFLAGS)
+AzureNativeLinuxAgent_LDADD = $(LIBXMLPP_LIBS) $(LIBCONFIGXX_LIBS) $(CURLPP_LIBS)
 AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp SharedConfig.cpp VMMStartup.cpp XmlRoutine.cpp
 all: all-am
 

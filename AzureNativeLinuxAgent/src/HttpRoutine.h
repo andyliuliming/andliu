@@ -28,7 +28,7 @@ public:
     HttpRoutine(); 
 #ifdef _WIN32
 #else
-    static string Get(const char * url, struct curl_slist *chunk);
+    static string* Get(const char * url);
 #endif
     ~HttpRoutine();
 };

@@ -78,15 +78,24 @@ bool HttpRoutine::init(CURL *&conn, const char *url, string *buffer) {
 #ifdef _WIN32
 // your windows code.
 #else
-string HttpRoutine::Get(const char * url, struct curl_slist *chunk)
+string* HttpRoutine::Get(const char * url)
 {
+    struct curl_slist *chunk = NULL;
+
+    /* Add a custom header */
+    /*"x-ms-agent-name": GuestAgentName,
+    "x-ms-version" : ProtocolVersion*/
+    chunk = curl_slist_append(chunk, "x-ms-agent-name: AzureNativeLinuxAgent");
+
+    /* Modify a header curl otherwise adds differently */
+    chunk = curl_slist_append(chunk, "x-ms-version: 2012-11-30");
     //http://curl.haxx.se/libcurl/c/htmltitle.html
     CURL *conn = NULL;
     CURLcode code;
     //curl_global_init is not thread safe.
     curl_global_init(CURL_GLOBAL_DEFAULT);
-    string buffer;
-    bool initResult = init(conn, url, &buffer);
+    string *buffer = new string();
+    bool initResult = init(conn, url, buffer);
     cout << "init Result: " << initResult << endl;
     if (chunk != NULL) {
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
@@ -99,10 +108,12 @@ string HttpRoutine::Get(const char * url, struct curl_slist *chunk)
     if (code != CURLE_OK)
     {
         fprintf(stderr, "Failed to get '%s' [%s]\n", url, errorBuffer);
-    }else
-    {
-        cout << buffer << endl;
     }
+    else
+    {
+        cout << *buffer << endl;
+    }
+    curl_slist_free_all(chunk);
     return buffer;
 }
 
