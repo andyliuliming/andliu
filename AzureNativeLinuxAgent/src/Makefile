@@ -94,10 +94,12 @@ am_AzureNativeLinuxAgent_OBJECTS =  \
 	AzureNativeLinuxAgent-AzureNativeLinuxAgent.$(OBJEXT) \
 	AzureNativeLinuxAgent-AzureEnvironment.$(OBJEXT) \
 	AzureNativeLinuxAgent-AgentConfig.$(OBJEXT) \
+	AzureNativeLinuxAgent-Certificates.$(OBJEXT) \
 	AzureNativeLinuxAgent-CommandExecuter.$(OBJEXT) \
 	AzureNativeLinuxAgent-CommandResult.$(OBJEXT) \
 	AzureNativeLinuxAgent-DeviceRoutine.$(OBJEXT) \
 	AzureNativeLinuxAgent-ExtensionsConfig.$(OBJEXT) \
+	AzureNativeLinuxAgent-FileOperator.$(OBJEXT) \
 	AzureNativeLinuxAgent-HostingEnvironmentConfig.$(OBJEXT) \
 	AzureNativeLinuxAgent-HttpRoutine.$(OBJEXT) \
 	AzureNativeLinuxAgent-Logger.$(OBJEXT) \
@@ -275,7 +277,7 @@ top_builddir = ..
 top_srcdir = ..
 AzureNativeLinuxAgent_CXXFLAGS = $(LIBXMLPP_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(CURLPP_CFLAGS)
 AzureNativeLinuxAgent_LDADD = $(LIBXMLPP_LIBS) $(LIBCONFIGXX_LIBS) $(CURLPP_LIBS)
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionsConfig.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp SharedConfig.cpp VMMStartup.cpp
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionsConfig.cpp FileOperator.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp SharedConfig.cpp VMMStartup.cpp
 all: all-am
 
 .SUFFIXES:
@@ -366,10 +368,12 @@ distclean-compile:
 include ./$(DEPDIR)/AzureNativeLinuxAgent-AgentConfig.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-AzureEnvironment.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-AzureNativeLinuxAgent.Po
+include ./$(DEPDIR)/AzureNativeLinuxAgent-Certificates.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-CommandExecuter.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-CommandResult.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-DeviceRoutine.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-ExtensionsConfig.Po
+include ./$(DEPDIR)/AzureNativeLinuxAgent-FileOperator.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-GoalState.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-HostingEnvironmentConfig.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-HttpRoutine.Po
@@ -435,6 +439,20 @@ AzureNativeLinuxAgent-AgentConfig.obj: AgentConfig.cpp
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-AgentConfig.obj `if test -f 'AgentConfig.cpp'; then $(CYGPATH_W) 'AgentConfig.cpp'; else $(CYGPATH_W) '$(srcdir)/AgentConfig.cpp'; fi`
 
+AzureNativeLinuxAgent-Certificates.o: Certificates.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-Certificates.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-Certificates.Tpo -c -o AzureNativeLinuxAgent-Certificates.o `test -f 'Certificates.cpp' || echo '$(srcdir)/'`Certificates.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-Certificates.Tpo $(DEPDIR)/AzureNativeLinuxAgent-Certificates.Po
+#	$(AM_V_CXX)source='Certificates.cpp' object='AzureNativeLinuxAgent-Certificates.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-Certificates.o `test -f 'Certificates.cpp' || echo '$(srcdir)/'`Certificates.cpp
+
+AzureNativeLinuxAgent-Certificates.obj: Certificates.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-Certificates.obj -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-Certificates.Tpo -c -o AzureNativeLinuxAgent-Certificates.obj `if test -f 'Certificates.cpp'; then $(CYGPATH_W) 'Certificates.cpp'; else $(CYGPATH_W) '$(srcdir)/Certificates.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-Certificates.Tpo $(DEPDIR)/AzureNativeLinuxAgent-Certificates.Po
+#	$(AM_V_CXX)source='Certificates.cpp' object='AzureNativeLinuxAgent-Certificates.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-Certificates.obj `if test -f 'Certificates.cpp'; then $(CYGPATH_W) 'Certificates.cpp'; else $(CYGPATH_W) '$(srcdir)/Certificates.cpp'; fi`
+
 AzureNativeLinuxAgent-CommandExecuter.o: CommandExecuter.cpp
 	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-CommandExecuter.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-CommandExecuter.Tpo -c -o AzureNativeLinuxAgent-CommandExecuter.o `test -f 'CommandExecuter.cpp' || echo '$(srcdir)/'`CommandExecuter.cpp
 	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-CommandExecuter.Tpo $(DEPDIR)/AzureNativeLinuxAgent-CommandExecuter.Po
@@ -490,6 +508,20 @@ AzureNativeLinuxAgent-ExtensionsConfig.obj: ExtensionsConfig.cpp
 #	$(AM_V_CXX)source='ExtensionsConfig.cpp' object='AzureNativeLinuxAgent-ExtensionsConfig.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-ExtensionsConfig.obj `if test -f 'ExtensionsConfig.cpp'; then $(CYGPATH_W) 'ExtensionsConfig.cpp'; else $(CYGPATH_W) '$(srcdir)/ExtensionsConfig.cpp'; fi`
+
+AzureNativeLinuxAgent-FileOperator.o: FileOperator.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-FileOperator.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-FileOperator.Tpo -c -o AzureNativeLinuxAgent-FileOperator.o `test -f 'FileOperator.cpp' || echo '$(srcdir)/'`FileOperator.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-FileOperator.Tpo $(DEPDIR)/AzureNativeLinuxAgent-FileOperator.Po
+#	$(AM_V_CXX)source='FileOperator.cpp' object='AzureNativeLinuxAgent-FileOperator.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-FileOperator.o `test -f 'FileOperator.cpp' || echo '$(srcdir)/'`FileOperator.cpp
+
+AzureNativeLinuxAgent-FileOperator.obj: FileOperator.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-FileOperator.obj -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-FileOperator.Tpo -c -o AzureNativeLinuxAgent-FileOperator.obj `if test -f 'FileOperator.cpp'; then $(CYGPATH_W) 'FileOperator.cpp'; else $(CYGPATH_W) '$(srcdir)/FileOperator.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-FileOperator.Tpo $(DEPDIR)/AzureNativeLinuxAgent-FileOperator.Po
+#	$(AM_V_CXX)source='FileOperator.cpp' object='AzureNativeLinuxAgent-FileOperator.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-FileOperator.obj `if test -f 'FileOperator.cpp'; then $(CYGPATH_W) 'FileOperator.cpp'; else $(CYGPATH_W) '$(srcdir)/FileOperator.cpp'; fi`
 
 AzureNativeLinuxAgent-HostingEnvironmentConfig.o: HostingEnvironmentConfig.cpp
 	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-HostingEnvironmentConfig.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-HostingEnvironmentConfig.Tpo -c -o AzureNativeLinuxAgent-HostingEnvironmentConfig.o `test -f 'HostingEnvironmentConfig.cpp' || echo '$(srcdir)/'`HostingEnvironmentConfig.cpp

@@ -1,5 +1,5 @@
 #include "ExtensionsConfig.h"
-
+#include "FileOperator.h"
 
 
 ExtensionsConfig::ExtensionsConfig()

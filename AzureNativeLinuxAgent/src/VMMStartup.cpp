@@ -7,8 +7,7 @@ VMMStartup::VMMStartup()
 {
     this->VMM_CONFIG_FILE_NAME = "linuxosconfiguration.xml";
     this->SECURE_MOUNT_POINT = "/mnt/cdrom/secure";
-    this->VMM_CONFIG_FILE_FULL_PATH = this->SECURE_MOUNT_POINT+"/"+this->VMM_CONFIG_FILE_NAME;
-    
+    this->VMM_CONFIG_FILE_FULL_PATH = this->SECURE_MOUNT_POINT + "/" + this->VMM_CONFIG_FILE_NAME;
 }
 
 void VMMStartup::TryLoadAtapiix() {
@@ -46,9 +45,6 @@ void VMMStartup::Startup() {
         FileOperator::make_dir(SECURE_MOUNT_POINT.c_str());
         //TODO make this folder "root", 0700)
     }
-
-    // Mount the secure disk, do the provisioning.
-    //
 }
 
 VMMStartup::~VMMStartup()

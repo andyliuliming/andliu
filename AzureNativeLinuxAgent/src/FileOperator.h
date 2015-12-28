@@ -2,22 +2,17 @@
 #include <string>
 #include <sys/stat.h>
 #include <cstdlib>
+#include <iostream>
+#include <fstream>
 using namespace std;
 
 class FileOperator
 {
 public:
     FileOperator();
-    inline static bool file_exists(const std::string& name) {
-        struct stat buffer;
-        return (stat(name.c_str(), &buffer) == 0);
-    }
-
-    inline static int make_dir(const std::string& name) {
-        string mkdirCmd = "mkdir -p " + name;
-        int dir_err = system(mkdirCmd.c_str());
-        return dir_err;
-    }
+    static bool file_exists(const std::string& name);
+    static int make_dir(const std::string& name);
+    static void save_file(const string *content, const string *fileName);
     ~FileOperator();
 };
 

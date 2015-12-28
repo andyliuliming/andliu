@@ -3,9 +3,11 @@
 using namespace std;
 class ExtensionsConfig
 {
+private:
+
 public:
     ExtensionsConfig();
-    void Parse(string * hostingEnvironmentConfigText);
+    void Parse(string * extensionsConfigText);
     void Process();
     ~ExtensionsConfig();
 };

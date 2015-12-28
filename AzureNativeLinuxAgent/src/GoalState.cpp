@@ -2,7 +2,7 @@
 #include "GoalState.h"
 #include "HostingEnvironmentConfig.h"
 #include "HttpRoutine.h"
-
+#include "FileOperator.h"
 #ifdef _WIN32
 #else
 #include <libxml++/libxml++.h>
@@ -83,12 +83,14 @@ void GoalState::UpdateGoalState()
         cout << "configName: " << (this->configName) << endl;
     }
 
+    // saving the 
+
     // construct the instances
-    string *hostingEnvironmentConfigText = HttpRoutine::Get(this->hostingEnvironmentConfigUrl.c_str());
+    string * hostingEnvironmentConfigText = HttpRoutine::Get(this->hostingEnvironmentConfigUrl.c_str());
     hostingEnvironmentConfig = new HostingEnvironmentConfig();
     hostingEnvironmentConfig->Parse(hostingEnvironmentConfigText);
 
-    string *sharedConfigText = HttpRoutine::Get(this->sharedConfigUrl.c_str());
+    string * sharedConfigText = HttpRoutine::Get(this->sharedConfigUrl.c_str());
     sharedConfig = new SharedConfig();
     sharedConfig->Parse(sharedConfigText);
 
