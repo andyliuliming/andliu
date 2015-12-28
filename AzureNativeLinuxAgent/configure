@@ -626,12 +626,12 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
-CURLPP_LIBS
-CURLPP_CFLAGS
+LIBCURL_LIBS
+LIBCURL_CFLAGS
 LIBCONFIGXX_LIBS
 LIBCONFIGXX_CFLAGS
-LIBXMLPP_LIBS
-LIBXMLPP_CFLAGS
+LIBXML2_LIBS
+LIBXML2_CFLAGS
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
 PKG_CONFIG
@@ -747,12 +747,12 @@ CPP
 PKG_CONFIG
 PKG_CONFIG_PATH
 PKG_CONFIG_LIBDIR
-LIBXMLPP_CFLAGS
-LIBXMLPP_LIBS
+LIBXML2_CFLAGS
+LIBXML2_LIBS
 LIBCONFIGXX_CFLAGS
 LIBCONFIGXX_LIBS
-CURLPP_CFLAGS
-CURLPP_LIBS'
+LIBCURL_CFLAGS
+LIBCURL_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1391,17 +1391,18 @@ Some influential environment variables:
               directories to add to pkg-config's search path
   PKG_CONFIG_LIBDIR
               path overriding pkg-config's built-in search path
-  LIBXMLPP_CFLAGS
-              C compiler flags for LIBXMLPP, overriding pkg-config
-  LIBXMLPP_LIBS
-              linker flags for LIBXMLPP, overriding pkg-config
+  LIBXML2_CFLAGS
+              C compiler flags for LIBXML2, overriding pkg-config
+  LIBXML2_LIBS
+              linker flags for LIBXML2, overriding pkg-config
   LIBCONFIGXX_CFLAGS
               C compiler flags for LIBCONFIGXX, overriding pkg-config
   LIBCONFIGXX_LIBS
               linker flags for LIBCONFIGXX, overriding pkg-config
-  CURLPP_CFLAGS
-              C compiler flags for CURLPP, overriding pkg-config
-  CURLPP_LIBS linker flags for CURLPP, overriding pkg-config
+  LIBCURL_CFLAGS
+              C compiler flags for LIBCURL, overriding pkg-config
+  LIBCURL_LIBS
+              linker flags for LIBCURL, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -5010,19 +5011,19 @@ $as_echo "no" >&6; }
 fi
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBXMLPP" >&5
-$as_echo_n "checking for LIBXMLPP... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBXML2" >&5
+$as_echo_n "checking for LIBXML2... " >&6; }
 
-if test -n "$LIBXMLPP_CFLAGS"; then
-    pkg_cv_LIBXMLPP_CFLAGS="$LIBXMLPP_CFLAGS"
+if test -n "$LIBXML2_CFLAGS"; then
+    pkg_cv_LIBXML2_CFLAGS="$LIBXML2_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libxml++-2.6\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libxml++-2.6") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libxml-2.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libxml-2.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_LIBXMLPP_CFLAGS=`$PKG_CONFIG --cflags "libxml++-2.6" 2>/dev/null`
+  pkg_cv_LIBXML2_CFLAGS=`$PKG_CONFIG --cflags "libxml-2.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -5030,16 +5031,16 @@ fi
  else
     pkg_failed=untried
 fi
-if test -n "$LIBXMLPP_LIBS"; then
-    pkg_cv_LIBXMLPP_LIBS="$LIBXMLPP_LIBS"
+if test -n "$LIBXML2_LIBS"; then
+    pkg_cv_LIBXML2_LIBS="$LIBXML2_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libxml++-2.6\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libxml++-2.6") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libxml-2.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libxml-2.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_LIBXMLPP_LIBS=`$PKG_CONFIG --libs "libxml++-2.6" 2>/dev/null`
+  pkg_cv_LIBXML2_LIBS=`$PKG_CONFIG --libs "libxml-2.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -5060,21 +5061,21 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        LIBXMLPP_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libxml++-2.6" 2>&1`
+	        LIBXML2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libxml-2.0" 2>&1`
         else
-	        LIBXMLPP_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libxml++-2.6" 2>&1`
+	        LIBXML2_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libxml-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
-	echo "$LIBXMLPP_PKG_ERRORS" >&5
+	echo "$LIBXML2_PKG_ERRORS" >&5
 
-	as_fn_error $? "libxml++ not found." "$LINENO" 5
+	as_fn_error $? "LIBXML2 not found." "$LINENO" 5
 elif test $pkg_failed = untried; then
      	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-	as_fn_error $? "libxml++ not found." "$LINENO" 5
+	as_fn_error $? "LIBXML2 not found." "$LINENO" 5
 else
-	LIBXMLPP_CFLAGS=$pkg_cv_LIBXMLPP_CFLAGS
-	LIBXMLPP_LIBS=$pkg_cv_LIBXMLPP_LIBS
+	LIBXML2_CFLAGS=$pkg_cv_LIBXML2_CFLAGS
+	LIBXML2_LIBS=$pkg_cv_LIBXML2_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
@@ -5154,19 +5155,19 @@ fi
 
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for CURLPP" >&5
-$as_echo_n "checking for CURLPP... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBCURL" >&5
+$as_echo_n "checking for LIBCURL... " >&6; }
 
-if test -n "$CURLPP_CFLAGS"; then
-    pkg_cv_CURLPP_CFLAGS="$CURLPP_CFLAGS"
+if test -n "$LIBCURL_CFLAGS"; then
+    pkg_cv_LIBCURL_CFLAGS="$LIBCURL_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"curlpp\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "curlpp") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libcurl\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libcurl") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_CURLPP_CFLAGS=`$PKG_CONFIG --cflags "curlpp" 2>/dev/null`
+  pkg_cv_LIBCURL_CFLAGS=`$PKG_CONFIG --cflags "libcurl" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -5174,16 +5175,16 @@ fi
  else
     pkg_failed=untried
 fi
-if test -n "$CURLPP_LIBS"; then
-    pkg_cv_CURLPP_LIBS="$CURLPP_LIBS"
+if test -n "$LIBCURL_LIBS"; then
+    pkg_cv_LIBCURL_LIBS="$LIBCURL_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"curlpp\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "curlpp") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libcurl\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libcurl") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_CURLPP_LIBS=`$PKG_CONFIG --libs "curlpp" 2>/dev/null`
+  pkg_cv_LIBCURL_LIBS=`$PKG_CONFIG --libs "libcurl" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -5204,21 +5205,21 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        CURLPP_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "curlpp" 2>&1`
+	        LIBCURL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libcurl" 2>&1`
         else
-	        CURLPP_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "curlpp" 2>&1`
+	        LIBCURL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libcurl" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
-	echo "$CURLPP_PKG_ERRORS" >&5
+	echo "$LIBCURL_PKG_ERRORS" >&5
 
-	as_fn_error $? "CURLPP not found." "$LINENO" 5
+	as_fn_error $? "LIBCURL not found." "$LINENO" 5
 elif test $pkg_failed = untried; then
      	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-	as_fn_error $? "CURLPP not found." "$LINENO" 5
+	as_fn_error $? "LIBCURL not found." "$LINENO" 5
 else
-	CURLPP_CFLAGS=$pkg_cv_CURLPP_CFLAGS
-	CURLPP_LIBS=$pkg_cv_CURLPP_LIBS
+	LIBCURL_CFLAGS=$pkg_cv_LIBCURL_CFLAGS
+	LIBCURL_LIBS=$pkg_cv_LIBCURL_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 

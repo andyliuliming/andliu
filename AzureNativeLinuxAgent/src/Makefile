@@ -107,7 +107,8 @@ am_AzureNativeLinuxAgent_OBJECTS =  \
 	AzureNativeLinuxAgent-NetworkRoutine.$(OBJEXT) \
 	AzureNativeLinuxAgent-Provisioner.$(OBJEXT) \
 	AzureNativeLinuxAgent-SharedConfig.$(OBJEXT) \
-	AzureNativeLinuxAgent-VMMStartup.$(OBJEXT)
+	AzureNativeLinuxAgent-VMMStartup.$(OBJEXT) \
+	AzureNativeLinuxAgent-XmlRoutine.$(OBJEXT)
 AzureNativeLinuxAgent_OBJECTS = $(am_AzureNativeLinuxAgent_OBJECTS)
 am__DEPENDENCIES_1 =
 AzureNativeLinuxAgent_DEPENDENCIES = $(am__DEPENDENCIES_1) \
@@ -187,8 +188,6 @@ CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
 CPP = gcc -E
 CPPFLAGS = 
-CURLPP_CFLAGS =  
-CURLPP_LIBS = -Wl,-Bsymbolic-functions -Wl,-z,relro -lcurlpp -lstdc++ -lcurl  
 CXX = g++
 CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -g -O2 -std=c++0x
@@ -209,10 +208,12 @@ INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LDFLAGS = 
 LIBCONFIGXX_CFLAGS =  
 LIBCONFIGXX_LIBS = -lconfig++  
+LIBCURL_CFLAGS =  
+LIBCURL_LIBS = -lcurl  
 LIBOBJS = 
 LIBS = 
-LIBXMLPP_CFLAGS = -I/usr/include/libxml2 -I/usr/include/glibmm-2.4 -I/usr/lib/x86_64-linux-gnu/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/x86_64-linux-gnu/sigc++-2.0/include -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/libxml++-2.6 -I/usr/lib/libxml++-2.6/include  
-LIBXMLPP_LIBS = -lxml++-2.6 -lxml2 -lglibmm-2.4 -lgobject-2.0 -lsigc-2.0 -lglib-2.0  
+LIBXML2_CFLAGS = -I/usr/include/libxml2  
+LIBXML2_LIBS = -lxml2  
 LTLIBOBJS = 
 MAKEINFO = ${SHELL} /home/andy/workspace/andliu/AzureNativeLinuxAgent/missing makeinfo
 MKDIR_P = /bin/mkdir -p
@@ -275,9 +276,9 @@ target_alias =
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
-AzureNativeLinuxAgent_CXXFLAGS = $(LIBXMLPP_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(CURLPP_CFLAGS)
-AzureNativeLinuxAgent_LDADD = $(LIBXMLPP_LIBS) $(LIBCONFIGXX_LIBS) $(CURLPP_LIBS)
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionsConfig.cpp FileOperator.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp SharedConfig.cpp VMMStartup.cpp
+AzureNativeLinuxAgent_CXXFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(LIBCURL_CFLAGS)
+AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS) $(LIBCURL_LIBS)
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionsConfig.cpp FileOperator.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp SharedConfig.cpp VMMStartup.cpp XmlRoutine.cpp
 all: all-am
 
 .SUFFIXES:
@@ -382,6 +383,7 @@ include ./$(DEPDIR)/AzureNativeLinuxAgent-NetworkRoutine.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-Provisioner.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-SharedConfig.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-VMMStartup.Po
+include ./$(DEPDIR)/AzureNativeLinuxAgent-XmlRoutine.Po
 
 .cpp.o:
 	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -634,6 +636,20 @@ AzureNativeLinuxAgent-VMMStartup.obj: VMMStartup.cpp
 #	$(AM_V_CXX)source='VMMStartup.cpp' object='AzureNativeLinuxAgent-VMMStartup.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-VMMStartup.obj `if test -f 'VMMStartup.cpp'; then $(CYGPATH_W) 'VMMStartup.cpp'; else $(CYGPATH_W) '$(srcdir)/VMMStartup.cpp'; fi`
+
+AzureNativeLinuxAgent-XmlRoutine.o: XmlRoutine.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-XmlRoutine.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-XmlRoutine.Tpo -c -o AzureNativeLinuxAgent-XmlRoutine.o `test -f 'XmlRoutine.cpp' || echo '$(srcdir)/'`XmlRoutine.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-XmlRoutine.Tpo $(DEPDIR)/AzureNativeLinuxAgent-XmlRoutine.Po
+#	$(AM_V_CXX)source='XmlRoutine.cpp' object='AzureNativeLinuxAgent-XmlRoutine.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-XmlRoutine.o `test -f 'XmlRoutine.cpp' || echo '$(srcdir)/'`XmlRoutine.cpp
+
+AzureNativeLinuxAgent-XmlRoutine.obj: XmlRoutine.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-XmlRoutine.obj -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-XmlRoutine.Tpo -c -o AzureNativeLinuxAgent-XmlRoutine.obj `if test -f 'XmlRoutine.cpp'; then $(CYGPATH_W) 'XmlRoutine.cpp'; else $(CYGPATH_W) '$(srcdir)/XmlRoutine.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-XmlRoutine.Tpo $(DEPDIR)/AzureNativeLinuxAgent-XmlRoutine.Po
+#	$(AM_V_CXX)source='XmlRoutine.cpp' object='AzureNativeLinuxAgent-XmlRoutine.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-XmlRoutine.obj `if test -f 'XmlRoutine.cpp'; then $(CYGPATH_W) 'XmlRoutine.cpp'; else $(CYGPATH_W) '$(srcdir)/XmlRoutine.cpp'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

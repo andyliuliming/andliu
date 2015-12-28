@@ -1,4 +1,4 @@
 bin_PROGRAMS = AzureNativeLinuxAgent
-AzureNativeLinuxAgent_CXXFLAGS = $(LIBXMLPP_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(CURLPP_CFLAGS)
-AzureNativeLinuxAgent_LDADD = $(LIBXMLPP_LIBS) $(LIBCONFIGXX_LIBS) $(CURLPP_LIBS)
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionsConfig.cpp FileOperator.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp SharedConfig.cpp VMMStartup.cpp
+AzureNativeLinuxAgent_CXXFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(LIBCURL_CFLAGS)
+AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS) $(LIBCURL_LIBS)
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionsConfig.cpp FileOperator.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp Provisioner.cpp SharedConfig.cpp VMMStartup.cpp XmlRoutine.cpp

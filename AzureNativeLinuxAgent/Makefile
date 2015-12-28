@@ -201,8 +201,6 @@ CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
 CPP = gcc -E
 CPPFLAGS = 
-CURLPP_CFLAGS =  
-CURLPP_LIBS = -Wl,-Bsymbolic-functions -Wl,-z,relro -lcurlpp -lstdc++ -lcurl  
 CXX = g++
 CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -g -O2 -std=c++0x
@@ -223,10 +221,12 @@ INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LDFLAGS = 
 LIBCONFIGXX_CFLAGS =  
 LIBCONFIGXX_LIBS = -lconfig++  
+LIBCURL_CFLAGS =  
+LIBCURL_LIBS = -lcurl  
 LIBOBJS = 
 LIBS = 
-LIBXMLPP_CFLAGS = -I/usr/include/libxml2 -I/usr/include/glibmm-2.4 -I/usr/lib/x86_64-linux-gnu/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/x86_64-linux-gnu/sigc++-2.0/include -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/libxml++-2.6 -I/usr/lib/libxml++-2.6/include  
-LIBXMLPP_LIBS = -lxml++-2.6 -lxml2 -lglibmm-2.4 -lgobject-2.0 -lsigc-2.0 -lglib-2.0  
+LIBXML2_CFLAGS = -I/usr/include/libxml2  
+LIBXML2_LIBS = -lxml2  
 LTLIBOBJS = 
 MAKEINFO = ${SHELL} /home/andy/workspace/andliu/AzureNativeLinuxAgent/missing makeinfo
 MKDIR_P = /bin/mkdir -p
