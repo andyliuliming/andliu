@@ -27,7 +27,7 @@ public:
 #ifdef _WIN32
 #else
     static string* Get(const char * url);
-    static string* Post(const char * url, struct curl_slist *chunk);
+    static string* Post(const char * url, curl_slist * chunk, const char * data);
 #endif
     ~HttpRoutine();
 };
