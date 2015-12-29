@@ -1,7 +1,7 @@
 #pragma once
+#include <string>
 #include "Macros.h"
 #include "NetworkRoutine.h"
-#include <string>
 using namespace std;
 class AzureEnvironment
 {

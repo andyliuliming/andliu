@@ -1,11 +1,11 @@
+#include <iostream>
+#include <stdio.h>
 #include "AzureEnvironment.h"
 #include "CommandExecuter.h"
+#include "Logger.h"
 #include "Macros.h"
 #include "NetworkRoutine.h"
-#include <stdio.h>
 #include "StringUtil.h"
-#include "Logger.h"
-#include <iostream>
 
 #ifdef _WIN32
 #include <WinSock2.h>

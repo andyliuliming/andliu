@@ -1,7 +1,7 @@
-#include "NetworkRoutine.h"
-#include "Logger.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "Logger.h"
+#include "NetworkRoutine.h"
 #ifdef _WIN32
 #include <WinSock2.h>
 #else

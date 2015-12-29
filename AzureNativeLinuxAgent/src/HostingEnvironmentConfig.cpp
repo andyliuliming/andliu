@@ -1,6 +1,6 @@
 #include <string>
-#include "HostingEnvironmentConfig.h"
 #include "FileOperator.h"
+#include "HostingEnvironmentConfig.h"
 using namespace std;
 HostingEnvironmentConfig::HostingEnvironmentConfig()
 {

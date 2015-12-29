@@ -1,11 +1,12 @@
-#include <string>
-#include <iostream>
 #include <cstdio>
-#include <stdio.h>
+#include <iostream>
 #include <memory>
+#include <stdio.h>
+#include <string>
+
 #include "CommandExecuter.h"
-#include "Macros.h"
 #include "CommandResult.h"
+#include "Macros.h"
 using namespace std;
 
 CommandExecuter::CommandExecuter()

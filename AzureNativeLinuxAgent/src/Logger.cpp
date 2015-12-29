@@ -1,5 +1,5 @@
-#include "Logger.h"
 #include <iostream>
+#include "Logger.h"
 using namespace std;
 void Logger::Verbose(const char * msg)
 {

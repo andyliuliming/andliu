@@ -1,7 +1,6 @@
+#include <iostream>
 #include "AgentConfig.h"
 using namespace std;
-#include <iostream>
-
 
 void AgentConfig::LoadConfig(const char * configFile)
 {

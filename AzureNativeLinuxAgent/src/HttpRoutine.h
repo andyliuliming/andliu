@@ -1,7 +1,5 @@
 #pragma once
-#include <string>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include <string>
 #ifdef _WIN32
@@ -29,6 +27,7 @@ public:
 #ifdef _WIN32
 #else
     static string* Get(const char * url);
+    static string* Post(const char * url, struct curl_slist *chunk);
 #endif
     ~HttpRoutine();
 };

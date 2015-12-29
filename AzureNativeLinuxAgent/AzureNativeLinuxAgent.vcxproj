@@ -196,6 +196,9 @@
     <None Include="COPYING" />
     <None Include="data\waagent.conf" />
     <None Include="INSTALL" />
+    <None Include="Makefile" />
+    <None Include="Makefile.am" />
+    <None Include="Makefile.in" />
     <None Include="NEWS" />
     <None Include="README" />
     <None Include="README.md" />

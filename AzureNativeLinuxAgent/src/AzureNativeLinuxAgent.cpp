@@ -1,12 +1,12 @@
 #include <string>
-#include "CommandExecuter.h"
-#include "VMMStartup.h"
-#include "Macros.h"
 #include "AzureEnvironment.h"
-#include "Logger.h"
+#include "CommandExecuter.h"
 #include "DeviceRoutine.h"
 #include "GoalState.h"
+#include "Logger.h"
+#include "Macros.h"
 #include "Provisioner.h"
+#include "VMMStartup.h"
 using namespace std;
 
 int main(void)

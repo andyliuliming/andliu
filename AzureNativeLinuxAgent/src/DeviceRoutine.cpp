@@ -1,5 +1,5 @@
-#include "DeviceRoutine.h"
 #include "AgentConfig.h"
+#include "DeviceRoutine.h"
 #include "Logger.h"
 
 DeviceRoutine::DeviceRoutine()

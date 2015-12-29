@@ -1,5 +1,6 @@
-#include "SharedConfig.h"
+
 #include "FileOperator.h"
+#include "SharedConfig.h"
 
 SharedConfig::SharedConfig()
 {

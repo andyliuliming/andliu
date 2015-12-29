@@ -1,9 +1,9 @@
 #pragma once
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
 #include <string>
 #include <sys/stat.h>
-#include <cstdlib>
-#include <iostream>
-#include <fstream>
 using namespace std;
 
 class FileOperator

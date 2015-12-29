@@ -1,5 +1,5 @@
-#include "HttpRoutine.h"
 #include <iostream>
+#include "HttpRoutine.h"
 using namespace std;
 
 #ifdef _WIN32
@@ -115,6 +115,11 @@ string* HttpRoutine::Get(const char * url)
     }
     curl_slist_free_all(chunk);
     return buffer;
+}
+
+string * HttpRoutine::Post(const char * url, curl_slist * chunk)
+{
+    return nullptr;
 }
 
 #endif

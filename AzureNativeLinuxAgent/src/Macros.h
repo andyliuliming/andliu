@@ -1,10 +1,10 @@
 #pragma once
-#include <string>
-#include <iostream>
 #include <cstdio>
+#include <iostream>
+#include <memory>
 #include <stdio.h>
 #include <stdlib.h>
-#include <memory>
+#include <string>
 #ifdef _WIN32
 //windows code goes here
 #define POPEN _popen

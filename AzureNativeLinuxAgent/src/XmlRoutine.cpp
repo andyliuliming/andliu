@@ -1,6 +1,5 @@
-#include "XmlRoutine.h"
-
 #include <iostream>
+#include "XmlRoutine.h"
 using namespace std;
 
 XmlRoutine::XmlRoutine()
