@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <map>
 #ifdef _WIN32
 #else
 #include <curl/curl.h>
@@ -23,11 +24,11 @@ private:
 
 #endif
 public:
-    HttpRoutine(); 
+    HttpRoutine();
+    static string* Get(const char * url);
+    static string* Post(const char * url, map<string, string> * headers, const char * data);
 #ifdef _WIN32
 #else
-    static string* Get(const char * url);
-    static string* Post(const char * url, curl_slist * chunk, const char * data);
 #endif
     ~HttpRoutine();
 };

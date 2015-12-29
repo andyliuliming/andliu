@@ -127,7 +127,9 @@ int AzureEnvironment::DoDhcpWork()
                 if (option == 245) {
                     Logger::getInstance().Verbose("245 got, so the ip is:\n");
                     cout << (int)(buffer[i + 2]) << "." << (int)(buffer[i + 3]) << "." << (int)(buffer[i + 4]) << "." << (int)(buffer[i + 5]) << endl;
-                    wireServerAddress = "";
+                    char ip[INET6_ADDRSTRLEN];
+                    sprintf(ip, " %d.%d.%d.$d", (int)(buffer[i + 2]), (int)(buffer[i + 3]), (int)(buffer[i + 4]), (int)(buffer[i + 5]));
+                    wireServerAddress = ip;
                 }
                 i += (option_length + 2);
             }
@@ -136,7 +138,7 @@ int AzureEnvironment::DoDhcpWork()
 
     }
 
-    return 1;
+    return 0;
 }
 
 int AzureEnvironment::CheckVersion()

@@ -6,6 +6,7 @@
 #include "Logger.h"
 #include "Macros.h"
 #include "Provisioner.h"
+#include "StatusReporter.h"
 #include "VMMStartup.h"
 using namespace std;
 
@@ -33,8 +34,15 @@ int main(void)
     while (true) {
         // a. UpdateGoalState
         // b. process goal state
+
         GoalState *goalState = new GoalState();
         goalState->UpdateGoalState();
+
+        if (!provisioner->isProvisioned()) {
+            StatusReporter *statusReporter = new StatusReporter();
+            statusReporter->ReportNotReady(azureEnvironment, goalState, "Provisioning", "Starting");
+        }
+
         goalState->Process();
 
         if (!provisioner->isProvisioned()) {

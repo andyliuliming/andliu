@@ -6,7 +6,7 @@ using namespace std;
 
 class GoalState
 {
-private:
+public:
     string  certificatesUrl;
     string  configName;
     string  containerId;
@@ -19,7 +19,6 @@ private:
     string goalStageFilePrefix;
     HostingEnvironmentConfig * hostingEnvironmentConfig;
     SharedConfig *sharedConfig;
-public:
     GoalState();
     void UpdateGoalState();
     void Process();

@@ -75,11 +75,12 @@ bool HttpRoutine::init(CURL *&conn, const char *url, string *buffer) {
 #endif
 
 
-#ifdef _WIN32
-// your windows code.
-#else
 string* HttpRoutine::Get(const char * url)
 {
+    string *buffer = NULL;
+#ifdef _WIN32
+    // your windows code.
+#else
     struct curl_slist *chunk = NULL;
 
     /* Add a custom header */
@@ -94,7 +95,7 @@ string* HttpRoutine::Get(const char * url)
     CURLcode code;
     //curl_global_init is not thread safe.
     curl_global_init(CURL_GLOBAL_DEFAULT);
-    string *buffer = new string();
+    buffer = new string();
     bool initResult = init(conn, url, buffer);
     cout << "init Result: " << initResult << endl;
     if (chunk != NULL) {
@@ -105,6 +106,7 @@ string* HttpRoutine::Get(const char * url)
     cout << "curl_easy_perform result: " << code << endl;
     curl_easy_cleanup(conn);
 
+    curl_slist_free_all(chunk);
     if (code != CURLE_OK)
     {
         fprintf(stderr, "Failed to get '%s' [%s]\n", url, errorBuffer);
@@ -113,27 +115,31 @@ string* HttpRoutine::Get(const char * url)
     {
         cout << *buffer << endl;
     }
-    curl_slist_free_all(chunk);
+#endif
     return buffer;
 }
 
-string * HttpRoutine::Post(const char * url, curl_slist * chunk,const char * data)
+string * HttpRoutine::Post(const char * url, map<string,string> * headers,const char * data)
 {
-    //struct curl_slist *chunk = NULL;
+    string *buffer = NULL;
+#ifdef _WIN32
+    // your windows code.
+#else
 
-    /* Add a custom header */
-    /*"x-ms-agent-name": GuestAgentName,
-    "x-ms-version" : ProtocolVersion*/
-    //chunk = curl_slist_append(chunk, "x-ms-agent-name: AzureNativeLinuxAgent");
-
-    /* Modify a header curl otherwise adds differently */
-    //chunk = curl_slist_append(chunk, "x-ms-version: 2012-11-30");
-    //http://curl.haxx.se/libcurl/c/htmltitle.html
+    struct curl_slist *chunk = NULL;
+    if (chunk != NULL) {
+        /* Add a custom header */
+        for (std::map<string, string>::iterator it = headers->begin(); it != headers->end(); ++it)
+        {
+            string headerValue = it->first + ": " + it->second;
+            chunk = curl_slist_append(chunk, headerValue.c_str());
+        }
+    }
     CURL *conn = NULL;
     CURLcode code;
     //curl_global_init is not thread safe.
     curl_global_init(CURL_GLOBAL_DEFAULT);
-    string *buffer = new string();
+    buffer = new string();
     bool initResult = init(conn, url, buffer);
     cout << "init Result: " << initResult << endl;
     if (chunk != NULL) {
@@ -143,21 +149,22 @@ string * HttpRoutine::Post(const char * url, curl_slist * chunk,const char * dat
     curl_easy_setopt(conn, CURLOPT_POSTFIELDS, data);
     code = curl_easy_perform(conn);
     cout << "curl_easy_perform result: " << code << endl;
+
+    curl_slist_free_all(chunk);
     curl_easy_cleanup(conn);
 
     if (code != CURLE_OK)
     {
-        fprintf(stderr, "Failed to get '%s' [%s]\n", url, errorBuffer);
+        fprintf(stderr, "Failed to post '%s' [%s]\n", url, errorBuffer);
     }
     else
     {
         cout << *buffer << endl;
     }
-    //curl_slist_free_all(chunk);
+#endif
     return buffer;
 }
 
-#endif
 
 
 HttpRoutine::~HttpRoutine()
