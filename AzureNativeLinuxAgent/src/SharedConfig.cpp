@@ -18,4 +18,8 @@ void SharedConfig::Process()
 
 SharedConfig::~SharedConfig()
 {
+    if (configFilePath != NULL) {
+        delete configFilePath;
+        configFilePath = NULL;
+    }
 }

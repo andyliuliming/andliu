@@ -38,6 +38,7 @@ int main(void)
         goalState->Process();
 
         if (!provisioner->isProvisioned()) {
+            Logger::getInstance().Log("doing provision.");
             provisioner->Prosess();
         }
         SLEEP(25 * 1000);

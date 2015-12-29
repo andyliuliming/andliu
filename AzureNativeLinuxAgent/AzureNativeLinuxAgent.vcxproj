@@ -157,6 +157,7 @@
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\Macros.h" />
     <ClInclude Include="src\NetworkRoutine.h" />
+    <ClInclude Include="src\OvfEnv.h" />
     <ClInclude Include="src\Provisioner.h" />
     <ClInclude Include="src\SharedConfig.h" />
     <ClInclude Include="src\StatusReporter.h" />
@@ -179,6 +180,7 @@
     <ClCompile Include="src\HttpRoutine.cpp" />
     <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\NetworkRoutine.cpp" />
+    <ClCompile Include="src\OvfEnv.cpp" />
     <ClCompile Include="src\Provisioner.cpp" />
     <ClCompile Include="src\SharedConfig.cpp" />
     <ClCompile Include="src\StatusReporter.cpp" />

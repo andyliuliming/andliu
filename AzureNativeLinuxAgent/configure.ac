@@ -35,6 +35,9 @@ PKG_CHECK_MODULES([LIBCONFIGXX], [libconfig++],,
 PKG_CHECK_MODULES([LIBCURL], [libcurl],,
   AC_MSG_ERROR([LIBCURL not found.]))
 
+PKG_CHECK_MODULES([LIBUDEV], [libudev],,
+  AC_MSG_ERROR([LIBUDEV not found.])) 
+
 AC_CONFIG_FILES([Makefile
                  src/Makefile])
 
