@@ -6,6 +6,7 @@
 #include "Logger.h"
 #include "DeviceRoutine.h"
 #include "GoalState.h"
+#include "Provisioner.h"
 using namespace std;
 
 int main(void)
@@ -28,11 +29,17 @@ int main(void)
     // 5. GenerateTransportCert
 
     // 6. where true daemon
+    Provisioner *provisioner = new Provisioner();
     while (true) {
         // a. UpdateGoalState
         // b. process goal state
         GoalState *goalState = new GoalState();
         goalState->UpdateGoalState();
+        goalState->Process();
+
+        if (!provisioner->isProvisioned()) {
+            provisioner->Prosess();
+        }
         SLEEP(25 * 1000);
     }
 }
