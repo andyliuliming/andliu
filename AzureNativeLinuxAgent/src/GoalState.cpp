@@ -67,6 +67,8 @@ void GoalState::UpdateGoalState()
     }
     delete certificatesXpathExpr;
 
+    xmlFreeDoc(doc);
+
     // saving the goal state file 
     string goalStageFileName = this->goalStageFilePrefix + incarnation + ".xml";
     FileOperator::save_file(goalStateText, &goalStageFileName);

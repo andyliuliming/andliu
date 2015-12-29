@@ -1,9 +1,10 @@
 #include <iostream>
-using namespace std; 
+#include <string>
 #include "AgentConfig.h"
 #include "DeviceRoutine.h"
 #include "Logger.h"
 
+using namespace std;
 DeviceRoutine::DeviceRoutine()
 {
 }
@@ -18,9 +19,11 @@ void DeviceRoutine::setIsciTimeOut()
     Logger::getInstance().Verbose(timeOut.c_str());
 }
 
-void DeviceRoutine::findRomDevice()
+string * DeviceRoutine::findRomDevice()
 {
+    string *result = NULL;
 #ifdef _WIN32
+    return result;
 #else
     struct udev *udev;
     struct udev_enumerate *enumerate;
@@ -31,7 +34,7 @@ void DeviceRoutine::findRomDevice()
     udev = udev_new();
     if (!udev) {
         printf("Can't create udev\n");
-        exit(1);
+        return result;
     }
 
     /* Create a list of the devices in the 'hidraw' subsystem. */
@@ -44,6 +47,7 @@ void DeviceRoutine::findRomDevice()
     a loop. The loop will be executed for each member in
     devices, setting dev_list_entry to a list entry
     which contains the device's path in /sys. */
+    
     udev_list_entry_foreach(dev_list_entry, devices) {
         const char *path;
 
@@ -56,21 +60,6 @@ void DeviceRoutine::findRomDevice()
         itself in /dev. */
         printf("Device Node Path: %s\n", udev_device_get_devnode(dev));
 
-        /* The device pointed to by dev contains information about
-        the hidraw device. In order to get information about the
-        USB device, get the parent device with the
-        subsystem/devtype pair of "usb"/"usb_device". This will
-        be several levels up the tree, but the function will find
-        it.*/
-        /*dev = udev_device_get_parent_with_subsystem_devtype(
-            dev,
-            "usb",
-            "usb_device");
-        if (!dev) {
-            printf("Unable to find parent usb device.");
-            exit(1);
-        }*/
-
         /* From here, we can call get_sysattr_value() for each file
         in the device's /sys entry. The strings passed into these
         functions (idProduct, idVendor, serial, etc.) correspond
@@ -78,26 +67,30 @@ void DeviceRoutine::findRomDevice()
         the USB device. Note that USB strings are Unicode, UCS2
         encoded, but the strings returned from
         udev_device_get_sysattr_value() are UTF-8 encoded. */
-        printf("\tVID/PID: %s %s\n",
-            udev_device_get_sysattr_value(dev, "idVendor"),
-            udev_device_get_sysattr_value(dev, "idProduct"));
-        printf("\t%s\n  %s\n",
-            udev_device_get_sysattr_value(dev, "manufacturer"),
-            udev_device_get_sysattr_value(dev, "product"));
-        printf("\tserial: %s\n",
-            udev_device_get_sysattr_value(dev, "serial"));
+        printf("\tVID/PID: %s %s\n", udev_device_get_sysattr_value(dev, "idVendor"), udev_device_get_sysattr_value(dev, "idProduct"));
+        printf("\t%s\n  %s\n", udev_device_get_sysattr_value(dev, "manufacturer"), udev_device_get_sysattr_value(dev, "product"));
+        printf("\tserial: %s\n", udev_device_get_sysattr_value(dev, "serial"));
         printf("\tType: '%s'\n", udev_device_get_devtype(dev));
         printf("\tVendor: '%s'\n", udev_device_get_sysattr_value(dev, "device/vendor"));
         printf("\tModel: '%s'\n", udev_device_get_property_value(dev, "ID_MODEL"));
         printf("\tSerial: '%s'\n", udev_device_get_property_value(dev, "ID_SERIAL"));
         printf("\tShort serial: '%s'\n", udev_device_get_property_value(dev, "ID_SERIAL_SHORT"));
         printf("\tRevision: '%s'\n", udev_device_get_property_value(dev, "ID_REVISION"));
+        const char * model = udev_device_get_property_value(dev, "ID_MODEL");
+        if (model != NULL) {
+            string modelStr(model);
+            if (modelStr.compare("Virtual_CD") == 0)
+            {
+                result = new string(udev_device_get_devnode(dev));
+            }
+        }
         udev_device_unref(dev);
     }
     /* Free the enumerator object */
     udev_enumerate_unref(enumerate);
 
     udev_unref(udev);
+    return result;
 #endif
 }
 

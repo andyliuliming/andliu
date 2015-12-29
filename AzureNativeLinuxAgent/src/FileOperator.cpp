@@ -1,6 +1,8 @@
+#include <fstream>
+#include <streambuf>
+
 #include "FileOperator.h"
-
-
+using namespace std;
 
 FileOperator::FileOperator()
 {
@@ -25,6 +27,13 @@ void FileOperator::save_file(const string * content, const string * fileName)
     myfile.open(*fileName);
     myfile << *content;
     myfile.close();
+}
+
+string * FileOperator::get_content(const string * fileName)
+{
+    ifstream t(fileName->c_str());
+    string *str=new string((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
+    return str;
 }
 
 

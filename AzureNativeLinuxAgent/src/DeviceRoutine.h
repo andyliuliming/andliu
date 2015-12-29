@@ -9,7 +9,7 @@ class DeviceRoutine
 public:
     DeviceRoutine();
     static void setIsciTimeOut();
-    static void findRomDevice();
+    static string* findRomDevice();
     ~DeviceRoutine();
 };
 
