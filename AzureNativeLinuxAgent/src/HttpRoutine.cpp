@@ -84,8 +84,6 @@ string* HttpRoutine::Get(const char * url)
     struct curl_slist *chunk = NULL;
 
     /* Add a custom header */
-    /*"x-ms-agent-name": GuestAgentName,
-    "x-ms-version" : ProtocolVersion*/
     chunk = curl_slist_append(chunk, "x-ms-agent-name: AzureNativeLinuxAgent");
 
     /* Modify a header curl otherwise adds differently */
@@ -125,13 +123,14 @@ string * HttpRoutine::Post(const char * url, map<string,string> * headers,const 
 #ifdef _WIN32
     // your windows code.
 #else
-
+    cout << "calling " << url << endl;
     struct curl_slist *chunk = NULL;
-    if (chunk != NULL) {
+    if (headers != NULL) {
         /* Add a custom header */
         for (std::map<string, string>::iterator it = headers->begin(); it != headers->end(); ++it)
         {
             string headerValue = it->first + ": " + it->second;
+            cout << "setting header value: " << headerValue << endl;
             chunk = curl_slist_append(chunk, headerValue.c_str());
         }
     }
@@ -146,6 +145,7 @@ string * HttpRoutine::Post(const char * url, map<string,string> * headers,const 
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
         cout << "set header result: " << code << endl;
     }
+    cout << data << endl;
     curl_easy_setopt(conn, CURLOPT_POSTFIELDS, data);
     code = curl_easy_perform(conn);
     cout << "curl_easy_perform result: " << code << endl;
