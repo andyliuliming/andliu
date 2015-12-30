@@ -5,8 +5,9 @@ class StatusReporter
 {
 public:
     StatusReporter();
-    void ReportReady(AzureEnvironment* environment,GoalState * goalState);
+    void ReportReady(AzureEnvironment* environment, GoalState * goalState);
     void ReportNotReady(AzureEnvironment* environment, GoalState * goalState, const char*status, const char*desc);
+    void ReportRoleProperties(AzureEnvironment* environment, GoalState* goalState, const char* thumbprint);
     ~StatusReporter();
 };
 

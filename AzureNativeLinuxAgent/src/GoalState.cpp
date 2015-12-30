@@ -25,42 +25,42 @@ void GoalState::UpdateGoalState()
     cout << "root name is " << root->name << endl;
 
     const xmlChar* incarnationXpathExpr = xmlCharStrdup("/GoalState/Incarnation[1]/text()");
-    this->incarnation = *(XmlRoutine::getNodeText(doc, incarnationXpathExpr));
+    this->incarnation = *(XmlRoutine::getNodeText(doc, incarnationXpathExpr, NULL));
     cout << "incarnation: " << this->incarnation << endl;
     delete incarnationXpathExpr;
 
     const xmlChar* containerIdXpathExpr = xmlCharStrdup("/GoalState/Container/ContainerId/text()");
-    this->containerId = *(XmlRoutine::getNodeText(doc, containerIdXpathExpr));
+    this->containerId = *(XmlRoutine::getNodeText(doc, containerIdXpathExpr, NULL));
     cout << "containerId: " << this->containerId << endl;
     delete containerIdXpathExpr;
 
     const xmlChar* hostingEnvironmentConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/HostingEnvironmentConfig/text()");
-    this->hostingEnvironmentConfigUrl = *(XmlRoutine::getNodeText(doc, hostingEnvironmentConfigXpathExpr));
+    this->hostingEnvironmentConfigUrl = *(XmlRoutine::getNodeText(doc, hostingEnvironmentConfigXpathExpr, NULL));
     cout << "hostingEnvironmentConfigUrl: " << this->hostingEnvironmentConfigUrl << endl;
     delete hostingEnvironmentConfigXpathExpr;
 
     const xmlChar* sharedConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/SharedConfig/text()");
-    this->sharedConfigUrl = *(XmlRoutine::getNodeText(doc, sharedConfigXpathExpr));
+    this->sharedConfigUrl = *(XmlRoutine::getNodeText(doc, sharedConfigXpathExpr, NULL));
     cout << "sharedConfigUrl: " << this->sharedConfigUrl << endl;
     delete sharedConfigXpathExpr;
 
     const xmlChar* extensionsConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ExtensionsConfig/text()");
-    this->extensionsConfigUrl = *(XmlRoutine::getNodeText(doc, extensionsConfigXpathExpr));
+    this->extensionsConfigUrl = *(XmlRoutine::getNodeText(doc, extensionsConfigXpathExpr, NULL));
     cout << "extensionsConfigUrl: " << this->extensionsConfigUrl << endl;
     delete extensionsConfigXpathExpr;
 
     const xmlChar* fullConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/FullConfig/text()");
-    this->fullConfigUrl = *(XmlRoutine::getNodeText(doc, fullConfigXpathExpr));
+    this->fullConfigUrl = *(XmlRoutine::getNodeText(doc, fullConfigXpathExpr, NULL));
     cout << "fullConfigUrl: " << this->fullConfigUrl << endl;
     delete fullConfigXpathExpr;
 
     const xmlChar* configNameXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ConfigName/text()");
-    this->configName = *(XmlRoutine::getNodeText(doc, configNameXpathExpr));
+    this->configName = *(XmlRoutine::getNodeText(doc, configNameXpathExpr, NULL));
     cout << "configName: " << this->configName << endl;
     delete configNameXpathExpr;
 
     const xmlChar* certificatesXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/Certificates/text()");
-    string *certificateText = XmlRoutine::getNodeText(doc, certificatesXpathExpr);
+    string *certificateText = XmlRoutine::getNodeText(doc, certificatesXpathExpr, NULL);
     if (certificateText != NULL) {
         this->certificatesUrl = *(certificateText);
         cout << "certificatesUrl: " << this->certificatesUrl << endl;

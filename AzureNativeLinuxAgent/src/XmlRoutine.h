@@ -1,4 +1,5 @@
 #pragma once
+#include <map>
 #include <stdio.h>
 #include <string>
 #ifdef _WIN32
@@ -21,7 +22,7 @@ public:
 #ifdef _WIN32
     //windows code goes here
 #else
-    static string * getNodeText(xmlDocPtr doc, const xmlChar* xpathExpr);
+    static string * getNodeText(xmlDocPtr doc, const xmlChar* xpathExpr, map<string, string> * namespaces);
 #endif
     ~XmlRoutine();
 };

@@ -16,8 +16,8 @@ public:
         static AgentConfig    instance;
         return instance;
     }
-    void LoadConfig(const char * configFile);
-    string getConfig(const char * propertyName);
+    void LoadConfig();
+    string * getConfig(const char * propertyName);
 private:
     AgentConfig() {
     }

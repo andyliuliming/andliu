@@ -8,7 +8,7 @@ XmlRoutine::XmlRoutine()
 #ifdef _WIN32
 //windows code goes here
 #else
-string * XmlRoutine::getNodeText(xmlDocPtr doc, const xmlChar* xpathExpr)
+string * XmlRoutine::getNodeText(xmlDocPtr doc, const xmlChar* xpathExpr, map<string,string> * namespaces)
 {
     string * result = NULL;
     xmlXPathContextPtr xpathCtx;
@@ -17,6 +17,15 @@ string * XmlRoutine::getNodeText(xmlDocPtr doc, const xmlChar* xpathExpr)
     if (xpathCtx == NULL) {
         fprintf(stderr, "Error: unable to create new XPath context\n");
         return result;
+    }
+
+    if (namespaces != NULL) {
+        for (std::map<string, string>::iterator it = namespaces->begin(); it != namespaces->end(); ++it)
+        {
+            if (xmlXPathRegisterNs(xpathCtx, BAD_CAST it->first.c_str(), BAD_CAST it->second.c_str()) != 0) {
+                fprintf(stderr, "Error: unable to register NS with prefix");
+            }
+        }
     }
 
     /* Evaluate xpath expression */

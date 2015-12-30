@@ -11,12 +11,14 @@ DeviceRoutine::DeviceRoutine()
 
 void DeviceRoutine::setIsciTimeOut()
 {
-    AgentConfig::getInstance().LoadConfig(NULL);
+    AgentConfig::getInstance().LoadConfig();
 
-    string timeOut = AgentConfig::getInstance().getConfig("OS_RootDeviceScsiTimeout");
+    string *timeOut = AgentConfig::getInstance().getConfig("OS_RootDeviceScsiTimeout");
 
     Logger::getInstance().Verbose("timeout set to:");
-    Logger::getInstance().Verbose(timeOut.c_str());
+    Logger::getInstance().Verbose(timeOut->c_str());
+    delete timeOut;
+    timeOut = NULL;
 }
 
 string * DeviceRoutine::findRomDevice()

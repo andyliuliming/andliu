@@ -6,6 +6,9 @@ class OvfEnv
 {
 private:
     string *configFilePath;
+    string userName;
+    string passWord;
+    string disableSshPasswordAuthentication;
 public:
     OvfEnv(); 
     void Parse(string * sharedConfigText);
