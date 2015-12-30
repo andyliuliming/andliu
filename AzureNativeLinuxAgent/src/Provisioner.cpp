@@ -20,9 +20,20 @@ void Provisioner::Prosess()
 {
 #ifdef _WIN32
 #else
-    
+    //1. provision re-generate key
+    AgentConfig::getInstance().LoadConfig();
 
-    // 1. do the ovf-env
+    string *type = AgentConfig::getInstance().getConfig("Provisioning_SshHostKeyPairType");
+    if (type == NULL) {
+        type = new string("rsa");
+    }
+    string *regenerateKeys = AgentConfig::getInstance().getConfig("Provisioning_RegenerateSshHostKeyPair");
+    if (regenerateKeys == NULL || regenerateKeys->find("y") == 0) {
+        CommandExecuter::RunGetOutput("rm -f /etc/ssh/ssh_host_*key*");
+        CommandResult * commandResult = CommandExecuter::RunGetOutput(("ssh-keygen -N '' -t " + *type + " -f /etc/ssh/ssh_host_" + *type + "_key").c_str());
+    }
+
+    // 2. do the ovf-env
     string *romDevicePath = DeviceRoutine::findRomDevice();
     FileOperator::make_dir(SECURE_MOUNT_POINT);
     string command("mount " + *romDevicePath + " " + SECURE_MOUNT_POINT);
@@ -36,7 +47,6 @@ void Provisioner::Prosess()
     OvfEnv *ovfEnv = new OvfEnv();
     ovfEnv->Parse(fileContent);
     ovfEnv->Process();
-        
 
 
     // 2. This is done here because regenerated SSH host key pairs may be potentially overwritten when processing the ovfxml

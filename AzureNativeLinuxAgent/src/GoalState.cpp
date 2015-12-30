@@ -34,6 +34,11 @@ void GoalState::UpdateGoalState()
     cout << "containerId: " << this->containerId << endl;
     delete containerIdXpathExpr;
 
+    const xmlChar* roleInstanceIdXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/InstanceId/text()");
+    this->roleInstanceId = *(XmlRoutine::getNodeText(doc, roleInstanceIdXpathExpr, NULL));
+    cout << "roleInstanceId: " << this->roleInstanceId << endl;
+    delete roleInstanceIdXpathExpr;
+
     const xmlChar* hostingEnvironmentConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/HostingEnvironmentConfig/text()");
     this->hostingEnvironmentConfigUrl = *(XmlRoutine::getNodeText(doc, hostingEnvironmentConfigXpathExpr, NULL));
     cout << "hostingEnvironmentConfigUrl: " << this->hostingEnvironmentConfigUrl << endl;

@@ -53,7 +53,7 @@ void StatusReporter::ReportRoleProperties(AzureEnvironment * environment, GoalSt
     headers["x-ms-agent-name"] = "AzureNativeLinuxAgent";
     headers["Content-Type"] = "text/xml; charset=utf-8";
     headers["x-ms-version"] = "2012-11-30";
-    string apiAddress = "http://" + environment->wireServerAddress + "/machine?comp=health";
+    string apiAddress = "http://" + environment->wireServerAddress + "/machine?comp=roleProperties";
     HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str());
 }
 
