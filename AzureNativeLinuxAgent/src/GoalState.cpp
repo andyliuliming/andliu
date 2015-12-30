@@ -79,13 +79,16 @@ void GoalState::UpdateGoalState()
     FileOperator::save_file(goalStateText, &goalStageFileName);
     // construct the instances
     string * hostingEnvironmentConfigText = HttpRoutine::Get(this->hostingEnvironmentConfigUrl.c_str());
-    hostingEnvironmentConfig = new HostingEnvironmentConfig();
-    hostingEnvironmentConfig->Parse(hostingEnvironmentConfigText);
+    this->hostingEnvironmentConfig = new HostingEnvironmentConfig();
+    this->hostingEnvironmentConfig->Parse(hostingEnvironmentConfigText);
 
     string * sharedConfigText = HttpRoutine::Get(this->sharedConfigUrl.c_str());
-    sharedConfig = new SharedConfig();
-    sharedConfig->Parse(sharedConfigText);
+    this->sharedConfig = new SharedConfig();
+    this->sharedConfig->Parse(sharedConfigText);
 
+    string * extentionsConfigText = HttpRoutine::Get(this->extensionsConfigUrl.c_str());
+    this->extensionsConfig = new ExtensionsConfig();
+    this->extensionsConfig->Parse(extentionsConfigText);
 #endif
 }
 

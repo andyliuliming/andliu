@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "ExtensionsConfig.h"
 #include "HostingEnvironmentConfig.h"
 #include "SharedConfig.h"
 using namespace std;
@@ -19,6 +20,7 @@ public:
     string goalStageFilePrefix;
     HostingEnvironmentConfig * hostingEnvironmentConfig;
     SharedConfig *sharedConfig;
+    ExtensionsConfig *extensionsConfig;
     GoalState();
     void UpdateGoalState();
     void Process();

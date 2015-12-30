@@ -3,6 +3,7 @@
 #include "AzureEnvironment.h"
 #include "CommandExecuter.h"
 #include "DeviceRoutine.h"
+#include "ExtensionsConfig.h"
 #include "GoalState.h"
 #include "Logger.h"
 #include "Macros.h"
@@ -61,6 +62,7 @@ int main(void)
         if (type == NULL) {
             type = new string("rsa");
         }
+
         string host_key_path = string("/etc/ssh/ssh_host_") + *type + "_key.pub";
         string commandToGetFingerPrint = string("ssh-keygen -lf ") + host_key_path;
         CommandResult* fingerprintResult = CommandExecuter::RunGetOutput(commandToGetFingerPrint.c_str());
