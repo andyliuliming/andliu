@@ -109,6 +109,7 @@ am_AzureNativeLinuxAgent_OBJECTS =  \
 	AzureNativeLinuxAgent-Provisioner.$(OBJEXT) \
 	AzureNativeLinuxAgent-SharedConfig.$(OBJEXT) \
 	AzureNativeLinuxAgent-StatusReporter.$(OBJEXT) \
+	AzureNativeLinuxAgent-StringUtil.$(OBJEXT) \
 	AzureNativeLinuxAgent-UserManager.$(OBJEXT) \
 	AzureNativeLinuxAgent-VMMStartup.$(OBJEXT) \
 	AzureNativeLinuxAgent-XmlRoutine.$(OBJEXT)
@@ -283,8 +284,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AzureNativeLinuxAgent_CXXFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(LIBCURL_CFLAGS) $(LIBUDEV_CFLAGS)
-AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS) $(LIBCURL_LIBS) $(LIBUDEV_LIBS)
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionsConfig.cpp FileOperator.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp OvfEnv.cpp Provisioner.cpp SharedConfig.cpp StatusReporter.cpp UserManager.cpp VMMStartup.cpp XmlRoutine.cpp
+AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS) $(LIBCURL_LIBS) $(LIBUDEV_LIBS) -lcrypt
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionsConfig.cpp FileOperator.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp OvfEnv.cpp Provisioner.cpp SharedConfig.cpp StatusReporter.cpp StringUtil.cpp UserManager.cpp VMMStartup.cpp XmlRoutine.cpp
 all: all-am
 
 .SUFFIXES:
@@ -390,6 +391,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-Provisioner.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-SharedConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-StatusReporter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-StringUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-UserManager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-VMMStartup.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-XmlRoutine.Po@am__quote@
@@ -659,6 +661,20 @@ AzureNativeLinuxAgent-StatusReporter.obj: StatusReporter.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='StatusReporter.cpp' object='AzureNativeLinuxAgent-StatusReporter.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-StatusReporter.obj `if test -f 'StatusReporter.cpp'; then $(CYGPATH_W) 'StatusReporter.cpp'; else $(CYGPATH_W) '$(srcdir)/StatusReporter.cpp'; fi`
+
+AzureNativeLinuxAgent-StringUtil.o: StringUtil.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-StringUtil.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-StringUtil.Tpo -c -o AzureNativeLinuxAgent-StringUtil.o `test -f 'StringUtil.cpp' || echo '$(srcdir)/'`StringUtil.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-StringUtil.Tpo $(DEPDIR)/AzureNativeLinuxAgent-StringUtil.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='StringUtil.cpp' object='AzureNativeLinuxAgent-StringUtil.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-StringUtil.o `test -f 'StringUtil.cpp' || echo '$(srcdir)/'`StringUtil.cpp
+
+AzureNativeLinuxAgent-StringUtil.obj: StringUtil.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-StringUtil.obj -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-StringUtil.Tpo -c -o AzureNativeLinuxAgent-StringUtil.obj `if test -f 'StringUtil.cpp'; then $(CYGPATH_W) 'StringUtil.cpp'; else $(CYGPATH_W) '$(srcdir)/StringUtil.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-StringUtil.Tpo $(DEPDIR)/AzureNativeLinuxAgent-StringUtil.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='StringUtil.cpp' object='AzureNativeLinuxAgent-StringUtil.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-StringUtil.obj `if test -f 'StringUtil.cpp'; then $(CYGPATH_W) 'StringUtil.cpp'; else $(CYGPATH_W) '$(srcdir)/StringUtil.cpp'; fi`
 
 AzureNativeLinuxAgent-UserManager.o: UserManager.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-UserManager.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-UserManager.Tpo -c -o AzureNativeLinuxAgent-UserManager.o `test -f 'UserManager.cpp' || echo '$(srcdir)/'`UserManager.cpp

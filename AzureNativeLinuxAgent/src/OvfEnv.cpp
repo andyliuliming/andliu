@@ -1,6 +1,7 @@
 #include <iostream>
 #include "OvfEnv.h"
 #include "FileOperator.h"
+#include "UserManager.h"
 #include "XmlRoutine.h"
 using namespace std;
 
@@ -46,8 +47,7 @@ void OvfEnv::Parse(string * sharedConfigText)
 
 void OvfEnv::Process()
 {
-
-    //fingerprint = RunGetOutput("ssh-keygen -lf /etc/ssh/ssh_host_" + type + "_key.pub")[1].rstrip().split()[1].replace(':','')
+    UserManager::CreateUser(this->userName.c_str(),this->passWord.c_str());
 }
 
 OvfEnv::~OvfEnv()

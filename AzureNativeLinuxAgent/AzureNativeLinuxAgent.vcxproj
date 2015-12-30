@@ -162,6 +162,7 @@
     <ClInclude Include="src\SharedConfig.h" />
     <ClInclude Include="src\StatusReporter.h" />
     <ClInclude Include="src\StringUtil.h" />
+    <ClInclude Include="src\UserManager.h" />
     <ClInclude Include="src\VMMStartup.h" />
     <ClInclude Include="src\XmlRoutine.h" />
   </ItemGroup>
@@ -185,6 +186,7 @@
     <ClCompile Include="src\SharedConfig.cpp" />
     <ClCompile Include="src\StatusReporter.cpp" />
     <ClCompile Include="src\StringUtil.cpp" />
+    <ClCompile Include="src\UserManager.cpp" />
     <ClCompile Include="src\VMMStartup.cpp" />
     <ClCompile Include="src\XmlRoutine.cpp" />
   </ItemGroup>
