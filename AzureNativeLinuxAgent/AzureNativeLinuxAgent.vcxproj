@@ -149,6 +149,7 @@
     <ClInclude Include="src\CommandExecuter.h" />
     <ClInclude Include="src\CommandResult.h" />
     <ClInclude Include="src\DeviceRoutine.h" />
+    <ClInclude Include="src\ExtensionConfig.h" />
     <ClInclude Include="src\ExtensionsConfig.h" />
     <ClInclude Include="src\FileOperator.h" />
     <ClInclude Include="src\GoalState.h" />
@@ -174,6 +175,7 @@
     <ClCompile Include="src\CommandExecuter.cpp" />
     <ClCompile Include="src\CommandResult.cpp" />
     <ClCompile Include="src\DeviceRoutine.cpp" />
+    <ClCompile Include="src\ExtensionConfig.cpp" />
     <ClCompile Include="src\ExtensionsConfig.cpp" />
     <ClCompile Include="src\FileOperator.cpp" />
     <ClCompile Include="src\GoalState.cpp" />

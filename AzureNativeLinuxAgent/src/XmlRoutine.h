@@ -22,6 +22,7 @@ public:
 #ifdef _WIN32
     //windows code goes here
 #else
+    static xmlXPathObjectPtr getNodes(xmlDocPtr doc, const xmlChar* xpathExpr, map<string, string> * namespaces);
     static string * getNodeText(xmlDocPtr doc, const xmlChar* xpathExpr, map<string, string> * namespaces);
 #endif
     ~XmlRoutine();

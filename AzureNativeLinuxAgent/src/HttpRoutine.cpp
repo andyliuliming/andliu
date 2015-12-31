@@ -12,6 +12,23 @@ HttpRoutine::HttpRoutine()
 {
 }
 
+string * HttpRoutine::GetWithDefaultHeader(const char *url)
+{
+    string *buffer = NULL;
+#ifdef _WIN32
+    // your windows code.
+#else
+    map<string, string> headers;
+    headers["x-ms-agent-name"] = "AzureNativeLinuxAgent";
+    headers["Content-Type"] = "text/xml; charset=utf-8";
+    headers["x-ms-version"] = "2012-11-30";
+
+    buffer = HttpRoutine::Get(url, &headers);
+    
+#endif
+    return buffer;
+}
+
 #ifdef _WIN32
 
 #else
@@ -75,20 +92,23 @@ bool HttpRoutine::init(CURL *&conn, const char *url, string *buffer) {
 #endif
 
 
-string* HttpRoutine::Get(const char * url)
+string* HttpRoutine::Get(const char * url, map<string, string> * headers)
 {
     string *buffer = NULL;
 #ifdef _WIN32
     // your windows code.
 #else
     struct curl_slist *chunk = NULL;
+    if (headers != NULL) {
+        /* Add a custom header */
+        for (std::map<string, string>::iterator it = headers->begin(); it != headers->end(); ++it)
+        {
+            string headerValue = it->first + ": " + it->second;
+            cout << "setting header value: " << headerValue << endl;
+            chunk = curl_slist_append(chunk, headerValue.c_str());
+        }
+    }
 
-    /* Add a custom header */
-    chunk = curl_slist_append(chunk, "x-ms-agent-name: AzureNativeLinuxAgent");
-
-    /* Modify a header curl otherwise adds differently */
-    chunk = curl_slist_append(chunk, "x-ms-version: 2012-11-30");
-    //http://curl.haxx.se/libcurl/c/htmltitle.html
     CURL *conn = NULL;
     CURLcode code;
     //curl_global_init is not thread safe.

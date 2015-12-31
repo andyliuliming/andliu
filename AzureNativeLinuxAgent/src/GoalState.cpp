@@ -18,7 +18,7 @@ void GoalState::UpdateGoalState()
 
     /* set our custom set of headers */
 
-    string * goalStateText = HttpRoutine::Get("http://168.63.129.16/machine/?comp=goalstate");
+    string * goalStateText = HttpRoutine::GetWithDefaultHeader("http://168.63.129.16/machine/?comp=goalstate");
 
     xmlDocPtr doc = xmlParseMemory(goalStateText->c_str(), goalStateText->size());
     xmlNodePtr root = xmlDocGetRootElement(doc);
@@ -78,15 +78,15 @@ void GoalState::UpdateGoalState()
     string goalStageFileName = this->goalStageFilePrefix + incarnation + ".xml";
     FileOperator::save_file(goalStateText, &goalStageFileName);
     // construct the instances
-    string * hostingEnvironmentConfigText = HttpRoutine::Get(this->hostingEnvironmentConfigUrl.c_str());
+    string * hostingEnvironmentConfigText = HttpRoutine::GetWithDefaultHeader(this->hostingEnvironmentConfigUrl.c_str());
     this->hostingEnvironmentConfig = new HostingEnvironmentConfig();
     this->hostingEnvironmentConfig->Parse(hostingEnvironmentConfigText);
 
-    string * sharedConfigText = HttpRoutine::Get(this->sharedConfigUrl.c_str());
+    string * sharedConfigText = HttpRoutine::GetWithDefaultHeader(this->sharedConfigUrl.c_str());
     this->sharedConfig = new SharedConfig();
     this->sharedConfig->Parse(sharedConfigText);
 
-    string * extentionsConfigText = HttpRoutine::Get(this->extensionsConfigUrl.c_str());
+    string * extentionsConfigText = HttpRoutine::GetWithDefaultHeader(this->extensionsConfigUrl.c_str());
     this->extensionsConfig = new ExtensionsConfig();
     this->extensionsConfig->Parse(extentionsConfigText);
 #endif

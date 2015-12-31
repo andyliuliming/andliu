@@ -98,6 +98,7 @@ am_AzureNativeLinuxAgent_OBJECTS =  \
 	AzureNativeLinuxAgent-CommandExecuter.$(OBJEXT) \
 	AzureNativeLinuxAgent-CommandResult.$(OBJEXT) \
 	AzureNativeLinuxAgent-DeviceRoutine.$(OBJEXT) \
+	AzureNativeLinuxAgent-ExtensionConfig.$(OBJEXT) \
 	AzureNativeLinuxAgent-ExtensionsConfig.$(OBJEXT) \
 	AzureNativeLinuxAgent-FileOperator.$(OBJEXT) \
 	AzureNativeLinuxAgent-HostingEnvironmentConfig.$(OBJEXT) \
@@ -287,7 +288,7 @@ top_builddir = ..
 top_srcdir = ..
 AzureNativeLinuxAgent_CXXFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(LIBCURL_CFLAGS) $(LIBUDEV_CFLAGS) $(GLIBMM_CFLAGS)
 AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS) $(LIBCURL_LIBS) $(LIBUDEV_LIBS) $(GLIBMM_LIBS) -lcrypt 
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionsConfig.cpp FileOperator.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp OvfEnv.cpp Provisioner.cpp SharedConfig.cpp StatusReporter.cpp StringUtil.cpp UserManager.cpp VMMStartup.cpp XmlRoutine.cpp
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionConfig.cpp ExtensionsConfig.cpp FileOperator.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp OvfEnv.cpp Provisioner.cpp SharedConfig.cpp StatusReporter.cpp StringUtil.cpp UserManager.cpp VMMStartup.cpp XmlRoutine.cpp
 all: all-am
 
 .SUFFIXES:
@@ -382,6 +383,7 @@ include ./$(DEPDIR)/AzureNativeLinuxAgent-Certificates.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-CommandExecuter.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-CommandResult.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-DeviceRoutine.Po
+include ./$(DEPDIR)/AzureNativeLinuxAgent-ExtensionConfig.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-ExtensionsConfig.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-FileOperator.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-GoalState.Po
@@ -509,6 +511,20 @@ AzureNativeLinuxAgent-DeviceRoutine.obj: DeviceRoutine.cpp
 #	$(AM_V_CXX)source='DeviceRoutine.cpp' object='AzureNativeLinuxAgent-DeviceRoutine.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-DeviceRoutine.obj `if test -f 'DeviceRoutine.cpp'; then $(CYGPATH_W) 'DeviceRoutine.cpp'; else $(CYGPATH_W) '$(srcdir)/DeviceRoutine.cpp'; fi`
+
+AzureNativeLinuxAgent-ExtensionConfig.o: ExtensionConfig.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-ExtensionConfig.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-ExtensionConfig.Tpo -c -o AzureNativeLinuxAgent-ExtensionConfig.o `test -f 'ExtensionConfig.cpp' || echo '$(srcdir)/'`ExtensionConfig.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-ExtensionConfig.Tpo $(DEPDIR)/AzureNativeLinuxAgent-ExtensionConfig.Po
+#	$(AM_V_CXX)source='ExtensionConfig.cpp' object='AzureNativeLinuxAgent-ExtensionConfig.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-ExtensionConfig.o `test -f 'ExtensionConfig.cpp' || echo '$(srcdir)/'`ExtensionConfig.cpp
+
+AzureNativeLinuxAgent-ExtensionConfig.obj: ExtensionConfig.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-ExtensionConfig.obj -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-ExtensionConfig.Tpo -c -o AzureNativeLinuxAgent-ExtensionConfig.obj `if test -f 'ExtensionConfig.cpp'; then $(CYGPATH_W) 'ExtensionConfig.cpp'; else $(CYGPATH_W) '$(srcdir)/ExtensionConfig.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-ExtensionConfig.Tpo $(DEPDIR)/AzureNativeLinuxAgent-ExtensionConfig.Po
+#	$(AM_V_CXX)source='ExtensionConfig.cpp' object='AzureNativeLinuxAgent-ExtensionConfig.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-ExtensionConfig.obj `if test -f 'ExtensionConfig.cpp'; then $(CYGPATH_W) 'ExtensionConfig.cpp'; else $(CYGPATH_W) '$(srcdir)/ExtensionConfig.cpp'; fi`
 
 AzureNativeLinuxAgent-ExtensionsConfig.o: ExtensionsConfig.cpp
 	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-ExtensionsConfig.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-ExtensionsConfig.Tpo -c -o AzureNativeLinuxAgent-ExtensionsConfig.o `test -f 'ExtensionsConfig.cpp' || echo '$(srcdir)/'`ExtensionsConfig.cpp

@@ -33,6 +33,7 @@
 #define OVF_ENV_FILE_NAME ("ovf-env.xml")
 #define VMM_CONFIG_FILE_FULL_PATH ("/mnt/cdrom/secure/linuxosconfiguration.xml")
 #define OVF_ENV_FILE_FULL_PATH ("/mnt/cdrom/secure/ovf-env.xml")
+#define LIB_DIR  ("/var/lib/waagent/")
 
 typedef unsigned char       BYTE, *PBYTE;
 typedef unsigned char       UINT8, *PUINT8;
