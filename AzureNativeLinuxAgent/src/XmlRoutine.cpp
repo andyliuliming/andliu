@@ -8,6 +8,42 @@ XmlRoutine::XmlRoutine()
 #ifdef _WIN32
 //windows code goes here
 #else
+xmlXPathObjectPtr XmlRoutine::findNodeByRelativeXpath(xmlDocPtr doc, xmlNodePtr rootnode, const xmlChar * xpathExpr)
+{
+    xmlXPathContextPtr xpathCtx = xmlXPathNewContext(doc);
+
+    // Important part
+    xpathCtx->node = rootnode;
+
+    xmlXPathObjectPtr xpathObj = xmlXPathEvalExpression(xpathExpr, xpathCtx);
+
+    xmlXPathFreeContext(xpathCtx);
+    return xpathObj;
+}
+
+xmlNodePtr XmlRoutine::findNodeByName(xmlNodePtr rootnode, const xmlChar * nodename)
+{
+    xmlNodePtr node = rootnode;
+    if (node == NULL) {
+        return NULL;
+    }
+
+    while (node != NULL) {
+
+        if (!xmlStrcmp(node->name, nodename)) {
+            return node;
+        }
+        else if (node->children != NULL) {
+            xmlNodePtr intNode = findNodeByName(node->children, nodename);
+            if (intNode != NULL) {
+                return intNode;
+            }
+        }
+        node = node->next;
+    }
+    return NULL;
+}
+
 xmlXPathObjectPtr XmlRoutine::getNodes(xmlDocPtr doc, const xmlChar* xpathExpr, map<string, string> * namespaces)
 {
     xmlXPathContextPtr xpathCtx;

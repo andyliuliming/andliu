@@ -29,6 +29,15 @@ void FileOperator::save_file(const string * content, const string * fileName)
     myfile.close();
 }
 
+void FileOperator::save_file(const char * content,long size, const string * fileName)
+{
+    ofstream myfile;
+    myfile.open(*fileName);
+
+    myfile.write(content, size);
+    myfile.close();
+}
+
 string * FileOperator::get_content(const string * fileName)
 {
     ifstream t(fileName->c_str());

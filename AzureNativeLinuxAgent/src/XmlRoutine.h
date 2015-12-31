@@ -22,6 +22,9 @@ public:
 #ifdef _WIN32
     //windows code goes here
 #else
+    static xmlXPathObjectPtr findNodeByRelativeXpath(xmlDocPtr doc,xmlNodePtr rootnode, const xmlChar * xpathExpr);
+    static xmlNodePtr findNodeByName(xmlNodePtr rootnode, const xmlChar * nodename);
+    
     static xmlXPathObjectPtr getNodes(xmlDocPtr doc, const xmlChar* xpathExpr, map<string, string> * namespaces);
     static string * getNodeText(xmlDocPtr doc, const xmlChar* xpathExpr, map<string, string> * namespaces);
 #endif
