@@ -24,7 +24,7 @@ string * HttpRoutine::GetWithDefaultHeader(const char *url)
     headers["x-ms-version"] = "2012-11-30";
 
     buffer = HttpRoutine::Get(url, &headers);
-    
+
 #endif
     return buffer;
 }
@@ -40,7 +40,15 @@ int HttpRoutine::writer(char *data, size_t size, size_t nmemb, string *writerDat
 
 int HttpRoutine::writerToFile(char * data, size_t size, size_t nmemb, FILE * file)
 {
-    return 0;
+    if (data == NULL) {
+        std::cout << "data is null, so not write to file." << endl;
+        return 0;
+    }
+    else {
+        std::cout << "writing to file, size: " << size << endl;
+        size_t written = fwrite(data, size, nmemb, file);
+        return written;
+    }
 }
 
 #ifdef _WIN32
@@ -159,6 +167,7 @@ void HttpRoutine::GetToFile(const char * url, map<string, string> * headers, con
     //curl_global_init is not thread safe.
     curl_global_init(CURL_GLOBAL_DEFAULT);
     fp = fopen(filePath, "wb");
+    cout << "fopen result is :" << (fp != NULL) << endl;
     bool initResult = init_common(conn, url);
 
     code = curl_easy_setopt(conn, CURLOPT_WRITEFUNCTION, writerToFile);
@@ -180,8 +189,10 @@ void HttpRoutine::GetToFile(const char * url, map<string, string> * headers, con
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
         cout << "set header result: " << code << endl;
     }
+
     code = curl_easy_perform(conn);
     cout << "curl_easy_perform result: " << code << endl;
+    fclose(fp);
     curl_easy_cleanup(conn);
 
     curl_slist_free_all(chunk);
@@ -191,13 +202,13 @@ void HttpRoutine::GetToFile(const char * url, map<string, string> * headers, con
     }
     else
     {
-        
+
     }
 #endif
-    
+
 }
 
-string * HttpRoutine::Post(const char * url, map<string,string> * headers,const char * data)
+string * HttpRoutine::Post(const char * url, map<string, string> * headers, const char * data)
 {
     string *buffer = NULL;
 #ifdef _WIN32

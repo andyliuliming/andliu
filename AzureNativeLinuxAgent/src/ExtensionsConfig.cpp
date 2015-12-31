@@ -89,7 +89,6 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
                     cout << "try to find the version" << endl;
                     string bundleFilePath = string("/var/lib/waagent/Native_") + extensionConfigs[i]->name + "___" + extensionConfigs[i]->version + ".zip";
                     //// get the uri
-                    //const char * bundleContent = HttpRoutine::Get((const char*)(uriObjects->nodesetval->nodeTab[0]->content), NULL);
                     HttpRoutine::GetToFile((const char*)(uriObjects->nodesetval->nodeTab[0]->content), NULL, bundleFilePath.c_str());
                     break;
                 }
