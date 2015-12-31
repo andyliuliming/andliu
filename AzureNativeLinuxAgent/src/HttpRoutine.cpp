@@ -29,9 +29,6 @@ string * HttpRoutine::GetWithDefaultHeader(const char *url)
     return buffer;
 }
 
-#ifdef _WIN32
-
-#else
 int HttpRoutine::writer(char *data, size_t size, size_t nmemb, string *writerData)
 {
     if (writerData == NULL) {
@@ -41,49 +38,37 @@ int HttpRoutine::writer(char *data, size_t size, size_t nmemb, string *writerDat
     return size * nmemb;
 }
 
-bool HttpRoutine::init(CURL *&conn, const char *url, string *buffer) {
+int HttpRoutine::writerToFile(char * data, size_t size, size_t nmemb, FILE * file)
+{
+    return 0;
+}
+
+#ifdef _WIN32
+#else
+bool HttpRoutine::init_common(CURL *&conn, const char *url) {
     CURLcode code;
-
     conn = curl_easy_init();
-
     if (conn == NULL)
     {
-        fprintf(stderr, "Failed to create CURL connection\n");
+        cout << "Failed to create CURL connection\n" << endl;
         exit(EXIT_FAILURE);
     }
-
     code = curl_easy_setopt(conn, CURLOPT_ERRORBUFFER, errorBuffer);
     if (code != CURLE_OK)
     {
         fprintf(stderr, "Failed to set error buffer [%d]\n", code);
         return false;
     }
-
     code = curl_easy_setopt(conn, CURLOPT_URL, url);
     if (code != CURLE_OK)
     {
         fprintf(stderr, "Failed to set URL [%s]\n", errorBuffer);
         return false;
     }
-
     code = curl_easy_setopt(conn, CURLOPT_FOLLOWLOCATION, 1L);
     if (code != CURLE_OK)
     {
         fprintf(stderr, "Failed to set redirect option [%s]\n", errorBuffer);
-        return false;
-    }
-
-    code = curl_easy_setopt(conn, CURLOPT_WRITEFUNCTION, writer);
-    if (code != CURLE_OK)
-    {
-        fprintf(stderr, "Failed to set writer [%s]\n", errorBuffer);
-        return false;
-    }
-
-    code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, buffer);
-    if (code != CURLE_OK)
-    {
-        fprintf(stderr, "Failed to set write data [%s]\n", errorBuffer);
         return false;
     }
 
@@ -114,7 +99,22 @@ string* HttpRoutine::Get(const char * url, map<string, string> * headers)
     //curl_global_init is not thread safe.
     curl_global_init(CURL_GLOBAL_DEFAULT);
     buffer = new string();
-    bool initResult = init(conn, url, buffer);
+    bool initResult = init_common(conn, url);
+
+    code = curl_easy_setopt(conn, CURLOPT_WRITEFUNCTION, writer);
+    if (code != CURLE_OK)
+    {
+        fprintf(stderr, "Failed to set writer [%s]\n", errorBuffer);
+        initResult = false;
+    }
+
+    code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, buffer);
+    if (code != CURLE_OK)
+    {
+        fprintf(stderr, "Failed to set write data [%s]\n", errorBuffer);
+        initResult = false;
+    }
+
     cout << "init Result: " << initResult << endl;
     if (chunk != NULL) {
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
@@ -135,6 +135,66 @@ string* HttpRoutine::Get(const char * url, map<string, string> * headers)
     }
 #endif
     return buffer;
+}
+
+void HttpRoutine::GetToFile(const char * url, map<string, string> * headers, const char * filePath)
+{
+#ifdef _WIN32
+    // your windows code.
+#else
+    FILE *fp;
+    struct curl_slist *chunk = NULL;
+    if (headers != NULL) {
+        /* Add a custom header */
+        for (std::map<string, string>::iterator it = headers->begin(); it != headers->end(); ++it)
+        {
+            string headerValue = it->first + ": " + it->second;
+            cout << "setting header value: " << headerValue << endl;
+            chunk = curl_slist_append(chunk, headerValue.c_str());
+        }
+    }
+
+    CURL *conn = NULL;
+    CURLcode code;
+    //curl_global_init is not thread safe.
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+    fp = fopen(filePath, "wb");
+    bool initResult = init_common(conn, url);
+
+    code = curl_easy_setopt(conn, CURLOPT_WRITEFUNCTION, writerToFile);
+    if (code != CURLE_OK)
+    {
+        fprintf(stderr, "Failed to set writer [%s]\n", errorBuffer);
+        initResult = false;
+    }
+
+    code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, fp);
+    if (code != CURLE_OK)
+    {
+        fprintf(stderr, "Failed to set write data [%s]\n", errorBuffer);
+        initResult = false;
+    }
+
+    cout << "init Result: " << initResult << endl;
+    if (chunk != NULL) {
+        code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
+        cout << "set header result: " << code << endl;
+    }
+    code = curl_easy_perform(conn);
+    cout << "curl_easy_perform result: " << code << endl;
+    curl_easy_cleanup(conn);
+
+    curl_slist_free_all(chunk);
+    if (code != CURLE_OK)
+    {
+        fprintf(stderr, "Failed to get '%s' [%s]\n", url, errorBuffer);
+    }
+    else
+    {
+        
+    }
+#endif
+    
 }
 
 string * HttpRoutine::Post(const char * url, map<string,string> * headers,const char * data)
@@ -159,7 +219,22 @@ string * HttpRoutine::Post(const char * url, map<string,string> * headers,const 
     //curl_global_init is not thread safe.
     curl_global_init(CURL_GLOBAL_DEFAULT);
     buffer = new string();
-    bool initResult = init(conn, url, buffer);
+    bool initResult = init_common(conn, url);
+
+    code = curl_easy_setopt(conn, CURLOPT_WRITEFUNCTION, writer);
+    if (code != CURLE_OK)
+    {
+        fprintf(stderr, "Failed to set writer [%s]\n", errorBuffer);
+        initResult = false;
+    }
+
+    code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, buffer);
+    if (code != CURLE_OK)
+    {
+        fprintf(stderr, "Failed to set write data [%s]\n", errorBuffer);
+        initResult = false;
+    }
+
     cout << "init Result: " << initResult << endl;
     if (chunk != NULL) {
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
@@ -184,8 +259,6 @@ string * HttpRoutine::Post(const char * url, map<string,string> * headers,const 
 #endif
     return buffer;
 }
-
-
 
 HttpRoutine::~HttpRoutine()
 {

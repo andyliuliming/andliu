@@ -69,11 +69,11 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
 
             cout << "checking the version in manifest file2..." << endl;
             delete pluginXpathManifestExpr;
-            xmlNodeSetPtr manifestNodes = xpathManifestObj->nodesetval;
-            for (int j = 0; j < manifestNodes->nodeNr; j++)
+            xmlNodeSetPtr pluginNodes = xpathManifestObj->nodesetval;
+            for (int j = 0; j < pluginNodes->nodeNr; j++)
             {
                 cout << "checking the version in manifest file3..." << endl;
-                xmlXPathObjectPtr versionObjects = XmlRoutine::findNodeByRelativeXpath(doc2, manifestNodes->nodeTab[j], BAD_CAST ".//Version/text()");
+                xmlXPathObjectPtr versionObjects = XmlRoutine::findNodeByRelativeXpath(doc2, pluginNodes->nodeTab[j], BAD_CAST "./Version/text()");
                 cout << "version node count is:" << versionObjects->nodesetval->nodeNr << endl;
                 cout << "version in manifest: " << (const char*)(versionObjects->nodesetval->nodeTab[0]->content) << endl;
                 cout << "version in manifest: " << (const char*)versionObjects->nodesetval->nodeTab[0]->name << endl;
@@ -85,15 +85,12 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
                 {
                     cout << "got the version!!!!" << endl;
                     // downloading the bundles
-                    xmlXPathObjectPtr uriObjects = XmlRoutine::findNodeByRelativeXpath(doc2, manifestNodes->nodeTab[j], BAD_CAST ".//Uris//Uri/Version/text()");
-
-                    //string bundleFilePath = string("/var/lib/waagent/Native_")+extensionConfigs[i].name + "___" + extensionConfigs[i].version + ".zip";
+                    xmlXPathObjectPtr uriObjects = XmlRoutine::findNodeByRelativeXpath(doc2, pluginNodes->nodeTab[j], BAD_CAST "./Uris/Uri/text()");
+                    cout << "try to find the version" << endl;
+                    string bundleFilePath = string("/var/lib/waagent/Native_") + extensionConfigs[i]->name + "___" + extensionConfigs[i]->version + ".zip";
                     //// get the uri
                     //const char * bundleContent = HttpRoutine::Get((const char*)(uriObjects->nodesetval->nodeTab[0]->content), NULL);
-
-                    ////TODO: use the stream to save the zip file.
-                    //FileOperator::save_file(bundleContent, &bundleFilePath);
-                    //delete bundleContent;
+                    HttpRoutine::GetToFile((const char*)(uriObjects->nodesetval->nodeTab[0]->content), NULL, bundleFilePath.c_str());
                     break;
                 }
             }
