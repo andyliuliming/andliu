@@ -48,8 +48,6 @@ int main(void)
             statusReporter->ReportNotReady(azureEnvironment, goalState, "Provisioning", "Starting");
         }
 
-        goalState->Process();
-
         if (!provisioned) {
             Logger::getInstance().Log("doing provision.");
             provisioner->Prosess();
@@ -76,6 +74,12 @@ int main(void)
         if (provisioned) {
             statusReporter->ReportReady(azureEnvironment, goalState);
         }
+
+
+        goalState->Process();
+
+
+
 
         SLEEP(25 * 1000);
     }

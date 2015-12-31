@@ -96,6 +96,7 @@ void GoalState::Process()
 {
     this->hostingEnvironmentConfig->Process();
     this->sharedConfig->Process();
+    this->extensionsConfig->Process();
 }
 
 

@@ -38,6 +38,9 @@ PKG_CHECK_MODULES([LIBCURL], [libcurl],,
 PKG_CHECK_MODULES([LIBUDEV], [libudev],,
   AC_MSG_ERROR([LIBUDEV not found.])) 
 
+PKG_CHECK_MODULES([GLIBMM], [glibmm-2.4],,
+AC_MSG_ERROR([GLIBMM not found.])) 
+
 AC_CONFIG_FILES([Makefile
                  src/Makefile])
 
