@@ -44,6 +44,9 @@ AC_MSG_ERROR([GLIBMM not found.]))
 PKG_CHECK_MODULES([LIBZIP], [libzip],,
 AC_MSG_ERROR([LIBZIP not found.])) 
 
+PKG_CHECK_MODULES([JSONGLIB], [json-glib-1.0],,
+AC_MSG_ERROR([JSONGLIB not found.]))
+
 AC_CONFIG_FILES([Makefile
                  src/Makefile])
 

@@ -120,7 +120,7 @@ am__DEPENDENCIES_1 =
 AzureNativeLinuxAgent_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AzureNativeLinuxAgent_LINK = $(CXXLD) \
 	$(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -215,6 +215,8 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
+JSONGLIB_CFLAGS = -pthread -I/usr/include/json-glib-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include  
+JSONGLIB_LIBS = -ljson-glib-1.0 -lgio-2.0 -lgobject-2.0 -lglib-2.0  
 LDFLAGS = 
 LIBCONFIGXX_CFLAGS =  
 LIBCONFIGXX_LIBS = -lconfig++  
@@ -290,8 +292,8 @@ target_alias =
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
-AzureNativeLinuxAgent_CXXFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(LIBCURL_CFLAGS) $(LIBUDEV_CFLAGS) $(GLIBMM_CFLAGS) $(LIBZIP_CFLAGS) 
-AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS) $(LIBCURL_LIBS) $(LIBUDEV_LIBS) $(GLIBMM_LIBS) $(LIBZIP_LIBS) -lcrypt 
+AzureNativeLinuxAgent_CXXFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(LIBCURL_CFLAGS) $(LIBUDEV_CFLAGS) $(GLIBMM_CFLAGS) $(LIBZIP_CFLAGS) $(JSONGLIB_CFLAGS)
+AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS) $(LIBCURL_LIBS) $(LIBUDEV_LIBS) $(GLIBMM_LIBS) $(LIBZIP_LIBS) $(JSONGLIB_LIBS) -lcrypt 
 AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionConfig.cpp ExtensionsConfig.cpp FileOperator.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp OvfEnv.cpp Provisioner.cpp SharedConfig.cpp StatusReporter.cpp StringUtil.cpp UserManager.cpp VMMStartup.cpp XmlRoutine.cpp ZipRoutine.cpp
 all: all-am
 
