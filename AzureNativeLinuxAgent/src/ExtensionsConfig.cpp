@@ -5,6 +5,7 @@
 #include "XmlRoutine.h"
 #ifdef _WIN32
 #else
+#include "ZipRoutine.h"
 #include <glibmm/ustring.h>
 using namespace Glib;
 #endif
@@ -90,6 +91,10 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
                     string bundleFilePath = string("/var/lib/waagent/Native_") + extensionConfigs[i]->name + "___" + extensionConfigs[i]->version + ".zip";
                     //// get the uri
                     HttpRoutine::GetToFile((const char*)(uriObjects->nodesetval->nodeTab[0]->content), NULL, bundleFilePath.c_str());
+
+                    string bundleZipPath = bundleFilePath;
+                    string bundleZipExtractDirectory = string("/var/lib/waagent/Native_") + extensionConfigs[i]->name + "___" + extensionConfigs[i]->version;
+                    ZipRoutine::UnZipToDirectory(bundleZipPath.c_str(), bundleZipExtractDirectory.c_str());
                     break;
                 }
             }

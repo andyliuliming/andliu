@@ -41,8 +41,8 @@ PKG_CHECK_MODULES([LIBUDEV], [libudev],,
 PKG_CHECK_MODULES([GLIBMM], [glibmm-2.4],,
 AC_MSG_ERROR([GLIBMM not found.])) 
 
-PKG_CHECK_MODULES([LIBLZMA], [liblzma],,
-AC_MSG_ERROR([LIBLZMA not found.])) 
+PKG_CHECK_MODULES([LIBZIP], [libzip],,
+AC_MSG_ERROR([LIBZIP not found.])) 
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile])

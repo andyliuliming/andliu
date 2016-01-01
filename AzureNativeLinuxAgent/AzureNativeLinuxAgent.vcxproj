@@ -166,6 +166,7 @@
     <ClInclude Include="src\UserManager.h" />
     <ClInclude Include="src\VMMStartup.h" />
     <ClInclude Include="src\XmlRoutine.h" />
+    <ClInclude Include="src\ZipRoutine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AgentConfig.cpp" />
@@ -191,6 +192,7 @@
     <ClCompile Include="src\UserManager.cpp" />
     <ClCompile Include="src\VMMStartup.cpp" />
     <ClCompile Include="src\XmlRoutine.cpp" />
+    <ClCompile Include="src\ZipRoutine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="aclocal.m4" />

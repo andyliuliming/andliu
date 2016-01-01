@@ -626,8 +626,8 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
-LIBLZMA_LIBS
-LIBLZMA_CFLAGS
+LIBZIP_LIBS
+LIBZIP_CFLAGS
 GLIBMM_LIBS
 GLIBMM_CFLAGS
 LIBUDEV_LIBS
@@ -763,8 +763,8 @@ LIBUDEV_CFLAGS
 LIBUDEV_LIBS
 GLIBMM_CFLAGS
 GLIBMM_LIBS
-LIBLZMA_CFLAGS
-LIBLZMA_LIBS'
+LIBZIP_CFLAGS
+LIBZIP_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1422,10 +1422,9 @@ Some influential environment variables:
   GLIBMM_CFLAGS
               C compiler flags for GLIBMM, overriding pkg-config
   GLIBMM_LIBS linker flags for GLIBMM, overriding pkg-config
-  LIBLZMA_CFLAGS
-              C compiler flags for LIBLZMA, overriding pkg-config
-  LIBLZMA_LIBS
-              linker flags for LIBLZMA, overriding pkg-config
+  LIBZIP_CFLAGS
+              C compiler flags for LIBZIP, overriding pkg-config
+  LIBZIP_LIBS linker flags for LIBZIP, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -5394,19 +5393,19 @@ fi
 
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBLZMA" >&5
-$as_echo_n "checking for LIBLZMA... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBZIP" >&5
+$as_echo_n "checking for LIBZIP... " >&6; }
 
-if test -n "$LIBLZMA_CFLAGS"; then
-    pkg_cv_LIBLZMA_CFLAGS="$LIBLZMA_CFLAGS"
+if test -n "$LIBZIP_CFLAGS"; then
+    pkg_cv_LIBZIP_CFLAGS="$LIBZIP_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"liblzma\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "liblzma") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libzip\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libzip") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_LIBLZMA_CFLAGS=`$PKG_CONFIG --cflags "liblzma" 2>/dev/null`
+  pkg_cv_LIBZIP_CFLAGS=`$PKG_CONFIG --cflags "libzip" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -5414,16 +5413,16 @@ fi
  else
     pkg_failed=untried
 fi
-if test -n "$LIBLZMA_LIBS"; then
-    pkg_cv_LIBLZMA_LIBS="$LIBLZMA_LIBS"
+if test -n "$LIBZIP_LIBS"; then
+    pkg_cv_LIBZIP_LIBS="$LIBZIP_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"liblzma\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "liblzma") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libzip\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libzip") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_LIBLZMA_LIBS=`$PKG_CONFIG --libs "liblzma" 2>/dev/null`
+  pkg_cv_LIBZIP_LIBS=`$PKG_CONFIG --libs "libzip" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -5444,21 +5443,21 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        LIBLZMA_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "liblzma" 2>&1`
+	        LIBZIP_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libzip" 2>&1`
         else
-	        LIBLZMA_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "liblzma" 2>&1`
+	        LIBZIP_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libzip" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
-	echo "$LIBLZMA_PKG_ERRORS" >&5
+	echo "$LIBZIP_PKG_ERRORS" >&5
 
-	as_fn_error $? "LIBLZMA not found." "$LINENO" 5
+	as_fn_error $? "LIBZIP not found." "$LINENO" 5
 elif test $pkg_failed = untried; then
      	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-	as_fn_error $? "LIBLZMA not found." "$LINENO" 5
+	as_fn_error $? "LIBZIP not found." "$LINENO" 5
 else
-	LIBLZMA_CFLAGS=$pkg_cv_LIBLZMA_CFLAGS
-	LIBLZMA_LIBS=$pkg_cv_LIBLZMA_LIBS
+	LIBZIP_CFLAGS=$pkg_cv_LIBZIP_CFLAGS
+	LIBZIP_LIBS=$pkg_cv_LIBZIP_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
