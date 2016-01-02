@@ -103,6 +103,7 @@ am_AzureNativeLinuxAgent_OBJECTS =  \
 	AzureNativeLinuxAgent-FileOperator.$(OBJEXT) \
 	AzureNativeLinuxAgent-HostingEnvironmentConfig.$(OBJEXT) \
 	AzureNativeLinuxAgent-HttpRoutine.$(OBJEXT) \
+	AzureNativeLinuxAgent-JsonRoutine.$(OBJEXT) \
 	AzureNativeLinuxAgent-Logger.$(OBJEXT) \
 	AzureNativeLinuxAgent-GoalState.$(OBJEXT) \
 	AzureNativeLinuxAgent-NetworkRoutine.$(OBJEXT) \
@@ -294,7 +295,7 @@ top_builddir = ..
 top_srcdir = ..
 AzureNativeLinuxAgent_CXXFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(LIBCURL_CFLAGS) $(LIBUDEV_CFLAGS) $(GLIBMM_CFLAGS) $(LIBZIP_CFLAGS) $(JSONGLIB_CFLAGS)
 AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS) $(LIBCURL_LIBS) $(LIBUDEV_LIBS) $(GLIBMM_LIBS) $(LIBZIP_LIBS) $(JSONGLIB_LIBS) -lcrypt 
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionConfig.cpp ExtensionsConfig.cpp FileOperator.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp OvfEnv.cpp Provisioner.cpp SharedConfig.cpp StatusReporter.cpp StringUtil.cpp UserManager.cpp VMMStartup.cpp XmlRoutine.cpp ZipRoutine.cpp
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionConfig.cpp ExtensionsConfig.cpp FileOperator.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp JsonRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp OvfEnv.cpp Provisioner.cpp SharedConfig.cpp StatusReporter.cpp StringUtil.cpp UserManager.cpp VMMStartup.cpp XmlRoutine.cpp ZipRoutine.cpp
 all: all-am
 
 .SUFFIXES:
@@ -395,6 +396,7 @@ include ./$(DEPDIR)/AzureNativeLinuxAgent-FileOperator.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-GoalState.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-HostingEnvironmentConfig.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-HttpRoutine.Po
+include ./$(DEPDIR)/AzureNativeLinuxAgent-JsonRoutine.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-Logger.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-NetworkRoutine.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-OvfEnv.Po
@@ -588,6 +590,20 @@ AzureNativeLinuxAgent-HttpRoutine.obj: HttpRoutine.cpp
 #	$(AM_V_CXX)source='HttpRoutine.cpp' object='AzureNativeLinuxAgent-HttpRoutine.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-HttpRoutine.obj `if test -f 'HttpRoutine.cpp'; then $(CYGPATH_W) 'HttpRoutine.cpp'; else $(CYGPATH_W) '$(srcdir)/HttpRoutine.cpp'; fi`
+
+AzureNativeLinuxAgent-JsonRoutine.o: JsonRoutine.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-JsonRoutine.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-JsonRoutine.Tpo -c -o AzureNativeLinuxAgent-JsonRoutine.o `test -f 'JsonRoutine.cpp' || echo '$(srcdir)/'`JsonRoutine.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-JsonRoutine.Tpo $(DEPDIR)/AzureNativeLinuxAgent-JsonRoutine.Po
+#	$(AM_V_CXX)source='JsonRoutine.cpp' object='AzureNativeLinuxAgent-JsonRoutine.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-JsonRoutine.o `test -f 'JsonRoutine.cpp' || echo '$(srcdir)/'`JsonRoutine.cpp
+
+AzureNativeLinuxAgent-JsonRoutine.obj: JsonRoutine.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-JsonRoutine.obj -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-JsonRoutine.Tpo -c -o AzureNativeLinuxAgent-JsonRoutine.obj `if test -f 'JsonRoutine.cpp'; then $(CYGPATH_W) 'JsonRoutine.cpp'; else $(CYGPATH_W) '$(srcdir)/JsonRoutine.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-JsonRoutine.Tpo $(DEPDIR)/AzureNativeLinuxAgent-JsonRoutine.Po
+#	$(AM_V_CXX)source='JsonRoutine.cpp' object='AzureNativeLinuxAgent-JsonRoutine.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-JsonRoutine.obj `if test -f 'JsonRoutine.cpp'; then $(CYGPATH_W) 'JsonRoutine.cpp'; else $(CYGPATH_W) '$(srcdir)/JsonRoutine.cpp'; fi`
 
 AzureNativeLinuxAgent-Logger.o: Logger.cpp
 	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-Logger.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-Logger.Tpo -c -o AzureNativeLinuxAgent-Logger.o `test -f 'Logger.cpp' || echo '$(srcdir)/'`Logger.cpp

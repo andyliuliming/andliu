@@ -45,6 +45,7 @@ void ZipRoutine::safe_create_dir(const char *dir)
 int ZipRoutine::UnZipToDirectory(const char * archive, const char * zipExtractDirectory)
 {
 #ifdef _WIN32
+    return 0;
 #else
     struct zip *za;
     struct zip_file *zf;
@@ -84,7 +85,7 @@ int ZipRoutine::UnZipToDirectory(const char * archive, const char * zipExtractDi
                 fd = open(sb.name, O_RDWR | O_TRUNC | O_CREAT, 0644);
                 if (fd < 0) {
                     cout << "length is negative" << endl;
-                    exit(101);
+                    break;
                 }
 
                 sum = 0;
@@ -92,7 +93,7 @@ int ZipRoutine::UnZipToDirectory(const char * archive, const char * zipExtractDi
                     len = zip_fread(zf, buf, 100);
                     if (len < 0) {
                         cout << "length is negative" << endl;
-                        exit(102);
+                        break;
                     }
                     write(fd, buf, len);
                     sum += len;

@@ -1,6 +1,7 @@
 #include "ExtensionsConfig.h"
 #include "FileOperator.h"
 #include "HttpRoutine.h"
+#include "JsonRoutine.h"
 #include "Macros.h"
 #include "XmlRoutine.h"
 #ifdef _WIN32
@@ -95,6 +96,8 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
                     string bundleZipPath = bundleFilePath;
                     string bundleZipExtractDirectory = string("/var/lib/waagent/Native_") + extensionConfigs[i]->name + "___" + extensionConfigs[i]->version;
                     ZipRoutine::UnZipToDirectory(bundleZipPath.c_str(), bundleZipExtractDirectory.c_str());
+
+                    JsonRoutine::ParseFile("/var/lib/waagent/Microsoft.Azure.RecoveryServices.VMSnapshotLinux-1.0.3.0/HandlerManifest.json");
                     break;
                 }
             }
