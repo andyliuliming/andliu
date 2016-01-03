@@ -33,12 +33,13 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
     // TODO garbage collection it.
 
     const xmlChar* pluginXpathExpr = xmlCharStrdup("/Extensions/Plugins/Plugin");
-    xmlXPathObjectPtr xpathObj = XmlRoutine::getNodes(extensionsConfigDoc, pluginXpathExpr, NULL);
+    xmlXPathObjectPtr pluginsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, pluginXpathExpr, NULL);
     delete pluginXpathExpr;
-    xmlNodeSetPtr nodes = xpathObj->nodesetval;
+    xmlNodeSetPtr nodes = pluginsXpathObj->nodesetval;
     cout << "plugin node count: " << nodes->nodeNr << endl;
     this->extensionConfigs.clear();
-    for (int i = 0; i < nodes->nodeNr; i++) {
+    for (int i = 0; i < nodes->nodeNr; i++)
+    {
         ExtensionConfig *newConfig = new ExtensionConfig();
         xmlChar * name = xmlGetProp(nodes->nodeTab[i], xmlCharStrdup("name"));
         newConfig->name = ustring((const char*)name);
@@ -50,9 +51,10 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
         newConfig->failoverLocation = ustring((const char*)failoverLocation);
         this->extensionConfigs.push_back(newConfig);
     }
-    xmlXPathFreeObject(xpathObj);
+    xmlXPathFreeObject(pluginsXpathObj);
 
-    for (int i = 0; i < this->extensionConfigs.size(); i++) {
+    for (int i = 0; i < this->extensionConfigs.size(); i++)
+    {
         // get the manifest, get the bundle zip file location, download it, extract it.
         string * manifestXmlContent = HttpRoutine::Get(this->extensionConfigs[i]->location.c_str(), NULL);
         if (manifestXmlContent == NULL)
@@ -60,7 +62,8 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
             manifestXmlContent = HttpRoutine::Get(this->extensionConfigs[i]->failoverLocation.c_str(), NULL);
         }
 
-        if (manifestXmlContent != NULL) {
+        if (manifestXmlContent != NULL)
+        {
             string filepath = string(LIB_DIR) + "Native_" + this->extensionConfigs[i]->name + "." + incarnationStr + ".manifest";
             FileOperator::save_file(manifestXmlContent, &filepath);
             xmlDocPtr manifestXmlDoc = xmlParseMemory(manifestXmlContent->c_str(), manifestXmlContent->size());
@@ -95,7 +98,10 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
 
                     string bundleZipPath = bundleFilePath;
                     string bundleZipExtractDirectory = string("/var/lib/waagent/Native_") + extensionConfigs[i]->name + "_" + extensionConfigs[i]->version;
-                    ZipRoutine::UnZipToDirectory(bundleZipPath.c_str(), bundleZipExtractDirectory.c_str());
+                    
+                    FileOperator::make_dir(bundleZipExtractDirectory);
+
+                    ZipRoutine::UnZipToDirectory(bundleZipPath, bundleZipExtractDirectory);
 
                     string manifestFilePath = bundleZipExtractDirectory + "/HandlerManifest.json";
 
@@ -104,6 +110,10 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
                 }
             }
             xmlXPathFreeObject(xpathManifestObj);
+        }
+        else
+        {
+            //TODO: error handling.
         }
 
         const xmlChar* pluginSettingsXpathExpr = xmlCharStrdup("/Extensions/PluginSettings/Plugin");
@@ -125,13 +135,17 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
             string settingFilePath = string("/var/lib/waagent/Native_") +
                 ustring((const char*)pluginName) + "_" + ustring((const char*)pluginVersion) + "/config/" + ustring((const char*)seqNo) + ".settings";
 
-            const char* runtimeSettingsText =  (const char*)xmlNodeGetContent(runtimeSettingsXpathObject->nodesetval->nodeTab[0]);
-            
+            const char* runtimeSettingsText = (const char*)xmlNodeGetContent(runtimeSettingsXpathObject->nodesetval->nodeTab[0]);
+
             cout << "runtime settings text is :" << runtimeSettingsText << "seq no is :" << (const char*)seqNo << endl;
             string *settingFileContent = new string(runtimeSettingsText);
             FileOperator::save_file(settingFileContent, &settingFilePath);
+
+            //handle it 
         }
     }
+    xmlFreeDoc(extensionsConfigDoc);
+    xmlCleanupParser();
 
 #endif
 }
