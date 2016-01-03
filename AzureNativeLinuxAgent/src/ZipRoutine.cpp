@@ -62,6 +62,7 @@ int ZipRoutine::UnZipToDirectory(const char * archive, const char * zipExtractDi
             archive, buf);
         return 1;
     }
+    cout << "zip open success." << endl;
 
     int entries_num = zip_get_num_entries(za, 0);
     for (i = 0; i < entries_num; i++) {
@@ -79,7 +80,7 @@ int ZipRoutine::UnZipToDirectory(const char * archive, const char * zipExtractDi
                 zf = zip_fopen_index(za, i, 0);
                 if (!zf) {
                     fprintf(stderr, "failed to open file with index\n");
-                    exit(100);
+                    break;
                 }
 
                 fd = open(sb.name, O_RDWR | O_TRUNC | O_CREAT, 0644);

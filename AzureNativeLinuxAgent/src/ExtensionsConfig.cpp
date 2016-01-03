@@ -19,11 +19,11 @@ ExtensionsConfig::ExtensionsConfig()
 void ExtensionsConfig::Parse(string * extensionsConfigText) {
 #ifdef _WIN32
 #else
-    xmlDocPtr doc = xmlParseMemory(extensionsConfigText->c_str(), extensionsConfigText->size());
-    xmlNodePtr root = xmlDocGetRootElement(doc);
+    xmlDocPtr extensionsConfigDoc = xmlParseMemory(extensionsConfigText->c_str(), extensionsConfigText->size());
+    xmlNodePtr root = xmlDocGetRootElement(extensionsConfigDoc);
     cout << "root name is " << root->name << endl;
     xmlChar * incarnation = xmlGetProp(root, xmlCharStrdup("goalStateIncarnation"));
-    
+
     ustring incarnationStr((const char*)incarnation);
     string configFilePath = string("/var/lib/waagent/Native_ExtensionsConfig.") + incarnationStr + ".xml";
     string * configFilePathP = new string(configFilePath);
@@ -33,7 +33,7 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
     // TODO garbage collection it.
 
     const xmlChar* pluginXpathExpr = xmlCharStrdup("/Extensions/Plugins/Plugin");
-    xmlXPathObjectPtr xpathObj = XmlRoutine::getNodes(doc, pluginXpathExpr, NULL);
+    xmlXPathObjectPtr xpathObj = XmlRoutine::getNodes(extensionsConfigDoc, pluginXpathExpr, NULL);
     delete pluginXpathExpr;
     xmlNodeSetPtr nodes = xpathObj->nodesetval;
     cout << "plugin node count: " << nodes->nodeNr << endl;
@@ -53,21 +53,21 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
     xmlXPathFreeObject(xpathObj);
 
     for (int i = 0; i < this->extensionConfigs.size(); i++) {
-        // get the manifest
-        string * result = HttpRoutine::Get(this->extensionConfigs[i]->location.c_str(), NULL);
-        if (result == NULL)
+        // get the manifest, get the bundle zip file location, download it, extract it.
+        string * manifestXmlContent = HttpRoutine::Get(this->extensionConfigs[i]->location.c_str(), NULL);
+        if (manifestXmlContent == NULL)
         {
-            result = HttpRoutine::Get(this->extensionConfigs[i]->failoverLocation.c_str(), NULL);
+            manifestXmlContent = HttpRoutine::Get(this->extensionConfigs[i]->failoverLocation.c_str(), NULL);
         }
 
-        if (result != NULL) {
+        if (manifestXmlContent != NULL) {
             string filepath = string(LIB_DIR) + "Native_" + this->extensionConfigs[i]->name + "." + incarnationStr + ".manifest";
-            FileOperator::save_file(result, &filepath);
-            xmlDocPtr doc2 = xmlParseMemory(result->c_str(), result->size());
+            FileOperator::save_file(manifestXmlContent, &filepath);
+            xmlDocPtr manifestXmlDoc = xmlParseMemory(manifestXmlContent->c_str(), manifestXmlContent->size());
 
             const xmlChar* pluginXpathManifestExpr = xmlCharStrdup("/PluginVersionManifest/Plugins/Plugin");
             cout << "checking the version in manifest file..." << endl;
-            xmlXPathObjectPtr xpathManifestObj = XmlRoutine::getNodes(doc2, pluginXpathManifestExpr, NULL);
+            xmlXPathObjectPtr xpathManifestObj = XmlRoutine::getNodes(manifestXmlDoc, pluginXpathManifestExpr, NULL);
 
             cout << "checking the version in manifest file2..." << endl;
             delete pluginXpathManifestExpr;
@@ -75,7 +75,7 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
             for (int j = 0; j < pluginNodes->nodeNr; j++)
             {
                 cout << "checking the version in manifest file3..." << endl;
-                xmlXPathObjectPtr versionObjects = XmlRoutine::findNodeByRelativeXpath(doc2, pluginNodes->nodeTab[j], BAD_CAST "./Version/text()");
+                xmlXPathObjectPtr versionObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginNodes->nodeTab[j], BAD_CAST "./Version/text()");
                 cout << "version node count is:" << versionObjects->nodesetval->nodeNr << endl;
                 cout << "version in manifest: " << (const char*)(versionObjects->nodesetval->nodeTab[0]->content) << endl;
                 cout << "version in manifest: " << (const char*)versionObjects->nodesetval->nodeTab[0]->name << endl;
@@ -83,29 +83,54 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
 
                 xmlXPathFreeObject(versionObjects);
 
-                if (currentVersion == extensionConfigs[i]->version) 
+                if (currentVersion == extensionConfigs[i]->version)
                 {
                     cout << "got the version!!!!" << endl;
                     // downloading the bundles
-                    xmlXPathObjectPtr uriObjects = XmlRoutine::findNodeByRelativeXpath(doc2, pluginNodes->nodeTab[j], BAD_CAST "./Uris/Uri/text()");
+                    xmlXPathObjectPtr uriObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginNodes->nodeTab[j], BAD_CAST "./Uris/Uri/text()");
                     cout << "try to find the version" << endl;
                     string bundleFilePath = string("/var/lib/waagent/Native_") + extensionConfigs[i]->name + "___" + extensionConfigs[i]->version + ".zip";
                     //// get the uri
                     HttpRoutine::GetToFile((const char*)(uriObjects->nodesetval->nodeTab[0]->content), NULL, bundleFilePath.c_str());
 
                     string bundleZipPath = bundleFilePath;
-                    string bundleZipExtractDirectory = string("/var/lib/waagent/Native_") + extensionConfigs[i]->name + "___" + extensionConfigs[i]->version;
+                    string bundleZipExtractDirectory = string("/var/lib/waagent/Native_") + extensionConfigs[i]->name + "_" + extensionConfigs[i]->version;
                     ZipRoutine::UnZipToDirectory(bundleZipPath.c_str(), bundleZipExtractDirectory.c_str());
 
-                    JsonRoutine::ParseFile("/var/lib/waagent/Microsoft.Azure.RecoveryServices.VMSnapshotLinux-1.0.3.0/HandlerManifest.json");
+                    string manifestFilePath = bundleZipExtractDirectory + "/HandlerManifest.json";
+
+                    JsonRoutine::ParseFile(manifestFilePath.c_str());
                     break;
                 }
             }
             xmlXPathFreeObject(xpathManifestObj);
-            // first try to find the 
-            // get the bundle uri from the manifest.
-}
+        }
 
+        const xmlChar* pluginSettingsXpathExpr = xmlCharStrdup("/Extensions/PluginSettings/Plugin");
+        xmlXPathObjectPtr pluginSettingsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, pluginSettingsXpathExpr, NULL);
+        delete pluginSettingsXpathExpr;
+        xmlNodeSetPtr pluginSettingsNodeSet = pluginSettingsXpathObj->nodesetval;
+        cout << "settings file node count: " << pluginSettingsNodeSet->nodeNr << endl;
+        for (int i = 0; i < pluginSettingsNodeSet->nodeNr; i++)
+        {
+            xmlChar * pluginName = xmlGetProp(pluginSettingsNodeSet->nodeTab[i], xmlCharStrdup("name"));
+            //newConfig->name = ustring((const char*)name);
+            xmlChar * pluginVersion = xmlGetProp(pluginSettingsNodeSet->nodeTab[i], xmlCharStrdup("version"));
+
+            xmlXPathObjectPtr runtimeSettingsXpathObject = XmlRoutine::findNodeByRelativeXpath(extensionsConfigDoc,
+                pluginSettingsNodeSet->nodeTab[i], BAD_CAST "./RuntimeSettings");
+
+            xmlChar * seqNo = xmlGetProp(runtimeSettingsXpathObject->nodesetval->nodeTab[i], xmlCharStrdup("seqNo"));
+
+            string settingFilePath = string("/var/lib/waagent/Native_") +
+                ustring((const char*)pluginName) + "_" + ustring((const char*)pluginVersion) + "/config/" + ustring((const char*)seqNo) + ".settings";
+
+            const char* runtimeSettingsText =  (const char*)xmlNodeGetContent(runtimeSettingsXpathObject->nodesetval->nodeTab[0]);
+            
+            cout << "runtime settings text is :" << runtimeSettingsText << "seq no is :" << (const char*)seqNo << endl;
+            string *settingFileContent = new string(runtimeSettingsText);
+            FileOperator::save_file(settingFileContent, &settingFilePath);
+        }
     }
 
 #endif

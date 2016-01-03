@@ -29,7 +29,7 @@ JsonNode * JsonRoutine::ParseFile(const char * filePath)
     reader = json_reader_new(node);
     int count = json_reader_count_elements(reader);
     cout << "handlerManifest count is: " << count << endl;
-    for (i = 0; i != count; ++i)
+    for (i = 0; i < count; ++i)
     {
         json_reader_read_element(reader, i); //read the i-index element
         json_reader_read_member(reader, "handlerManifest");
