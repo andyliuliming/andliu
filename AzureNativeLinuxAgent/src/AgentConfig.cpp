@@ -16,7 +16,7 @@ void AgentConfig::LoadConfig()
     // Read the file. If there is an error, report it and exit.
     try
     {
-        this->config->readFile("./waagent.conf");
+        this->config->readFile("/etc/waagent_native.conf");
     }
     catch (const FileIOException &fioex)
     {
