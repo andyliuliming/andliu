@@ -45,7 +45,6 @@ int HttpRoutine::writerToFile(char * data, size_t size, size_t nmemb, FILE * fil
         return 0;
     }
     else {
-        std::cout << "writing to file, size: " << size << endl;
         size_t written = fwrite(data, size, nmemb, file);
         return written;
     }

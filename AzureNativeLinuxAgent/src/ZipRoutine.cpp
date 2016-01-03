@@ -60,15 +60,22 @@ int ZipRoutine::UnZipToDirectory(string& archive, string& zipExtractDirectory)
             printf("Name: [%s], ", sb.name);
             printf("Size: [%llu], ", (unsigned long long)(sb.size));
             printf("mtime: [%u]\n", (unsigned int)sb.mtime);
-            if (sb.name[len - 1] == '/')
+            
+            // create the sub dir
+            string relative_path = string(sb.name);
+            int last_index_slash = relative_path.find_last_of('/');
+            if (last_index_slash != string::npos)
             {
-                // create the sub dir
-                string newFolderPath = zipExtractDirectory + sb.name;
+                //not find so it's 
+                string folder_part = relative_path.substr(0, last_index_slash);
+                string newFolderPath = zipExtractDirectory + folder_part;
+
                 cout << " try to create dir" << newFolderPath << endl;
                 int make_dir_result = FileOperator::make_dir(newFolderPath.c_str());
+
                 cout << " make dir result: " << make_dir_result << endl;
             }
-            else
+            if (last_index_slash != (relative_path.length() - 1))
             {
                 zf = zip_fopen_index(za, i, 0);
                 if (!zf)
