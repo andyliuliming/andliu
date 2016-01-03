@@ -145,10 +145,11 @@ string* HttpRoutine::Get(const char * url, map<string, string> * headers)
     return buffer;
 }
 
-void HttpRoutine::GetToFile(const char * url, map<string, string> * headers, const char * filePath)
+int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, const char * filePath)
 {
 #ifdef _WIN32
     // your windows code.
+    return 0;
 #else
     FILE *fp;
     struct curl_slist *chunk = NULL;
@@ -167,6 +168,10 @@ void HttpRoutine::GetToFile(const char * url, map<string, string> * headers, con
     //curl_global_init is not thread safe.
     curl_global_init(CURL_GLOBAL_DEFAULT);
     fp = fopen(filePath, "wb");
+    if (fp == NULL)
+    {
+        return 1;
+    }
     cout << "fopen result is :" << (fp != NULL) << endl;
     bool initResult = init_common(conn, url);
 
@@ -204,6 +209,7 @@ void HttpRoutine::GetToFile(const char * url, map<string, string> * headers, con
     {
 
     }
+    return 0;
 #endif
 
 }

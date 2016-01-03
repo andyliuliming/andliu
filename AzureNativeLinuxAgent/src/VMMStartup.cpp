@@ -30,7 +30,7 @@ void VMMStartup::TryLoadAtapiix() {
         delete commandResult;
         commandResult = NULL;
 
-        if (FileOperator::file_exists(krn_pth)) {
+        if (FileOperator::file_exists(krn_pth.c_str())) {
             string insertModuleCommand = "insmod " + krn_pth;
             commandResult = CommandExecuter::RunGetOutput(insertModuleCommand.c_str());
         }

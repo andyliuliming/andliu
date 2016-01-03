@@ -8,15 +8,15 @@ FileOperator::FileOperator()
 {
 }
 
-bool FileOperator::file_exists(const std::string & name)
+bool FileOperator::file_exists(const char* name)
 {
     struct stat buffer;
-    return (stat(name.c_str(), &buffer) == 0);
+    return (stat(name, &buffer) == 0);
 }
 
-int FileOperator::make_dir(const std::string & name)
+int FileOperator::make_dir(const char* dir_path)
 {
-    string mkdirCmd = "mkdir -p " + name;
+    string mkdirCmd = string("mkdir -p ") + dir_path;
     int dir_err = system(mkdirCmd.c_str());
     return dir_err;
 }

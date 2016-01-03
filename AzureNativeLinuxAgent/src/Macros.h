@@ -25,15 +25,13 @@
 #define RECV_TO_OPTION
 #define CLOSESOCKET close
 #endif
-//this->VMM_CONFIG_FILE_NAME = "linuxosconfiguration.xml";
-//this->SECURE_MOUNT_POINT = "/mnt/cdrom/secure";
-//this->VMM_CONFIG_FILE_FULL_PATH = this->SECURE_MOUNT_POINT + "/" + this->VMM_CONFIG_FILE_NAME;
+
 #define VMM_CONFIG_FILE_NAME ("linuxosconfiguration.xml")
 #define SECURE_MOUNT_POINT ("/mnt/cdrom/secure")
 #define OVF_ENV_FILE_NAME ("ovf-env.xml")
 #define VMM_CONFIG_FILE_FULL_PATH ("/mnt/cdrom/secure/linuxosconfiguration.xml")
 #define OVF_ENV_FILE_FULL_PATH ("/mnt/cdrom/secure/ovf-env.xml")
-#define LIB_DIR  ("/var/lib/waagent/")
+#define WAAGENT_LIB_BASE_DIR  ("/var/lib/waagent/")
 
 typedef unsigned char       BYTE, *PBYTE;
 typedef unsigned char       UINT8, *PUINT8;

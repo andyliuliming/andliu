@@ -6,7 +6,6 @@ class ZipRoutine
 {
 public:
     ZipRoutine();
-    static void safe_create_dir(const char *dir);
     static int UnZipToDirectory(string& archive, string& zipExtractDirectory);
     ~ZipRoutine();
 };

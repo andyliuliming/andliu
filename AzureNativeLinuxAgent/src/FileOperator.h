@@ -10,8 +10,8 @@ class FileOperator
 {
 public:
     FileOperator();
-    static bool file_exists(const string& name);
-    static int make_dir(const string& name);
+    static bool file_exists(const char* name);
+    static int make_dir(const char* dir_path);
     static void save_file(const char * content, long size, const string * fileName);
     static void save_file(const string *content, const string *fileName);
     static string * get_content(const string *fileName);

@@ -24,19 +24,9 @@ ZipRoutine::ZipRoutine()
     //
 }
 
-void ZipRoutine::safe_create_dir(const char *dir)
-{
-#ifdef _WIN32
-#else
-    if (mkdir(dir, 0755) < 0) {
-        if (errno != EEXIST) {
-            perror(dir);
-            exit(1);
-        }
-    }
-#endif
-}
-
+/*
+the zipExtractDirectory format should be like /var/lib/waagent/xxx_version/
+*/
 int ZipRoutine::UnZipToDirectory(string& archive, string& zipExtractDirectory)
 {
 #ifdef _WIN32
@@ -68,13 +58,15 @@ int ZipRoutine::UnZipToDirectory(string& archive, string& zipExtractDirectory)
             printf("==================/n");
             len = strlen(sb.name);
             printf("Name: [%s], ", sb.name);
-            printf("Size: [%llu], ", sb.size);
+            printf("Size: [%llu], ", (unsigned long long)(sb.size));
             printf("mtime: [%u]\n", (unsigned int)sb.mtime);
             if (sb.name[len - 1] == '/')
             {
-                cout << " try to create dir" << sb.name << endl;
                 // create the sub dir
-                ZipRoutine::safe_create_dir(sb.name);
+                string newFolderPath = zipExtractDirectory + sb.name;
+                cout << " try to create dir" << newFolderPath << endl;
+                int make_dir_result = FileOperator::make_dir(newFolderPath.c_str());
+                cout << " make dir result: " << make_dir_result << endl;
             }
             else
             {
@@ -84,8 +76,8 @@ int ZipRoutine::UnZipToDirectory(string& archive, string& zipExtractDirectory)
                     fprintf(stderr, "failed to open file with index\n");
                     break;
                 }
-
-                fd = open(sb.name, O_RDWR | O_TRUNC | O_CREAT, 0644);
+                string newFolderPath = zipExtractDirectory + sb.name;
+                fd = open(newFolderPath.c_str(), O_RDWR | O_TRUNC | O_CREAT, 0644);
                 if (fd < 0)
                 {
                     cout << "length is negative" << endl;
@@ -101,7 +93,11 @@ int ZipRoutine::UnZipToDirectory(string& archive, string& zipExtractDirectory)
                         cout << "length is negative" << endl;
                         break;
                     }
-                    write(fd, buf, len);
+                    int written_bytes = write(fd, buf, len);
+                    if (len != written_bytes)
+                    {
+                        cout << " written bytes is not equals to the read" << endl;
+                    }
                     sum += len;
                 }
                 close(fd);

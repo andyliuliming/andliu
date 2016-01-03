@@ -26,7 +26,7 @@ public:
     HttpRoutine();
     static string * GetWithDefaultHeader(const char *url);
     static string* Get(const char * url, map<string, string> * headers);
-    static void GetToFile(const char * url, map<string, string> * headers, const char * filePath);
+    static int GetToFile(const char * url, map<string, string> * headers, const char * filePath);
     static string* Post(const char * url, map<string, string> * headers, const char * data);
 #ifdef _WIN32
 #else
