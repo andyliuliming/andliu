@@ -101,6 +101,7 @@ am_AzureNativeLinuxAgent_OBJECTS =  \
 	AzureNativeLinuxAgent-ExtensionConfig.$(OBJEXT) \
 	AzureNativeLinuxAgent-ExtensionsConfig.$(OBJEXT) \
 	AzureNativeLinuxAgent-FileOperator.$(OBJEXT) \
+	AzureNativeLinuxAgent-HandlerManifest.$(OBJEXT) \
 	AzureNativeLinuxAgent-HostingEnvironmentConfig.$(OBJEXT) \
 	AzureNativeLinuxAgent-HttpRoutine.$(OBJEXT) \
 	AzureNativeLinuxAgent-JsonRoutine.$(OBJEXT) \
@@ -295,7 +296,7 @@ top_builddir = ..
 top_srcdir = ..
 AzureNativeLinuxAgent_CXXFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(LIBCURL_CFLAGS) $(LIBUDEV_CFLAGS) $(GLIBMM_CFLAGS) $(LIBZIP_CFLAGS) $(JSONGLIB_CFLAGS)
 AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS) $(LIBCURL_LIBS) $(LIBUDEV_LIBS) $(GLIBMM_LIBS) $(LIBZIP_LIBS) $(JSONGLIB_LIBS) -lcrypt 
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionConfig.cpp ExtensionsConfig.cpp FileOperator.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp JsonRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp OvfEnv.cpp Provisioner.cpp SharedConfig.cpp StatusReporter.cpp StringUtil.cpp UserManager.cpp VMMStartup.cpp XmlRoutine.cpp ZipRoutine.cpp
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionConfig.cpp ExtensionsConfig.cpp FileOperator.cpp HandlerManifest.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp JsonRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp OvfEnv.cpp Provisioner.cpp SharedConfig.cpp StatusReporter.cpp StringUtil.cpp UserManager.cpp VMMStartup.cpp XmlRoutine.cpp ZipRoutine.cpp
 all: all-am
 
 .SUFFIXES:
@@ -394,6 +395,7 @@ include ./$(DEPDIR)/AzureNativeLinuxAgent-ExtensionConfig.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-ExtensionsConfig.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-FileOperator.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-GoalState.Po
+include ./$(DEPDIR)/AzureNativeLinuxAgent-HandlerManifest.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-HostingEnvironmentConfig.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-HttpRoutine.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-JsonRoutine.Po
@@ -562,6 +564,20 @@ AzureNativeLinuxAgent-FileOperator.obj: FileOperator.cpp
 #	$(AM_V_CXX)source='FileOperator.cpp' object='AzureNativeLinuxAgent-FileOperator.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-FileOperator.obj `if test -f 'FileOperator.cpp'; then $(CYGPATH_W) 'FileOperator.cpp'; else $(CYGPATH_W) '$(srcdir)/FileOperator.cpp'; fi`
+
+AzureNativeLinuxAgent-HandlerManifest.o: HandlerManifest.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-HandlerManifest.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-HandlerManifest.Tpo -c -o AzureNativeLinuxAgent-HandlerManifest.o `test -f 'HandlerManifest.cpp' || echo '$(srcdir)/'`HandlerManifest.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-HandlerManifest.Tpo $(DEPDIR)/AzureNativeLinuxAgent-HandlerManifest.Po
+#	$(AM_V_CXX)source='HandlerManifest.cpp' object='AzureNativeLinuxAgent-HandlerManifest.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-HandlerManifest.o `test -f 'HandlerManifest.cpp' || echo '$(srcdir)/'`HandlerManifest.cpp
+
+AzureNativeLinuxAgent-HandlerManifest.obj: HandlerManifest.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-HandlerManifest.obj -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-HandlerManifest.Tpo -c -o AzureNativeLinuxAgent-HandlerManifest.obj `if test -f 'HandlerManifest.cpp'; then $(CYGPATH_W) 'HandlerManifest.cpp'; else $(CYGPATH_W) '$(srcdir)/HandlerManifest.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-HandlerManifest.Tpo $(DEPDIR)/AzureNativeLinuxAgent-HandlerManifest.Po
+#	$(AM_V_CXX)source='HandlerManifest.cpp' object='AzureNativeLinuxAgent-HandlerManifest.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-HandlerManifest.obj `if test -f 'HandlerManifest.cpp'; then $(CYGPATH_W) 'HandlerManifest.cpp'; else $(CYGPATH_W) '$(srcdir)/HandlerManifest.cpp'; fi`
 
 AzureNativeLinuxAgent-HostingEnvironmentConfig.o: HostingEnvironmentConfig.cpp
 	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-HostingEnvironmentConfig.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-HostingEnvironmentConfig.Tpo -c -o AzureNativeLinuxAgent-HostingEnvironmentConfig.o `test -f 'HostingEnvironmentConfig.cpp' || echo '$(srcdir)/'`HostingEnvironmentConfig.cpp

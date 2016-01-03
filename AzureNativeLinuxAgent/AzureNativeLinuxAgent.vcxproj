@@ -153,6 +153,7 @@
     <ClInclude Include="src\ExtensionsConfig.h" />
     <ClInclude Include="src\FileOperator.h" />
     <ClInclude Include="src\GoalState.h" />
+    <ClInclude Include="src\HandlerManifest.h" />
     <ClInclude Include="src\HostingEnvironmentConfig.h" />
     <ClInclude Include="src\HttpRoutine.h" />
     <ClInclude Include="src\JsonRoutine.h" />
@@ -181,6 +182,7 @@
     <ClCompile Include="src\ExtensionsConfig.cpp" />
     <ClCompile Include="src\FileOperator.cpp" />
     <ClCompile Include="src\GoalState.cpp" />
+    <ClCompile Include="src\HandlerManifest.cpp" />
     <ClCompile Include="src\HostingEnvironmentConfig.cpp" />
     <ClCompile Include="src\HttpRoutine.cpp" />
     <ClCompile Include="src\JsonRoutine.cpp" />

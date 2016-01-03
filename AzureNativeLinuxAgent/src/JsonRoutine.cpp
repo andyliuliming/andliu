@@ -11,10 +11,11 @@ JsonRoutine::JsonRoutine()
 {
 }
 
+HandlerManifest * JsonRoutine::ParseHandlerManifest(const char * filePath)
+{
+    HandlerManifest * result = NULL;
 #ifdef _WIN32
 #else
-JsonNode * JsonRoutine::ParseFile(const char * filePath)
-{
     JsonParser *parser;
     JsonNode *node;
     JsonReader *reader;
@@ -29,19 +30,25 @@ JsonNode * JsonRoutine::ParseFile(const char * filePath)
     reader = json_reader_new(node);
     int count = json_reader_count_elements(reader);
     cout << "handlerManifest count is: " << count << endl;
-    for (i = 0; i < count; ++i)
+    if (count > 0)
     {
-        json_reader_read_element(reader, i); //read the i-index element
+        result = new HandlerManifest();
+        json_reader_read_element(reader, 0); //read the i-index element
         json_reader_read_member(reader, "handlerManifest");
+
         json_reader_read_member(reader, "installCommand");
-        printf("install command is %s\n", json_reader_get_string_value(reader));
+        const char*installCommand = json_reader_get_string_value(reader);
+        result->installCommand = installCommand;
         json_reader_end_member(reader);
         json_reader_read_member(reader, "enableCommand");
-        printf("enable command is %s\n", json_reader_get_string_value(reader));
+        const char *enableCommand = json_reader_get_string_value(reader);
+        result->enableCommand = enableCommand;
+        json_reader_end_member(reader);
+        json_reader_end_member(reader);
     }
-    return nullptr;
-}
 #endif
+    return result;
+}
 
 JsonRoutine::~JsonRoutine()
 {

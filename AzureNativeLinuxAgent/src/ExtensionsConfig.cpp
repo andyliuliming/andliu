@@ -1,5 +1,7 @@
+#include "CommandExecuter.h"
 #include "ExtensionsConfig.h"
 #include "FileOperator.h"
+#include "HandlerManifest.h"
 #include "HttpRoutine.h"
 #include "JsonRoutine.h"
 #include "Macros.h"
@@ -12,7 +14,6 @@ using namespace Glib;
 #endif
 ExtensionsConfig::ExtensionsConfig()
 {
-    //configFilePath = new string("/var/lib/waagent/Native_ExtensionsConfig.xml");
 }
 
 
@@ -96,16 +97,11 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
                     //// get the uri
                     HttpRoutine::GetToFile((const char*)(uriObjects->nodesetval->nodeTab[0]->content), NULL, bundleFilePath.c_str());
 
-                    string bundleZipPath = bundleFilePath;
                     string bundleZipExtractDirectory = string(WAAGENT_LIB_BASE_DIR) + "Native_" + extensionConfigs[i]->name + "_" + extensionConfigs[i]->version + "/";
-                    
+
                     FileOperator::make_dir(bundleZipExtractDirectory.c_str());
 
-                    ZipRoutine::UnZipToDirectory(bundleZipPath, bundleZipExtractDirectory);
-
-                    string manifestFilePath = bundleZipExtractDirectory + "/HandlerManifest.json";
-
-                    JsonRoutine::ParseFile(manifestFilePath.c_str());
+                    ZipRoutine::UnZipToDirectory(bundleFilePath, bundleZipExtractDirectory);
                     break;
                 }
             }
@@ -121,16 +117,16 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
         delete pluginSettingsXpathExpr;
         xmlNodeSetPtr pluginSettingsNodeSet = pluginSettingsXpathObj->nodesetval;
         cout << "settings file node count: " << pluginSettingsNodeSet->nodeNr << endl;
-        for (int i = 0; i < pluginSettingsNodeSet->nodeNr; i++)
+        for (int pluginIndex = 0; pluginIndex < pluginSettingsNodeSet->nodeNr; pluginIndex++)
         {
-            xmlChar * pluginName = xmlGetProp(pluginSettingsNodeSet->nodeTab[i], xmlCharStrdup("name"));
-            //newConfig->name = ustring((const char*)name);
-            xmlChar * pluginVersion = xmlGetProp(pluginSettingsNodeSet->nodeTab[i], xmlCharStrdup("version"));
+            xmlChar * pluginName = xmlGetProp(pluginSettingsNodeSet->nodeTab[pluginIndex], xmlCharStrdup("name"));
+
+            xmlChar * pluginVersion = xmlGetProp(pluginSettingsNodeSet->nodeTab[pluginIndex], xmlCharStrdup("version"));
 
             xmlXPathObjectPtr runtimeSettingsXpathObject = XmlRoutine::findNodeByRelativeXpath(extensionsConfigDoc,
-                pluginSettingsNodeSet->nodeTab[i], BAD_CAST "./RuntimeSettings");
+                pluginSettingsNodeSet->nodeTab[pluginIndex], BAD_CAST "./RuntimeSettings");
 
-            xmlChar * seqNo = xmlGetProp(runtimeSettingsXpathObject->nodesetval->nodeTab[i], xmlCharStrdup("seqNo"));
+            xmlChar * seqNo = xmlGetProp(runtimeSettingsXpathObject->nodesetval->nodeTab[pluginIndex], xmlCharStrdup("seqNo"));
 
             string settingFilePath = string("/var/lib/waagent/Native_") +
                 ustring((const char*)pluginName) + "_" + ustring((const char*)pluginVersion) + "/config/" + ustring((const char*)seqNo) + ".settings";
@@ -141,6 +137,13 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
             string *settingFileContent = new string(runtimeSettingsText);
             FileOperator::save_file(settingFileContent, &settingFilePath);
 
+            string bundleZipExtractDirectory = string(WAAGENT_LIB_BASE_DIR) + "Native_" + extensionConfigs[i]->name + "_" + extensionConfigs[i]->version + "/";
+
+            string manifestFilePath = bundleZipExtractDirectory + "/HandlerManifest.json";
+
+            HandlerManifest * handlerManifest = JsonRoutine::ParseHandlerManifest(manifestFilePath.c_str());
+            CommandResult * installResult = CommandExecuter::RunGetOutput(handlerManifest->installCommand);
+            CommandResult * enableResult = CommandExecuter::RunGetOutput(handlerManifest->enableCommand);
             //handle it 
         }
     }

@@ -1,4 +1,5 @@
 #pragma once
+#include "HandlerManifest.h"
 #ifdef _WIN32
 #else
 #include <json-glib/json-glib.h>
@@ -7,10 +8,7 @@ class JsonRoutine
 {
 public:
     JsonRoutine();
-#ifdef _WIN32
-#else
-    static JsonNode * ParseFile(const char * filePath);
-#endif
+    static HandlerManifest* ParseHandlerManifest(const char * filePath);
     ~JsonRoutine();
 };
 
