@@ -97,6 +97,7 @@ am_AzureNativeLinuxAgent_OBJECTS =  \
 	AzureNativeLinuxAgent-Certificates.$(OBJEXT) \
 	AzureNativeLinuxAgent-CommandExecuter.$(OBJEXT) \
 	AzureNativeLinuxAgent-CommandResult.$(OBJEXT) \
+	AzureNativeLinuxAgent-Deprovisioner.$(OBJEXT) \
 	AzureNativeLinuxAgent-DeviceRoutine.$(OBJEXT) \
 	AzureNativeLinuxAgent-ExtensionConfig.$(OBJEXT) \
 	AzureNativeLinuxAgent-ExtensionsConfig.$(OBJEXT) \
@@ -296,7 +297,7 @@ top_builddir = ..
 top_srcdir = ..
 AzureNativeLinuxAgent_CXXFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(LIBCURL_CFLAGS) $(LIBUDEV_CFLAGS) $(GLIBMM_CFLAGS) $(LIBZIP_CFLAGS) $(JSONGLIB_CFLAGS)
 AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS) $(LIBCURL_LIBS) $(LIBUDEV_LIBS) $(GLIBMM_LIBS) $(LIBZIP_LIBS) $(JSONGLIB_LIBS) -lcrypt 
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp DeviceRoutine.cpp ExtensionConfig.cpp ExtensionsConfig.cpp FileOperator.cpp HandlerManifest.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp JsonRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp OvfEnv.cpp Provisioner.cpp SharedConfig.cpp StatusReporter.cpp StringUtil.cpp UserManager.cpp VMMStartup.cpp XmlRoutine.cpp ZipRoutine.cpp
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp Deprovisioner.cpp DeviceRoutine.cpp ExtensionConfig.cpp ExtensionsConfig.cpp FileOperator.cpp HandlerManifest.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp JsonRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp OvfEnv.cpp Provisioner.cpp SharedConfig.cpp StatusReporter.cpp StringUtil.cpp UserManager.cpp VMMStartup.cpp XmlRoutine.cpp ZipRoutine.cpp
 all: all-am
 
 .SUFFIXES:
@@ -390,6 +391,7 @@ include ./$(DEPDIR)/AzureNativeLinuxAgent-AzureNativeLinuxAgent.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-Certificates.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-CommandExecuter.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-CommandResult.Po
+include ./$(DEPDIR)/AzureNativeLinuxAgent-Deprovisioner.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-DeviceRoutine.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-ExtensionConfig.Po
 include ./$(DEPDIR)/AzureNativeLinuxAgent-ExtensionsConfig.Po
@@ -508,6 +510,20 @@ AzureNativeLinuxAgent-CommandResult.obj: CommandResult.cpp
 #	$(AM_V_CXX)source='CommandResult.cpp' object='AzureNativeLinuxAgent-CommandResult.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-CommandResult.obj `if test -f 'CommandResult.cpp'; then $(CYGPATH_W) 'CommandResult.cpp'; else $(CYGPATH_W) '$(srcdir)/CommandResult.cpp'; fi`
+
+AzureNativeLinuxAgent-Deprovisioner.o: Deprovisioner.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-Deprovisioner.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-Deprovisioner.Tpo -c -o AzureNativeLinuxAgent-Deprovisioner.o `test -f 'Deprovisioner.cpp' || echo '$(srcdir)/'`Deprovisioner.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-Deprovisioner.Tpo $(DEPDIR)/AzureNativeLinuxAgent-Deprovisioner.Po
+#	$(AM_V_CXX)source='Deprovisioner.cpp' object='AzureNativeLinuxAgent-Deprovisioner.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-Deprovisioner.o `test -f 'Deprovisioner.cpp' || echo '$(srcdir)/'`Deprovisioner.cpp
+
+AzureNativeLinuxAgent-Deprovisioner.obj: Deprovisioner.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-Deprovisioner.obj -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-Deprovisioner.Tpo -c -o AzureNativeLinuxAgent-Deprovisioner.obj `if test -f 'Deprovisioner.cpp'; then $(CYGPATH_W) 'Deprovisioner.cpp'; else $(CYGPATH_W) '$(srcdir)/Deprovisioner.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-Deprovisioner.Tpo $(DEPDIR)/AzureNativeLinuxAgent-Deprovisioner.Po
+#	$(AM_V_CXX)source='Deprovisioner.cpp' object='AzureNativeLinuxAgent-Deprovisioner.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-Deprovisioner.obj `if test -f 'Deprovisioner.cpp'; then $(CYGPATH_W) 'Deprovisioner.cpp'; else $(CYGPATH_W) '$(srcdir)/Deprovisioner.cpp'; fi`
 
 AzureNativeLinuxAgent-DeviceRoutine.o: DeviceRoutine.cpp
 	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-DeviceRoutine.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-DeviceRoutine.Tpo -c -o AzureNativeLinuxAgent-DeviceRoutine.o `test -f 'DeviceRoutine.cpp' || echo '$(srcdir)/'`DeviceRoutine.cpp

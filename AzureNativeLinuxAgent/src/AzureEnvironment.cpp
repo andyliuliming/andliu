@@ -39,7 +39,6 @@ int AzureEnvironment::DoDhcpWork()
 
     PDHCPRequest dhcpRequest = NetworkRoutine::BuildDHCPRequest();
 
-
     // Configure the default routes.
     bool missingDefaultRoute = true;
     commandResult = CommandExecuter::RunGetOutput("route -n");

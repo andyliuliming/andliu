@@ -148,6 +148,7 @@
     <ClInclude Include="src\Certificates.h" />
     <ClInclude Include="src\CommandExecuter.h" />
     <ClInclude Include="src\CommandResult.h" />
+    <ClInclude Include="src\Deprovisioner.h" />
     <ClInclude Include="src\DeviceRoutine.h" />
     <ClInclude Include="src\ExtensionConfig.h" />
     <ClInclude Include="src\ExtensionsConfig.h" />
@@ -177,6 +178,7 @@
     <ClCompile Include="src\Certificates.cpp" />
     <ClCompile Include="src\CommandExecuter.cpp" />
     <ClCompile Include="src\CommandResult.cpp" />
+    <ClCompile Include="src\Deprovisioner.cpp" />
     <ClCompile Include="src\DeviceRoutine.cpp" />
     <ClCompile Include="src\ExtensionConfig.cpp" />
     <ClCompile Include="src\ExtensionsConfig.cpp" />

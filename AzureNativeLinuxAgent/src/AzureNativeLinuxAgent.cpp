@@ -35,7 +35,8 @@ int main(void)
     // 6. where true daemon
     Provisioner *provisioner = new Provisioner();
     bool provisioned = provisioner->isProvisioned();
-    while (true) {
+    while (true)
+    {
         // a. UpdateGoalState
         // b. process goal state
 
@@ -44,11 +45,13 @@ int main(void)
 
         StatusReporter *statusReporter = new StatusReporter();
 
-        if (!provisioned) {
+        if (!provisioned)
+        {
             statusReporter->ReportNotReady(azureEnvironment, goalState, "Provisioning", "Starting");
         }
 
-        if (!provisioned) {
+        if (!provisioned)
+        {
             Logger::getInstance().Log("doing provision.");
             provisioner->Prosess();
             provisioned = true;
@@ -57,11 +60,12 @@ int main(void)
         AgentConfig::getInstance().LoadConfig();
 
         string *type = AgentConfig::getInstance().getConfig("Provisioning_SshHostKeyPairType");
-        if (type == NULL) {
+        if (type == NULL)
+        {
             type = new string("rsa");
         }
 
-        string host_key_path = string("/etc/ssh/ssh_host_") + *type + "_key.pub";
+        string host_key_path = string("/etc/ssh/ssh_host_") + (*type) + "_key.pub";
         string commandToGetFingerPrint = string("ssh-keygen -lf ") + host_key_path;
         CommandResult* fingerprintResult = CommandExecuter::RunGetOutput(commandToGetFingerPrint.c_str());
         vector<string> splitResult;
@@ -71,15 +75,12 @@ int main(void)
 
         int sleepToReduceAccessDenied = 3;
         SLEEP(3 * 1000);
-        if (provisioned) {
+        if (provisioned)
+        {
             statusReporter->ReportReady(azureEnvironment, goalState);
         }
 
-
         goalState->Process();
-
-
-
 
         SLEEP(25 * 1000);
     }
