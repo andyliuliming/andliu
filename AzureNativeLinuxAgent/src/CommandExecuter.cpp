@@ -27,7 +27,9 @@ CommandResult * CommandExecuter::RunGetOutput(const char* cmd) {
 
     while (!feof(pipe)) {
         if (fgets(buffer, 128, pipe) != NULL)
+        {
             result->append(buffer);
+        }
     }
     int returnCode = PCLOSE(pipe);
     commandResult->exitCode = returnCode;
