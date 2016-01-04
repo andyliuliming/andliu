@@ -142,8 +142,8 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
             string manifestFilePath = bundleZipExtractDirectory + "/HandlerManifest.json";
 
             HandlerManifest * handlerManifest = JsonRoutine::ParseHandlerManifest(manifestFilePath.c_str());
-            CommandResult * installResult = CommandExecuter::RunGetOutput(handlerManifest->installCommand);
-            CommandResult * enableResult = CommandExecuter::RunGetOutput(handlerManifest->enableCommand);
+            CommandResultPtr installResult = CommandExecuter::RunGetOutput(handlerManifest->installCommand);
+            CommandResultPtr enableResult = CommandExecuter::RunGetOutput(handlerManifest->enableCommand);
             //handle it 
         }
     }

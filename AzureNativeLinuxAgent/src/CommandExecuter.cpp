@@ -13,13 +13,14 @@ CommandExecuter::CommandExecuter()
 {
 }
 
-CommandResult * CommandExecuter::RunGetOutput(const char* cmd) {
-    CommandResult *commandResult = new CommandResult();
+CommandResultPtr CommandExecuter::RunGetOutput(const char* cmd) {
+    CommandResultPtr commandResult = make_shared<CommandResult>();
+    //CommandResult *commandResult = new CommandResult();
     FILE* pipe = POPEN(cmd, "r");
     //std::shared_ptr<FILE> pipe(POPEN(cmd, "r"), PCLOSE);
     if (!pipe)
     {
-        commandResult->exitCode = 1;
+        commandResult.get()->exitCode = 1;
         return commandResult;
     }
     char buffer[128];

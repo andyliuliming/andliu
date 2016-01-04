@@ -30,7 +30,7 @@ void Provisioner::Prosess()
     string *regenerateKeys = AgentConfig::getInstance().getConfig("Provisioning_RegenerateSshHostKeyPair");
     if (regenerateKeys == NULL || regenerateKeys->find("y") == 0) {
         CommandExecuter::RunGetOutput("rm -f /etc/ssh/ssh_host_*key*");
-        CommandResult * commandResult = CommandExecuter::RunGetOutput(("ssh-keygen -N '' -t " + *type + " -f /etc/ssh/ssh_host_" + *type + "_key").c_str());
+        CommandResultPtr commandResult = CommandExecuter::RunGetOutput(("ssh-keygen -N '' -t " + *type + " -f /etc/ssh/ssh_host_" + *type + "_key").c_str());
     }
 
     // 2. do the ovf-env

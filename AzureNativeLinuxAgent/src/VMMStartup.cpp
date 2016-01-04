@@ -11,13 +11,11 @@ VMMStartup::VMMStartup()
 
 void VMMStartup::TryLoadAtapiix() {
     Logger::getInstance().Verbose("trying to load ata_piix");
-    CommandResult *commandResult = CommandExecuter::RunGetOutput("uname -r");
+    shared_ptr<CommandResult> commandResult = CommandExecuter::RunGetOutput("uname -r");
 
     string krn_pth = "/lib/modules/" + *(commandResult->output) + "/kernel/drivers/ata/ata_piix.ko";
 
     Logger::getInstance().Verbose("clear it.");
-    delete commandResult;
-    commandResult = NULL;
 
     Logger::getInstance().Verbose("trying to find ata_piix");
     commandResult = CommandExecuter::RunGetOutput("lsmod | grep ata_piix");
@@ -27,9 +25,6 @@ void VMMStartup::TryLoadAtapiix() {
     }
     else
     {
-        delete commandResult;
-        commandResult = NULL;
-
         if (FileOperator::file_exists(krn_pth.c_str())) {
             string insertModuleCommand = "insmod " + krn_pth;
             commandResult = CommandExecuter::RunGetOutput(insertModuleCommand.c_str());

@@ -30,12 +30,9 @@ AzureEnvironment::AzureEnvironment()
 int AzureEnvironment::DoDhcpWork()
 {
     //Open DHCP port if iptables is enabled.
-    CommandResult * commandResult = CommandExecuter::RunGetOutput("iptables -D INPUT -p udp --dport 68 -j ACCEPT");
-    delete commandResult;
-    commandResult = NULL;
+    shared_ptr<CommandResult> commandResult = CommandExecuter::RunGetOutput("iptables -D INPUT -p udp --dport 68 -j ACCEPT");
+
     commandResult = CommandExecuter::RunGetOutput("iptables -I INPUT -p udp --dport 68 -j ACCEPT");
-    delete commandResult;
-    commandResult = NULL;
 
     PDHCPRequest dhcpRequest = NetworkRoutine::BuildDHCPRequest();
 

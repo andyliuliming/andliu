@@ -28,7 +28,7 @@ void UserManager::CreateUser(const char * userName, const char * passWord)
     else
     {
         string command = string("useradd -m ") + userNameToCreate;
-        CommandResult * addUserResult = CommandExecuter::RunGetOutput(command.c_str());
+        CommandResultPtr addUserResult = CommandExecuter::RunGetOutput(command.c_str());
         cout << "user add result: " << *(addUserResult->output) << endl;
         AgentConfig::getInstance().LoadConfig();
 
@@ -51,7 +51,7 @@ void UserManager::CreateUser(const char * userName, const char * passWord)
         char * passWordToSet = crypt(passWord, realSalt.c_str());
 
         string changePasswordCmd = string("usermod -p '") + passWordToSet + "' " + userNameToCreate;
-        CommandResult *commandResult = CommandExecuter::RunGetOutput(changePasswordCmd.c_str());
+        CommandResultPtr commandResult = CommandExecuter::RunGetOutput(changePasswordCmd.c_str());
         cout << *(commandResult->output) << endl;
     }
 #endif
