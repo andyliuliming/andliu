@@ -22,3 +22,20 @@ void Logger::Log(const char * msg)
     syslog(LOG_INFO, msg);
 #endif
 }
+
+void Warning(const char * msg)
+{
+#ifdef _WIN32
+#else
+    syslog(LOG_WARNING, msg);
+#endif
+}
+
+void Logger::Error(const char * mgs) {
+    {
+#ifdef _WIN32
+#else
+        syslog(LOG_ERR, msg);
+#endif
+    }
+}

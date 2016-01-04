@@ -38,12 +38,25 @@ int AzureEnvironment::DoDhcpWork()
 
     // Configure the default routes.
     bool missingDefaultRoute = true;
+    //TODO use the full path of the commands.
     commandResult = CommandExecuter::RunGetOutput("route -n");
     vector<string> splitResult;
     string spliter = "\n";
     StringUtil::string_split((*(commandResult->output)), spliter, &splitResult);
+    bool missingDefaultRoute = true;
     for (unsigned int i = 0; i < splitResult.size(); i++) {
         cout << splitResult[i] << " \n";
+        size_t lastZero = splitResult[i].find_last_of("0.0.0.0");
+        size_t lastDefault = splitResult[i].find_last_of("default ");
+        if (lastZero > 0 || lastDefault > 0)
+        {
+            missingDefaultRoute = false;
+            break;
+        }
+    }
+    if (missingDefaultRoute)
+    {
+
     }
 
     struct sockaddr_in addr;
@@ -57,7 +70,6 @@ int AzureEnvironment::DoDhcpWork()
     if (sck < 0)
     {
         Logger::getInstance().Verbose("sck < 0 ");
-        perror("socket");
     }
     int so_broadcast = 1;
     int so_reuseaddr = 1;

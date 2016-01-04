@@ -13,14 +13,14 @@ public:
     }
     void Verbose(const char *msg);
     void Log(const char *msg);
+    void Warning(const char * msg);
+    void Error(const char * mgs)
 private:
     Logger() {
 #ifdef _WIN32
 #else
         setlogmask(LOG_UPTO(LOG_NOTICE));
         openlog("AzureNativeLinuxAgent", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
-
-        
 #endif
     }
     Logger(Logger const&);              // Don't Implement.
