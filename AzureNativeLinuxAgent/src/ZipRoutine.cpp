@@ -1,7 +1,7 @@
 #include <iostream>
 #include "FileOperator.h"
 #include "ZipRoutine.h"
-
+#include "Logger.h"
 #ifdef _WIN32
 #else
 #include <dirent.h>
@@ -27,7 +27,7 @@ ZipRoutine::ZipRoutine()
 /*
 the zipExtractDirectory format should be like /var/lib/waagent/xxx_version/
 */
-int ZipRoutine::UnZipToDirectory(string& archive, string& zipExtractDirectory)
+int ZipRoutine::UnZipToDirectory(const char *archive, const char * zipExtractDirectory)
 {
 #ifdef _WIN32
     return 0;
@@ -41,25 +41,23 @@ int ZipRoutine::UnZipToDirectory(string& archive, string& zipExtractDirectory)
     int fd;
     long long sum;
 
-    if ((za = zip_open(archive.c_str(), 0, &err)) == NULL)
+    if ((za = zip_open(archive, 0, &err)) == NULL)
     {
         zip_error_to_str(buf, sizeof(buf), err, errno);
-        cerr << "can't open zip archive: " << buf << endl;
+        Logger::getInstance().Error("can't open zip archive: %s", buf);
         return 1;
     }
-    cout << "zip open success." << endl;
 
     int entries_num = zip_get_num_entries(za, 0);
-    cout << "entries_num is :" << entries_num << endl;
+    Logger::getInstance().Log("entries_num is: %d", entries_num);
     for (i = 0; i < entries_num; i++)
     {
         if (zip_stat_index(za, i, 0, &sb) == 0)
         {
-            printf("==================/n");
             len = strlen(sb.name);
-            printf("Name: [%s], ", sb.name);
-            printf("Size: [%llu], ", (unsigned long long)(sb.size));
-            printf("mtime: [%u]\n", (unsigned int)sb.mtime);
+            Logger::getInstance().Verbose("Name: [%s], ", sb.name);
+            Logger::getInstance().Verbose("Size: [%llu], ", (unsigned long long)(sb.size));
+            Logger::getInstance().Verbose("mtime: [%u]\n", (unsigned int)sb.mtime);
             
             // create the sub dir
             string relative_path = string(sb.name);
@@ -68,12 +66,9 @@ int ZipRoutine::UnZipToDirectory(string& archive, string& zipExtractDirectory)
             {
                 //not find so it's 
                 string folder_part = relative_path.substr(0, last_index_slash);
-                string newFolderPath = zipExtractDirectory + folder_part;
-
-                cout << " try to create dir" << newFolderPath << endl;
+                string newFolderPath = string(zipExtractDirectory) + folder_part;
                 int make_dir_result = FileOperator::make_dir(newFolderPath.c_str());
-
-                cout << " make dir result: " << make_dir_result << endl;
+                Logger::getInstance().Verbose(" make dir result: %d", make_dir_result);
             }
             if (last_index_slash != (relative_path.length() - 1))
             {
@@ -83,11 +78,11 @@ int ZipRoutine::UnZipToDirectory(string& archive, string& zipExtractDirectory)
                     fprintf(stderr, "failed to open file with index\n");
                     break;
                 }
-                string newFolderPath = zipExtractDirectory + sb.name;
+                string newFolderPath = string(zipExtractDirectory) + sb.name;
                 fd = open(newFolderPath.c_str(), O_RDWR | O_TRUNC | O_CREAT, 0644);
                 if (fd < 0)
                 {
-                    cout << "length is negative" << endl;
+                    Logger::getInstance().Error("failed to open %s, %d", newFolderPath.c_str(), fd);
                     break;
                 }
 
@@ -97,13 +92,13 @@ int ZipRoutine::UnZipToDirectory(string& archive, string& zipExtractDirectory)
                     len = zip_fread(zf, buf, 100);
                     if (len < 0)
                     {
-                        cout << "length is negative" << endl;
+                        Logger::getInstance().Error("read length is negative");
                         break;
                     }
                     int written_bytes = write(fd, buf, len);
                     if (len != written_bytes)
                     {
-                        cout << " written bytes is not equals to the read" << endl;
+                        Logger::getInstance().Error(" written bytes is not equals to the read");
                     }
                     sum += len;
                 }
@@ -119,7 +114,7 @@ int ZipRoutine::UnZipToDirectory(string& archive, string& zipExtractDirectory)
 
     if (zip_close(za) == -1)
     {
-        cerr << "can't close zip archive: " << archive << endl;
+        Logger::getInstance().Error("can't close zip archive: %s",archive);
         return 1;
     }
 

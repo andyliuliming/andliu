@@ -2,18 +2,18 @@
 #include <stdlib.h>
 #include "Logger.h"
 #include "NetworkRoutine.h"
+#include "SocketWrapper.h"
 #ifdef _WIN32
 #include <WinSock2.h>
 #else
 #include <arpa/inet.h>
-#include <sys/socket.h>
-#include <ifaddrs.h>
-#include <sys/socket.h> // Needed for the socket functions
 #include <curl/curl.h>
-#include <string.h>
+#include <ifaddrs.h>
 #include <netdb.h>
-#include <sys/ioctl.h>
 #include <net/if.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <sys/socket.h> // Needed for the socket functions
 #endif
 
 //http://curl.haxx.se/libcurl/cplusplus/
@@ -30,6 +30,8 @@ PUINT8 NetworkRoutine::GetMacAddress()
     PUINT8 MAC_ADDRESS = new UINT8[6];
     memset(MAC_ADDRESS, 0, 6);
 #ifdef _WIN32
+    delete MAC_ADDRESS;
+    MAC_ADDRESS = NULL;
     return MAC_ADDRESS;
 #else
     char buf[8192] = { 0 };
@@ -47,73 +49,75 @@ PUINT8 NetworkRoutine::GetMacAddress()
     sck = socket(PF_INET, SOCK_DGRAM, 0);
     if (sck < 0)
     {
-        Logger::getInstance().Verbose("sck < 0 ");
-        perror("socket");
+        Logger::getInstance().Error("sck < 0 ");
     }
-
-    /* Query available interfaces. */
-    ifc.ifc_len = sizeof(buf);
-    ifc.ifc_buf = buf;
-    if (ioctl(sck, SIOCGIFCONF, &ifc) < 0)
+    else
     {
-        Logger::getInstance().Verbose("ioctl(sck, SIOCGIFCONF, &ifc) < 0");
-        perror("ioctl(SIOCGIFCONF)");
+        shared_ptr<SocketWrapper> sw(new SocketWrapper(sck));
+        /* Query available interfaces. */
+        ifc.ifc_len = sizeof(buf);
+        ifc.ifc_buf = buf;
+        int ioctl_result = 0;
+        ioctl_result = ioctl(sw.get()->s_, SIOCGIFCONF, &ifc);
+        if (ioctl_result < 0)
+        {
+            Logger::getInstance().Error("ioctl(sw.get()->s_, SIOCGIFCONF, &ifc) is: %d", ioctl_result);
+        }
+
+        /* Iterate through the list of interfaces. */
+        ifr = ifc.ifc_req;
+        nInterfaces = ifc.ifc_len / sizeof(struct ifreq);
+        if (nInterfaces == 0)
+        {
+            Logger::getInstance().Error("network interfaces number is zero");
+        }
+        for (i = 0; i < nInterfaces; i++)
+        {
+            item = &ifr[i];
+            addr = &(item->ifr_addr);
+            /* Get the IP address*/
+            ioctl_result = ioctl(sw.get()->s_, SIOCGIFADDR, item);
+            if (ioctl_result < 0)
+            {
+                Logger::getInstance().Error("ioctl(OSIOCGIFADDR) error: %d", ioctl_result);
+            }
+
+            if (inet_ntop(AF_INET, &(((struct sockaddr_in *)addr)->sin_addr), ip, sizeof ip) == NULL)
+            {
+                Logger::getInstance().Error("inet_ntop error.");
+                continue;
+            }
+
+            /* Get the MAC address */
+            ioctl_result = ioctl(sw.get()->s_, SIOCGIFHWADDR, item);
+            if (ioctl_result < 0)
+            {
+                Logger::getInstance().Error("ioctl(SIOCGIFHWADDR) %d", ioctl_result);
+            }
+
+            /* display result */
+            sprintf(macp, " %02x:%02x:%02x:%02x:%02x:%02x",
+                (unsigned char)item->ifr_hwaddr.sa_data[0],
+                (unsigned char)item->ifr_hwaddr.sa_data[1],
+                (unsigned char)item->ifr_hwaddr.sa_data[2],
+                (unsigned char)item->ifr_hwaddr.sa_data[3],
+                (unsigned char)item->ifr_hwaddr.sa_data[4],
+                (unsigned char)item->ifr_hwaddr.sa_data[5]);
+
+            if (item->ifr_name[0] != 'l'
+                &&item->ifr_name[1] != 'o')
+            {
+                Logger::getInstance().Verbose(" if name is not lo, so set the mac.");
+                MAC_ADDRESS[0] = item->ifr_hwaddr.sa_data[0];
+                MAC_ADDRESS[1] = item->ifr_hwaddr.sa_data[1];
+                MAC_ADDRESS[2] = item->ifr_hwaddr.sa_data[2];
+                MAC_ADDRESS[3] = item->ifr_hwaddr.sa_data[3];
+                MAC_ADDRESS[4] = item->ifr_hwaddr.sa_data[4];
+                MAC_ADDRESS[5] = item->ifr_hwaddr.sa_data[5];
+                break;
+            }
     }
-
-    /* Iterate through the list of interfaces. */
-    ifr = ifc.ifc_req;
-    nInterfaces = ifc.ifc_len / sizeof(struct ifreq);
-    printf("interfaces number %d\n", nInterfaces);
-    for (i = 0; i < nInterfaces; i++)
-    {
-        item = &ifr[i];
-        addr = &(item->ifr_addr);
-        /* Get the IP address*/
-        if (ioctl(sck, SIOCGIFADDR, item) < 0)
-        {
-            Logger::getInstance().Verbose("ioctl(OSIOCGIFADDR) error.");
-            perror("ioctl(OSIOCGIFADDR)");
-        }
-
-        if (inet_ntop(AF_INET, &(((struct sockaddr_in *)addr)->sin_addr), ip, sizeof ip) == NULL) //vracia adresu interf
-        {
-            Logger::getInstance().Verbose("inet_ntop error.");
-            perror("inet_ntop");
-            continue;
-        }
-
-        /* Get the MAC address */
-        if (ioctl(sck, SIOCGIFHWADDR, item) < 0)
-        {
-            Logger::getInstance().Verbose("ioctl(SIOCGIFHWADDR)");
-            perror("ioctl(SIOCGIFHWADDR)");
-        }
-
-        /* display result */
-        sprintf(macp, " %02x:%02x:%02x:%02x:%02x:%02x",
-            (unsigned char)item->ifr_hwaddr.sa_data[0],
-            (unsigned char)item->ifr_hwaddr.sa_data[1],
-            (unsigned char)item->ifr_hwaddr.sa_data[2],
-            (unsigned char)item->ifr_hwaddr.sa_data[3],
-            (unsigned char)item->ifr_hwaddr.sa_data[4],
-            (unsigned char)item->ifr_hwaddr.sa_data[5]);
-
-        Logger::getInstance().Verbose("printing the result:\n");
-        printf("interface name : %s \n", item->ifr_name);
-        printf("%s\n %s \n", ip, macp);
-        if (item->ifr_name[0] != 'l'
-            &&item->ifr_name[1] != 'o')
-        {
-            Logger::getInstance().Verbose(" if name is not lo, so set the mac.");
-            MAC_ADDRESS[0] = item->ifr_hwaddr.sa_data[0];
-            MAC_ADDRESS[1] = item->ifr_hwaddr.sa_data[1];
-            MAC_ADDRESS[2] = item->ifr_hwaddr.sa_data[2];
-            MAC_ADDRESS[3] = item->ifr_hwaddr.sa_data[3];
-            MAC_ADDRESS[4] = item->ifr_hwaddr.sa_data[4];
-            MAC_ADDRESS[5] = item->ifr_hwaddr.sa_data[5];
-            break;
-        }
-    }
+}
     return MAC_ADDRESS;
 #endif
 }

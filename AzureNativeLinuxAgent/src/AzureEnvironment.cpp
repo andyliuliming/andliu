@@ -74,11 +74,11 @@ int AzureEnvironment::DoDhcpWork()
     else
     {
         shared_ptr<SocketWrapper> sw(new SocketWrapper(sck));
-
+        int setsockopt_result = 0;
         int so_broadcast = 1;
         int so_reuseaddr = 1;
-        setsockopt(sw.get()->s_, SOL_SOCKET, SO_BROADCAST, SOCKET_OPTION_P&so_broadcast, sizeof(so_broadcast));
-        setsockopt(sw.get()->s_, SOL_SOCKET, SO_REUSEADDR, SOCKET_OPTION_P&so_reuseaddr, sizeof(so_reuseaddr));
+        setsockopt_result = setsockopt(sw.get()->s_, SOL_SOCKET, SO_BROADCAST, SOCKET_OPTION_P&so_broadcast, sizeof(so_broadcast));
+        setsockopt_result = setsockopt(sw.get()->s_, SOL_SOCKET, SO_REUSEADDR, SOCKET_OPTION_P&so_reuseaddr, sizeof(so_reuseaddr));
 
         if (bind(sw.get()->s_, (struct sockaddr *)&addr, sizeof(addr)) < 0)
         {
@@ -90,12 +90,11 @@ int AzureEnvironment::DoDhcpWork()
             addr_to.sin_family = AF_INET;
             addr_to.sin_addr.s_addr = inet_addr("255.255.255.255");
             addr_to.sin_port = htons(DHCP_UDP_TO_PORT);
-            cout << "dhcp request size is: " << sizeof(*dhcpRequest) << endl;
-            long sendResult = sendto(sw.get()->s_, SEND_TO_OPTION dhcpRequest, sizeof(DHCPRequest), 0,
+            long sendResult = sendto(sw.get()->s_, SEND_TO_OPTION dhcpRequest, sizeof(DHCPRequest), 0, 
                 (struct sockaddr *)&addr_to, sizeof(addr_to));
             if (sendResult < 0)
             {
-                Logger::getInstance().Verbose("send failed\n");
+                Logger::getInstance().Error("send failed\n");
                 return 1;
             }
             else
@@ -104,7 +103,7 @@ int AzureEnvironment::DoDhcpWork()
                 struct timeval tv_out;
                 tv_out.tv_sec = 6;
                 tv_out.tv_usec = 0;
-                setsockopt(sw.get()->s_, SOL_SOCKET, SO_RCVTIMEO, SOCKET_OPTION_P&tv_out, sizeof(tv_out));
+                setsockopt_result = setsockopt(sw.get()->s_, SOL_SOCKET, SO_RCVTIMEO, SOCKET_OPTION_P&tv_out, sizeof(tv_out));
                 int bufferSize = 1024;
                 PBYTE buffer = new BYTE[bufferSize];
                 int addr_len = sizeof(struct sockaddr_in);
@@ -135,11 +134,10 @@ int AzureEnvironment::DoDhcpWork()
 
                         }
                         if (option == 245) {
-                            Logger::getInstance().Verbose("245 got, so the ip is:\n");
-                            cout << (int)(buffer[i + 2]) << "." << (int)(buffer[i + 3]) << "." << (int)(buffer[i + 4]) << "." << (int)(buffer[i + 5]) << endl;
                             char ip[INET6_ADDRSTRLEN];
                             sprintf(ip, "%d.%d.%d.%d", (int)(buffer[i + 2]), (int)(buffer[i + 3]), (int)(buffer[i + 4]), (int)(buffer[i + 5]));
                             wireServerAddress = ip;
+                            break;
                         }
                         i += (option_length + 2);
                     }

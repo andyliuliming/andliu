@@ -6,7 +6,7 @@ class ZipRoutine
 {
 public:
     ZipRoutine();
-    static int UnZipToDirectory(string& archive, string& zipExtractDirectory);
+    static int UnZipToDirectory(const char * archive, const char * zipExtractDirectory);
     ~ZipRoutine();
 };
 

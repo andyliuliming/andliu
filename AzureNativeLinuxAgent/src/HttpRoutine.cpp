@@ -1,5 +1,6 @@
 #include <iostream>
 #include "HttpRoutine.h"
+#include "Logger.h"
 using namespace std;
 
 #ifdef _WIN32
@@ -41,7 +42,7 @@ int HttpRoutine::writer(char *data, size_t size, size_t nmemb, string *writerDat
 int HttpRoutine::writerToFile(char * data, size_t size, size_t nmemb, FILE * file)
 {
     if (data == NULL) {
-        std::cout << "data is null, so not write to file." << endl;
+        cout << "data is null, so not write to file." << endl;
         return 0;
     }
     else {
@@ -57,28 +58,27 @@ bool HttpRoutine::init_common(CURL *&conn, const char *url) {
     conn = curl_easy_init();
     if (conn == NULL)
     {
-        cout << "Failed to create CURL connection\n" << endl;
-        exit(EXIT_FAILURE);
+        Logger::getInstance().Error("Failed to create CURL connection");
+        return false;
     }
     code = curl_easy_setopt(conn, CURLOPT_ERRORBUFFER, errorBuffer);
     if (code != CURLE_OK)
     {
-        fprintf(stderr, "Failed to set error buffer [%d]\n", code);
+        Logger::getInstance().Error("Failed to set error buffer [%d]\n", code);
         return false;
     }
     code = curl_easy_setopt(conn, CURLOPT_URL, url);
     if (code != CURLE_OK)
     {
-        fprintf(stderr, "Failed to set URL [%s]\n", errorBuffer);
+        Logger::getInstance().Error("Failed to set URL [%s]\n", errorBuffer);
         return false;
     }
     code = curl_easy_setopt(conn, CURLOPT_FOLLOWLOCATION, 1L);
     if (code != CURLE_OK)
     {
-        fprintf(stderr, "Failed to set redirect option [%s]\n", errorBuffer);
+        Logger::getInstance().Error("Failed to set redirect option [%s]\n", errorBuffer);
         return false;
     }
-
     return true;
 }
 #endif
@@ -96,7 +96,6 @@ string* HttpRoutine::Get(const char * url, map<string, string> * headers)
         for (std::map<string, string>::iterator it = headers->begin(); it != headers->end(); ++it)
         {
             string headerValue = it->first + ": " + it->second;
-            cout << "setting header value: " << headerValue << endl;
             chunk = curl_slist_append(chunk, headerValue.c_str());
         }
     }
@@ -111,34 +110,28 @@ string* HttpRoutine::Get(const char * url, map<string, string> * headers)
     code = curl_easy_setopt(conn, CURLOPT_WRITEFUNCTION, writer);
     if (code != CURLE_OK)
     {
-        fprintf(stderr, "Failed to set writer [%s]\n", errorBuffer);
+        Logger::getInstance().Error("Failed to set writer [%s]\n", errorBuffer);
         initResult = false;
     }
 
     code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, buffer);
     if (code != CURLE_OK)
     {
-        fprintf(stderr, "Failed to set write data [%s]\n", errorBuffer);
+        Logger::getInstance().Error("Failed to set write data [%s]\n", errorBuffer);
         initResult = false;
     }
 
-    cout << "init Result: " << initResult << endl;
     if (chunk != NULL) {
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
-        cout << "set header result: " << code << endl;
     }
     code = curl_easy_perform(conn);
-    cout << "curl_easy_perform result: " << code << endl;
+
     curl_easy_cleanup(conn);
 
     curl_slist_free_all(chunk);
     if (code != CURLE_OK)
     {
-        fprintf(stderr, "Failed to get '%s' [%s]\n", url, errorBuffer);
-    }
-    else
-    {
-        cout << *buffer << endl;
+        Logger::getInstance().Error("Failed to get '%s' [%s]\n", url, errorBuffer);
     }
 #endif
     return buffer;
@@ -157,7 +150,6 @@ int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, cons
         for (std::map<string, string>::iterator it = headers->begin(); it != headers->end(); ++it)
         {
             string headerValue = it->first + ": " + it->second;
-            cout << "setting header value: " << headerValue << endl;
             chunk = curl_slist_append(chunk, headerValue.c_str());
         }
     }
@@ -169,44 +161,39 @@ int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, cons
     fp = fopen(filePath, "wb");
     if (fp == NULL)
     {
+        Logger::getInstance().Error("fopen result is : %d", fp);
         return 1;
     }
-    cout << "fopen result is :" << (fp != NULL) << endl;
+
     bool initResult = init_common(conn, url);
 
     code = curl_easy_setopt(conn, CURLOPT_WRITEFUNCTION, writerToFile);
     if (code != CURLE_OK)
     {
-        fprintf(stderr, "Failed to set writer [%s]\n", errorBuffer);
+        Logger::getInstance().Error("Failed to set writer [%s]\n", errorBuffer);
         initResult = false;
     }
 
     code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, fp);
     if (code != CURLE_OK)
     {
-        fprintf(stderr, "Failed to set write data [%s]\n", errorBuffer);
+        Logger::getInstance().Error("Failed to set write data [%s]\n", errorBuffer);
         initResult = false;
     }
 
-    cout << "init Result: " << initResult << endl;
     if (chunk != NULL) {
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
-        cout << "set header result: " << code << endl;
     }
 
     code = curl_easy_perform(conn);
-    cout << "curl_easy_perform result: " << code << endl;
     fclose(fp);
     curl_easy_cleanup(conn);
 
     curl_slist_free_all(chunk);
     if (code != CURLE_OK)
     {
-        fprintf(stderr, "Failed to get '%s' [%s]\n", url, errorBuffer);
-    }
-    else
-    {
-
+        Logger::getInstance().Error("Failed to get '%s' [%s]\n", url, errorBuffer);
+        return 1;
     }
     return 0;
 #endif
@@ -226,7 +213,6 @@ string * HttpRoutine::Post(const char * url, map<string, string> * headers, cons
         for (std::map<string, string>::iterator it = headers->begin(); it != headers->end(); ++it)
         {
             string headerValue = it->first + ": " + it->second;
-            cout << "setting header value: " << headerValue << endl;
             chunk = curl_slist_append(chunk, headerValue.c_str());
         }
     }
@@ -240,37 +226,31 @@ string * HttpRoutine::Post(const char * url, map<string, string> * headers, cons
     code = curl_easy_setopt(conn, CURLOPT_WRITEFUNCTION, writer);
     if (code != CURLE_OK)
     {
-        fprintf(stderr, "Failed to set writer [%s]\n", errorBuffer);
+        Logger::getInstance().Error("Failed to set writer [%s]\n", errorBuffer);
         initResult = false;
     }
 
     code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, buffer);
     if (code != CURLE_OK)
     {
-        fprintf(stderr, "Failed to set write data [%s]\n", errorBuffer);
+        Logger::getInstance().Error("Failed to set write data [%s]\n", errorBuffer);
         initResult = false;
     }
 
     cout << "init Result: " << initResult << endl;
-    if (chunk != NULL) {
+    if (chunk != NULL)
+    {
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
-        cout << "set header result: " << code << endl;
     }
-    cout << data << endl;
     curl_easy_setopt(conn, CURLOPT_POSTFIELDS, data);
     code = curl_easy_perform(conn);
-    cout << "curl_easy_perform result: " << code << endl;
 
     curl_slist_free_all(chunk);
     curl_easy_cleanup(conn);
 
     if (code != CURLE_OK)
     {
-        fprintf(stderr, "Failed to post '%s' [%s]\n", url, errorBuffer);
-    }
-    else
-    {
-        cout << *buffer << endl;
+        Logger::getInstance().Error("Failed to post '%s' [%s]\n", url, errorBuffer);
     }
 #endif
     return buffer;
