@@ -11,10 +11,10 @@ public:
         static Logger instance;
         return instance;
     }
-    void Verbose(const char *msg);
-    void Log(const char *msg);
-    void Warning(const char * msg);
-    void Error(const char * mgs);
+    void Verbose(const char *msg, ...);
+    void Log(const char *msg, ...);
+    void Warning(const char * msg, ...);
+    void Error(const char * mgs, ...);
 private:
     Logger() {
 #ifdef _WIN32
