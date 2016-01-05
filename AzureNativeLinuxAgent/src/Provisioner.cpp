@@ -18,8 +18,6 @@ bool Provisioner::isProvisioned()
 
 void Provisioner::Prosess()
 {
-#ifdef _WIN32
-#else
     //1. provision re-generate key
     AgentConfig::getInstance().LoadConfig();
 
@@ -32,7 +30,6 @@ void Provisioner::Prosess()
         CommandExecuter::RunGetOutput("rm -f /etc/ssh/ssh_host_*key*");
         CommandResultPtr commandResult = CommandExecuter::RunGetOutput(("ssh-keygen -N '' -t " + *type + " -f /etc/ssh/ssh_host_" + *type + "_key").c_str());
     }
-
     // 2. do the ovf-env
     string *romDevicePath = DeviceRoutine::findRomDevice();
     FileOperator::make_dir(SECURE_MOUNT_POINT);
@@ -51,13 +48,9 @@ void Provisioner::Prosess()
 
     // 2. This is done here because regenerated SSH host key pairs may be potentially overwritten when processing the ovfxml
 
-   /* fingerprint = RunGetOutput("ssh-keygen -lf /etc/ssh/ssh_host_" + type + "_key.pub")[1].rstrip().split()[1].replace(':', '')
-        self.ReportRoleProperties(fingerprint)*/
+    /* fingerprint = RunGetOutput("ssh-keygen -lf /etc/ssh/ssh_host_" + type + "_key.pub")[1].rstrip().split()[1].replace(':', '')
+    self.ReportRoleProperties(fingerprint)*/
 
-
-
-    // 3. 
-#endif
 }
 
 
