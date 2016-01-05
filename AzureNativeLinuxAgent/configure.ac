@@ -34,10 +34,7 @@ PKG_CHECK_MODULES([LIBCONFIGXX], [libconfig++],,
   AC_MSG_ERROR([libconfig++ not found.]))
 
 PKG_CHECK_MODULES([LIBCURL], [libcurl],,
-  AC_MSG_ERROR([LIBCURL not found.]))
-
-PKG_CHECK_MODULES([LIBUDEV], [libudev],,
-  AC_MSG_ERROR([LIBUDEV not found.])) 
+  AC_MSG_ERROR([LIBCURL not found.]))  
 
 PKG_CHECK_MODULES([GLIBMM], [glibmm-2.4],,
 AC_MSG_ERROR([GLIBMM not found.])) 
@@ -47,6 +44,9 @@ AC_MSG_ERROR([LIBZIP not found.]))
 
 PKG_CHECK_MODULES([JSONGLIB], [json-glib-1.0],,
 AC_MSG_ERROR([JSONGLIB not found.]))
+
+PKG_CHECK_MODULES([LIBUDEV], [libudev],,
+  AC_MSG_ERROR([LIBUDEV not found.])) 
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile])
