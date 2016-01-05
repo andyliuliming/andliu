@@ -6,7 +6,7 @@
 #include "Macros.h"
 #include "NetworkRoutine.h"
 #include "StringUtil.h"
-
+#include "SocketWrapper.h"
 #ifdef _WIN32
 #include <WinSock2.h>
 #include<ws2tcpip.h>
@@ -43,9 +43,8 @@ int AzureEnvironment::DoDhcpWork()
     vector<string> splitResult;
     string spliter = "\n";
     StringUtil::string_split((*(commandResult->output)), spliter, &splitResult);
-    bool missingDefaultRoute = true;
+
     for (unsigned int i = 0; i < splitResult.size(); i++) {
-        cout << splitResult[i] << " \n";
         size_t lastZero = splitResult[i].find_last_of("0.0.0.0");
         size_t lastDefault = splitResult[i].find_last_of("default ");
         if (lastZero > 0 || lastDefault > 0)
@@ -56,7 +55,7 @@ int AzureEnvironment::DoDhcpWork()
     }
     if (missingDefaultRoute)
     {
-
+        Logger::getInstance().Log("default route missing");
     }
 
     struct sockaddr_in addr;
@@ -69,83 +68,85 @@ int AzureEnvironment::DoDhcpWork()
     sck = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (sck < 0)
     {
-        Logger::getInstance().Verbose("sck < 0 ");
-    }
-    int so_broadcast = 1;
-    int so_reuseaddr = 1;
-    setsockopt(sck, SOL_SOCKET, SO_BROADCAST, SOCKET_OPTION_P&so_broadcast, sizeof(so_broadcast));
-    setsockopt(sck, SOL_SOCKET, SO_REUSEADDR, SOCKET_OPTION_P&so_reuseaddr, sizeof(so_reuseaddr));
-
-    if (bind(sck, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-    {
-        CLOSESOCKET(sck);
+        Logger::getInstance().Error("sck < 0 ");
+        return 1;
     }
     else
     {
-        struct sockaddr_in addr_to;
-        addr_to.sin_family = AF_INET;
-        addr_to.sin_addr.s_addr = inet_addr("255.255.255.255");
-        addr_to.sin_port = htons(DHCP_UDP_TO_PORT);
-        cout << "dhcp request size is: " << sizeof(*dhcpRequest) << endl;
-        long sendResult = sendto(sck, SEND_TO_OPTION dhcpRequest, sizeof(DHCPRequest), 0,
-            (struct sockaddr *)&addr_to, sizeof(addr_to));
-        if (sendResult < 0)
+        shared_ptr<SocketWrapper> sw(new SocketWrapper(sck));
+
+        int so_broadcast = 1;
+        int so_reuseaddr = 1;
+        setsockopt(sw.get()->s_, SOL_SOCKET, SO_BROADCAST, SOCKET_OPTION_P&so_broadcast, sizeof(so_broadcast));
+        setsockopt(sw.get()->s_, SOL_SOCKET, SO_REUSEADDR, SOCKET_OPTION_P&so_reuseaddr, sizeof(so_reuseaddr));
+
+        if (bind(sw.get()->s_, (struct sockaddr *)&addr, sizeof(addr)) < 0)
         {
-            Logger::getInstance().Verbose("send failed\n");
+            return 1;
         }
         else
         {
-            Logger::getInstance().Verbose("send ok\n");
-            struct timeval tv_out;
-            tv_out.tv_sec = 6;
-            tv_out.tv_usec = 0;
-            setsockopt(sck, SOL_SOCKET, SO_RCVTIMEO, SOCKET_OPTION_P&tv_out, sizeof(tv_out));
-            int bufferSize = 1024;
-            PBYTE buffer = new BYTE[bufferSize];
-            int addr_len = sizeof(struct sockaddr_in);
-            int recvResult = recvfrom(sck, RECV_TO_OPTION buffer, bufferSize, 0, (struct sockaddr *)&addr, (socklen_t*)&addr_len);
-            if (recvResult < 0)
+            struct sockaddr_in addr_to;
+            addr_to.sin_family = AF_INET;
+            addr_to.sin_addr.s_addr = inet_addr("255.255.255.255");
+            addr_to.sin_port = htons(DHCP_UDP_TO_PORT);
+            cout << "dhcp request size is: " << sizeof(*dhcpRequest) << endl;
+            long sendResult = sendto(sw.get()->s_, SEND_TO_OPTION dhcpRequest, sizeof(DHCPRequest), 0,
+                (struct sockaddr *)&addr_to, sizeof(addr_to));
+            if (sendResult < 0)
             {
-                Logger::getInstance().Verbose("recv failed.");
+                Logger::getInstance().Verbose("send failed\n");
+                return 1;
             }
             else
             {
-                Logger::getInstance().Verbose("recv succeeded.");
+                Logger::getInstance().Verbose("send ok\n");
+                struct timeval tv_out;
+                tv_out.tv_sec = 6;
+                tv_out.tv_usec = 0;
+                setsockopt(sw.get()->s_, SOL_SOCKET, SO_RCVTIMEO, SOCKET_OPTION_P&tv_out, sizeof(tv_out));
+                int bufferSize = 1024;
+                PBYTE buffer = new BYTE[bufferSize];
+                int addr_len = sizeof(struct sockaddr_in);
+                int recvResult = recvfrom(sw.get()->s_, RECV_TO_OPTION buffer, bufferSize, 0, (struct sockaddr *)&addr, (socklen_t*)&addr_len);
+                if (recvResult < 0)
+                {
+                    Logger::getInstance().Verbose("recv failed.");
+                    return 1;
+                }
+                else
+                {
+                    int i = 0xF0; //offset to first option
+                    while (i < recvResult)
+                    {
+                        BYTE option = buffer[i];
+                        long option_length = 0;
+                        if ((i + 1) < recvResult)
+                        {
+                            option_length = buffer[i + 1];
+                        }
+                        if (option == 255) {
+
+                        }
+                        if (option == 249) {
+
+                        }
+                        if (option == 3) {
+
+                        }
+                        if (option == 245) {
+                            Logger::getInstance().Verbose("245 got, so the ip is:\n");
+                            cout << (int)(buffer[i + 2]) << "." << (int)(buffer[i + 3]) << "." << (int)(buffer[i + 4]) << "." << (int)(buffer[i + 5]) << endl;
+                            char ip[INET6_ADDRSTRLEN];
+                            sprintf(ip, "%d.%d.%d.%d", (int)(buffer[i + 2]), (int)(buffer[i + 3]), (int)(buffer[i + 4]), (int)(buffer[i + 5]));
+                            wireServerAddress = ip;
+                        }
+                        i += (option_length + 2);
+                    }
+                }
             }
-            cout << "recvResult:" << recvResult << endl;
-            int i = 0xF0; //offset to first option
-            while (i < recvResult)
-            {
-                BYTE option = buffer[i];
-                long option_length = 0;
-                if ((i + 1) < recvResult) {
-                    option_length = buffer[i + 1];
-                    cout << "option_length:" << option_length << endl;
-                    Logger::getInstance().Verbose("option_length is: ");
-                }
-                if (option == 255) {
-                    Logger::getInstance().Verbose("255 got");
-                }
-                if (option == 249) {
-                    Logger::getInstance().Verbose("249 got");
-                }
-                if (option == 3) {
-                    Logger::getInstance().Verbose("3 got");
-                }
-                if (option == 245) {
-                    Logger::getInstance().Verbose("245 got, so the ip is:\n");
-                    cout << (int)(buffer[i + 2]) << "." << (int)(buffer[i + 3]) << "." << (int)(buffer[i + 4]) << "." << (int)(buffer[i + 5]) << endl;
-                    char ip[INET6_ADDRSTRLEN];
-                    sprintf(ip, "%d.%d.%d.%d", (int)(buffer[i + 2]), (int)(buffer[i + 3]), (int)(buffer[i + 4]), (int)(buffer[i + 5]));
-                    wireServerAddress = ip;
-                }
-                i += (option_length + 2);
-            }
-            Logger::getInstance().Verbose("final");
         }
-
     }
-
     return 0;
 }
 

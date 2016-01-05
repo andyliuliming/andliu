@@ -112,6 +112,7 @@ am_AzureNativeLinuxAgent_OBJECTS =  \
 	AzureNativeLinuxAgent-OvfEnv.$(OBJEXT) \
 	AzureNativeLinuxAgent-Provisioner.$(OBJEXT) \
 	AzureNativeLinuxAgent-SharedConfig.$(OBJEXT) \
+	AzureNativeLinuxAgent-SocketWrapper.$(OBJEXT) \
 	AzureNativeLinuxAgent-StatusReporter.$(OBJEXT) \
 	AzureNativeLinuxAgent-StringUtil.$(OBJEXT) \
 	AzureNativeLinuxAgent-UserManager.$(OBJEXT) \
@@ -297,7 +298,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AzureNativeLinuxAgent_CXXFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(LIBCURL_CFLAGS) $(LIBUDEV_CFLAGS) $(GLIBMM_CFLAGS) $(LIBZIP_CFLAGS) $(JSONGLIB_CFLAGS)
 AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS) $(LIBCURL_LIBS) $(LIBUDEV_LIBS) $(GLIBMM_LIBS) $(LIBZIP_LIBS) $(JSONGLIB_LIBS) -lcrypt 
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp Deprovisioner.cpp DeviceRoutine.cpp ExtensionConfig.cpp ExtensionsConfig.cpp FileOperator.cpp HandlerManifest.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp JsonRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp OvfEnv.cpp Provisioner.cpp SharedConfig.cpp StatusReporter.cpp StringUtil.cpp UserManager.cpp VMMStartup.cpp XmlRoutine.cpp ZipRoutine.cpp
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CommandExecuter.cpp CommandResult.cpp Deprovisioner.cpp DeviceRoutine.cpp ExtensionConfig.cpp ExtensionsConfig.cpp FileOperator.cpp HandlerManifest.cpp HostingEnvironmentConfig.cpp HttpRoutine.cpp JsonRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp OvfEnv.cpp Provisioner.cpp SharedConfig.cpp SocketWrapper.cpp StatusReporter.cpp StringUtil.cpp UserManager.cpp VMMStartup.cpp XmlRoutine.cpp ZipRoutine.cpp
 all: all-am
 
 .SUFFIXES:
@@ -406,6 +407,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-OvfEnv.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-Provisioner.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-SharedConfig.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-SocketWrapper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-StatusReporter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-StringUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-UserManager.Po@am__quote@
@@ -720,6 +722,20 @@ AzureNativeLinuxAgent-SharedConfig.obj: SharedConfig.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SharedConfig.cpp' object='AzureNativeLinuxAgent-SharedConfig.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-SharedConfig.obj `if test -f 'SharedConfig.cpp'; then $(CYGPATH_W) 'SharedConfig.cpp'; else $(CYGPATH_W) '$(srcdir)/SharedConfig.cpp'; fi`
+
+AzureNativeLinuxAgent-SocketWrapper.o: SocketWrapper.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-SocketWrapper.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-SocketWrapper.Tpo -c -o AzureNativeLinuxAgent-SocketWrapper.o `test -f 'SocketWrapper.cpp' || echo '$(srcdir)/'`SocketWrapper.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-SocketWrapper.Tpo $(DEPDIR)/AzureNativeLinuxAgent-SocketWrapper.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SocketWrapper.cpp' object='AzureNativeLinuxAgent-SocketWrapper.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-SocketWrapper.o `test -f 'SocketWrapper.cpp' || echo '$(srcdir)/'`SocketWrapper.cpp
+
+AzureNativeLinuxAgent-SocketWrapper.obj: SocketWrapper.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-SocketWrapper.obj -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-SocketWrapper.Tpo -c -o AzureNativeLinuxAgent-SocketWrapper.obj `if test -f 'SocketWrapper.cpp'; then $(CYGPATH_W) 'SocketWrapper.cpp'; else $(CYGPATH_W) '$(srcdir)/SocketWrapper.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-SocketWrapper.Tpo $(DEPDIR)/AzureNativeLinuxAgent-SocketWrapper.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SocketWrapper.cpp' object='AzureNativeLinuxAgent-SocketWrapper.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-SocketWrapper.obj `if test -f 'SocketWrapper.cpp'; then $(CYGPATH_W) 'SocketWrapper.cpp'; else $(CYGPATH_W) '$(srcdir)/SocketWrapper.cpp'; fi`
 
 AzureNativeLinuxAgent-StatusReporter.o: StatusReporter.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-StatusReporter.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-StatusReporter.Tpo -c -o AzureNativeLinuxAgent-StatusReporter.o `test -f 'StatusReporter.cpp' || echo '$(srcdir)/'`StatusReporter.cpp

@@ -164,6 +164,7 @@
     <ClInclude Include="src\OvfEnv.h" />
     <ClInclude Include="src\Provisioner.h" />
     <ClInclude Include="src\SharedConfig.h" />
+    <ClInclude Include="src\SocketWrapper.h" />
     <ClInclude Include="src\StatusReporter.h" />
     <ClInclude Include="src\StringUtil.h" />
     <ClInclude Include="src\UserManager.h" />
@@ -193,6 +194,7 @@
     <ClCompile Include="src\OvfEnv.cpp" />
     <ClCompile Include="src\Provisioner.cpp" />
     <ClCompile Include="src\SharedConfig.cpp" />
+    <ClCompile Include="src\SocketWrapper.cpp" />
     <ClCompile Include="src\StatusReporter.cpp" />
     <ClCompile Include="src\StringUtil.cpp" />
     <ClCompile Include="src\UserManager.cpp" />

@@ -14,6 +14,7 @@
 #define SEND_TO_OPTION (const char*)
 #define RECV_TO_OPTION (char*)
 #define CLOSESOCKET closesocket
+#define SHUT_RDWR SD_BOTH
 #else
 #include <unistd.h>
 //linux code goes here

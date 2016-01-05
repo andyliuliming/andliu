@@ -14,7 +14,7 @@ public:
     void Verbose(const char *msg);
     void Log(const char *msg);
     void Warning(const char * msg);
-    void Error(const char * mgs)
+    void Error(const char * mgs);
 private:
     Logger() {
 #ifdef _WIN32

@@ -23,7 +23,7 @@ void Logger::Log(const char * msg)
 #endif
 }
 
-void Warning(const char * msg)
+void Logger::Warning(const char * msg)
 {
 #ifdef _WIN32
 #else
@@ -31,7 +31,7 @@ void Warning(const char * msg)
 #endif
 }
 
-void Logger::Error(const char * mgs) {
+void Logger::Error(const char * msg) {
     {
 #ifdef _WIN32
 #else
