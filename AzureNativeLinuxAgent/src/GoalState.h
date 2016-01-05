@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "AzureEnvironment.h"
 #include "ExtensionsConfig.h"
 #include "HostingEnvironmentConfig.h"
 #include "SharedConfig.h"
@@ -22,7 +23,7 @@ public:
     SharedConfig *sharedConfig;
     ExtensionsConfig *extensionsConfig;
     GoalState();
-    void UpdateGoalState();
+    void UpdateGoalState(AzureEnvironment *azureEnvironment);
     void Process();
     ~GoalState();
 };

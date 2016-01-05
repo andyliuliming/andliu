@@ -41,7 +41,7 @@ int main(void)
         // b. process goal state
 
         GoalState *goalState = new GoalState();
-        goalState->UpdateGoalState();
+        goalState->UpdateGoalState(azureEnvironment);
 
         StatusReporter *statusReporter = new StatusReporter();
 

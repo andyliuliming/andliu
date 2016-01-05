@@ -1,4 +1,5 @@
 #include <iostream>
+#include "AzureEnvironment.h"
 #include "FileOperator.h"
 #include "GoalState.h"
 #include "HostingEnvironmentConfig.h"
@@ -11,12 +12,14 @@ GoalState::GoalState()
     goalStageFilePrefix = "/var/lib/waagent/Native_GoalState.";
 }
 
-void GoalState::UpdateGoalState()
+void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
 {
+
+    string goalStateEndpoint = string("http://") + azureEnvironment->wireServerAddress + "/machine/?comp=goalstate";
 #ifdef _WIN32
 #else
     /* set our custom set of headers */
-    string * goalStateText = HttpRoutine::GetWithDefaultHeader("http://168.63.129.16/machine/?comp=goalstate");
+    string * goalStateText = HttpRoutine::GetWithDefaultHeader(goalStateEndpoint.c_str());
     xmlDocPtr doc = xmlParseMemory(goalStateText->c_str(), goalStateText->size());
     xmlNodePtr root = xmlDocGetRootElement(doc);
 
