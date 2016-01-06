@@ -34,13 +34,13 @@ string * AgentConfig::getConfig(const char * propertyName)
 #else
     try
     {
-        string propertyValue = this->config->lookup(propertyName);
-        result = new string(propertyValue);
+        Setting &propertyValue = this->config->lookup(propertyName);
+        result = new string(propertyValue.c_str());
     }
     catch (SettingNotFoundException e)
     {
         Logger::getInstance().Error("SettingNotFoundException");
-}
+    }
     return result;
 #endif
 }
