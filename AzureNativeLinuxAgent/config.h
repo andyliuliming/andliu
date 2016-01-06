@@ -25,6 +25,9 @@
 /* Define to 1 if you have the <netdb.h> header file. */
 #define HAVE_NETDB_H 1
 
+/* Define to 1 if you have the <netinet/in.h> header file. */
+#define HAVE_NETINET_IN_H 1
+
 /* Define to 1 if you have the `socket' function. */
 #define HAVE_SOCKET 1
 
