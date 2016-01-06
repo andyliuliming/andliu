@@ -10,6 +10,7 @@
 #include <curl/curl.h>
 #include <ifaddrs.h>
 #include <netdb.h>
+#include <netinet/in.h>
 #include <net/if.h>
 #include <string.h>
 #include <sys/ioctl.h>
