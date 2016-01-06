@@ -45,9 +45,9 @@ PKG_CHECK_MODULES([LIBZIP], [libzip],,
 PKG_CHECK_MODULES([JSONGLIB], [json-glib-1.0],,
   AC_MSG_ERROR([JSONGLIB not found.]))
 
-if test $OSTYPE='FreeBSD'; then
-PKG_CHECK_MODULES([LIBUDEV], [libudev],,
-  AC_MSG_ERROR([LIBUDEV not found.])) 
+if test "$OSTYPE" = "linux-gnu"; then
+    PKG_CHECK_MODULES([LIBUDEV], [libudev],,
+      AC_MSG_ERROR([LIBUDEV not found.])) 
 fi
 
 AC_CONFIG_FILES([Makefile
