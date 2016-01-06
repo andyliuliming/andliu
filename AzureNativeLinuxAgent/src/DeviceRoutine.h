@@ -1,7 +1,6 @@
 #pragma once
 #include "CommandExecuter.h"
 #ifndef _WIN32
-#include <dirent.h> 
 #include <sys/param.h>
 #endif
 

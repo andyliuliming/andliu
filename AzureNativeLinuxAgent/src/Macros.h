@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#ifndef _WIN32
+#include <sys/param.h>
+#endif
 #ifdef _WIN32
 //windows code goes here
 #define POPEN _popen
@@ -25,6 +28,14 @@
 #define SEND_TO_OPTION
 #define RECV_TO_OPTION
 #define CLOSESOCKET close
+#endif
+
+#ifdef _WIN32
+#define RANDOM() rand()
+#elif defined BSD
+#define RANDOM() random()
+#else
+#define RANDOM() rand()
 #endif
 
 #define VMM_CONFIG_FILE_NAME ("linuxosconfiguration.xml")

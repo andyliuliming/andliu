@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 #include <vector>
-
 using namespace std;
+
 class StringUtil
 {
 public:
@@ -11,4 +11,3 @@ public:
     static void gen_random(char *s, const int len);
     ~StringUtil();
 };
-

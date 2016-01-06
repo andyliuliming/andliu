@@ -1,7 +1,8 @@
+#include "Macros.h"
 #include "StringUtil.h"
+#include <stdlib.h>
 
-
-
+using namespace std;
 StringUtil::StringUtil()
 {
 }
@@ -31,7 +32,7 @@ void StringUtil::gen_random(char * s, const int len)
         "abcdefghijklmnopqrstuvwxyz";
 
     for (int i = 0; i < len; ++i) {
-        s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+        s[i] = alphanum[RANDOM() % (sizeof(alphanum) - 1)];
     }
     s[len] = 0;
 }

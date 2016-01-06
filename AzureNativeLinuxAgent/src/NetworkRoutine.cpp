@@ -43,8 +43,8 @@ PUINT8 NetworkRoutine::GetMacAddress()
 #elif defined BSD
     struct ifaddrs *ifap, *ifaptr;
     unsigned char *ptr;
-
-    if (getifaddrs(&ifap) == 0)
+    int getIfAddrsResult = getifaddrs(&ifap);
+    if (getIfAddrsResult == 0)
     {
         for (ifaptr = ifap; ifaptr != NULL; ifaptr = (ifaptr)->ifa_next)
         {
@@ -53,25 +53,27 @@ PUINT8 NetworkRoutine::GetMacAddress()
                 ptr = (unsigned char *)LLADDR((struct sockaddr_dl *)(ifaptr)->ifa_addr);
                 string ifName = string((ifaptr)->ifa_name);
                 //TODO if the ifa_name is null?
-                if (!((ifaptr)->ifa_name[0] == 'l'&& (ifaptr)->ifa_name[1=='o'])
+                if (!((ifaptr)->ifa_name[0] == 'l'&& (ifaptr)->ifa_name[1=='o']))
                 {
                     Logger::getInstance().Verbose(" if name is not lo, so set the mac.");
-                    MAC_ADDRESS[0] = item->ifr_hwaddr.sa_data[0];
-                    MAC_ADDRESS[1] = item->ifr_hwaddr.sa_data[1];
-                    MAC_ADDRESS[2] = item->ifr_hwaddr.sa_data[2];
-                    MAC_ADDRESS[3] = item->ifr_hwaddr.sa_data[3];
-                    MAC_ADDRESS[4] = item->ifr_hwaddr.sa_data[4];
-                    MAC_ADDRESS[5] = item->ifr_hwaddr.sa_data[5];
+                    ptr = (unsigned char *)LLADDR((struct sockaddr_dl *)(ifaptr)->ifa_addr);
+                    //*ptr, *(ptr + 1), *(ptr + 2), *(ptr + 3), *(ptr + 4), *(ptr + 5)
+                    MAC_ADDRESS[0] = *ptr;
+                    MAC_ADDRESS[1] = *(ptr + 1);
+                    MAC_ADDRESS[2] = *(ptr + 2);
+                    MAC_ADDRESS[3] = *(ptr + 3);
+                    MAC_ADDRESS[4] = *(ptr + 4);
+                    MAC_ADDRESS[5] = *(ptr + 5);
                     break;
                 }
             }
         }
         freeifaddrs(ifap);
-        return 1;
     }
     else {
-        return 0;
+        Logger::getInstance().Error("get if addrs failed with error: %d", getIfAddrsResult);
     }
+    return MAC_ADDRESS;
 #else
     char buf[8192] = { 0 };
     struct ifconf ifc = { 0 };
