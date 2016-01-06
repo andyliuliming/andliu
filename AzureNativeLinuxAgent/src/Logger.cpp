@@ -43,15 +43,14 @@ void Logger::Warning(const char * msg, ...)
     va_end(arguments);                  // Cleans up the list
 }
 
-void Logger::Error(const char * msg, ...) {
-    {
-        va_list arguments;                     // A place to store the list of arguments
-        double sum = 0;
-        va_start(arguments, msg);           // Initializing arguments to store all values after num
+void Logger::Error(const char * msg, ...)
+{
+    va_list arguments;                     // A place to store the list of arguments
+    double sum = 0;
+    va_start(arguments, msg);           // Initializing arguments to store all values after num
 #ifdef _WIN32
 #else
-        syslog(LOG_ERR, msg, arguments);
+    syslog(LOG_ERR, msg, arguments);
 #endif
-        va_end(arguments);                  // Cleans up the list
-    }
+    va_end(arguments);                  // Cleans up the list
 }
