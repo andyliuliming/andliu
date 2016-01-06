@@ -1,4 +1,4 @@
-#include <iostream>
+
 
 #include "JsonRoutine.h"
 
@@ -29,7 +29,6 @@ HandlerManifest * JsonRoutine::ParseHandlerManifest(const char * filePath)
 
     reader = json_reader_new(node);
     int count = json_reader_count_elements(reader);
-    cout << "handlerManifest count is: " << count << endl;
     if (count > 0)
     {
         result = new HandlerManifest();

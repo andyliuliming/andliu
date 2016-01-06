@@ -1,4 +1,4 @@
-#include <iostream>
+
 #include "OvfEnv.h"
 #include "FileOperator.h"
 #include "UserManager.h"
@@ -19,7 +19,6 @@ void OvfEnv::Parse(string * sharedConfigText)
     xmlDocPtr doc = xmlParseMemory(sharedConfigText->c_str(), sharedConfigText->size());
     xmlNodePtr root = xmlDocGetRootElement(doc);
     
-    cout << "ovf_enf.xml root name is " << root->name << endl;
 
     map<string, string> namespaces;
     namespaces["oe"] = "http://schemas.dmtf.org/ovf/environment/1";
@@ -27,18 +26,16 @@ void OvfEnv::Parse(string * sharedConfigText)
 
     const xmlChar* userNameXpathExpr = xmlCharStrdup("/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:UserName/text()");
     this->userName = *(XmlRoutine::getNodeText(doc, userNameXpathExpr, &namespaces));
-    cout << "userName: " << this->userName << endl;
+
     delete userNameXpathExpr;
 
     const xmlChar* passWordXpathExpr = xmlCharStrdup("/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:UserPassword/text()");
     this->passWord = *(XmlRoutine::getNodeText(doc, passWordXpathExpr, &namespaces));
-    cout << "passWord: " << this->passWord << endl;
     delete passWordXpathExpr;
 
 
     const xmlChar* disableSshPasswordAuthenticationXpathExpr = xmlCharStrdup("/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:DisableSshPasswordAuthentication/text()");
     this->disableSshPasswordAuthentication = *(XmlRoutine::getNodeText(doc, disableSshPasswordAuthenticationXpathExpr, &namespaces));
-    cout << "disableSshPasswordAuthentication: " << this->disableSshPasswordAuthentication << endl;
     delete disableSshPasswordAuthenticationXpathExpr;
 
     xmlFreeDoc(doc);

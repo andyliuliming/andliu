@@ -1,4 +1,4 @@
-#include <iostream>
+
 #include "AzureEnvironment.h"
 #include "FileOperator.h"
 #include "GoalState.h"

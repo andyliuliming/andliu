@@ -1,4 +1,4 @@
-#include <iostream>
+
 #include "HttpRoutine.h"
 #include "Logger.h"
 using namespace std;
@@ -32,7 +32,8 @@ string * HttpRoutine::GetWithDefaultHeader(const char *url)
 
 int HttpRoutine::writer(char *data, size_t size, size_t nmemb, string *writerData)
 {
-    if (writerData == NULL) {
+    if (writerData == NULL)
+    {
         return 0;
     }
     writerData->append(data, size*nmemb);
@@ -41,8 +42,8 @@ int HttpRoutine::writer(char *data, size_t size, size_t nmemb, string *writerDat
 
 int HttpRoutine::writerToFile(char * data, size_t size, size_t nmemb, FILE * file)
 {
-    if (data == NULL) {
-        cout << "data is null, so not write to file." << endl;
+    if (data == NULL)
+    {
         return 0;
     }
     else {
@@ -206,7 +207,6 @@ string * HttpRoutine::Post(const char * url, map<string, string> * headers, cons
 #ifdef _WIN32
     // your windows code.
 #else
-    cout << "calling " << url << endl;
     struct curl_slist *chunk = NULL;
     if (headers != NULL) {
         /* Add a custom header */
@@ -237,7 +237,6 @@ string * HttpRoutine::Post(const char * url, map<string, string> * headers, cons
         initResult = false;
     }
 
-    cout << "init Result: " << initResult << endl;
     if (chunk != NULL)
     {
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
