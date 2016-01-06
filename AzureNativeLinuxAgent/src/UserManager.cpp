@@ -1,9 +1,11 @@
 #include <string>
 #include "AgentConfig.h"
+#include "Logger.h"
 #include "StringUtil.h"
 #include "UserManager.h"
 #ifdef _WIN32
 #else
+#include <cstdlib>
 #include <unistd.h>
 #endif
 using namespace std;
@@ -13,7 +15,7 @@ UserManager::UserManager()
 }
 
 
-void UserManager::CreateUser(const char * userName, const char * passWord)
+int UserManager::CreateUser(const char * userName, const char * passWord)
 {
 #ifdef _WIN32
 #else
@@ -23,17 +25,19 @@ void UserManager::CreateUser(const char * userName, const char * passWord)
 
     if (existed != NULL)
     {
-        cout << "user existed already" << endl;
+        Logger::getInstance().Error("user existed already");
+        return 1;
     }
     else
     {
         string command = string("useradd -m ") + userNameToCreate;
         CommandResultPtr addUserResult = CommandExecuter::RunGetOutput(command.c_str());
-        cout << "user add result: " << *(addUserResult->output) << endl;
+        Logger::getInstance().Log("user add result: %s", addUserResult->output->c_str());
         AgentConfig::getInstance().LoadConfig();
 
         string *crypt_id = AgentConfig::getInstance().getConfig("Provisioning_PasswordCryptId");
-        if (crypt_id == NULL) {
+        if (crypt_id == NULL)
+        {
             crypt_id = new string("6");
         }
 
@@ -42,8 +46,18 @@ void UserManager::CreateUser(const char * userName, const char * passWord)
         int salt_len_val = 10;
         if (salt_len != NULL)
         {
-            salt_len_val = stoi(*salt_len);
+            salt_len_val = atoi((*salt_len).c_str());
         }
+
+        if (salt_len_val == 0)
+        {
+            delete salt_len;
+            salt_len = NULL;
+            return 1;
+        }
+
+        delete salt_len;
+        salt_len = NULL;
 
         char * salt = new char[salt_len_val];
         StringUtil::gen_random(salt, salt_len_val);
@@ -52,7 +66,8 @@ void UserManager::CreateUser(const char * userName, const char * passWord)
 
         string changePasswordCmd = string("usermod -p '") + passWordToSet + "' " + userNameToCreate;
         CommandResultPtr commandResult = CommandExecuter::RunGetOutput(changePasswordCmd.c_str());
-        cout << *(commandResult->output) << endl;
+        Logger::getInstance().Log("user add result: %s", commandResult->output->c_str());
+        return 0;
     }
 #endif
 }

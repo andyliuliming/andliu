@@ -12,7 +12,7 @@ class UserManager
 {
 public:
     UserManager();
-    static void CreateUser(const char*userName, const char*passWord);
+    static int CreateUser(const char*userName, const char*passWord);
     ~UserManager();
 };
 
