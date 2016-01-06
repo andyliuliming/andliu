@@ -1,6 +1,7 @@
 #pragma once
 #include "CommandExecuter.h"
 #ifdef _WIN32
+#elif defined BSD
 #else
 #include <libudev.h>
 #endif
