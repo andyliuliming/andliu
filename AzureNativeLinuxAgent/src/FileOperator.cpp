@@ -38,9 +38,9 @@ void FileOperator::save_file(const char * content,long size, const string * file
     myfile.close();
 }
 
-string * FileOperator::get_content(const string * fileName)
+string * FileOperator::get_content(const char * fileName)
 {
-    ifstream t(fileName->c_str());
+    ifstream t(fileName);
     string *str=new string((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
     return str;
 }

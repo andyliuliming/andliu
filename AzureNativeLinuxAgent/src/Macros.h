@@ -38,6 +38,7 @@
 #define RANDOM() rand()
 #endif
 
+#define WORKING_DIR ("/var/lib/waagent")
 #define VMM_CONFIG_FILE_NAME ("linuxosconfiguration.xml")
 #define SECURE_MOUNT_POINT ("/mnt/cdrom/secure")
 #define OVF_ENV_FILE_NAME ("ovf-env.xml")

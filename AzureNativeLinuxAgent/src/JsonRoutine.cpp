@@ -1,5 +1,3 @@
-
-
 #include "JsonRoutine.h"
 
 #ifdef _WIN32
@@ -13,7 +11,7 @@ JsonRoutine::JsonRoutine()
 
 HandlerManifest * JsonRoutine::ParseHandlerManifest(const char * filePath)
 {
-    HandlerManifest * result = NULL;
+    HandlerManifest * result = nullptr;
 #ifdef _WIN32
 #else
     JsonParser *parser;

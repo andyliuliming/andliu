@@ -18,6 +18,7 @@ UserManager::UserManager()
 int UserManager::CreateUser(const char * userName, const char * passWord)
 {
 #ifdef _WIN32
+    return 1;
 #else
     string userNameToCreate = string(userName);
 

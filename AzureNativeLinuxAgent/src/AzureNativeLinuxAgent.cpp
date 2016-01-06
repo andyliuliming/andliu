@@ -1,6 +1,7 @@
 #include <string>
 #include "AgentConfig.h"
 #include "AzureEnvironment.h"
+#include "CertificationRoutine.h"
 #include "CommandExecuter.h"
 #include "DeviceRoutine.h"
 #include "ExtensionsConfig.h"
@@ -11,10 +12,15 @@
 #include "StatusReporter.h"
 #include "StringUtil.h"
 #include "VMMStartup.h"
+#ifdef _WIN32
+#include <direct.h>
+#else
+#endif
 using namespace std;
 
 int main(void)
 {
+    int chdirResult = chdir(WORKING_DIR);
     // 1.  vmm start up
     Logger::getInstance().Log("starting vmm");
     VMMStartup *vmmStartUp = new VMMStartup();
@@ -23,14 +29,27 @@ int main(void)
     // 2. do dhcp 
     Logger::getInstance().Log("DoDhcpWork");
     AzureEnvironment *azureEnvironment = new AzureEnvironment();
-    int dhcpWorkResult = azureEnvironment->DoDhcpWork();
+    int dhcpWorkResult = 1;
+
+    while (dhcpWorkResult != 0)
+    {
+        dhcpWorkResult = azureEnvironment->DoDhcpWork();
+        SLEEP(60 * 1000);
+    }
 
     // 3. check version
     int checkResult = azureEnvironment->CheckVersion();
+    if (checkResult != 0)
+    {
+        Logger::getInstance().Error("check version failed, so exit.");
+        exit(1);
+    }
 
     // 4. Set SCSI timeout on SCSI disks
     DeviceRoutine::setIsciTimeOut();
     // 5. GenerateTransportCert
+    int transportCertGenerationResult = CertificationRoutine::GenerateTransportCertification();
+
 
     // 6. where true daemon
     Provisioner *provisioner = new Provisioner();

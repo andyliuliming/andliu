@@ -27,8 +27,8 @@ void Provisioner::Prosess()
     }
     string *regenerateKeys = AgentConfig::getInstance().getConfig("Provisioning_RegenerateSshHostKeyPair");
     if (regenerateKeys == NULL || regenerateKeys->find("y") == 0) {
-        CommandExecuter::RunGetOutput("rm -f /etc/ssh/ssh_host_*key*");
-        CommandResultPtr commandResult = CommandExecuter::RunGetOutput(("ssh-keygen -N '' -t " + *type + " -f /etc/ssh/ssh_host_" + *type + "_key").c_str());
+        CommandResultPtr removeCommandResult = CommandExecuter::RunGetOutput("rm -f /etc/ssh/ssh_host_*key*");
+        CommandResultPtr generateCommandResult = CommandExecuter::RunGetOutput(("ssh-keygen -N '' -t " + *type + " -f /etc/ssh/ssh_host_" + *type + "_key").c_str());
     }
     // 2. do the ovf-env
     string *romDevicePath = DeviceRoutine::findRomDevice();
@@ -36,8 +36,7 @@ void Provisioner::Prosess()
     string command("mount " + *romDevicePath + " " + SECURE_MOUNT_POINT);
     CommandExecuter::RunGetOutput(command.c_str());
     string ovfEnvFullPath = string(OVF_ENV_FILE_FULL_PATH);
-    string *ovfEnvFileFullPath = new string(OVF_ENV_FILE_FULL_PATH);
-    string * fileContent = FileOperator::get_content(ovfEnvFileFullPath);
+    string * fileContent = FileOperator::get_content(OVF_ENV_FILE_FULL_PATH);
     string umount2 = string("umount ") + SECURE_MOUNT_POINT;
     CommandExecuter::RunGetOutput(umount2.c_str());
 

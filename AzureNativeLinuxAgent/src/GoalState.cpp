@@ -1,10 +1,10 @@
-
 #include "AzureEnvironment.h"
 #include "FileOperator.h"
 #include "GoalState.h"
 #include "HostingEnvironmentConfig.h"
 #include "HttpRoutine.h"
 #include "XmlRoutine.h"
+#include <map>
 using namespace std;
 
 GoalState::GoalState()
@@ -14,7 +14,6 @@ GoalState::GoalState()
 
 void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
 {
-
     string goalStateEndpoint = string("http://") + azureEnvironment->wireServerAddress + "/machine/?comp=goalstate";
 #ifdef _WIN32
 #else
@@ -56,10 +55,7 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
     delete configNameXpathExpr;
 
     const xmlChar* certificatesXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/Certificates/text()");
-    string *certificateText = XmlRoutine::getNodeText(doc, certificatesXpathExpr, NULL);
-    if (certificateText != NULL) {
-        this->certificatesUrl = *(certificateText);
-    }
+    this->certificatesUrl = XmlRoutine::getNodeText(doc, certificatesXpathExpr, NULL);
     delete certificatesXpathExpr;
 
     xmlFreeDoc(doc);
@@ -79,6 +75,23 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
     string * extentionsConfigText = HttpRoutine::GetWithDefaultHeader(this->extensionsConfigUrl.c_str());
     this->extensionsConfig = new ExtensionsConfig();
     this->extensionsConfig->Parse(extentionsConfigText);
+
+    // get the certificates from the server.
+    if (this->certificatesUrl != NULL)
+    {
+        this->certificates = new Certificates();
+        string * certificationFileContent = FileOperator::get_content("");
+        
+        map<string, string> headers;
+        headers["x-ms-agent-name"]= "AzureNativeLinuxAgent";
+        headers["x-ms-version"]= "2012-11-30";
+        headers["x-ms-cipher-name"] = "DES_EDE3_CBC";
+        headers["x-ms-guest-agent-public-x509-cert"] = *certificationFileContent;
+        string * certificationsText = HttpRoutine::Get(this->certificatesUrl->c_str(),&headers);
+
+        // get certificates from the remote using the public cert.
+        this->certificates->Parse(certificationsText);
+    }
 #endif
 }
 
@@ -87,6 +100,7 @@ void GoalState::Process()
     this->hostingEnvironmentConfig->Process();
     this->sharedConfig->Process();
     this->extensionsConfig->Process();
+    this->certificates->Process();
 }
 
 
