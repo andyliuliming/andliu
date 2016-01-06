@@ -1,5 +1,10 @@
 #pragma once
 #include "CommandExecuter.h"
+#ifndef _WIN32
+#include <dirent.h> 
+#include <sys/param.h>
+#endif
+
 #ifdef _WIN32
 #elif defined BSD
 #else
@@ -13,4 +18,5 @@ public:
     static string* findRomDevice();
     ~DeviceRoutine();
 };
+
 
