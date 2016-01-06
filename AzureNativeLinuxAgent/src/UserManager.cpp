@@ -4,7 +4,7 @@
 #include "UserManager.h"
 #ifdef _WIN32
 #else
-#include <crypt.h>
+#include <unistd.h>
 #endif
 using namespace std;
 
