@@ -12,11 +12,13 @@
 #include<ws2tcpip.h>
 #pragma comment(lib, "Ws2_32.lib")
 #else
+
 #include <arpa/inet.h>
 #include <curl/curl.h>
 #include <ifaddrs.h>
 #include <netdb.h>
 #include <net/if.h>
+#include <netinet/in.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h> // Needed for the socket functions
 #include <string.h>
