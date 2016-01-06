@@ -16,7 +16,7 @@ AC_PROG_CC
 AC_CHECK_LIB([crypt], [main])
 
 # Checks for header files.
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h netdb.h stdlib.h string.h sys/ioctl.h sys/socket.h syslog.h unistd.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h netdb.h stdlib.h string.h sys/ioctl.h sys/param.h sys/socket.h syslog.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
@@ -37,16 +37,18 @@ PKG_CHECK_MODULES([LIBCURL], [libcurl],,
   AC_MSG_ERROR([LIBCURL not found.]))  
 
 PKG_CHECK_MODULES([GLIBMM], [glibmm-2.4],,
-AC_MSG_ERROR([GLIBMM not found.])) 
+  AC_MSG_ERROR([GLIBMM not found.])) 
 
 PKG_CHECK_MODULES([LIBZIP], [libzip],,
-AC_MSG_ERROR([LIBZIP not found.])) 
+  AC_MSG_ERROR([LIBZIP not found.])) 
 
 PKG_CHECK_MODULES([JSONGLIB], [json-glib-1.0],,
-AC_MSG_ERROR([JSONGLIB not found.]))
+  AC_MSG_ERROR([JSONGLIB not found.]))
 
+if test $OSTYPE='FreeBSD'; then
 PKG_CHECK_MODULES([LIBUDEV], [libudev],,
   AC_MSG_ERROR([LIBUDEV not found.])) 
+fi
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile])

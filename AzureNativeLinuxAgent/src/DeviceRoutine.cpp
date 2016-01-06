@@ -1,5 +1,11 @@
 #include <iostream>
+#include <stdio.h> 
 #include <string>
+#ifdef _WIN32
+#else
+#include <dirent.h> 
+#include <sys/param.h>
+#endif
 #include "AgentConfig.h"
 #include "DeviceRoutine.h"
 #include "Logger.h"
@@ -25,6 +31,28 @@ string * DeviceRoutine::findRomDevice()
 {
     string *result = NULL;
 #ifdef _WIN32
+    
+    return result;
+#elif defined BSD
+    DIR           *d;
+    struct dirent *dir;
+    d = opendir("/dev");
+
+    if (d)
+    {
+        while ((dir = readdir(d)) != NULL)
+        {
+            string directoryName = string(dir->d_name);
+            if (directoryName.find_first_of("acd"))
+            {
+                break;
+            }
+        }
+        closedir(d);
+        result = new string(dir->d_name);
+        delete dir;
+        dir = NULL;
+    }
     return result;
 #else
     struct udev *udev;

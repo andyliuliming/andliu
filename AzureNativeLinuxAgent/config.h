@@ -46,6 +46,9 @@
 /* Define to 1 if you have the <sys/ioctl.h> header file. */
 #define HAVE_SYS_IOCTL_H 1
 
+/* Define to 1 if you have the <sys/param.h> header file. */
+#define HAVE_SYS_PARAM_H 1
+
 /* Define to 1 if you have the <sys/socket.h> header file. */
 #define HAVE_SYS_SOCKET_H 1
 
