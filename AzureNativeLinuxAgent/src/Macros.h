@@ -45,6 +45,8 @@
 #define VMM_CONFIG_FILE_FULL_PATH ("/mnt/cdrom/secure/linuxosconfiguration.xml")
 #define OVF_ENV_FILE_FULL_PATH ("/mnt/cdrom/secure/ovf-env.xml")
 #define WAAGENT_LIB_BASE_DIR  ("/var/lib/waagent/")
+#define TRANSPORT_CERT_PRIV ("NativeTransportPrivate.pem")
+#define TRANSPORT_CERT_PUB ("NativeTransportCert.pem")
 
 typedef unsigned char       BYTE, *PBYTE;
 typedef unsigned char       UINT8, *PUINT8;

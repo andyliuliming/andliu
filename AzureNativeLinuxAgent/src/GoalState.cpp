@@ -80,8 +80,8 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
     if (this->certificatesUrl != NULL)
     {
         this->certificates = new Certificates();
-        string * certificationFileContent = FileOperator::get_content("");
-        
+        string * certificationFileContent = FileOperator::get_content(TRANSPORT_CERT_PUB);
+        //TODO get rid of the cert headers.
         map<string, string> headers;
         headers["x-ms-agent-name"]= "AzureNativeLinuxAgent";
         headers["x-ms-version"]= "2012-11-30";
