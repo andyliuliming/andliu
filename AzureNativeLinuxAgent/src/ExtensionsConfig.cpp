@@ -9,8 +9,6 @@
 #ifdef _WIN32
 #else
 #include "ZipRoutine.h"
-#include <glibmm/ustring.h>
-using namespace Glib;
 #endif
 ExtensionsConfig::ExtensionsConfig()
 {
@@ -25,7 +23,7 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
 
     xmlChar * incarnation = xmlGetProp(root, xmlCharStrdup("goalStateIncarnation"));
 
-    ustring incarnationStr((const char*)incarnation);
+    string incarnationStr((const char*)incarnation);
     string configFilePath = string("/var/lib/waagent/Native_ExtensionsConfig.") + incarnationStr + ".xml";
     shared_ptr<string> configFilePathP = make_shared<string>(configFilePath);
 
@@ -40,13 +38,13 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
     {
         ExtensionConfig *newConfig = new ExtensionConfig();
         xmlChar * name = xmlGetProp(nodes->nodeTab[i], xmlCharStrdup("name"));
-        newConfig->name = ustring((const char*)name);
+        newConfig->name = string((const char*)name);
         xmlChar * version = xmlGetProp(nodes->nodeTab[i], xmlCharStrdup("version"));
-        newConfig->version = ustring((const char*)version);
+        newConfig->version = string((const char*)version);
         xmlChar * location = xmlGetProp(nodes->nodeTab[i], xmlCharStrdup("location"));
-        newConfig->location = ustring((const char*)location);
+        newConfig->location = string((const char*)location);
         xmlChar * failoverLocation = xmlGetProp(nodes->nodeTab[i], xmlCharStrdup("failoverlocation"));
-        newConfig->failoverLocation = ustring((const char*)failoverLocation);
+        newConfig->failoverLocation = string((const char*)failoverLocation);
         this->extensionConfigs.push_back(newConfig);
     }
     xmlXPathFreeObject(pluginsXpathObj);
@@ -115,7 +113,7 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
             xmlChar * seqNo = xmlGetProp(runtimeSettingsXpathObject->nodesetval->nodeTab[pluginIndex], xmlCharStrdup("seqNo"));
 
             string settingFilePath = string("/var/lib/waagent/Native_") +
-                ustring((const char*)pluginName) + "_" + ustring((const char*)pluginVersion) + "/config/" + ustring((const char*)seqNo) + ".settings";
+                string((const char*)pluginName) + "_" + string((const char*)pluginVersion) + "/config/" + string((const char*)seqNo) + ".settings";
 
             const char* runtimeSettingsText = (const char*)xmlNodeGetContent(runtimeSettingsXpathObject->nodesetval->nodeTab[0]);
             string *settingFileContent = new string(runtimeSettingsText);
