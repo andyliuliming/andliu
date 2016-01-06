@@ -13,14 +13,13 @@
 #pragma comment(lib, "Ws2_32.lib")
 #else
 #include <arpa/inet.h>
-#include <sys/socket.h>
-#include <ifaddrs.h>
-#include <sys/socket.h> // Needed for the socket functions
 #include <curl/curl.h>
-#include <string.h>
+#include <ifaddrs.h>
 #include <netdb.h>
-#include <sys/ioctl.h>
 #include <net/if.h>
+#include <sys/ioctl.h>
+#include <sys/socket.h> // Needed for the socket functions
+#include <string.h>
 #endif
 using namespace std;
 AzureEnvironment::AzureEnvironment()
