@@ -1,5 +1,6 @@
 #include <iostream>
 #include "AgentConfig.h"
+#include "Logger.h"
 using namespace std;
 
 void AgentConfig::LoadConfig()
@@ -20,7 +21,7 @@ void AgentConfig::LoadConfig()
     }
     catch (const FileIOException &fioex)
     {
-        std::cerr << "I/O error while reading file." << std::endl;
+        Logger::getInstance().Error("I/O error while reading file.");
     }
 #endif
 }
@@ -31,13 +32,15 @@ string * AgentConfig::getConfig(const char * propertyName)
 #ifdef _WIN32
     return result;
 #else
-    try {
-        string propertyValue =  this->config->lookup(propertyName);
+    try
+    {
+        string propertyValue = this->config->lookup(propertyName);
         result = new string(propertyValue);
     }
-    catch (SettingNotFoundException e) {
-        std::cerr << "SettingNotFoundException" << endl;
-    }
+    catch (SettingNotFoundException e)
+    {
+        Logger::getInstance().Error("SettingNotFoundException");
+}
     return result;
 #endif
 }

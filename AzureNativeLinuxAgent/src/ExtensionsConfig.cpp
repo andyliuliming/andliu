@@ -74,7 +74,7 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
             for (int j = 0; j < pluginNodes->nodeNr; j++)
             {
                 xmlXPathObjectPtr versionObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginNodes->nodeTab[j], BAD_CAST "./Version/text()");
-                ustring currentVersion = ustring((const char*)versionObjects->nodesetval->nodeTab[0]->content);
+                string currentVersion = string((const char*)versionObjects->nodesetval->nodeTab[0]->content);
 
                 xmlXPathFreeObject(versionObjects);
 
