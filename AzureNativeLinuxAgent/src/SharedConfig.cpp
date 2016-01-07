@@ -1,15 +1,15 @@
-
 #include "FileOperator.h"
+#include "Macros.h"
 #include "SharedConfig.h"
 
 SharedConfig::SharedConfig()
 {
-    configFilePath = new string("/var/lib/waagent/Native_SharedConfig.xml");
 }
 
 void SharedConfig::Parse(string * sharedConfigText)
 {
-    FileOperator::save_file(sharedConfigText, configFilePath);
+    string sharedConfigFilePath = SHARED_CONFIG_FILE_NAME;
+    FileOperator::save_file(sharedConfigText, &sharedConfigFilePath);
 }
 void SharedConfig::Process()
 {
@@ -18,8 +18,4 @@ void SharedConfig::Process()
 
 SharedConfig::~SharedConfig()
 {
-    if (configFilePath != NULL) {
-        delete configFilePath;
-        configFilePath = NULL;
-    }
 }

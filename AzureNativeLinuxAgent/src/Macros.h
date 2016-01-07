@@ -38,20 +38,24 @@
 #define RANDOM() rand()
 #endif
 
-#define WAAGENT_PID_FILE ("/var/run/native_waagent.pid")
-#define WAAGENT_NAME ("AzureNativeLinuxAgent")
-#define WAAGENT_VERSION ("2012-11-30")
-#define WAAGENT_SYSLOG_NAME ("AzureNativeLinuxAgent")
-#define WORKING_DIR ("/var/lib/waagent")
-#define VMM_CONFIG_FILE_NAME ("linuxosconfiguration.xml")
-#define SECURE_MOUNT_POINT ("/mnt/cdrom/secure")
-#define OVF_ENV_FILE_NAME ("ovf-env.xml")
-#define VMM_CONFIG_FILE_FULL_PATH ("/mnt/cdrom/secure/linuxosconfiguration.xml")
+#define CERTIFICATIONS_FILE_NAME ("Native_Certificates.xml")
+#define HOSTING_ENVIRONMENT_CONFIG ("Native_HostingEnvironmentConfig.xml")
+#define PROTECTED_SETTINGS_CERTIFICATE_FILE_NAME ("Native_Certificates.p7m")
+#define OVF_ENV_FILE_NAME ("Native_ovf-env.xml")
 #define OVF_ENV_FILE_FULL_PATH ("/mnt/cdrom/secure/ovf-env.xml")
-#define WAAGENT_LIB_BASE_DIR  ("/var/lib/waagent/")
+#define SECURE_MOUNT_POINT ("/mnt/cdrom/secure")
+#define SHARED_CONFIG_FILE_NAME ("Native_SharedConfig.xml");
 #define TRANSPORT_CERT_CIPHER_NAME ("DES_EDE3_CBC")
 #define TRANSPORT_CERT_PRIV ("Native_TransportPrivate.pem")
 #define TRANSPORT_CERT_PUB ("Native_TransportCert.pem")
+#define VMM_CONFIG_FILE_NAME ("linuxosconfiguration.xml")
+#define VMM_CONFIG_FILE_FULL_PATH ("/mnt/cdrom/secure/linuxosconfiguration.xml")
+#define WAAGENT_LIB_BASE_DIR  ("/var/lib/waagent/")
+#define WAAGENT_NAME ("AzureNativeLinuxAgent")
+#define WAAGENT_PID_FILE ("/var/run/native_waagent.pid")
+#define WAAGENT_SYSLOG_NAME ("AzureNativeLinuxAgent")
+#define WAAGENT_VERSION ("2012-11-30")
+#define WORKING_DIR ("/var/lib/waagent")
 
 typedef unsigned char       BYTE, *PBYTE;
 typedef unsigned char       UINT8, *PUINT8;
