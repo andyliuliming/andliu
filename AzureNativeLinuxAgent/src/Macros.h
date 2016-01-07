@@ -38,7 +38,8 @@
 #define RANDOM() rand()
 #endif
 
-#define CERTIFICATIONS_FILE_NAME ("Native_Certificates.xml")
+#define CERTIFICATIONS_XML_FILE_NAME ("Native_Certificates.xml")
+#define CERTIFICATIONS_FILE_NAME ("Native_Certificates.pem")
 #define HOSTING_ENVIRONMENT_CONFIG ("Native_HostingEnvironmentConfig.xml")
 #define PROTECTED_SETTINGS_CERTIFICATE_FILE_NAME ("Native_Certificates.p7m")
 #define OVF_ENV_FILE_NAME ("Native_ovf-env.xml")
