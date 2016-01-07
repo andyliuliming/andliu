@@ -15,9 +15,9 @@ void StatusReporter::ReportReady(AzureEnvironment *environment, GoalState * goal
         + goalState->roleInstanceId
         + "</InstanceId><Health><State>Ready</State></Health></Role></RoleInstanceList></Container></Health>";
     map<string, string> headers;
-    headers["x-ms-agent-name"] = "AzureNativeLinuxAgent";
+    headers["x-ms-agent-name"] = WAAGENT_NAME;
     headers["Content-Type"] = "text/xml; charset=utf-8";
-    headers["x-ms-version"] = "2012-11-30";
+    headers["x-ms-version"] = WAAGENT_VERSION;
     string apiAddress = "http://" + environment->wireServerAddress + "/machine?comp=health";
     HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str());
 }
@@ -34,9 +34,9 @@ void StatusReporter::ReportNotReady(AzureEnvironment *environment, GoalState * g
         + "<Details><SubStatus>" + status + "</SubStatus><Description>" + desc + "</Description></Details>"
         + "</Health></Role></RoleInstanceList></Container></Health>";
     map<string, string> headers;
-    headers["x-ms-agent-name"] = "AzureNativeLinuxAgent";
+    headers["x-ms-agent-name"] = WAAGENT_NAME;
     headers["Content-Type"] = "text/xml; charset=utf-8";
-    headers["x-ms-version"] = "2012-11-30";
+    headers["x-ms-version"] = WAAGENT_VERSION;
     string apiAddress = "http://" + environment->wireServerAddress + "/machine?comp=health";
     HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str());
 }
@@ -50,9 +50,9 @@ void StatusReporter::ReportRoleProperties(AzureEnvironment * environment, GoalSt
         + "<Properties><Property name=\"CertificateThumbprint\" value=\"" + thumbprint + "\" /></Properties>"
         + "</RoleInstance></RoleInstances></Container></RoleProperties>");
     map<string, string> headers;
-    headers["x-ms-agent-name"] = "AzureNativeLinuxAgent";
+    headers["x-ms-agent-name"] = WAAGENT_NAME;
     headers["Content-Type"] = "text/xml; charset=utf-8";
-    headers["x-ms-version"] = "2012-11-30";
+    headers["x-ms-version"] = WAAGENT_VERSION;
     string apiAddress = "http://" + environment->wireServerAddress + "/machine?comp=roleProperties";
     HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str());
 }

@@ -20,9 +20,9 @@ string * HttpRoutine::GetWithDefaultHeader(const char *url)
     // your windows code.
 #else
     map<string, string> headers;
-    headers["x-ms-agent-name"] = "AzureNativeLinuxAgent";
+    headers["x-ms-agent-name"] = WAAGENT_NAME;
     headers["Content-Type"] = "text/xml; charset=utf-8";
-    headers["x-ms-version"] = "2012-11-30";
+    headers["x-ms-version"] = WAAGENT_VERSION;
 
     buffer = HttpRoutine::Get(url, &headers);
 

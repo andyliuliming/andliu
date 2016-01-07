@@ -3,6 +3,8 @@
 #include "GoalState.h"
 #include "HostingEnvironmentConfig.h"
 #include "HttpRoutine.h"
+#include "Logger.h"
+#include "StringUtil.h"
 #include "XmlRoutine.h"
 #include <map>
 using namespace std;
@@ -17,6 +19,7 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
     string goalStateEndpoint = string("http://") + azureEnvironment->wireServerAddress + "/machine/?comp=goalstate";
 #ifdef _WIN32
 #else
+    //TODO: wrapper up a XML handling in our code
     /* set our custom set of headers */
     string * goalStateText = HttpRoutine::GetWithDefaultHeader(goalStateEndpoint.c_str());
     xmlDocPtr doc = xmlParseMemory(goalStateText->c_str(), goalStateText->size());
@@ -81,16 +84,31 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
     {
         this->certificates = new Certificates();
         string * certificationFileContent = FileOperator::get_content(TRANSPORT_CERT_PUB);
+        vector<string> splitResult;
+        string spliter = "\n";
+        StringUtil::string_split(*certificationFileContent, spliter, &splitResult);
+        string pureCertText;
+        for (int i = 0; i < splitResult.size(); i++)
+        {
+            if (splitResult[i].find("CERTIFICATE")== string::npos)
+            {
+                pureCertText += splitResult[i];
+            }
+        }
         //TODO get rid of the cert headers.
         map<string, string> headers;
-        headers["x-ms-agent-name"]= "AzureNativeLinuxAgent";
-        headers["x-ms-version"]= "2012-11-30";
-        headers["x-ms-cipher-name"] = "DES_EDE3_CBC";
-        headers["x-ms-guest-agent-public-x509-cert"] = *certificationFileContent;
+        headers["x-ms-agent-name"]= WAAGENT_NAME;
+        headers["x-ms-version"]= WAAGENT_VERSION;
+        headers["x-ms-cipher-name"] = TRANSPORT_CERT_CIPHER_NAME;
+        headers["x-ms-guest-agent-public-x509-cert"] = pureCertText;
         string * certificationsText = HttpRoutine::Get(this->certificatesUrl->c_str(),&headers);
-
+        
         // get certificates from the remote using the public cert.
         this->certificates->Parse(certificationsText);
+    }
+    else
+    {
+        Logger::getInstance().Warning("certificates url is null.");
     }
 #endif
 }

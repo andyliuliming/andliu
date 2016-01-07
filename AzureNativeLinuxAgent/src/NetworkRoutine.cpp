@@ -55,9 +55,8 @@ PUINT8 NetworkRoutine::GetMacAddress()
                 //TODO if the ifa_name is null?
                 if (!((ifaptr)->ifa_name[0] == 'l'&& (ifaptr)->ifa_name[1=='o']))
                 {
-                    Logger::getInstance().Verbose(" if name is not lo, so set the mac.");
+                    Logger::getInstance().Verbose("name is not lo, so set the mac.");
                     ptr = (unsigned char *)LLADDR((struct sockaddr_dl *)(ifaptr)->ifa_addr);
-                    //*ptr, *(ptr + 1), *(ptr + 2), *(ptr + 3), *(ptr + 4), *(ptr + 5)
                     MAC_ADDRESS[0] = *ptr;
                     MAC_ADDRESS[1] = *(ptr + 1);
                     MAC_ADDRESS[2] = *(ptr + 2);
@@ -138,7 +137,7 @@ PUINT8 NetworkRoutine::GetMacAddress()
             if (!(item->ifr_name[0] == 'l'
                 &&item->ifr_name[1] == 'o'))
             {
-                Logger::getInstance().Verbose(" if name is not lo, so set the mac.");
+                Logger::getInstance().Verbose("name is not lo, so set the mac.");
                 MAC_ADDRESS[0] = item->ifr_hwaddr.sa_data[0];
                 MAC_ADDRESS[1] = item->ifr_hwaddr.sa_data[1];
                 MAC_ADDRESS[2] = item->ifr_hwaddr.sa_data[2];

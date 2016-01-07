@@ -38,6 +38,10 @@
 #define RANDOM() rand()
 #endif
 
+#define WAAGENT_PID_FILE ("/var/run/native_waagent.pid")
+#define WAAGENT_NAME ("AzureNativeLinuxAgent")
+#define WAAGENT_VERSION ("2012-11-30")
+#define WAAGENT_SYSLOG_NAME ("AzureNativeLinuxAgent")
 #define WORKING_DIR ("/var/lib/waagent")
 #define VMM_CONFIG_FILE_NAME ("linuxosconfiguration.xml")
 #define SECURE_MOUNT_POINT ("/mnt/cdrom/secure")
@@ -45,8 +49,9 @@
 #define VMM_CONFIG_FILE_FULL_PATH ("/mnt/cdrom/secure/linuxosconfiguration.xml")
 #define OVF_ENV_FILE_FULL_PATH ("/mnt/cdrom/secure/ovf-env.xml")
 #define WAAGENT_LIB_BASE_DIR  ("/var/lib/waagent/")
-#define TRANSPORT_CERT_PRIV ("NativeTransportPrivate.pem")
-#define TRANSPORT_CERT_PUB ("NativeTransportCert.pem")
+#define TRANSPORT_CERT_CIPHER_NAME ("DES_EDE3_CBC")
+#define TRANSPORT_CERT_PRIV ("Native_TransportPrivate.pem")
+#define TRANSPORT_CERT_PUB ("Native_TransportCert.pem")
 
 typedef unsigned char       BYTE, *PBYTE;
 typedef unsigned char       UINT8, *PUINT8;

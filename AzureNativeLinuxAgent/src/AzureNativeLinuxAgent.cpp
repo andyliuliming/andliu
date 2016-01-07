@@ -5,6 +5,7 @@
 #include "CommandExecuter.h"
 #include "DeviceRoutine.h"
 #include "ExtensionsConfig.h"
+#include "FileOperator.h"
 #include "GoalState.h"
 #include "Logger.h"
 #include "Macros.h"
@@ -16,11 +17,24 @@
 #include <direct.h>
 #else
 #endif
+#include <string.h>
+#include <stdlib.h>
 using namespace std;
 
 int main(void)
 {
     int chdirResult = chdir(WORKING_DIR);
+
+#ifdef _WIN32
+#else
+    int currentPid = getpid();
+    char *pidBuff = new char[32];
+    sprintf(pidBuff, "%d", currentPid);
+    FileOperator::save_file(pidBuff, strlen(pidBuff), WAAGENT_PID_FILE);
+    delete pidBuff;
+    pidBuff = NULL;
+#endif
+
     // 1.  vmm start up
     Logger::getInstance().Log("starting vmm");
     VMMStartup *vmmStartUp = new VMMStartup();
@@ -34,8 +48,13 @@ int main(void)
     while (dhcpWorkResult != 0)
     {
         dhcpWorkResult = azureEnvironment->DoDhcpWork();
-        SLEEP(60 * 1000);
+        if (dhcpWorkResult != 0)
+        {
+            Logger::getInstance().Error("no azure environment found.");
+            SLEEP(120 * 1000);
+        }
     }
+    Logger::getInstance().Log("azure environment found.");
 
     // 3. check version
     int checkResult = azureEnvironment->CheckVersion();
@@ -49,7 +68,10 @@ int main(void)
     DeviceRoutine::setIsciTimeOut();
     // 5. GenerateTransportCert
     int transportCertGenerationResult = CertificationRoutine::GenerateTransportCertification();
-
+    if (transportCertGenerationResult != 0)
+    {
+        Logger::getInstance().Error("generate the certification failed");
+    }
 
     // 6. where true daemon
     Provisioner *provisioner = new Provisioner();
