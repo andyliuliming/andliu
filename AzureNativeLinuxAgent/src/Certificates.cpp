@@ -1,6 +1,7 @@
 #include "Certificates.h"
 #include "CommandExecuter.h"
 #include "FileOperator.h"
+#include "Logger.h"
 #include "Macros.h"
 #include "XmlRoutine.h"
 Certificates::Certificates()
@@ -29,10 +30,13 @@ void Certificates::Process()
     string certFileName = string(PROTECTED_SETTINGS_CERTIFICATE_FILE_NAME);
     FileOperator::save_file(&certFileContent, &certFileName);
 
-    string commandToExportCert = string("openssl cms -decrypt -in Certificates.p7m -inkey ") + TRANSPORT_CERT_PRIV + " -recip " + TRANSPORT_CERT_PUB + " | openssl pkcs12 -nodes -password pass: -out " + CERTIFICATIONS_FILE_NAME;
-    printf("%s", commandToExportCert.c_str());
-    // + "openssl cms -decrypt -in Certificates.p7m -inkey TransportPrivate.pem -recip TransportCert.pem | openssl pkcs12 -nodes -password pass: -out Certificates.pem"):
+    string commandToExportCert = string("openssl cms -decrypt -in ") + PROTECTED_SETTINGS_CERTIFICATE_FILE_NAME + " -inkey " + TRANSPORT_CERT_PRIV + " -recip " + TRANSPORT_CERT_PUB + " | openssl pkcs12 -nodes -password pass: -out " + CERTIFICATIONS_FILE_NAME;
 
+    CommandResultPtr decryptResult = CommandExecuter::RunGetOutput(commandToExportCert.c_str());
+    if (decryptResult->exitCode != 0)
+    {
+        Logger::getInstance().Error(decryptResult->output->c_str());
+    }
     xmlFreeDoc(doc);
 #endif
 }
