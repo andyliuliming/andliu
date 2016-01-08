@@ -34,6 +34,7 @@ string * DeviceRoutine::findRomDevice()
     
     return result;
 #elif defined BSD
+    //TODO just get the information from /proc/sys/dev/cdrom/info
     DIR           *d;
     struct dirent *dir;
     d = opendir("/dev");

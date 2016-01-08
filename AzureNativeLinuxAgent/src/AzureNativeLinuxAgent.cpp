@@ -19,12 +19,12 @@
 #endif
 #include <string.h>
 #include <stdlib.h>
+#include <regex>
 using namespace std;
 
 int main(void)
 {
     int chdirResult = chdir(WORKING_DIR);
-
 #ifdef _WIN32
 #else
     int currentPid = getpid();

@@ -5,6 +5,8 @@ class Certificates
 {
 private:
     string certificatesData;
+    bool isKeyEndLine(string & line);
+    bool isCertificateEndLine(string &line);
 public:
     Certificates(); 
     void Parse(string * certificatesText);
