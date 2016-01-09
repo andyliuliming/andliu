@@ -23,7 +23,7 @@ string * HttpRoutine::GetWithDefaultHeader(const char *url)
     return buffer;
 }
 
-int HttpRoutine::writer(char *data, size_t size, size_t nmemb, string *writerData)
+size_t HttpRoutine::writer(const char *data, size_t size, size_t nmemb, string *writerData)
 {
     if (writerData == NULL)
     {
@@ -38,13 +38,14 @@ size_t HttpRoutine::header_callback(char *buffer, size_t size, size_t nitems, vo
     return size;
 }
 
-int HttpRoutine::writerToFile(char * data, size_t size, size_t nmemb, FILE * file)
+size_t HttpRoutine::writerToFile(const char * data, size_t size, size_t nmemb, FILE * file)
 {
     if (data == NULL)
     {
         return 0;
     }
-    else {
+    else
+    {
         size_t written = fwrite(data, size, nmemb, file);
         return written;
     }
@@ -52,7 +53,8 @@ int HttpRoutine::writerToFile(char * data, size_t size, size_t nmemb, FILE * fil
 
 #ifdef _WIN32
 #else
-bool HttpRoutine::init_common(CURL *&conn, const char *url) {
+bool HttpRoutine::init_common(CURL *&conn, const char *url)
+{
     CURLcode code;
     conn = curl_easy_init();
     if (conn == NULL)

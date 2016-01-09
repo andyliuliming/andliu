@@ -1,4 +1,5 @@
 #pragma once
+#include "HttpResponse.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
@@ -15,8 +16,8 @@ private:
     //
     //  libcurl write callback function
     //
-    static int writer(char *data, size_t size, size_t nmemb, string *writerData);
-    static int writerToFile(char *data, size_t size, size_t nmemb, FILE *file);
+    static size_t writer(const char *data, size_t size, size_t nmemb, string *writerData);
+    static size_t writerToFile(const char *data, size_t size, size_t nmemb, FILE *file);
     static size_t header_callback(char *buffer, size_t size, size_t nitems, void *userdata);
 #ifdef _WIN32
 #else
@@ -25,7 +26,7 @@ private:
 #endif
 public:
     HttpRoutine();
-    static string * GetWithDefaultHeader(const char *url);
+    static string* GetWithDefaultHeader(const char *url);
     static string* Get(const char * url, map<string, string> * headers);
     static int GetToFile(const char * url, map<string, string> * headers, const char * filePath);
     static string* Post(const char * url, map<string, string> * headers, const char * data);
