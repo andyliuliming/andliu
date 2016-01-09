@@ -33,6 +33,11 @@ int HttpRoutine::writer(char *data, size_t size, size_t nmemb, string *writerDat
     return size * nmemb;
 }
 
+size_t HttpRoutine::header_callback(char *buffer, size_t size, size_t nitems, void *userdata)
+{
+    return size;
+}
+
 int HttpRoutine::writerToFile(char * data, size_t size, size_t nmemb, FILE * file)
 {
     if (data == NULL)
@@ -101,6 +106,7 @@ string* HttpRoutine::Get(const char * url, map<string, string> * headers)
     buffer = new string();
     bool initResult = init_common(conn, url);
 
+    //curl_easy_setopt(CURL *handle, CURLOPT_HEADERFUNCTION, header_callback);
     code = curl_easy_setopt(conn, CURLOPT_WRITEFUNCTION, writer);
     if (code != CURLE_OK)
     {

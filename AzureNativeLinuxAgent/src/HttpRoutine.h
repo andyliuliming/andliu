@@ -17,6 +17,7 @@ private:
     //
     static int writer(char *data, size_t size, size_t nmemb, string *writerData);
     static int writerToFile(char *data, size_t size, size_t nmemb, FILE *file);
+    static size_t header_callback(char *buffer, size_t size, size_t nitems, void *userdata);
 #ifdef _WIN32
 #else
     static char errorBuffer[CURL_ERROR_SIZE];
