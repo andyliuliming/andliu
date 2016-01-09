@@ -77,7 +77,7 @@ int main(void)
     // 6. where true daemon
     Provisioner *provisioner = new Provisioner();
     bool provisioned = provisioner->isProvisioned();
-    string incarnationReturned;
+    string* incarnationReturned;
     GoalState *goalState = NULL;
 
     StatusReporter *statusReporter = new StatusReporter();
@@ -86,18 +86,20 @@ int main(void)
     {
         // a. UpdateGoalState
         // b. process goal state
-        if (goalState == NULL 
-            || incarnationReturned.empty()
-            || goalState->incarnation != incarnationReturned)
+        if (goalState == NULL
+            || incarnationReturned == NULL
+            || goalState->incarnation != *incarnationReturned)
         {
+            Logger::getInstance().Verbose("start goal state");
             goalState = new GoalState();
             goalState->UpdateGoalState(azureEnvironment);
-
+            Logger::getInstance().Verbose("end update goal state");
             if (!provisioned)
             {
                 statusReporter->ReportNotReady(azureEnvironment, goalState, "Provisioning", "Starting");
+                Logger::getInstance().Verbose("report not ready end");
             }
-
+            
             if (!provisioned)
             {
                 Logger::getInstance().Log("doing provision.");
@@ -112,8 +114,9 @@ int main(void)
             {
                 type = new string("rsa");
             }
-
+            Logger::getInstance().Verbose("start process.");
             goalState->Process();
+            Logger::getInstance().Verbose("end process");
 
             string host_key_path = string("/etc/ssh/ssh_host_") + (*type) + "_key.pub";
             string commandToGetFingerPrint = string("ssh-keygen -lf ") + host_key_path;
@@ -133,9 +136,16 @@ int main(void)
         if (provisioned)
         {
             Logger::getInstance().Log("reporting ready");
+            if (incarnationReturned != NULL)
+            {
+                delete incarnationReturned;
+                incarnationReturned = NULL;
+            }
+            Logger::getInstance().Verbose("start do report ready");
             incarnationReturned = statusReporter->ReportReady(azureEnvironment, goalState);
+            Logger::getInstance().Verbose("end report ready");
         }
-
+        
         SLEEP(25 * 1000);
     }
 }

@@ -117,32 +117,24 @@ void Certificates::Process()
         vector<string> fingerPrintSplit;
         string fingerPrintSpliter = "=";
         StringUtil::string_split(thumbPrint, fingerPrintSpliter, &fingerPrintSplit);
-        //SHA1 Fingerprint=2B:67:2A:2A:46:0A:B9:36:D2:6D:D9:37:0B:92:78:D8:DE:79:B5:28
-        printf("finger print value is :%s\n", fingerPrintSplit[1].c_str());
         std::string::iterator end_pos = std::remove(fingerPrintSplit[1].begin(), fingerPrintSplit[1].end(), ':');
         fingerPrintSplit[1].erase(end_pos, fingerPrintSplit[1].end());
-        printf("finger print value after :%s\n", fingerPrintSplit[1].c_str());
         string getPubKey = string("openssl x509 -in ") + tempFileForPubCert + " -pubkey -noout";
         CommandResultPtr getPubKeyResult = CommandExecuter::RunGetOutput(getPubKey.c_str());
+        StringUtil::trim(fingerPrintSplit[1]); 
         string fileNameOfPubKey = fingerPrintSplit[1] + ".crt";
         FileOperator::move_file(tempFileForPubCert.c_str(), fileNameOfPubKey.c_str());
-        printf("pub 1 is :%s\n", getPubKeyResult->output->c_str());
-        StringUtil::trim(fingerPrintSplit[1]);
         thumpPrintPubkeyPair[*(getPubKeyResult->output)] = fingerPrintSplit[1];
     }
 
-    printf("privCertItem count is %d\n", privCertItems.size());
     for (int i = 0; i < privCertItems.size(); i++)
     {
-        printf("priv 1 is :%s\n", privCertItems[i].c_str());
         FileOperator::save_file(&privCertItems[i], &tempPriFileForCert);
         string getPubKey = "openssl rsa -in " + tempPriFileForCert + " -pubout 2> /dev/null";
         CommandResultPtr getPubKeyResult2 = CommandExecuter::RunGetOutput(getPubKey.c_str());
         //print the result 
-        printf("pub 2 is :%s\n", getPubKeyResult2->output->c_str());
-        printf("pub 2 end\n");
         string fileNameOfPrivateKey = thumpPrintPubkeyPair[*(getPubKeyResult2->output)] + ".prv";
-        Logger::getInstance().Log("move file from %s to %s", tempPriFileForCert.c_str(), fileNameOfPrivateKey.c_str());
+       // Logger::getInstance().Log("move file from %s to %s", tempPriFileForCert.c_str(), fileNameOfPrivateKey.c_str());
         FileOperator::move_file(tempPriFileForCert.c_str(), fileNameOfPrivateKey.c_str());
     }
 #endif

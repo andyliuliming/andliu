@@ -6,7 +6,7 @@ StatusReporter::StatusReporter()
 {
 }
 
-string StatusReporter::ReportReady(AzureEnvironment *environment, GoalState * goalState)
+string* StatusReporter::ReportReady(AzureEnvironment *environment, GoalState * goalState)
 {
     string healthReport = "<?xml version=\"1.0\" encoding=\"utf-8\"?><Health xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><GoalStateIncarnation>"
         + goalState->incarnation
@@ -23,7 +23,10 @@ string StatusReporter::ReportReady(AzureEnvironment *environment, GoalState * go
     HttpResponse * response = HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str());
     Logger::getInstance().Verbose("report ready status result %d", response->status_code);
     Logger::getInstance().Verbose("report ready status header %d", response->raw_header);
-    return response->headers->find("")->second;
+    delete response;
+    response = NULL;
+    string *incarnationValue = new string(response->headers->find("")->second);
+    return incarnationValue;
 }
 
 void StatusReporter::ReportNotReady(AzureEnvironment *environment, GoalState * goalState, const char*status, const char*desc)
