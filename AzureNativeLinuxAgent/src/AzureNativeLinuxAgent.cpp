@@ -119,6 +119,7 @@ int main(void)
         SLEEP(3 * 1000);
         if (provisioned)
         {
+            Logger::getInstance().Log("reporting ready");
             statusReporter->ReportReady(azureEnvironment, goalState);
         }
 

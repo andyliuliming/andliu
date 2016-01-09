@@ -21,8 +21,9 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
 #else
     //TODO: wrapper up a XML handling in our code
     /* set our custom set of headers */
-    HttpResponse * goalStateText = HttpRoutine::GetWithDefaultHeader(goalStateEndpoint.c_str());
-    xmlDocPtr doc = xmlParseMemory(goalStateText->body->c_str(), goalStateText->body->size());
+    HttpResponse * goalStateResponse = HttpRoutine::GetWithDefaultHeader(goalStateEndpoint.c_str());
+
+    xmlDocPtr doc = xmlParseMemory(goalStateResponse->body->c_str(), goalStateResponse->body->size());
     xmlNodePtr root = xmlDocGetRootElement(doc);
 
     const xmlChar* incarnationXpathExpr = xmlCharStrdup("/GoalState/Incarnation[1]/text()");
@@ -65,7 +66,7 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
 
     // saving the goal state file 
     string goalStageFileName = this->goalStageFilePrefix + incarnation + ".xml";
-    FileOperator::save_file(goalStateText->body, &goalStageFileName);
+    FileOperator::save_file(goalStateResponse->body, &goalStageFileName);
     // construct the instances
     HttpResponse * hostingEnvironmentConfigText = HttpRoutine::GetWithDefaultHeader(this->hostingEnvironmentConfigUrl.c_str());
     this->hostingEnvironmentConfig = new HostingEnvironmentConfig();

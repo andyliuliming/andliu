@@ -9,52 +9,52 @@
 using namespace std;
 void Logger::Verbose(const char * msg, ...)
 {
-    printf("verbose:%s", msg);
     va_list arguments;                     // A place to store the list of arguments
     double sum = 0;
     va_start(arguments, msg);           // Initializing arguments to store all values after num
 #ifdef _WIN32
 #else
     syslog(LOG_DEBUG, msg, arguments);
+    printf(msg, arguments);
 #endif
     va_end(arguments);                  // Cleans up the list
 }
 
 void Logger::Log(const char * msg, ...)
 {
-    printf("log:%s", msg);
     va_list arguments;                     // A place to store the list of arguments
     double sum = 0;
     va_start(arguments, msg);           // Initializing arguments to store all values after num
 #ifdef _WIN32
 #else
     syslog(LOG_INFO, msg, arguments);
+    printf(msg, arguments);
 #endif
     va_end(arguments);                  // Cleans up the list
 }
 
 void Logger::Warning(const char * msg, ...)
 {
-    printf("warning:%s", msg);
     va_list arguments;                     // A place to store the list of arguments
     double sum = 0;
     va_start(arguments, msg);           // Initializing arguments to store all values after num
 #ifdef _WIN32
 #else
     syslog(LOG_WARNING, msg, arguments);
+    printf(msg, arguments);
 #endif
     va_end(arguments);                  // Cleans up the list
 }
 
 void Logger::Error(const char * msg, ...)
 {
-    printf("error:%s", msg);
     va_list arguments;                     // A place to store the list of arguments
     double sum = 0;
     va_start(arguments, msg);           // Initializing arguments to store all values after num
 #ifdef _WIN32
 #else
     syslog(LOG_ERR, msg, arguments);
+    printf(msg, arguments);
 #endif
     va_end(arguments);                  // Cleans up the list
 }

@@ -33,9 +33,15 @@ size_t HttpRoutine::writer(const char *data, size_t size, size_t nmemb, string *
     return size * nmemb;
 }
 
-size_t HttpRoutine::header_callback(char *buffer, size_t size, size_t nitems, void *userdata)
+size_t HttpRoutine::header_callback(char *data, size_t size, size_t nitems, string *writerData)
 {
-    return size;
+    if (writerData == NULL)
+    {
+        return 0;
+    }
+    printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$%s", data);
+    writerData->append(data, size*nitems);
+    return size*nitems;
 }
 
 size_t HttpRoutine::writerToFile(const char * data, size_t size, size_t nmemb, FILE * file)
@@ -87,10 +93,11 @@ bool HttpRoutine::init_common(CURL *&conn, const char *url)
 
 HttpResponse* HttpRoutine::Get(const char * url, map<string, string> *headers)
 {
-    string *buffer = new string();
-
+    string *body_buffer = new string();
+    string *header_buffer = new string();
     HttpResponse *result = new HttpResponse();
-    result->body = buffer;
+    result->body = body_buffer;
+    result->raw_header = header_buffer;
 #ifdef _WIN32
 
     // your windows code.
@@ -110,10 +117,23 @@ HttpResponse* HttpRoutine::Get(const char * url, map<string, string> *headers)
     CURLcode code;
     //curl_global_init is not thread safe.
     curl_global_init(CURL_GLOBAL_DEFAULT);
-    
+
     bool initResult = init_common(conn, url);
 
-    //curl_easy_setopt(CURL *handle, CURLOPT_HEADERFUNCTION, header_callback);
+    code = curl_easy_setopt(conn, CURLOPT_HEADERFUNCTION, header_callback);
+    if (code != CURLE_OK)
+    {
+        Logger::getInstance().Error("Failed to set header callback [%s]\n", errorBuffer);
+        initResult = false;
+    }
+
+    code = curl_easy_setopt(conn, CURLOPT_WRITEHEADER, header_buffer);
+    if (code != CURLE_OK)
+    {
+        Logger::getInstance().Error("Failed to set header data [%s]\n", errorBuffer);
+        initResult = false;
+    }
+
     code = curl_easy_setopt(conn, CURLOPT_WRITEFUNCTION, writer);
     if (code != CURLE_OK)
     {
@@ -121,14 +141,15 @@ HttpResponse* HttpRoutine::Get(const char * url, map<string, string> *headers)
         initResult = false;
     }
 
-    code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, &buffer);
+    code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, body_buffer);
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to set write data [%s]\n", errorBuffer);
         initResult = false;
     }
 
-    if (chunk != NULL) {
+    if (chunk != NULL)
+    {
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
     }
 
@@ -153,7 +174,8 @@ int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, cons
 #else
     FILE *fp;
     struct curl_slist *chunk = NULL;
-    if (headers != NULL) {
+    if (headers != NULL)
+    {
         /* Add a custom header */
         for (std::map<string, string>::iterator it = headers->begin(); it != headers->end(); ++it)
         {
@@ -208,14 +230,19 @@ int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, cons
 
 }
 
-string * HttpRoutine::Post(const char * url, map<string, string> * headers, const char * data)
+HttpResponse * HttpRoutine::Post(const char * url, map<string, string> * headers, const char * data)
 {
-    string *buffer = NULL;
+    string *body_buffer = new string();
+    string *header_buffer = new string();
+    HttpResponse * response = new HttpResponse();
+    response->body = body_buffer;
+    response->raw_header = header_buffer;
 #ifdef _WIN32
     // your windows code.
 #else
     struct curl_slist *chunk = NULL;
-    if (headers != NULL) {
+    if (headers != NULL)
+    {
         /* Add a custom header */
         for (std::map<string, string>::iterator it = headers->begin(); it != headers->end(); ++it)
         {
@@ -227,8 +254,22 @@ string * HttpRoutine::Post(const char * url, map<string, string> * headers, cons
     CURLcode code;
     //curl_global_init is not thread safe.
     curl_global_init(CURL_GLOBAL_DEFAULT);
-    buffer = new string();
+    body_buffer = new string();
     bool initResult = init_common(conn, url);
+
+    code = curl_easy_setopt(conn, CURLOPT_HEADERFUNCTION, header_callback);
+    if (code != CURLE_OK)
+    {
+        Logger::getInstance().Error("Failed to set header callback [%s]\n", errorBuffer);
+        initResult = false;
+    }
+
+    code = curl_easy_setopt(conn, CURLOPT_WRITEHEADER, header_buffer);
+    if (code != CURLE_OK)
+    {
+        Logger::getInstance().Error("Failed to set header data [%s]\n", errorBuffer);
+        initResult = false;
+    }
 
     code = curl_easy_setopt(conn, CURLOPT_WRITEFUNCTION, writer);
     if (code != CURLE_OK)
@@ -237,7 +278,7 @@ string * HttpRoutine::Post(const char * url, map<string, string> * headers, cons
         initResult = false;
     }
 
-    code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, buffer);
+    code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, body_buffer);
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to set write data [%s]\n", errorBuffer);
@@ -248,18 +289,20 @@ string * HttpRoutine::Post(const char * url, map<string, string> * headers, cons
     {
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
     }
+
     curl_easy_setopt(conn, CURLOPT_POSTFIELDS, data);
+
     code = curl_easy_perform(conn);
 
-    curl_slist_free_all(chunk);
     curl_easy_cleanup(conn);
+    curl_slist_free_all(chunk);
 
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to post '%s' [%s]\n", url, errorBuffer);
     }
 #endif
-    return buffer;
+    return response;
 }
 
 HttpRoutine::~HttpRoutine()

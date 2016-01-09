@@ -1,4 +1,5 @@
 #include "HttpRoutine.h"
+#include "Logger.h"
 #include "StatusReporter.h"
 
 StatusReporter::StatusReporter()
@@ -19,7 +20,9 @@ void StatusReporter::ReportReady(AzureEnvironment *environment, GoalState * goal
     headers["Content-Type"] = "text/xml; charset=utf-8";
     headers["x-ms-version"] = WAAGENT_VERSION;
     string apiAddress = "http://" + environment->wireServerAddress + "/machine?comp=health";
-    HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str());
+    HttpResponse * response = HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str());
+    Logger::getInstance().Verbose("report ready status result %d", response->status_code);
+    Logger::getInstance().Verbose("report ready status header %d", response->raw_header);
 }
 
 void StatusReporter::ReportNotReady(AzureEnvironment *environment, GoalState * goalState, const char*status, const char*desc)
