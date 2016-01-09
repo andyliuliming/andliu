@@ -15,9 +15,7 @@ CommandExecuter::CommandExecuter()
 
 CommandResultPtr CommandExecuter::RunGetOutput(const char* cmd) {
     CommandResultPtr commandResult = make_shared<CommandResult>();
-    //CommandResult *commandResult = new CommandResult();
     FILE* pipe = POPEN(cmd, "r");
-    //std::shared_ptr<FILE> pipe(POPEN(cmd, "r"), PCLOSE);
     if (!pipe)
     {
         commandResult.get()->exitCode = 1;

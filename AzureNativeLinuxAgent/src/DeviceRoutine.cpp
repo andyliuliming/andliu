@@ -18,9 +18,7 @@ DeviceRoutine::DeviceRoutine()
 void DeviceRoutine::setIsciTimeOut()
 {
     AgentConfig::getInstance().LoadConfig();
-
     string *timeOut = AgentConfig::getInstance().getConfig("OS_RootDeviceScsiTimeout");
-
     Logger::getInstance().Verbose("timeout set to:");
     Logger::getInstance().Verbose(timeOut->c_str());
     delete timeOut;
@@ -31,7 +29,6 @@ string * DeviceRoutine::findRomDevice()
 {
     string *result = NULL;
 #ifdef _WIN32
-    
     return result;
 #elif defined BSD
     //TODO just get the information from /proc/sys/dev/cdrom/info
