@@ -191,6 +191,7 @@
     <ClCompile Include="src\GoalState.cpp" />
     <ClCompile Include="src\HandlerManifest.cpp" />
     <ClCompile Include="src\HostingEnvironmentConfig.cpp" />
+    <ClCompile Include="src\HttpResponse.cpp" />
     <ClCompile Include="src\HttpRoutine.cpp" />
     <ClCompile Include="src\JsonRoutine.cpp" />
     <ClCompile Include="src\Logger.cpp" />

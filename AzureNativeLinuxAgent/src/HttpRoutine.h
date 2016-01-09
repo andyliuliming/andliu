@@ -18,7 +18,7 @@ private:
     //
     static size_t writer(const char *data, size_t size, size_t nmemb, string *writerData);
     static size_t writerToFile(const char *data, size_t size, size_t nmemb, FILE *file);
-    static size_t header_callback(char *buffer, size_t size, size_t nitems, string *writerData);
+    static size_t header_callback(const char *buffer, size_t size, size_t nitems, HttpResponse *writerData);
 #ifdef _WIN32
 #else
     static char errorBuffer[CURL_ERROR_SIZE];

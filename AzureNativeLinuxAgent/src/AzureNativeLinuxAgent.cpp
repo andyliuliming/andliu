@@ -77,53 +77,64 @@ int main(void)
     // 6. where true daemon
     Provisioner *provisioner = new Provisioner();
     bool provisioned = provisioner->isProvisioned();
+    string incarnationReturned;
+    GoalState *goalState = NULL;
+
+    StatusReporter *statusReporter = new StatusReporter();
+
     while (true)
     {
         // a. UpdateGoalState
         // b. process goal state
-
-        GoalState *goalState = new GoalState();
-        goalState->UpdateGoalState(azureEnvironment);
-
-        StatusReporter *statusReporter = new StatusReporter();
-
-        if (!provisioned)
+        if (goalState == NULL 
+            || incarnationReturned.empty()
+            || goalState->incarnation != incarnationReturned)
         {
-            statusReporter->ReportNotReady(azureEnvironment, goalState, "Provisioning", "Starting");
-        }
+            goalState = new GoalState();
+            goalState->UpdateGoalState(azureEnvironment);
 
-        if (!provisioned)
+            if (!provisioned)
+            {
+                statusReporter->ReportNotReady(azureEnvironment, goalState, "Provisioning", "Starting");
+            }
+
+            if (!provisioned)
+            {
+                Logger::getInstance().Log("doing provision.");
+                provisioner->Prosess();
+                provisioned = true;
+            }
+
+            AgentConfig::getInstance().LoadConfig();
+
+            string *type = AgentConfig::getInstance().getConfig("Provisioning_SshHostKeyPairType");
+            if (type == NULL)
+            {
+                type = new string("rsa");
+            }
+
+            goalState->Process();
+
+            string host_key_path = string("/etc/ssh/ssh_host_") + (*type) + "_key.pub";
+            string commandToGetFingerPrint = string("ssh-keygen -lf ") + host_key_path;
+            shared_ptr<CommandResult> fingerprintResult = CommandExecuter::RunGetOutput(commandToGetFingerPrint.c_str());
+            vector<string> splitResult;
+            string spliter = " ";
+            StringUtil::string_split(*(fingerprintResult->output), spliter, &splitResult);
+            statusReporter->ReportRoleProperties(azureEnvironment, goalState, splitResult[1].c_str());
+        }
+        else
         {
-            Logger::getInstance().Log("doing provision.");
-            provisioner->Prosess();
-            provisioned = true;
+            Logger::getInstance().Verbose("the goal status is null or the incarnationReturned is empty, or the incarnation is same");
         }
-
-        AgentConfig::getInstance().LoadConfig();
-
-        string *type = AgentConfig::getInstance().getConfig("Provisioning_SshHostKeyPairType");
-        if (type == NULL)
-        {
-            type = new string("rsa");
-        }
-
-        string host_key_path = string("/etc/ssh/ssh_host_") + (*type) + "_key.pub";
-        string commandToGetFingerPrint = string("ssh-keygen -lf ") + host_key_path;
-        shared_ptr<CommandResult> fingerprintResult = CommandExecuter::RunGetOutput(commandToGetFingerPrint.c_str());
-        vector<string> splitResult;
-        string spliter = " ";
-        StringUtil::string_split(*(fingerprintResult->output), spliter, &splitResult);
-        statusReporter->ReportRoleProperties(azureEnvironment, goalState, splitResult[1].c_str());
 
         int sleepToReduceAccessDenied = 3;
         SLEEP(3 * 1000);
         if (provisioned)
         {
             Logger::getInstance().Log("reporting ready");
-            statusReporter->ReportReady(azureEnvironment, goalState);
+            incarnationReturned = statusReporter->ReportReady(azureEnvironment, goalState);
         }
-
-        goalState->Process();
 
         SLEEP(25 * 1000);
     }

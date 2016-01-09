@@ -33,14 +33,16 @@ size_t HttpRoutine::writer(const char *data, size_t size, size_t nmemb, string *
     return size * nmemb;
 }
 
-size_t HttpRoutine::header_callback(char *data, size_t size, size_t nitems, string *writerData)
+size_t HttpRoutine::header_callback(const char *data, size_t size, size_t nitems, HttpResponse *writerData)
 {
     if (writerData == NULL)
     {
         return 0;
     }
-    printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$%s", data);
-    writerData->append(data, size*nitems);
+    if (data != NULL)
+    {
+        writerData->addHeader(data);
+    }
     return size*nitems;
 }
 
@@ -94,10 +96,8 @@ bool HttpRoutine::init_common(CURL *&conn, const char *url)
 HttpResponse* HttpRoutine::Get(const char * url, map<string, string> *headers)
 {
     string *body_buffer = new string();
-    string *header_buffer = new string();
-    HttpResponse *result = new HttpResponse();
-    result->body = body_buffer;
-    result->raw_header = header_buffer;
+    HttpResponse *response = new HttpResponse();
+    response->body = body_buffer;
 #ifdef _WIN32
 
     // your windows code.
@@ -127,7 +127,7 @@ HttpResponse* HttpRoutine::Get(const char * url, map<string, string> *headers)
         initResult = false;
     }
 
-    code = curl_easy_setopt(conn, CURLOPT_WRITEHEADER, header_buffer);
+    code = curl_easy_setopt(conn, CURLOPT_WRITEHEADER, response);
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to set header data [%s]\n", errorBuffer);
@@ -163,7 +163,7 @@ HttpResponse* HttpRoutine::Get(const char * url, map<string, string> *headers)
         Logger::getInstance().Error("Failed to get '%s' [%s]\n", url, errorBuffer);
     }
 #endif
-    return result;
+    return response;
 }
 
 int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, const char * filePath)
@@ -264,7 +264,7 @@ HttpResponse * HttpRoutine::Post(const char * url, map<string, string> * headers
         initResult = false;
     }
 
-    code = curl_easy_setopt(conn, CURLOPT_WRITEHEADER, header_buffer);
+    code = curl_easy_setopt(conn, CURLOPT_WRITEHEADER, response);
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to set header data [%s]\n", errorBuffer);
