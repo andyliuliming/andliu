@@ -4,6 +4,7 @@
 #include "HandlerManifest.h"
 #include "HttpRoutine.h"
 #include "JsonRoutine.h"
+#include "Logger.h"
 #include "Macros.h"
 #include "XmlRoutine.h"
 #ifdef _WIN32
@@ -52,7 +53,6 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
     for (int i = 0; i < this->extensionConfigs.size(); i++)
     {
         // get the manifest, get the bundle zip file location, download it, extract it.
-        
         HttpResponse *response  = HttpRoutine::Get(this->extensionConfigs[i]->location.c_str(), NULL);
         if (response == NULL)
         {
@@ -61,35 +61,30 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
 
         if (response != NULL)
         {
+            // download the extension bundle zip.
             string filepath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + this->extensionConfigs[i]->name + "." + incarnationStr + ".manifest";
             FileOperator::save_file(response->body, &filepath);
             xmlDocPtr manifestXmlDoc = xmlParseMemory(response->body->c_str(), response->body->size());
-
             const xmlChar* pluginXpathManifestExpr = xmlCharStrdup("/PluginVersionManifest/Plugins/Plugin");
             xmlXPathObjectPtr xpathManifestObj = XmlRoutine::getNodes(manifestXmlDoc, pluginXpathManifestExpr, NULL);
-
             delete pluginXpathManifestExpr;
-            xmlNodeSetPtr pluginNodes = xpathManifestObj->nodesetval;
-            for (int j = 0; j < pluginNodes->nodeNr; j++)
+            xmlNodeSetPtr pluginManifestNodes = xpathManifestObj->nodesetval;
+            for (int j = 0; j < pluginManifestNodes->nodeNr; j++)
             {
-                xmlXPathObjectPtr versionObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginNodes->nodeTab[j], BAD_CAST "./Version/text()");
+                xmlXPathObjectPtr versionObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], BAD_CAST "./Version/text()");
                 string currentVersion = string((const char*)versionObjects->nodesetval->nodeTab[0]->content);
-
                 xmlXPathFreeObject(versionObjects);
-
                 if (currentVersion == extensionConfigs[i]->version)
                 {
                     // downloading the bundles
-                    xmlXPathObjectPtr uriObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginNodes->nodeTab[j], BAD_CAST "./Uris/Uri/text()");
+                    xmlXPathObjectPtr uriObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], BAD_CAST "./Uris/Uri/text()");
                     string bundleFilePath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + extensionConfigs[i]->name + "_" + extensionConfigs[i]->version + ".zip";
-                    //// get the uri
                     HttpRoutine::GetToFile((const char*)(uriObjects->nodesetval->nodeTab[0]->content), NULL, bundleFilePath.c_str());
-
-                    string bundleZipExtractDirectory = string(WAAGENT_LIB_BASE_DIR) + "Native_" + extensionConfigs[i]->name + "_" + extensionConfigs[i]->version + "/";
-
-                    FileOperator::make_dir(bundleZipExtractDirectory.c_str());
-
-                    ZipRoutine::UnZipToDirectory(bundleFilePath.c_str(), bundleZipExtractDirectory.c_str());
+                    string *extensionPath = FileOperator::get_extension_path(extensionConfigs[i]->name.c_str(), extensionConfigs[i]->version.c_str());
+                    FileOperator::make_dir(extensionPath->c_str());
+                    ZipRoutine::UnZipToDirectory(bundleFilePath.c_str(), extensionPath->c_str());
+                    delete extensionPath;
+                    extensionPath = NULL;
                     break;
                 }
             }
@@ -98,6 +93,7 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
         else
         {
             //TODO: error handling.
+            Logger::getInstance().Error("failed to get the extensions manifest");
         }
 
         const xmlChar* pluginSettingsXpathExpr = xmlCharStrdup("/Extensions/PluginSettings/Plugin");
@@ -108,26 +104,14 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
         {
             xmlChar * pluginName = xmlGetProp(pluginSettingsNodeSet->nodeTab[pluginIndex], xmlCharStrdup("name"));
             xmlChar * pluginVersion = xmlGetProp(pluginSettingsNodeSet->nodeTab[pluginIndex], xmlCharStrdup("version"));
-            xmlXPathObjectPtr runtimeSettingsXpathObject = XmlRoutine::findNodeByRelativeXpath(extensionsConfigDoc,
-                pluginSettingsNodeSet->nodeTab[pluginIndex], BAD_CAST "./RuntimeSettings");
-
+            xmlXPathObjectPtr runtimeSettingsXpathObject = XmlRoutine::findNodeByRelativeXpath(extensionsConfigDoc, pluginSettingsNodeSet->nodeTab[pluginIndex], BAD_CAST "./RuntimeSettings");
             xmlChar * seqNo = xmlGetProp(runtimeSettingsXpathObject->nodesetval->nodeTab[pluginIndex], xmlCharStrdup("seqNo"));
-
-            string settingFilePath = string("/var/lib/waagent/Native_") +
-                string((const char*)pluginName) + "_" + string((const char*)pluginVersion) + "/config/" + string((const char*)seqNo) + ".settings";
-
+            string *extensionPath = FileOperator::get_extension_path((const char*)pluginName, (const char*)pluginVersion);
+            string settingFilePath = *extensionPath + "config/" + string((const char*)seqNo) + ".settings";
+            //TODO check delete this.
             const char* runtimeSettingsText = (const char*)xmlNodeGetContent(runtimeSettingsXpathObject->nodesetval->nodeTab[0]);
             string *settingFileContent = new string(runtimeSettingsText);
             FileOperator::save_file(settingFileContent, &settingFilePath);
-
-            string bundleZipExtractDirectory = string(WAAGENT_LIB_BASE_DIR) + "Native_" + extensionConfigs[i]->name + "_" + extensionConfigs[i]->version + "/";
-
-            string manifestFilePath = bundleZipExtractDirectory + "/HandlerManifest.json";
-
-            HandlerManifest * handlerManifest = JsonRoutine::ParseHandlerManifest(manifestFilePath.c_str());
-            CommandResultPtr installResult = CommandExecuter::RunGetOutput(handlerManifest->installCommand);
-            CommandResultPtr enableResult = CommandExecuter::RunGetOutput(handlerManifest->enableCommand);
-            //handle it 
         }
     }
     xmlFreeDoc(extensionsConfigDoc);
@@ -138,7 +122,19 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
 
 void ExtensionsConfig::Process()
 {
-
+    for (int i = 0; i < this->extensionConfigs.size(); i++)
+    {
+        //handle it 
+        string * extensionPath = FileOperator::get_extension_path(this->extensionConfigs[i]->name.c_str(),
+            this->extensionConfigs[i]->version.c_str());
+        string manifestFilePath = *extensionPath + "/HandlerManifest.json";
+        delete extensionPath;
+        extensionPath = NULL;
+        HandlerManifest * handlerManifest = JsonRoutine::ParseHandlerManifest(manifestFilePath.c_str());
+        CommandResultPtr installResult = CommandExecuter::RunGetOutput(handlerManifest->installCommand);
+        CommandResultPtr enableResult = CommandExecuter::RunGetOutput(handlerManifest->enableCommand);
+    }
+    // start the extensions.
 }
 
 ExtensionsConfig::~ExtensionsConfig()

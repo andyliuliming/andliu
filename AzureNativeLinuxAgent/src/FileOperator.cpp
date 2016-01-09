@@ -2,6 +2,7 @@
 #include <streambuf>
 
 #include "FileOperator.h"
+#include "Macros.h"
 using namespace std;
 
 FileOperator::FileOperator()
@@ -47,6 +48,13 @@ string * FileOperator::get_content(const char * fileName)
     ifstream t(fileName);
     string *str = new string((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
     return str;
+}
+
+string * FileOperator::get_extension_path(const char* pluginName, const char* pluginVersion)
+{
+    string *extension_path = new string();
+    *extension_path = string(WAAGENT_LIB_BASE_DIR) + "/Native_" + pluginName + "_" + string(pluginVersion) + "/";
+    return extension_path;
 }
 
 
