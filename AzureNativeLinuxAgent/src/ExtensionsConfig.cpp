@@ -52,17 +52,18 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
     for (int i = 0; i < this->extensionConfigs.size(); i++)
     {
         // get the manifest, get the bundle zip file location, download it, extract it.
-        string * manifestXmlContent = HttpRoutine::Get(this->extensionConfigs[i]->location.c_str(), NULL);
-        if (manifestXmlContent == NULL)
+        
+        HttpResponse *response  = HttpRoutine::Get(this->extensionConfigs[i]->location.c_str(), NULL);
+        if (response == NULL)
         {
-            manifestXmlContent = HttpRoutine::Get(this->extensionConfigs[i]->failoverLocation.c_str(), NULL);
+            response = HttpRoutine::Get(this->extensionConfigs[i]->failoverLocation.c_str(), NULL);
         }
 
-        if (manifestXmlContent != NULL)
+        if (response != NULL)
         {
             string filepath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + this->extensionConfigs[i]->name + "." + incarnationStr + ".manifest";
-            FileOperator::save_file(manifestXmlContent, &filepath);
-            xmlDocPtr manifestXmlDoc = xmlParseMemory(manifestXmlContent->c_str(), manifestXmlContent->size());
+            FileOperator::save_file(response->body, &filepath);
+            xmlDocPtr manifestXmlDoc = xmlParseMemory(response->body->c_str(), response->body->size());
 
             const xmlChar* pluginXpathManifestExpr = xmlCharStrdup("/PluginVersionManifest/Plugins/Plugin");
             xmlXPathObjectPtr xpathManifestObj = XmlRoutine::getNodes(manifestXmlDoc, pluginXpathManifestExpr, NULL);

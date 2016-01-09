@@ -1,9 +1,9 @@
 #pragma once
 #include "HttpResponse.h"
+#include <map>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
-#include <map>
 #ifdef _WIN32
 #else
 #include <curl/curl.h>
@@ -26,8 +26,8 @@ private:
 #endif
 public:
     HttpRoutine();
-    static string* GetWithDefaultHeader(const char *url);
-    static string* Get(const char * url, map<string, string> * headers);
+    static HttpResponse* GetWithDefaultHeader(const char *url);
+    static HttpResponse* Get(const char * url, map<string, string> * headers);
     static int GetToFile(const char * url, map<string, string> * headers, const char * filePath);
     static string* Post(const char * url, map<string, string> * headers, const char * data);
 #ifdef _WIN32

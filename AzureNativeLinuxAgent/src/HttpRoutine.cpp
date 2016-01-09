@@ -12,15 +12,15 @@ HttpRoutine::HttpRoutine()
 {
 }
 
-string * HttpRoutine::GetWithDefaultHeader(const char *url)
+HttpResponse * HttpRoutine::GetWithDefaultHeader(const char *url)
 {
     string *buffer = NULL;
     map<string, string> headers;
     headers["x-ms-agent-name"] = WAAGENT_NAME;
     headers["Content-Type"] = "text/xml; charset=utf-8";
     headers["x-ms-version"] = WAAGENT_VERSION;
-    buffer = HttpRoutine::Get(url, &headers);
-    return buffer;
+    HttpResponse *response = HttpRoutine::Get(url, &headers);
+    return response;
 }
 
 size_t HttpRoutine::writer(const char *data, size_t size, size_t nmemb, string *writerData)
@@ -85,14 +85,19 @@ bool HttpRoutine::init_common(CURL *&conn, const char *url)
 #endif
 
 
-string* HttpRoutine::Get(const char * url, map<string, string> * headers)
+HttpResponse* HttpRoutine::Get(const char * url, map<string, string> *headers)
 {
-    string *buffer = NULL;
+    string *buffer = new string();
+
+    HttpResponse *result = new HttpResponse();
+    result->body = buffer;
 #ifdef _WIN32
+
     // your windows code.
 #else
     struct curl_slist *chunk = NULL;
-    if (headers != NULL) {
+    if (headers != NULL)
+    {
         /* Add a custom header */
         for (std::map<string, string>::iterator it = headers->begin(); it != headers->end(); ++it)
         {
@@ -105,7 +110,7 @@ string* HttpRoutine::Get(const char * url, map<string, string> * headers)
     CURLcode code;
     //curl_global_init is not thread safe.
     curl_global_init(CURL_GLOBAL_DEFAULT);
-    buffer = new string();
+    
     bool initResult = init_common(conn, url);
 
     //curl_easy_setopt(CURL *handle, CURLOPT_HEADERFUNCTION, header_callback);
@@ -116,7 +121,7 @@ string* HttpRoutine::Get(const char * url, map<string, string> * headers)
         initResult = false;
     }
 
-    code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, buffer);
+    code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, &buffer);
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to set write data [%s]\n", errorBuffer);
@@ -126,6 +131,7 @@ string* HttpRoutine::Get(const char * url, map<string, string> * headers)
     if (chunk != NULL) {
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
     }
+
     code = curl_easy_perform(conn);
 
     curl_easy_cleanup(conn);
@@ -136,7 +142,7 @@ string* HttpRoutine::Get(const char * url, map<string, string> * headers)
         Logger::getInstance().Error("Failed to get '%s' [%s]\n", url, errorBuffer);
     }
 #endif
-    return buffer;
+    return result;
 }
 
 int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, const char * filePath)

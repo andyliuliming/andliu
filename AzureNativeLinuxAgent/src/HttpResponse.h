@@ -1,14 +1,14 @@
 #pragma once
-#include <string>
 #include <map>
 #include <memory>
+#include <string>
 using namespace std;
 
 class HttpResponse
 {
 public:
     int status_code;
-    map<string, string> headers;
+    map<string, string> *headers;
     string *body;
     HttpResponse();
 

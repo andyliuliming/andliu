@@ -21,8 +21,8 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
 #else
     //TODO: wrapper up a XML handling in our code
     /* set our custom set of headers */
-    string * goalStateText = HttpRoutine::GetWithDefaultHeader(goalStateEndpoint.c_str());
-    xmlDocPtr doc = xmlParseMemory(goalStateText->c_str(), goalStateText->size());
+    HttpResponse * goalStateText = HttpRoutine::GetWithDefaultHeader(goalStateEndpoint.c_str());
+    xmlDocPtr doc = xmlParseMemory(goalStateText->body->c_str(), goalStateText->body->size());
     xmlNodePtr root = xmlDocGetRootElement(doc);
 
     const xmlChar* incarnationXpathExpr = xmlCharStrdup("/GoalState/Incarnation[1]/text()");
@@ -65,19 +65,19 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
 
     // saving the goal state file 
     string goalStageFileName = this->goalStageFilePrefix + incarnation + ".xml";
-    FileOperator::save_file(goalStateText, &goalStageFileName);
+    FileOperator::save_file(goalStateText->body, &goalStageFileName);
     // construct the instances
-    string * hostingEnvironmentConfigText = HttpRoutine::GetWithDefaultHeader(this->hostingEnvironmentConfigUrl.c_str());
+    HttpResponse * hostingEnvironmentConfigText = HttpRoutine::GetWithDefaultHeader(this->hostingEnvironmentConfigUrl.c_str());
     this->hostingEnvironmentConfig = new HostingEnvironmentConfig();
-    this->hostingEnvironmentConfig->Parse(hostingEnvironmentConfigText);
+    this->hostingEnvironmentConfig->Parse(hostingEnvironmentConfigText->body);
 
-    string * sharedConfigText = HttpRoutine::GetWithDefaultHeader(this->sharedConfigUrl.c_str());
+    HttpResponse * sharedConfigText = HttpRoutine::GetWithDefaultHeader(this->sharedConfigUrl.c_str());
     this->sharedConfig = new SharedConfig();
-    this->sharedConfig->Parse(sharedConfigText);
+    this->sharedConfig->Parse(sharedConfigText->body);
 
-    string * extentionsConfigText = HttpRoutine::GetWithDefaultHeader(this->extensionsConfigUrl.c_str());
+    HttpResponse * extentionsConfigText = HttpRoutine::GetWithDefaultHeader(this->extensionsConfigUrl.c_str());
     this->extensionsConfig = new ExtensionsConfig();
-    this->extensionsConfig->Parse(extentionsConfigText);
+    this->extensionsConfig->Parse(extentionsConfigText->body);
 
     // get the certificates from the server.
     if (this->certificatesUrl != NULL)
@@ -101,10 +101,10 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
         headers["x-ms-version"]= WAAGENT_VERSION;
         headers["x-ms-cipher-name"] = TRANSPORT_CERT_CIPHER_NAME;
         headers["x-ms-guest-agent-public-x509-cert"] = pureCertText;
-        string * certificationsText = HttpRoutine::Get(this->certificatesUrl->c_str(),&headers);
-        
+        HttpResponse * certificationsText = HttpRoutine::Get(this->certificatesUrl->c_str(),&headers);
+
         // get certificates from the remote using the public cert.
-        this->certificates->Parse(certificationsText);
+        this->certificates->Parse(certificationsText->body);
     }
     else
     {
