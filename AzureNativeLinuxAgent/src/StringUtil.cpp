@@ -24,6 +24,21 @@ void StringUtil::string_split(string& s, string& delim, vector< string >* ret)
     }
 }
 
+string& StringUtil::ltrim(string &s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(isspace))));
+    return s;
+}
+
+// trim from end
+string& StringUtil::rtrim(string &s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(isspace))).base(), s.end());
+    return s;
+}
+
+// trim from both ends
+string& StringUtil::trim(string &s) {
+    return ltrim(rtrim(s));
+}
 // trim from both endsstatic string &trim(const string &s, const string &ws);
 string StringUtil::trim(const string &s, const string &ws)
 {

@@ -14,6 +14,11 @@ bool FileOperator::file_exists(const char* name)
     return (stat(name, &buffer) == 0);
 }
 
+bool FileOperator::move_file(const char * from, const char *to)
+{
+    return rename(from, to);
+}
+
 int FileOperator::make_dir(const char* dir_path)
 {
     string mkdirCmd = string("mkdir -p ") + dir_path;
@@ -29,7 +34,7 @@ void FileOperator::save_file(const string * content, const string * fileName)
     myfile.close();
 }
 
-void FileOperator::save_file(const char * content,long size, const char * fileName)
+void FileOperator::save_file(const char * content, long size, const char * fileName)
 {
     ofstream myfile;
     myfile.open(fileName);
@@ -40,7 +45,7 @@ void FileOperator::save_file(const char * content,long size, const char * fileNa
 string * FileOperator::get_content(const char * fileName)
 {
     ifstream t(fileName);
-    string *str=new string((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
+    string *str = new string((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
     return str;
 }
 

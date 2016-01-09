@@ -5,7 +5,9 @@
 #include "Macros.h"
 #include "StringUtil.h"
 #include "XmlRoutine.h"
+#include <algorithm>
 #include <stdlib.h>
+#include <string>
 #include <regex>
 bool Certificates::isKeyEndLine(string & line)
 {
@@ -102,31 +104,46 @@ void Certificates::Process()
             certItem = "";
         }
     }
-    string tempFileForCert = "temp.pem";
+    string tempFileForPubCert = "temp.pem";
     string tempPriFileForCert = "temppri.pem";
     map<string, string> thumpPrintPubkeyPair;
     for (int i = 0; i < pubItems.size(); i++)
     {
-        FileOperator::save_file(&pubItems[i], &tempFileForCert);
-        string getThumbprint = "openssl x509 -in " + tempFileForCert + " -fingerprint -noout";
+        FileOperator::save_file(&pubItems[i], &tempFileForPubCert);
+        string getThumbprint = "openssl x509 -in " + tempFileForPubCert + " -fingerprint -noout";
         CommandResultPtr getThumbprintResult = CommandExecuter::RunGetOutput(getThumbprint.c_str());
-        printf(getThumbprintResult->output->c_str());
+
         string thumbPrint = getThumbprintResult->output->c_str();
         vector<string> fingerPrintSplit;
         string fingerPrintSpliter = "=";
         StringUtil::string_split(thumbPrint, fingerPrintSpliter, &fingerPrintSplit);
         //SHA1 Fingerprint=2B:67:2A:2A:46:0A:B9:36:D2:6D:D9:37:0B:92:78:D8:DE:79:B5:28
-
-        string getPubKey = "openssl x509 -in " + tempFileForCert + " -pubkey -noout";
-        CommandResultPtr getPubkeyResult = CommandExecuter::RunGetOutput(getPubKey.c_str());
-        printf(getPubkeyResult->output->c_str());
+        printf("finger print value is :%s\n", fingerPrintSplit[1].c_str());
+        std::string::iterator end_pos = std::remove(fingerPrintSplit[1].begin(), fingerPrintSplit[1].end(), ':');
+        fingerPrintSplit[1].erase(end_pos, fingerPrintSplit[1].end());
+        printf("finger print value after :%s\n", fingerPrintSplit[1].c_str());
+        string getPubKey = string("openssl x509 -in ") + tempFileForPubCert + " -pubkey -noout";
+        CommandResultPtr getPubKeyResult = CommandExecuter::RunGetOutput(getPubKey.c_str());
+        string fileNameOfPubKey = fingerPrintSplit[1] + ".crt";
+        FileOperator::move_file(tempFileForPubCert.c_str(), fileNameOfPubKey.c_str());
+        printf("pub 1 is :%s\n", getPubKeyResult->output->c_str());
+        StringUtil::trim(fingerPrintSplit[1]);
+        thumpPrintPubkeyPair[*(getPubKeyResult->output)] = fingerPrintSplit[1];
     }
+
+    printf("privCertItem count is %d\n", privCertItems.size());
     for (int i = 0; i < privCertItems.size(); i++)
     {
+        printf("priv 1 is :%s\n", privCertItems[i].c_str());
         FileOperator::save_file(&privCertItems[i], &tempPriFileForCert);
-        string getPubKey = "openssl rsa -in " + tempFileForCert + " -pubout 2> /dev/null ";
-        CommandResultPtr getPubKeyResult = CommandExecuter::RunGetOutput(getPubKey.c_str());
-        printf(getPubKeyResult->output->c_str());
+        string getPubKey = "openssl rsa -in " + tempPriFileForCert + " -pubout 2> /dev/null";
+        CommandResultPtr getPubKeyResult2 = CommandExecuter::RunGetOutput(getPubKey.c_str());
+        //print the result 
+        printf("pub 2 is :%s\n", getPubKeyResult2->output->c_str());
+        printf("pub 2 end\n");
+        string fileNameOfPrivateKey = thumpPrintPubkeyPair[*(getPubKeyResult2->output)] + ".prv";
+        Logger::getInstance().Log("move file from %s to %s", tempPriFileForCert.c_str(), fileNameOfPrivateKey.c_str());
+        FileOperator::move_file(tempPriFileForCert.c_str(), fileNameOfPrivateKey.c_str());
     }
 #endif
 }

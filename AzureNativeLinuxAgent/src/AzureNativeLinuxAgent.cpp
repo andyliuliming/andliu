@@ -17,6 +17,7 @@
 #include <direct.h>
 #else
 #endif
+#include <algorithm>
 #include <string.h>
 #include <stdlib.h>
 #include <regex>

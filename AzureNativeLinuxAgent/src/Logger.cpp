@@ -9,7 +9,7 @@
 using namespace std;
 void Logger::Verbose(const char * msg, ...)
 {
-    printf(msg);
+    printf("verbose:%s", msg);
     va_list arguments;                     // A place to store the list of arguments
     double sum = 0;
     va_start(arguments, msg);           // Initializing arguments to store all values after num
@@ -22,7 +22,7 @@ void Logger::Verbose(const char * msg, ...)
 
 void Logger::Log(const char * msg, ...)
 {
-    printf(msg);
+    printf("log:%s", msg);
     va_list arguments;                     // A place to store the list of arguments
     double sum = 0;
     va_start(arguments, msg);           // Initializing arguments to store all values after num
@@ -35,7 +35,7 @@ void Logger::Log(const char * msg, ...)
 
 void Logger::Warning(const char * msg, ...)
 {
-    printf(msg);
+    printf("warning:%s", msg);
     va_list arguments;                     // A place to store the list of arguments
     double sum = 0;
     va_start(arguments, msg);           // Initializing arguments to store all values after num
@@ -48,7 +48,7 @@ void Logger::Warning(const char * msg, ...)
 
 void Logger::Error(const char * msg, ...)
 {
-    printf(msg);
+    printf("error:%s", msg);
     va_list arguments;                     // A place to store the list of arguments
     double sum = 0;
     va_start(arguments, msg);           // Initializing arguments to store all values after num
