@@ -53,7 +53,7 @@ string * FileOperator::get_content(const char * fileName)
 string * FileOperator::get_extension_path(const char* pluginName, const char* pluginVersion)
 {
     string *extension_path = new string();
-    *extension_path = string(WAAGENT_LIB_BASE_DIR) + "/Native_" + pluginName + "_" + string(pluginVersion) + "/";
+    *extension_path = string(WAAGENT_LIB_BASE_DIR) + "/Native_" + string(pluginName) + "_" + string(pluginVersion) + "/";
     return extension_path;
 }
 

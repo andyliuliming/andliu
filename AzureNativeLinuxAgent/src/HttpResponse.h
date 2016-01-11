@@ -10,7 +10,6 @@ public:
     int status_code;
     map<string, string> *headers;
     string *body;
-    string *raw_header;
     HttpResponse();
     void addHeader(const char * header_item);
     ~HttpResponse();

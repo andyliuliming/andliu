@@ -55,10 +55,8 @@ int ZipRoutine::UnZipToDirectory(const char *archive, const char * zipExtractDir
         if (zip_stat_index(za, i, 0, &sb) == 0)
         {
             len = strlen(sb.name);
-            Logger::getInstance().Verbose("Name: [%s], ", sb.name);
-            Logger::getInstance().Verbose("Size: [%llu], ", (unsigned long long)(sb.size));
-            Logger::getInstance().Verbose("mtime: [%u]\n", (unsigned int)sb.mtime);
-            
+            Logger::getInstance().Verbose("Name: [%s], Size: [%llu],mtime: [%u]", sb.name, (unsigned long long)(sb.size), (unsigned int)sb.mtime);
+
             // create the sub dir
             string relative_path = string(sb.name);
             int last_index_slash = relative_path.find_last_of('/');

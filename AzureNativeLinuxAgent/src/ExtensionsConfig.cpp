@@ -107,7 +107,15 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
             xmlXPathObjectPtr runtimeSettingsXpathObject = XmlRoutine::findNodeByRelativeXpath(extensionsConfigDoc, pluginSettingsNodeSet->nodeTab[pluginIndex], BAD_CAST "./RuntimeSettings");
             xmlChar * seqNo = xmlGetProp(runtimeSettingsXpathObject->nodesetval->nodeTab[pluginIndex], xmlCharStrdup("seqNo"));
             string *extensionPath = FileOperator::get_extension_path((const char*)pluginName, (const char*)pluginVersion);
-            string settingFilePath = *extensionPath + "config/" + string((const char*)seqNo) + ".settings";
+
+            delete pluginName;
+            pluginName = NULL;
+            delete pluginVersion;
+            pluginVersion = NULL;
+
+            string configFolderPath = *extensionPath + "config/";
+            FileOperator::make_dir(configFolderPath.c_str());
+            string settingFilePath = configFolderPath + string((const char*)seqNo) + ".settings";
             //TODO check delete this.
             const char* runtimeSettingsText = (const char*)xmlNodeGetContent(runtimeSettingsXpathObject->nodesetval->nodeTab[0]);
             string *settingFileContent = new string(runtimeSettingsText);
@@ -122,9 +130,11 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
 
 void ExtensionsConfig::Process()
 {
+    Logger::getInstance().Verbose("start processing extensions.");
     for (int i = 0; i < this->extensionConfigs.size(); i++)
     {
         //handle it 
+        Logger::getInstance().Verbose("start handling extension");
         string * extensionPath = FileOperator::get_extension_path(this->extensionConfigs[i]->name.c_str(),
             this->extensionConfigs[i]->version.c_str());
         string manifestFilePath = *extensionPath + "/HandlerManifest.json";
@@ -133,8 +143,9 @@ void ExtensionsConfig::Process()
         HandlerManifest * handlerManifest = JsonRoutine::ParseHandlerManifest(manifestFilePath.c_str());
         CommandResultPtr installResult = CommandExecuter::RunGetOutput(handlerManifest->installCommand);
         CommandResultPtr enableResult = CommandExecuter::RunGetOutput(handlerManifest->enableCommand);
+        Logger::getInstance().Verbose("end handling extension");
     }
-    // start the extensions.
+    Logger::getInstance().Verbose("end processing extensions.");
 }
 
 ExtensionsConfig::~ExtensionsConfig()

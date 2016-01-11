@@ -16,6 +16,7 @@ void Logger::Verbose(const char * msg, ...)
 #else
     syslog(LOG_DEBUG, msg, arguments);
     printf(msg, arguments);
+    printf("%s", "\n");
 #endif
     va_end(arguments);                  // Cleans up the list
 }
@@ -29,6 +30,7 @@ void Logger::Log(const char * msg, ...)
 #else
     syslog(LOG_INFO, msg, arguments);
     printf(msg, arguments);
+    printf("%s", "\n");
 #endif
     va_end(arguments);                  // Cleans up the list
 }
@@ -42,6 +44,7 @@ void Logger::Warning(const char * msg, ...)
 #else
     syslog(LOG_WARNING, msg, arguments);
     printf(msg, arguments);
+    printf("%s", "\n");
 #endif
     va_end(arguments);                  // Cleans up the list
 }
@@ -55,6 +58,7 @@ void Logger::Error(const char * msg, ...)
 #else
     syslog(LOG_ERR, msg, arguments);
     printf(msg, arguments);
+    printf("%s", "\n");
 #endif
     va_end(arguments);                  // Cleans up the list
 }

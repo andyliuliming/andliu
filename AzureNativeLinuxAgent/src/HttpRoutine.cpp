@@ -233,10 +233,8 @@ int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, cons
 HttpResponse * HttpRoutine::Post(const char * url, map<string, string> * headers, const char * data)
 {
     string *body_buffer = new string();
-    string *header_buffer = new string();
     HttpResponse * response = new HttpResponse();
     response->body = body_buffer;
-    response->raw_header = header_buffer;
 #ifdef _WIN32
     // your windows code.
 #else

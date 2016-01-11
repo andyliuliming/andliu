@@ -22,10 +22,9 @@ string* StatusReporter::ReportReady(AzureEnvironment *environment, GoalState * g
     string apiAddress = "http://" + environment->wireServerAddress + "/machine?comp=health";
     HttpResponse * response = HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str());
     Logger::getInstance().Verbose("report ready status result %d", response->status_code);
-    Logger::getInstance().Verbose("report ready status header %d", response->raw_header);
+    string *incarnationValue = new string(response->headers->find("x-ms-latest-goal-state-incarnation-number")->second);
     delete response;
     response = NULL;
-    string *incarnationValue = new string(response->headers->find("")->second);
     return incarnationValue;
 }
 
