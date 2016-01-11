@@ -33,6 +33,36 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
     const xmlChar* pluginXpathExpr = xmlCharStrdup("/Extensions/Plugins/Plugin");
     xmlXPathObjectPtr pluginsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, pluginXpathExpr, NULL);
     delete pluginXpathExpr;
+    pluginXpathExpr = NULL;
+
+    const xmlChar* statusBlobXpathExpr = xmlCharStrdup("/Extensions/StatusUploadBlob");
+    xmlXPathObjectPtr statusBlobXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, statusBlobXpathExpr, NULL);
+    if (statusBlobXpathObj->nodesetval !=NULL
+        && statusBlobXpathObj->nodesetval->nodeNr > 0)
+    {
+        xmlChar * statusBlobTypeText = xmlGetProp(statusBlobXpathObj->nodesetval->nodeTab[0], xmlCharStrdup("statusBlobType"));
+        if (statusBlobTypeText == NULL)
+        {
+            Logger::getInstance().Error("statusBlobTypeText is null");
+        }
+        this->statusBlobType = string((const char*)statusBlobTypeText);
+        // get the status link address
+        const char* statusUploadBlob = (const char*)xmlNodeGetContent(statusBlobXpathObj->nodesetval->nodeTab[0]);
+        this->statusUploadBlobUri = string(statusUploadBlob);
+        Logger::getInstance().Verbose("the status blob type:%s, uri:%s",this->statusBlobType.c_str(),this->statusUploadBlobUri.c_str());
+        delete statusUploadBlob;
+        statusUploadBlob = NULL;
+    }
+    else
+    {
+        Logger::getInstance().Warning("no status blob element found.");
+    }
+    
+    delete statusBlobXpathExpr;
+    statusBlobXpathExpr = NULL;
+    xmlXPathFreeObject(statusBlobXpathObj);
+    //statusBlobType
+
     xmlNodeSetPtr nodes = pluginsXpathObj->nodesetval;
     this->extensionConfigs.clear();
     for (int i = 0; i < nodes->nodeNr; i++)
@@ -96,17 +126,25 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
             Logger::getInstance().Error("failed to get the extensions manifest");
         }
 
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
         const xmlChar* pluginSettingsXpathExpr = xmlCharStrdup("/Extensions/PluginSettings/Plugin");
         xmlXPathObjectPtr pluginSettingsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, pluginSettingsXpathExpr, NULL);
         delete pluginSettingsXpathExpr;
+        pluginSettingsXpathExpr = NULL;
         xmlNodeSetPtr pluginSettingsNodeSet = pluginSettingsXpathObj->nodesetval;
         for (int pluginIndex = 0; pluginIndex < pluginSettingsNodeSet->nodeNr; pluginIndex++)
         {
+            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
             xmlChar * pluginName = xmlGetProp(pluginSettingsNodeSet->nodeTab[pluginIndex], xmlCharStrdup("name"));
             xmlChar * pluginVersion = xmlGetProp(pluginSettingsNodeSet->nodeTab[pluginIndex], xmlCharStrdup("version"));
-            xmlXPathObjectPtr runtimeSettingsXpathObject = XmlRoutine::findNodeByRelativeXpath(extensionsConfigDoc, pluginSettingsNodeSet->nodeTab[pluginIndex], BAD_CAST "./RuntimeSettings");
-            xmlChar * seqNo = xmlGetProp(runtimeSettingsXpathObject->nodesetval->nodeTab[pluginIndex], xmlCharStrdup("seqNo"));
+            xmlXPathObjectPtr runtimeSettingsXpathObject = XmlRoutine::findNodeByRelativeXpath(extensionsConfigDoc,
+                pluginSettingsNodeSet->nodeTab[pluginIndex],
+                BAD_CAST "./RuntimeSettings");
+            xmlChar * seqNo = xmlGetProp(runtimeSettingsXpathObject->nodesetval->nodeTab[0], xmlCharStrdup("seqNo"));
             string *extensionPath = FileOperator::get_extension_path((const char*)pluginName, (const char*)pluginVersion);
+
+            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
             delete pluginName;
             pluginName = NULL;
@@ -117,10 +155,15 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
             FileOperator::make_dir(configFolderPath.c_str());
             string settingFilePath = configFolderPath + string((const char*)seqNo) + ".settings";
             //TODO check delete this.
+
+            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
             const char* runtimeSettingsText = (const char*)xmlNodeGetContent(runtimeSettingsXpathObject->nodesetval->nodeTab[0]);
             string *settingFileContent = new string(runtimeSettingsText);
             FileOperator::save_file(settingFileContent, &settingFilePath);
+            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         }
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     }
     xmlFreeDoc(extensionsConfigDoc);
     xmlCleanupParser();

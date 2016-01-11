@@ -35,7 +35,6 @@ int main(void)
     delete pidBuff;
     pidBuff = NULL;
 #endif
-
     // 1.  vmm start up
     Logger::getInstance().Log("starting vmm");
     VMMStartup *vmmStartUp = new VMMStartup();
@@ -84,12 +83,14 @@ int main(void)
 
     while (true)
     {
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         // a. UpdateGoalState
         // b. process goal state
         if (goalState == NULL
             || incarnationReturned == NULL
             || goalState->incarnation != *incarnationReturned)
         {
+            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
             Logger::getInstance().Verbose("start goal state");
             goalState = new GoalState();
             goalState->UpdateGoalState(azureEnvironment);
@@ -120,10 +121,10 @@ int main(void)
 
             string host_key_path = string("/etc/ssh/ssh_host_") + (*type) + "_key.pub";
             string commandToGetFingerPrint = string("ssh-keygen -lf ") + host_key_path;
-            shared_ptr<CommandResult> fingerprintResult = CommandExecuter::RunGetOutput(commandToGetFingerPrint.c_str());
+            shared_ptr<CommandResult> fingerPrintResult = CommandExecuter::RunGetOutput(commandToGetFingerPrint.c_str());
             vector<string> splitResult;
             string spliter = " ";
-            StringUtil::string_split(*(fingerprintResult->output), spliter, &splitResult);
+            StringUtil::string_split(*(fingerPrintResult->output), spliter, &splitResult);
             statusReporter->ReportRoleProperties(azureEnvironment, goalState, splitResult[1].c_str());
         }
         else

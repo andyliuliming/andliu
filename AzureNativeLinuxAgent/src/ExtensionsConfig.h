@@ -7,6 +7,8 @@ class ExtensionsConfig
 {
 private:
     vector<ExtensionConfig*> extensionConfigs;
+    string statusUploadBlobUri;
+    string statusBlobType;
 public:
     ExtensionsConfig();
     void Parse(string * extensionsConfigText);

@@ -23,46 +23,46 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
     /* set our custom set of headers */
     HttpResponse * goalStateResponse = HttpRoutine::GetWithDefaultHeader(goalStateEndpoint.c_str());
 
-    xmlDocPtr doc = xmlParseMemory(goalStateResponse->body->c_str(), goalStateResponse->body->size());
-    xmlNodePtr root = xmlDocGetRootElement(doc);
+    xmlDocPtr goalStateDoc = xmlParseMemory(goalStateResponse->body->c_str(), goalStateResponse->body->size());
+    xmlNodePtr root = xmlDocGetRootElement(goalStateDoc);
 
     const xmlChar* incarnationXpathExpr = xmlCharStrdup("/GoalState/Incarnation[1]/text()");
-    this->incarnation = *(XmlRoutine::getNodeText(doc, incarnationXpathExpr, NULL));
+    this->incarnation = *(XmlRoutine::getNodeText(goalStateDoc, incarnationXpathExpr, NULL));
     delete incarnationXpathExpr;
 
     const xmlChar* containerIdXpathExpr = xmlCharStrdup("/GoalState/Container/ContainerId/text()");
-    this->containerId = *(XmlRoutine::getNodeText(doc, containerIdXpathExpr, NULL));
+    this->containerId = *(XmlRoutine::getNodeText(goalStateDoc, containerIdXpathExpr, NULL));
     delete containerIdXpathExpr;
 
     const xmlChar* roleInstanceIdXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/InstanceId/text()");
-    this->roleInstanceId = *(XmlRoutine::getNodeText(doc, roleInstanceIdXpathExpr, NULL));
+    this->roleInstanceId = *(XmlRoutine::getNodeText(goalStateDoc, roleInstanceIdXpathExpr, NULL));
     delete roleInstanceIdXpathExpr;
 
     const xmlChar* hostingEnvironmentConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/HostingEnvironmentConfig/text()");
-    this->hostingEnvironmentConfigUrl = *(XmlRoutine::getNodeText(doc, hostingEnvironmentConfigXpathExpr, NULL));
+    this->hostingEnvironmentConfigUrl = *(XmlRoutine::getNodeText(goalStateDoc, hostingEnvironmentConfigXpathExpr, NULL));
     delete hostingEnvironmentConfigXpathExpr;
 
     const xmlChar* sharedConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/SharedConfig/text()");
-    this->sharedConfigUrl = *(XmlRoutine::getNodeText(doc, sharedConfigXpathExpr, NULL));
+    this->sharedConfigUrl = *(XmlRoutine::getNodeText(goalStateDoc, sharedConfigXpathExpr, NULL));
     delete sharedConfigXpathExpr;
 
     const xmlChar* extensionsConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ExtensionsConfig/text()");
-    this->extensionsConfigUrl = *(XmlRoutine::getNodeText(doc, extensionsConfigXpathExpr, NULL));
+    this->extensionsConfigUrl = *(XmlRoutine::getNodeText(goalStateDoc, extensionsConfigXpathExpr, NULL));
     delete extensionsConfigXpathExpr;
 
     const xmlChar* fullConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/FullConfig/text()");
-    this->fullConfigUrl = *(XmlRoutine::getNodeText(doc, fullConfigXpathExpr, NULL));
+    this->fullConfigUrl = *(XmlRoutine::getNodeText(goalStateDoc, fullConfigXpathExpr, NULL));
     delete fullConfigXpathExpr;
 
     const xmlChar* configNameXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ConfigName/text()");
-    this->configName = *(XmlRoutine::getNodeText(doc, configNameXpathExpr, NULL));
+    this->configName = *(XmlRoutine::getNodeText(goalStateDoc, configNameXpathExpr, NULL));
     delete configNameXpathExpr;
 
     const xmlChar* certificatesXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/Certificates/text()");
-    this->certificatesUrl = XmlRoutine::getNodeText(doc, certificatesXpathExpr, NULL);
+    this->certificatesUrl = XmlRoutine::getNodeText(goalStateDoc, certificatesXpathExpr, NULL);
     delete certificatesXpathExpr;
 
-    xmlFreeDoc(doc);
+    xmlFreeDoc(goalStateDoc);
 
     // saving the goal state file 
     string goalStageFileName = this->goalStageFilePrefix + incarnation + ".xml";
@@ -71,14 +71,17 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
     HttpResponse * hostingEnvironmentConfigText = HttpRoutine::GetWithDefaultHeader(this->hostingEnvironmentConfigUrl.c_str());
     this->hostingEnvironmentConfig = new HostingEnvironmentConfig();
     this->hostingEnvironmentConfig->Parse(hostingEnvironmentConfigText->body);
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
     HttpResponse * sharedConfigText = HttpRoutine::GetWithDefaultHeader(this->sharedConfigUrl.c_str());
     this->sharedConfig = new SharedConfig();
     this->sharedConfig->Parse(sharedConfigText->body);
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
     HttpResponse * extentionsConfigText = HttpRoutine::GetWithDefaultHeader(this->extensionsConfigUrl.c_str());
     this->extensionsConfig = new ExtensionsConfig();
     this->extensionsConfig->Parse(extentionsConfigText->body);
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
     // get the certificates from the server.
     if (this->certificatesUrl != NULL)
@@ -111,6 +114,7 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
     {
         Logger::getInstance().Warning("certificates url is null.");
     }
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 #endif
 }
 
