@@ -6,11 +6,36 @@
 #include "JsonRoutine.h"
 #include "Logger.h"
 #include "Macros.h"
-#include "XmlRoutine.h"
 #ifdef _WIN32
 #else
 #include "ZipRoutine.h"
 #endif
+void ExtensionsConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, int i, const xmlChar* pluginXpathManifestExpr)
+{
+    xmlXPathObjectPtr xpathManifestObj = XmlRoutine::getNodes(manifestXmlDoc, pluginXpathManifestExpr, NULL);
+    
+    xmlNodeSetPtr pluginManifestNodes = xpathManifestObj->nodesetval;
+    for (int j = 0; j < pluginManifestNodes->nodeNr; j++)
+    {
+        xmlXPathObjectPtr versionObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], BAD_CAST "./Version/text()");
+        string currentVersion = string((const char*)versionObjects->nodesetval->nodeTab[0]->content);
+        xmlXPathFreeObject(versionObjects);
+        if (currentVersion == extensionConfigs[i]->version)
+        {
+            // downloading the bundles
+            xmlXPathObjectPtr uriObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], BAD_CAST "./Uris/Uri/text()");
+            string bundleFilePath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + extensionConfigs[i]->name + "_" + extensionConfigs[i]->version + ".zip";
+            HttpRoutine::GetToFile((const char*)(uriObjects->nodesetval->nodeTab[0]->content), NULL, bundleFilePath.c_str());
+            string *extensionPath = FileOperator::get_extension_path(extensionConfigs[i]->name.c_str(), extensionConfigs[i]->version.c_str());
+            FileOperator::make_dir(extensionPath->c_str());
+            ZipRoutine::UnZipToDirectory(bundleFilePath.c_str(), extensionPath->c_str());
+            delete extensionPath;
+            extensionPath = NULL;
+            break;
+        }
+    }
+    xmlXPathFreeObject(xpathManifestObj);
+}
 ExtensionsConfig::ExtensionsConfig()
 {
 }
@@ -82,6 +107,7 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
 
     for (int i = 0; i < this->extensionConfigs.size(); i++)
     {
+        Logger::getInstance().Verbose("download/extract extension %s", this->extensionConfigs[i]->name.c_str());
         // get the manifest, get the bundle zip file location, download it, extract it.
         HttpResponse *response  = HttpRoutine::Get(this->extensionConfigs[i]->location.c_str(), NULL);
         if (response == NULL)
@@ -96,29 +122,16 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
             FileOperator::save_file(response->body, &filepath);
             xmlDocPtr manifestXmlDoc = xmlParseMemory(response->body->c_str(), response->body->size());
             const xmlChar* pluginXpathManifestExpr = xmlCharStrdup("/PluginVersionManifest/Plugins/Plugin");
-            xmlXPathObjectPtr xpathManifestObj = XmlRoutine::getNodes(manifestXmlDoc, pluginXpathManifestExpr, NULL);
+            this->DownloadExtractExtensions(manifestXmlDoc, i, pluginXpathManifestExpr);
             delete pluginXpathManifestExpr;
-            xmlNodeSetPtr pluginManifestNodes = xpathManifestObj->nodesetval;
-            for (int j = 0; j < pluginManifestNodes->nodeNr; j++)
-            {
-                xmlXPathObjectPtr versionObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], BAD_CAST "./Version/text()");
-                string currentVersion = string((const char*)versionObjects->nodesetval->nodeTab[0]->content);
-                xmlXPathFreeObject(versionObjects);
-                if (currentVersion == extensionConfigs[i]->version)
-                {
-                    // downloading the bundles
-                    xmlXPathObjectPtr uriObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], BAD_CAST "./Uris/Uri/text()");
-                    string bundleFilePath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + extensionConfigs[i]->name + "_" + extensionConfigs[i]->version + ".zip";
-                    HttpRoutine::GetToFile((const char*)(uriObjects->nodesetval->nodeTab[0]->content), NULL, bundleFilePath.c_str());
-                    string *extensionPath = FileOperator::get_extension_path(extensionConfigs[i]->name.c_str(), extensionConfigs[i]->version.c_str());
-                    FileOperator::make_dir(extensionPath->c_str());
-                    ZipRoutine::UnZipToDirectory(bundleFilePath.c_str(), extensionPath->c_str());
-                    delete extensionPath;
-                    extensionPath = NULL;
-                    break;
-                }
-            }
-            xmlXPathFreeObject(xpathManifestObj);
+            pluginXpathManifestExpr = NULL;
+
+            const xmlChar* internalPluginXpathManifestExpr = xmlCharStrdup("/PluginVersionManifest/InternalPlugins/Plugin");
+            this->DownloadExtractExtensions(manifestXmlDoc, i, internalPluginXpathManifestExpr);
+            delete internalPluginXpathManifestExpr;
+            internalPluginXpathManifestExpr = NULL;
+
+            xmlFreeDoc(manifestXmlDoc);
         }
         else
         {
@@ -177,13 +190,15 @@ void ExtensionsConfig::Process()
     for (int i = 0; i < this->extensionConfigs.size(); i++)
     {
         //handle it 
-        Logger::getInstance().Verbose("start handling extension");
+        Logger::getInstance().Verbose("start handling extension %s", this->extensionConfigs[i]->name.c_str());
         string * extensionPath = FileOperator::get_extension_path(this->extensionConfigs[i]->name.c_str(),
             this->extensionConfigs[i]->version.c_str());
         string manifestFilePath = *extensionPath + "/HandlerManifest.json";
         delete extensionPath;
         extensionPath = NULL;
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         HandlerManifest * handlerManifest = JsonRoutine::ParseHandlerManifest(manifestFilePath.c_str());
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         CommandResultPtr installResult = CommandExecuter::RunGetOutput(handlerManifest->installCommand);
         CommandResultPtr enableResult = CommandExecuter::RunGetOutput(handlerManifest->enableCommand);
         Logger::getInstance().Verbose("end handling extension");
