@@ -5,7 +5,7 @@ class HostingEnvironmentConfig
 {
 public:
     HostingEnvironmentConfig();
-    void Parse(string * hostingEnvironmentConfigText);
+    void Parse(string & hostingEnvironmentConfigText);
     void Process();
 
     ~HostingEnvironmentConfig();

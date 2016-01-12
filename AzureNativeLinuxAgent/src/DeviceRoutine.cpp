@@ -18,8 +18,7 @@ void DeviceRoutine::setIsciTimeOut()
     AgentConfig::getInstance().LoadConfig();
     string timeOut;
     int getTimeOutResult = AgentConfig::getInstance().getConfig("OS_RootDeviceScsiTimeout", timeOut);
-    Logger::getInstance().Verbose("timeout set to:", timeOut.c_str());
-    Logger::getInstance().Verbose(timeOut.c_str());
+    Logger::getInstance().Verbose("timeout set to:%s", timeOut.c_str());
     if (getTimeOutResult == 0)
     {
         #ifdef BSD
@@ -34,13 +33,15 @@ void DeviceRoutine::setIsciTimeOut()
             {
                 while ((dir = readdir(d)) != NULL)
                 {
+                    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
                     string directoryName = string(dir->d_name);
-                    delete dir;
-                    dir = NULL;
+                    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
                     if (directoryName.find("sd")==0)
                     {
+                        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
                         string timeOutFile = "/sys/block/" + directoryName + "/device/timeout";
                         setBlockDeviceTimeOut(timeOutFile.c_str(), timeOut.c_str());
+                        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
                         break;
                     }
                 }
@@ -69,9 +70,6 @@ string * DeviceRoutine::findRomDevice()
             {
                 break;
             }
-
-            delete dir;
-            dir = NULL;
         }
         closedir(d);
         result = new string(dir->d_name);
@@ -153,6 +151,7 @@ string * DeviceRoutine::findRomDevice()
 
 void DeviceRoutine::setBlockDeviceTimeOut(const char * timeOutFile, const char * timeOut)
 {
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     string timeOutContent;
     int getContentResult =  FileOperator::get_content(timeOutFile, timeOutContent);
     if (getContentResult == 0)

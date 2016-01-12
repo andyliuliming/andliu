@@ -6,13 +6,12 @@ using namespace std;
 
 OvfEnv::OvfEnv()
 {
-    configFilePath = new string("/var/lib/waagent/Native_ovf-env.xml");
 }
 
 void OvfEnv::Parse(string &sharedConfigText)
 {
     //TODO: remove the password before saving to disk
-    FileOperator::save_file(&sharedConfigText, configFilePath);
+    FileOperator::save_file(sharedConfigText, string("/var/lib/waagent/Native_ovf-env.xml"));
 
     xmlDocPtr doc = xmlParseMemory(sharedConfigText.c_str(), sharedConfigText.size());
     xmlNodePtr root = xmlDocGetRootElement(doc);
@@ -46,9 +45,4 @@ void OvfEnv::Process()
 
 OvfEnv::~OvfEnv()
 {
-    if (configFilePath != NULL)
-    {
-        delete configFilePath;
-        configFilePath = NULL;
-    }
 }

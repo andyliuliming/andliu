@@ -2,6 +2,7 @@
 #include <streambuf>
 
 #include "FileOperator.h"
+#include "Logger.h"
 #include "Macros.h"
 using namespace std;
 
@@ -43,20 +44,12 @@ void FileOperator::save_file(const char * content, long size, const char * fileN
     myfile.close();
 }
 
-int FileOperator::get_content(const char * fileName,string &content)
+int FileOperator::get_content(const char * fileName, string &content)
 {
-    if(file_exists(fileName))
+    if (file_exists(fileName))
     {
-        std::ifstream t;
-        t.open(fileName);
-        std::string line;
-        while (t)
-        {
-            std::getline(t, line);
-            // ... Append line to buffer and go on
-            content.append(line);
-        }
-        t.close();
+        ifstream t(fileName);
+        content = string((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
         return 0;
     }
     else

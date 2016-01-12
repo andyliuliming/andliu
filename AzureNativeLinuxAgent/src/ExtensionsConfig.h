@@ -14,7 +14,7 @@ private:
 public:
     ExtensionsConfig();
     void ReportExtensionsStatus();
-    void Parse(string * extensionsConfigText);
+    void Parse(string &extensionsConfigText);
     void Process();
     ~ExtensionsConfig();
 };

@@ -49,10 +49,10 @@ Certificates::Certificates()
 {
 }
 
-void Certificates::Parse(string * certificatesText)
+void Certificates::Parse(string &certificatesText)
 {
     string certificationsFile = CERTIFICATIONS_XML_FILE_NAME;
-    FileOperator::save_file(certificatesText, &certificationsFile);
+    FileOperator::save_file(certificatesText, certificationsFile);
 }
 
 void Certificates::Process()
@@ -67,7 +67,7 @@ void Certificates::Process()
     string certFileContent = string("MIME-Version: 1.0\nContent-Disposition: attachment; filename=\"") + PROTECTED_SETTINGS_CERTIFICATE_FILE_NAME + "\"\nContent-Type: application/x-pkcs7-mime; name=\"" + PROTECTED_SETTINGS_CERTIFICATE_FILE_NAME + "\"\nContent-Transfer-Encoding: base64\n\n"
         + *certificationData;
     string certFileName = string(PROTECTED_SETTINGS_CERTIFICATE_FILE_NAME);
-    FileOperator::save_file(&certFileContent, &certFileName);
+    FileOperator::save_file(certFileContent, certFileName);
 
     xmlFreeDoc(doc);
     string commandToExportCert = string("openssl cms -decrypt -in ") + PROTECTED_SETTINGS_CERTIFICATE_FILE_NAME + " -inkey " + TRANSPORT_CERT_PRIV + " -recip " + TRANSPORT_CERT_PUB + " | openssl pkcs12 -nodes -password pass: -out " + CERTIFICATIONS_FILE_NAME;
@@ -110,7 +110,7 @@ void Certificates::Process()
         map<string, string> thumpPrintPubkeyPair;
         for (int i = 0; i < pubItems.size(); i++)
         {
-            FileOperator::save_file(&pubItems[i], &tempFileForPubCert);
+            FileOperator::save_file(pubItems[i], tempFileForPubCert);
             string getThumbprint = "openssl x509 -in " + tempFileForPubCert + " -fingerprint -noout";
             CommandResultPtr getThumbprintResult = CommandExecuter::RunGetOutput(getThumbprint.c_str());
 
@@ -130,7 +130,7 @@ void Certificates::Process()
 
         for (int i = 0; i < privCertItems.size(); i++)
         {
-            FileOperator::save_file(&privCertItems[i], &tempPriFileForCert);
+            FileOperator::save_file(privCertItems[i], tempPriFileForCert);
             string getPubKey = "openssl rsa -in " + tempPriFileForCert + " -pubout 2> /dev/null";
             CommandResultPtr getPubKeyResult2 = CommandExecuter::RunGetOutput(getPubKey.c_str());
             //print the result 
@@ -141,6 +141,7 @@ void Certificates::Process()
     }
     else
     {
+        Logger::getInstance().Error("get certifications file Content failed.");
         //TODO log the error;
     }
 }

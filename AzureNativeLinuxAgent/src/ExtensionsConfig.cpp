@@ -54,17 +54,16 @@ void ExtensionsConfig::ReportExtensionsStatus()
 }
 
 
-void ExtensionsConfig::Parse(string * extensionsConfigText) {
-    xmlDocPtr extensionsConfigDoc = xmlParseMemory(extensionsConfigText->c_str(), extensionsConfigText->size());
+void ExtensionsConfig::Parse(string & extensionsConfigText) {
+    xmlDocPtr extensionsConfigDoc = xmlParseMemory(extensionsConfigText.c_str(), extensionsConfigText.size());
     xmlNodePtr root = xmlDocGetRootElement(extensionsConfigDoc);
 
     xmlChar * incarnation = xmlGetProp(root, xmlCharStrdup("goalStateIncarnation"));
 
     string incarnationStr((const char*)incarnation);
     string configFilePath = string("/var/lib/waagent/Native_ExtensionsConfig.") + incarnationStr + ".xml";
-    shared_ptr<string> configFilePathP = make_shared<string>(configFilePath);
 
-    FileOperator::save_file(extensionsConfigText, configFilePathP.get());
+    FileOperator::save_file(extensionsConfigText, configFilePath);
 
     const xmlChar* pluginXpathExpr = xmlCharStrdup("/Extensions/Plugins/Plugin");
     xmlXPathObjectPtr pluginsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, pluginXpathExpr, NULL);
@@ -73,7 +72,7 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
 
     const xmlChar* statusBlobXpathExpr = xmlCharStrdup("/Extensions/StatusUploadBlob");
     xmlXPathObjectPtr statusBlobXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, statusBlobXpathExpr, NULL);
-    if (statusBlobXpathObj->nodesetval !=NULL
+    if (statusBlobXpathObj->nodesetval != NULL
         && statusBlobXpathObj->nodesetval->nodeNr > 0)
     {
         xmlChar * statusBlobTypeText = xmlGetProp(statusBlobXpathObj->nodesetval->nodeTab[0], xmlCharStrdup("statusBlobType"));
@@ -130,7 +129,7 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
         {
             // download the extension bundle zip.
             string filepath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + this->extensionConfigs[i]->name + "." + incarnationStr + ".manifest";
-            FileOperator::save_file(response->body, &filepath);
+            FileOperator::save_file(*response->body, filepath);
             xmlDocPtr manifestXmlDoc = xmlParseMemory(response->body->c_str(), response->body->size());
             const xmlChar* pluginXpathManifestExpr = xmlCharStrdup("/PluginVersionManifest/Plugins/Plugin");
             this->DownloadExtractExtensions(manifestXmlDoc, i, pluginXpathManifestExpr);
@@ -187,8 +186,8 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
             Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
             const char* runtimeSettingsText = (const char*)xmlNodeGetContent(runtimeSettingsXpathObject->nodesetval->nodeTab[0]);
-            string *settingFileContent = new string(runtimeSettingsText);
-            FileOperator::save_file(settingFileContent, &settingFilePath);
+            string settingFileContent(runtimeSettingsText);
+            FileOperator::save_file(settingFileContent, settingFilePath);
             Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         }
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);

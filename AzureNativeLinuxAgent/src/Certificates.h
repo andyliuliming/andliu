@@ -9,7 +9,7 @@ private:
     bool isCertificateEndLine(string &line);
 public:
     Certificates(); 
-    void Parse(string * certificatesText);
+    void Parse(string &certificatesText);
     void Process();
     ~Certificates();
 };

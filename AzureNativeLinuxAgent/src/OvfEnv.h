@@ -5,7 +5,6 @@ using namespace std;
 class OvfEnv
 {
 private:
-    string *configFilePath;
     string userName;
     string passWord;
     string disableSshPasswordAuthentication;

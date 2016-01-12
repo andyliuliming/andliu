@@ -65,21 +65,21 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
 
     // saving the goal state file 
     string goalStageFileName = this->goalStageFilePrefix + incarnation + ".xml";
-    FileOperator::save_file(goalStateResponse->body, &goalStageFileName);
+    FileOperator::save_file(*(goalStateResponse->body), goalStageFileName);
     // construct the instances
     HttpResponse * hostingEnvironmentConfigText = HttpRoutine::GetWithDefaultHeader(this->hostingEnvironmentConfigUrl.c_str());
     this->hostingEnvironmentConfig = new HostingEnvironmentConfig();
-    this->hostingEnvironmentConfig->Parse(hostingEnvironmentConfigText->body);
+    this->hostingEnvironmentConfig->Parse(*(hostingEnvironmentConfigText->body));
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
     HttpResponse * sharedConfigText = HttpRoutine::GetWithDefaultHeader(this->sharedConfigUrl.c_str());
     this->sharedConfig = new SharedConfig();
-    this->sharedConfig->Parse(sharedConfigText->body);
+    this->sharedConfig->Parse(*(sharedConfigText->body));
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
     HttpResponse * extentionsConfigText = HttpRoutine::GetWithDefaultHeader(this->extensionsConfigUrl.c_str());
     this->extensionsConfig = new ExtensionsConfig();
-    this->extensionsConfig->Parse(extentionsConfigText->body);
+    this->extensionsConfig->Parse(*(extentionsConfigText->body));
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
     // get the certificates from the server.
@@ -101,6 +101,7 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
                     pureCertText += splitResult[i];
                 }
             }
+            Logger::getInstance().Verbose("pureCertText is %s", pureCertText.c_str());
             //TODO get rid of the cert headers.
             map<string, string> headers;
             headers["x-ms-agent-name"] = WAAGENT_NAME;
@@ -108,12 +109,13 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
             headers["x-ms-cipher-name"] = TRANSPORT_CERT_CIPHER_NAME;
             headers["x-ms-guest-agent-public-x509-cert"] = pureCertText;
             HttpResponse * certificationsText = HttpRoutine::Get(this->certificatesUrl->c_str(), &headers);
-
+            Logger::getInstance().Warning("certificationsResponse is %s", certificationsText->body->c_str());
             // get certificates from the remote using the public cert.
-            this->certificates->Parse(certificationsText->body);
+            this->certificates->Parse(*(certificationsText->body));
         }
         else
         {
+            Logger::getInstance().Error("get the transport cert pub failed.");
             // TODO error handling
         }
     }

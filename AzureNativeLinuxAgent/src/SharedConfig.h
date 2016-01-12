@@ -5,7 +5,7 @@ class SharedConfig
 {
 public:
     SharedConfig();
-    void Parse(string * sharedConfigText);
+    void Parse(string &sharedConfigText);
     void Process();
     ~SharedConfig();
 };

@@ -2,6 +2,7 @@
 #include "CommandExecuter.h"
 #include "DeviceRoutine.h"
 #include "FileOperator.h"
+#include "Logger.h"
 #include "Macros.h"
 #include "OvfEnv.h"
 #include "Provisioner.h"
@@ -52,6 +53,7 @@ int Provisioner::Prosess()
     }
     else
     {
+        Logger::getInstance().Error("get OvfFile Content failed.");
         //TODO error handling.
     }
     // 2. This is done here because regenerated SSH host key pairs may be potentially overwritten when processing the ovfxml
