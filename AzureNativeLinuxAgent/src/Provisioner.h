@@ -4,7 +4,8 @@ class Provisioner
 public:
     Provisioner();
     bool isProvisioned();
-    void Prosess();
+    int Prosess();
+    void markProvisioned();
     ~Provisioner();
 };
 

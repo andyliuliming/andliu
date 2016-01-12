@@ -12,11 +12,6 @@
 #include "Provisioner.h"
 #include "StatusReporter.h"
 #include "StringUtil.h"
-#include "VMMStartup.h"
-#ifdef _WIN32
-#include <direct.h>
-#else
-#endif
 #include <algorithm>
 #include <string.h>
 #include <stdlib.h>
@@ -26,19 +21,14 @@ using namespace std;
 int main(void)
 {
     int chdirResult = chdir(WORKING_DIR);
-#ifdef _WIN32
-#else
+
     int currentPid = getpid();
     char *pidBuff = new char[32];
     sprintf(pidBuff, "%d", currentPid);
     FileOperator::save_file(pidBuff, strlen(pidBuff), WAAGENT_PID_FILE);
     delete pidBuff;
     pidBuff = NULL;
-#endif
-    // 1.  vmm start up
-    Logger::getInstance().Log("starting vmm");
-    VMMStartup *vmmStartUp = new VMMStartup();
-    vmmStartUp->Startup();
+
 
     // 2. do dhcp 
     Logger::getInstance().Log("DoDhcpWork");
@@ -66,6 +56,7 @@ int main(void)
 
     // 4. Set SCSI timeout on SCSI disks
     DeviceRoutine::setIsciTimeOut();
+
     // 5. GenerateTransportCert
     int transportCertGenerationResult = CertificationRoutine::GenerateTransportCertification();
     if (transportCertGenerationResult != 0)
@@ -104,22 +95,28 @@ int main(void)
             if (!provisioned)
             {
                 Logger::getInstance().Log("doing provision.");
-                provisioner->Prosess();
-                provisioned = true;
+                int provisionResult = provisioner->Prosess();
+                if(provisioned == 0)
+                {
+                    provisioner->markProvisioned();
+                    provisioned = true;
+                }
             }
 
             AgentConfig::getInstance().LoadConfig();
 
-            string *type = AgentConfig::getInstance().getConfig("Provisioning_SshHostKeyPairType");
-            if (type == NULL)
+            string type;
+            int result = AgentConfig::getInstance().getConfig("Provisioning_SshHostKeyPairType", type);
+            if (result != 0)
             {
-                type = new string("rsa");
+                type = "rsa";
             }
             Logger::getInstance().Verbose("start process.");
             goalState->Process();
             Logger::getInstance().Verbose("end process");
 
-            string host_key_path = string("/etc/ssh/ssh_host_") + (*type) + "_key.pub";
+            string host_key_path = string("/etc/ssh/ssh_host_") + (type) + "_key.pub";
+
             string commandToGetFingerPrint = string("ssh-keygen -lf ") + host_key_path;
             shared_ptr<CommandResult> fingerPrintResult = CommandExecuter::RunGetOutput(commandToGetFingerPrint.c_str());
             vector<string> splitResult;

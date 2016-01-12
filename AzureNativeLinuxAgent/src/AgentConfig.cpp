@@ -1,13 +1,9 @@
-
 #include "AgentConfig.h"
 #include "Logger.h"
 using namespace std;
 
 void AgentConfig::LoadConfig()
 {
-#ifdef _WIN32
-    //windows code goes here
-#else
     //linux code goes here
     if (this->config != NULL) {
         delete this->config;
@@ -23,24 +19,19 @@ void AgentConfig::LoadConfig()
     {
         Logger::getInstance().Error("I/O error while reading file.");
     }
-#endif
 }
 
-string * AgentConfig::getConfig(const char * propertyName)
+int AgentConfig::getConfig(const char * propertyName,string &value)
 {
-    string *result = NULL;
-#ifdef _WIN32
-    return result;
-#else
     try
     {
         Setting &propertyValue = this->config->lookup(propertyName);
-        result = new string(propertyValue.c_str());
+        value = string(propertyValue.c_str());
+        return 0;
     }
     catch (SettingNotFoundException e)
     {
         Logger::getInstance().Error("SettingNotFoundException");
+        return 1;
     }
-    return result;
-#endif
 }

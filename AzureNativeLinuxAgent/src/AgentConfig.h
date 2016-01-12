@@ -1,13 +1,8 @@
 ﻿#pragma once
 #include <string>
 using namespace std;
-#ifdef _WIN32
-//windows code goes here
-#else
-//linux code goes here
 #include <libconfig.h++>
 using namespace libconfig;
-#endif
 class AgentConfig
 {
 public:
@@ -17,7 +12,7 @@ public:
         return instance;
     }
     void LoadConfig();
-    string * getConfig(const char * propertyName);
+    int getConfig(const char * propertyName, string &value);
 private:
     AgentConfig() {
     }

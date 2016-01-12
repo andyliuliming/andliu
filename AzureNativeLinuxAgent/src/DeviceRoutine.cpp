@@ -18,19 +18,26 @@ DeviceRoutine::DeviceRoutine()
 void DeviceRoutine::setIsciTimeOut()
 {
     AgentConfig::getInstance().LoadConfig();
-    string *timeOut = AgentConfig::getInstance().getConfig("OS_RootDeviceScsiTimeout");
-    Logger::getInstance().Verbose("timeout set to:");
-    Logger::getInstance().Verbose(timeOut->c_str());
-    delete timeOut;
-    timeOut = NULL;
+    string timeOut;
+    int getTimeOutResult = AgentConfig::getInstance().getConfig("OS_RootDeviceScsiTimeout", timeOut);
+    Logger::getInstance().Verbose("timeout set to:", timeOut.c_str());
+    Logger::getInstance().Verbose(timeOut.c_str());
+    if (getTimeOutResult == 0)
+    {
+        #ifdef BSD
+        if timeout:
+        Run("sysctl kern.cam.da.default_timeout=" + timeout)
+        #else
+        /*for diskName in[disk for disk in os.listdir("/sys/block") if disk.startswith("sd")] :
+            self.setBlockDeviceTimeout(diskName, scsiTimeout)*/
+        #endif
+    }
 }
 
 string * DeviceRoutine::findRomDevice()
 {
     string *result = NULL;
-#ifdef _WIN32
-    return result;
-#elif defined BSD
+#ifdef BSD
     //TODO just get the information from /proc/sys/dev/cdrom/info
     DIR           *d;
     struct dirent *dir;
@@ -75,7 +82,7 @@ string * DeviceRoutine::findRomDevice()
     a loop. The loop will be executed for each member in
     devices, setting dev_list_entry to a list entry
     which contains the device's path in /sys. */
-    
+
     udev_list_entry_foreach(dev_list_entry, devices) {
         const char *path;
 

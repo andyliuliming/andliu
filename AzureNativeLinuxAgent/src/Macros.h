@@ -52,6 +52,7 @@
 #define VMM_CONFIG_FILE_NAME ("linuxosconfiguration.xml")
 #define VMM_CONFIG_FILE_FULL_PATH ("/mnt/cdrom/secure/linuxosconfiguration.xml")
 #define WAAGENT_LIB_BASE_DIR  ("/var/lib/waagent/")
+#define PROVISIONED_FILE_PATH ("/var/lib/waagent/provisioned")
 #define WAAGENT_NAME ("AzureNativeLinuxAgent")
 #define WAAGENT_PID_FILE ("/var/run/native_waagent.pid")
 #define WAAGENT_SYSLOG_NAME ("AzureNativeLinuxAgent")

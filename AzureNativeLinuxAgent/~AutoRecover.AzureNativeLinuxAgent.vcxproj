@@ -170,7 +170,6 @@
     <ClInclude Include="src\StatusReporter.h" />
     <ClInclude Include="src\StringUtil.h" />
     <ClInclude Include="src\UserManager.h" />
-    <ClInclude Include="src\VMMStartup.h" />
     <ClInclude Include="src\XmlRoutine.h" />
     <ClInclude Include="src\ZipRoutine.h" />
   </ItemGroup>
@@ -202,7 +201,6 @@
     <ClCompile Include="src\StatusReporter.cpp" />
     <ClCompile Include="src\StringUtil.cpp" />
     <ClCompile Include="src\UserManager.cpp" />
-    <ClCompile Include="src\VMMStartup.cpp" />
     <ClCompile Include="src\XmlRoutine.cpp" />
     <ClCompile Include="src\ZipRoutine.cpp" />
   </ItemGroup>
