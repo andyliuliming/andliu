@@ -6,10 +6,7 @@
 #include "JsonRoutine.h"
 #include "Logger.h"
 #include "Macros.h"
-#ifdef _WIN32
-#else
 #include "ZipRoutine.h"
-#endif
 void ExtensionsConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, int i, const xmlChar* pluginXpathManifestExpr)
 {
     xmlXPathObjectPtr xpathManifestObj = XmlRoutine::getNodes(manifestXmlDoc, pluginXpathManifestExpr, NULL);
@@ -20,15 +17,19 @@ void ExtensionsConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, int i
         xmlXPathObjectPtr versionObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], BAD_CAST "./Version/text()");
         string currentVersion = string((const char*)versionObjects->nodesetval->nodeTab[0]->content);
         xmlXPathFreeObject(versionObjects);
-        if (currentVersion == extensionConfigs[i]->version)
+        if (currentVersion == this->extensionConfigs[i]->version)
         {
             // downloading the bundles
             xmlXPathObjectPtr uriObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], BAD_CAST "./Uris/Uri/text()");
-            string bundleFilePath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + extensionConfigs[i]->name + "_" + extensionConfigs[i]->version + ".zip";
+            string bundleFilePath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + this->extensionConfigs[i]->name + "_" + this->extensionConfigs[i]->version + ".zip";
             HttpRoutine::GetToFile((const char*)(uriObjects->nodesetval->nodeTab[0]->content), NULL, bundleFilePath.c_str());
-            string *extensionPath = FileOperator::get_extension_path(extensionConfigs[i]->name.c_str(), extensionConfigs[i]->version.c_str());
+            string *extensionPath = FileOperator::get_extension_path(this->extensionConfigs[i]->name.c_str(), this->extensionConfigs[i]->version.c_str());
             FileOperator::make_dir(extensionPath->c_str());
             ZipRoutine::UnZipToDirectory(bundleFilePath.c_str(), extensionPath->c_str());
+
+            string changePermissionCommand = string("find ") + *extensionPath + " -type f | xargs chmod  u+x ";
+            CommandExecuter::RunGetOutput(changePermissionCommand.c_str());
+
             delete extensionPath;
             extensionPath = NULL;
             break;
@@ -36,14 +37,24 @@ void ExtensionsConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, int i
     }
     xmlXPathFreeObject(xpathManifestObj);
 }
+
 ExtensionsConfig::ExtensionsConfig()
 {
 }
 
+void ExtensionsConfig::ReportExtensionsStatus()
+{
+    Logger::getInstance().Verbose("start report extensions status.");
+    for (int i = 0; i < this->extensionConfigs.size(); i++)
+    {
+        string *extensionPath = FileOperator::get_extension_path(this->extensionConfigs[i]->name.c_str(), this->extensionConfigs[i]->version.c_str());
+
+    }
+    Logger::getInstance().Verbose("end report extensions status.");
+}
+
 
 void ExtensionsConfig::Parse(string * extensionsConfigText) {
-#ifdef _WIN32
-#else
     xmlDocPtr extensionsConfigDoc = xmlParseMemory(extensionsConfigText->c_str(), extensionsConfigText->size());
     xmlNodePtr root = xmlDocGetRootElement(extensionsConfigDoc);
 
@@ -128,6 +139,10 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
 
             const xmlChar* internalPluginXpathManifestExpr = xmlCharStrdup("/PluginVersionManifest/InternalPlugins/Plugin");
             this->DownloadExtractExtensions(manifestXmlDoc, i, internalPluginXpathManifestExpr);
+
+            /*handler_env = '[{  "name": "' + name + '", "seqNo": "' + seqNo + '", "version": 1.0,  "handlerEnvironment": {    "logFolder": "' + os.path.dirname(p.plugin_log) + '",    "configFolder": "' + root + '/config",    "statusFolder": "' + root + '/status",    "heartbeatFile": "' + root + '/heartbeat.log"}}]'
+                SetFileContents(root + '/HandlerEnvironment.json', handler_env)*/
+
             delete internalPluginXpathManifestExpr;
             internalPluginXpathManifestExpr = NULL;
 
@@ -180,8 +195,6 @@ void ExtensionsConfig::Parse(string * extensionsConfigText) {
     }
     xmlFreeDoc(extensionsConfigDoc);
     xmlCleanupParser();
-
-#endif
 }
 
 void ExtensionsConfig::Process()
@@ -194,18 +207,26 @@ void ExtensionsConfig::Process()
         string * extensionPath = FileOperator::get_extension_path(this->extensionConfigs[i]->name.c_str(),
             this->extensionConfigs[i]->version.c_str());
         string manifestFilePath = *extensionPath + "/HandlerManifest.json";
-        delete extensionPath;
-        extensionPath = NULL;
+        
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         HandlerManifest * handlerManifest = JsonRoutine::ParseHandlerManifest(manifestFilePath.c_str());
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-        CommandResultPtr installResult = CommandExecuter::RunGetOutput(handlerManifest->installCommand);
-        CommandResultPtr enableResult = CommandExecuter::RunGetOutput(handlerManifest->enableCommand);
+
+        CommandExecuter::PosixSpawn(handlerManifest->installCommand, extensionPath->c_str());
+        CommandExecuter::PosixSpawn(handlerManifest->enableCommand, extensionPath->c_str());
+
+        delete extensionPath;
+        extensionPath = NULL;
+        delete handlerManifest;
+        handlerManifest = NULL;
         Logger::getInstance().Verbose("end handling extension");
     }
     Logger::getInstance().Verbose("end processing extensions.");
+
+    this->ReportExtensionsStatus();
 }
 
 ExtensionsConfig::~ExtensionsConfig()
 {
+
 }
