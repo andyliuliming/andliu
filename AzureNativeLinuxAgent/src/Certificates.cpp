@@ -57,8 +57,6 @@ void Certificates::Parse(string * certificatesText)
 
 void Certificates::Process()
 {
-#ifdef _WIN32
-#else
     xmlDocPtr doc = xmlParseFile(CERTIFICATIONS_XML_FILE_NAME);
     xmlNodePtr root = xmlDocGetRootElement(doc);
 
@@ -79,65 +77,72 @@ void Certificates::Process()
     {
         Logger::getInstance().Error(decryptResult->output->c_str());
     }
-    string *certificationsContent = FileOperator::get_content(CERTIFICATIONS_FILE_NAME);
-    vector<string> splitResult;
-    string spliter = "\n";
-    StringUtil::string_split(*certificationsContent, spliter, &splitResult);
-
-    vector<string> privCertItems;
-    vector<string> pubItems;
-    string certItem;
-
-    for (int i = 0; i < splitResult.size(); i++)
+    string certificationsContent;
+    int getContentResult = FileOperator::get_content(CERTIFICATIONS_FILE_NAME, certificationsContent);
+    if (getContentResult == 0)
     {
-        certItem += (splitResult[i] + "\n");
-        if (this->isKeyEndLine(splitResult[i]))
+        vector<string> splitResult;
+        string spliter = "\n";
+        StringUtil::string_split(certificationsContent, spliter, &splitResult);
+
+        vector<string> privCertItems;
+        vector<string> pubItems;
+        string certItem;
+
+        for (int i = 0; i < splitResult.size(); i++)
         {
-            string certItemClone = certItem;
-            privCertItems.push_back(certItemClone);
-            certItem = "";
+            certItem += (splitResult[i] + "\n");
+            if (this->isKeyEndLine(splitResult[i]))
+            {
+                string certItemClone = certItem;
+                privCertItems.push_back(certItemClone);
+                certItem = "";
+            }
+            if (this->isCertificateEndLine(splitResult[i]))
+            {
+                string certItemClone = certItem;
+                pubItems.push_back(certItemClone);
+                certItem = "";
+            }
         }
-        if (this->isCertificateEndLine(splitResult[i]))
+        string tempFileForPubCert = "temp.pem";
+        string tempPriFileForCert = "temppri.pem";
+        map<string, string> thumpPrintPubkeyPair;
+        for (int i = 0; i < pubItems.size(); i++)
         {
-            string certItemClone = certItem;
-            pubItems.push_back(certItemClone);
-            certItem = "";
+            FileOperator::save_file(&pubItems[i], &tempFileForPubCert);
+            string getThumbprint = "openssl x509 -in " + tempFileForPubCert + " -fingerprint -noout";
+            CommandResultPtr getThumbprintResult = CommandExecuter::RunGetOutput(getThumbprint.c_str());
+
+            string thumbPrint = getThumbprintResult->output->c_str();
+            vector<string> fingerPrintSplit;
+            string fingerPrintSpliter = "=";
+            StringUtil::string_split(thumbPrint, fingerPrintSpliter, &fingerPrintSplit);
+            std::string::iterator end_pos = std::remove(fingerPrintSplit[1].begin(), fingerPrintSplit[1].end(), ':');
+            fingerPrintSplit[1].erase(end_pos, fingerPrintSplit[1].end());
+            string getPubKey = string("openssl x509 -in ") + tempFileForPubCert + " -pubkey -noout";
+            CommandResultPtr getPubKeyResult = CommandExecuter::RunGetOutput(getPubKey.c_str());
+            StringUtil::trim(fingerPrintSplit[1]);
+            string fileNameOfPubKey = fingerPrintSplit[1] + ".crt";
+            FileOperator::move_file(tempFileForPubCert.c_str(), fileNameOfPubKey.c_str());
+            thumpPrintPubkeyPair[*(getPubKeyResult->output)] = fingerPrintSplit[1];
+        }
+
+        for (int i = 0; i < privCertItems.size(); i++)
+        {
+            FileOperator::save_file(&privCertItems[i], &tempPriFileForCert);
+            string getPubKey = "openssl rsa -in " + tempPriFileForCert + " -pubout 2> /dev/null";
+            CommandResultPtr getPubKeyResult2 = CommandExecuter::RunGetOutput(getPubKey.c_str());
+            //print the result 
+            string fileNameOfPrivateKey = thumpPrintPubkeyPair[*(getPubKeyResult2->output)] + ".prv";
+            // Logger::getInstance().Log("move file from %s to %s", tempPriFileForCert.c_str(), fileNameOfPrivateKey.c_str());
+            FileOperator::move_file(tempPriFileForCert.c_str(), fileNameOfPrivateKey.c_str());
         }
     }
-    string tempFileForPubCert = "temp.pem";
-    string tempPriFileForCert = "temppri.pem";
-    map<string, string> thumpPrintPubkeyPair;
-    for (int i = 0; i < pubItems.size(); i++)
+    else
     {
-        FileOperator::save_file(&pubItems[i], &tempFileForPubCert);
-        string getThumbprint = "openssl x509 -in " + tempFileForPubCert + " -fingerprint -noout";
-        CommandResultPtr getThumbprintResult = CommandExecuter::RunGetOutput(getThumbprint.c_str());
-
-        string thumbPrint = getThumbprintResult->output->c_str();
-        vector<string> fingerPrintSplit;
-        string fingerPrintSpliter = "=";
-        StringUtil::string_split(thumbPrint, fingerPrintSpliter, &fingerPrintSplit);
-        std::string::iterator end_pos = std::remove(fingerPrintSplit[1].begin(), fingerPrintSplit[1].end(), ':');
-        fingerPrintSplit[1].erase(end_pos, fingerPrintSplit[1].end());
-        string getPubKey = string("openssl x509 -in ") + tempFileForPubCert + " -pubkey -noout";
-        CommandResultPtr getPubKeyResult = CommandExecuter::RunGetOutput(getPubKey.c_str());
-        StringUtil::trim(fingerPrintSplit[1]); 
-        string fileNameOfPubKey = fingerPrintSplit[1] + ".crt";
-        FileOperator::move_file(tempFileForPubCert.c_str(), fileNameOfPubKey.c_str());
-        thumpPrintPubkeyPair[*(getPubKeyResult->output)] = fingerPrintSplit[1];
+        //TODO log the error;
     }
-
-    for (int i = 0; i < privCertItems.size(); i++)
-    {
-        FileOperator::save_file(&privCertItems[i], &tempPriFileForCert);
-        string getPubKey = "openssl rsa -in " + tempPriFileForCert + " -pubout 2> /dev/null";
-        CommandResultPtr getPubKeyResult2 = CommandExecuter::RunGetOutput(getPubKey.c_str());
-        //print the result 
-        string fileNameOfPrivateKey = thumpPrintPubkeyPair[*(getPubKeyResult2->output)] + ".prv";
-       // Logger::getInstance().Log("move file from %s to %s", tempPriFileForCert.c_str(), fileNameOfPrivateKey.c_str());
-        FileOperator::move_file(tempPriFileForCert.c_str(), fileNameOfPrivateKey.c_str());
-    }
-#endif
 }
 
 Certificates::~Certificates()

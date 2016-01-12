@@ -17,8 +17,7 @@ GoalState::GoalState()
 void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
 {
     string goalStateEndpoint = string("http://") + azureEnvironment->wireServerAddress + "/machine/?comp=goalstate";
-#ifdef _WIN32
-#else
+
     //TODO: wrapper up a XML handling in our code
     /* set our custom set of headers */
     HttpResponse * goalStateResponse = HttpRoutine::GetWithDefaultHeader(goalStateEndpoint.c_str());
@@ -87,35 +86,43 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
     if (this->certificatesUrl != NULL)
     {
         this->certificates = new Certificates();
-        string * certificationFileContent = FileOperator::get_content(TRANSPORT_CERT_PUB);
-        vector<string> splitResult;
-        string spliter = "\n";
-        StringUtil::string_split(*certificationFileContent, spliter, &splitResult);
-        string pureCertText;
-        for (int i = 0; i < splitResult.size(); i++)
+        string certificationFileContent;
+        int getCertificationFileContentResult = FileOperator::get_content(TRANSPORT_CERT_PUB, certificationFileContent);
+        if (getCertificationFileContentResult == 0)
         {
-            if (splitResult[i].find("CERTIFICATE")== string::npos)
+            vector<string> splitResult;
+            string spliter = "\n";
+            StringUtil::string_split(certificationFileContent, spliter, &splitResult);
+            string pureCertText;
+            for (int i = 0; i < splitResult.size(); i++)
             {
-                pureCertText += splitResult[i];
+                if (splitResult[i].find("CERTIFICATE") == string::npos)
+                {
+                    pureCertText += splitResult[i];
+                }
             }
-        }
-        //TODO get rid of the cert headers.
-        map<string, string> headers;
-        headers["x-ms-agent-name"]= WAAGENT_NAME;
-        headers["x-ms-version"]= WAAGENT_VERSION;
-        headers["x-ms-cipher-name"] = TRANSPORT_CERT_CIPHER_NAME;
-        headers["x-ms-guest-agent-public-x509-cert"] = pureCertText;
-        HttpResponse * certificationsText = HttpRoutine::Get(this->certificatesUrl->c_str(),&headers);
+            //TODO get rid of the cert headers.
+            map<string, string> headers;
+            headers["x-ms-agent-name"] = WAAGENT_NAME;
+            headers["x-ms-version"] = WAAGENT_VERSION;
+            headers["x-ms-cipher-name"] = TRANSPORT_CERT_CIPHER_NAME;
+            headers["x-ms-guest-agent-public-x509-cert"] = pureCertText;
+            HttpResponse * certificationsText = HttpRoutine::Get(this->certificatesUrl->c_str(), &headers);
 
-        // get certificates from the remote using the public cert.
-        this->certificates->Parse(certificationsText->body);
+            // get certificates from the remote using the public cert.
+            this->certificates->Parse(certificationsText->body);
+        }
+        else
+        {
+            // TODO error handling
+        }
     }
     else
     {
         Logger::getInstance().Warning("certificates url is null.");
     }
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-#endif
+
 }
 
 void GoalState::Process()

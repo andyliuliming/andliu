@@ -1,4 +1,3 @@
-
 #include "OvfEnv.h"
 #include "FileOperator.h"
 #include "UserManager.h"
@@ -10,15 +9,13 @@ OvfEnv::OvfEnv()
     configFilePath = new string("/var/lib/waagent/Native_ovf-env.xml");
 }
 
-void OvfEnv::Parse(string * sharedConfigText)
+void OvfEnv::Parse(string &sharedConfigText)
 {
     //TODO: remove the password before saving to disk
-    FileOperator::save_file(sharedConfigText, configFilePath);
-#ifdef _WIN32
-#else
-    xmlDocPtr doc = xmlParseMemory(sharedConfigText->c_str(), sharedConfigText->size());
+    FileOperator::save_file(&sharedConfigText, configFilePath);
+
+    xmlDocPtr doc = xmlParseMemory(sharedConfigText.c_str(), sharedConfigText.size());
     xmlNodePtr root = xmlDocGetRootElement(doc);
-    
 
     map<string, string> namespaces;
     namespaces["oe"] = "http://schemas.dmtf.org/ovf/environment/1";
@@ -28,18 +25,18 @@ void OvfEnv::Parse(string * sharedConfigText)
     this->userName = *(XmlRoutine::getNodeText(doc, userNameXpathExpr, &namespaces));
 
     delete userNameXpathExpr;
+    userNameXpathExpr = NULL;
 
     const xmlChar* passWordXpathExpr = xmlCharStrdup("/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:UserPassword/text()");
     this->passWord = *(XmlRoutine::getNodeText(doc, passWordXpathExpr, &namespaces));
     delete passWordXpathExpr;
-
+    passWordXpathExpr = NULL;
 
     const xmlChar* disableSshPasswordAuthenticationXpathExpr = xmlCharStrdup("/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:DisableSshPasswordAuthentication/text()");
     this->disableSshPasswordAuthentication = *(XmlRoutine::getNodeText(doc, disableSshPasswordAuthenticationXpathExpr, &namespaces));
     delete disableSshPasswordAuthenticationXpathExpr;
 
     xmlFreeDoc(doc);
-#endif
 }
 
 void OvfEnv::Process()
@@ -49,7 +46,8 @@ void OvfEnv::Process()
 
 OvfEnv::~OvfEnv()
 {
-    if (configFilePath != NULL) {
+    if (configFilePath != NULL)
+    {
         delete configFilePath;
         configFilePath = NULL;
     }

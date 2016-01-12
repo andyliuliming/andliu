@@ -1,14 +1,12 @@
-
 #include <stdio.h> 
 #include <string>
-#ifdef _WIN32
-#else
 #include <dirent.h> 
 #include <sys/param.h>
-#endif
 #include "AgentConfig.h"
 #include "DeviceRoutine.h"
+#include "FileOperator.h"
 #include "Logger.h"
+#include "StringUtil.h"
 
 using namespace std;
 DeviceRoutine::DeviceRoutine()
@@ -25,11 +23,29 @@ void DeviceRoutine::setIsciTimeOut()
     if (getTimeOutResult == 0)
     {
         #ifdef BSD
-        if timeout:
-        Run("sysctl kern.cam.da.default_timeout=" + timeout)
+            string commandToSetTimeOut = "sysctl kern.cam.da.default_timeout=" + timeOut;
+            CommandExecuter::RunGetOutput(commandToSetTimeOut.c_str());
         #else
-        /*for diskName in[disk for disk in os.listdir("/sys/block") if disk.startswith("sd")] :
-            self.setBlockDeviceTimeout(diskName, scsiTimeout)*/
+            DIR           *d;
+            struct dirent *dir;
+            d = opendir("/sys/block");
+
+            if (d != NULL)
+            {
+                while ((dir = readdir(d)) != NULL)
+                {
+                    string directoryName = string(dir->d_name);
+                    delete dir;
+                    dir = NULL;
+                    if (directoryName.find("sd")==0)
+                    {
+                        string timeOutFile = "/sys/block/" + directoryName + "/device/timeout";
+                        setBlockDeviceTimeOut(timeOutFile.c_str(), timeOut.c_str());
+                        break;
+                    }
+                }
+                closedir(d);
+            }
         #endif
     }
 }
@@ -48,13 +64,18 @@ string * DeviceRoutine::findRomDevice()
         while ((dir = readdir(d)) != NULL)
         {
             string directoryName = string(dir->d_name);
+
             if (directoryName.find_first_of("acd"))
             {
                 break;
             }
+
+            delete dir;
+            dir = NULL;
         }
         closedir(d);
         result = new string(dir->d_name);
+
         delete dir;
         dir = NULL;
     }
@@ -129,6 +150,26 @@ string * DeviceRoutine::findRomDevice()
 #endif
 }
 
+
+void DeviceRoutine::setBlockDeviceTimeOut(const char * timeOutFile, const char * timeOut)
+{
+    string timeOutContent;
+    int getContentResult =  FileOperator::get_content(timeOutFile, timeOutContent);
+    if (getContentResult == 0)
+    {
+        StringUtil::trim(timeOutContent);
+        string timeOutToSet = string(timeOut);
+        if (timeOutContent != timeOutToSet)
+        {
+            FileOperator::save_file(timeOutToSet, string(timeOutFile));
+        }
+        //TODO implement this.
+    }
+    else
+    {
+        //TODO implement this.
+    }
+}
 
 DeviceRoutine::~DeviceRoutine()
 {

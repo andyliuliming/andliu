@@ -11,7 +11,7 @@ private:
     string disableSshPasswordAuthentication;
 public:
     OvfEnv(); 
-    void Parse(string * sharedConfigText);
+    void Parse(string &sharedConfigText);
     void Process();
     ~OvfEnv();
 };

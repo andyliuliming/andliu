@@ -40,14 +40,20 @@ int Provisioner::Prosess()
     string command("mount " + *romDevicePath + " " + SECURE_MOUNT_POINT);
     CommandExecuter::RunGetOutput(command.c_str());
     string ovfEnvFullPath = string(OVF_ENV_FILE_FULL_PATH);
-    string * fileContent = FileOperator::get_content(OVF_ENV_FILE_FULL_PATH);
+    string ovfFileContent;
+    int getOvfFileContentResult = FileOperator::get_content(OVF_ENV_FILE_FULL_PATH, ovfFileContent);
     string umount2 = string("umount ") + SECURE_MOUNT_POINT;
     CommandExecuter::RunGetOutput(umount2.c_str());
-
-    OvfEnv *ovfEnv = new OvfEnv();
-    ovfEnv->Parse(fileContent);
-    ovfEnv->Process();
-
+    if (getOvfFileContentResult == 0)
+    {
+        OvfEnv *ovfEnv = new OvfEnv();
+        ovfEnv->Parse(ovfFileContent);
+        ovfEnv->Process();
+    }
+    else
+    {
+        //TODO error handling.
+    }
     // 2. This is done here because regenerated SSH host key pairs may be potentially overwritten when processing the ovfxml
 
     /* fingerprint = RunGetOutput("ssh-keygen -lf /etc/ssh/ssh_host_" + type + "_key.pub")[1].rstrip().split()[1].replace(':', '')

@@ -27,11 +27,11 @@ int FileOperator::make_dir(const char* dir_path)
     return dir_err;
 }
 
-void FileOperator::save_file(const string * content, const string * fileName)
+void FileOperator::save_file(const string & content, const string & fileName)
 {
     ofstream myfile;
-    myfile.open(*fileName);
-    myfile << *content;
+    myfile.open(fileName);
+    myfile << content;
     myfile.close();
 }
 
@@ -43,11 +43,26 @@ void FileOperator::save_file(const char * content, long size, const char * fileN
     myfile.close();
 }
 
-string * FileOperator::get_content(const char * fileName)
+int FileOperator::get_content(const char * fileName,string &content)
 {
-    ifstream t(fileName);
-    string *str = new string((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
-    return str;
+    if(file_exists(fileName))
+    {
+        std::ifstream t;
+        t.open(fileName);
+        std::string line;
+        while (t)
+        {
+            std::getline(t, line);
+            // ... Append line to buffer and go on
+            content.append(line);
+        }
+        t.close();
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
 }
 
 string * FileOperator::get_extension_path(const char* pluginName, const char* pluginVersion)
