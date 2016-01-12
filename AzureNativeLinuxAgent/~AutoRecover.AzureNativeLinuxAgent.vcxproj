@@ -88,6 +88,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Personal\cygwin\usr\include\libxml2;C:\Personal\cygwin\usr\include\json-glib-1.0;C:\Personal\cygwin\usr\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,6 +147,7 @@
     <ClInclude Include="src\AgentConfig.h" />
     <ClInclude Include="src\AzureEnvironment.h" />
     <ClInclude Include="src\Certificates.h" />
+    <ClInclude Include="src\CertificationRoutine.h" />
     <ClInclude Include="src\CommandExecuter.h" />
     <ClInclude Include="src\CommandResult.h" />
     <ClInclude Include="src\Deprovisioner.h" />
@@ -177,6 +179,7 @@
     <ClCompile Include="src\AzureEnvironment.cpp" />
     <ClCompile Include="src\AzureNativeLinuxAgent.cpp" />
     <ClCompile Include="src\Certificates.cpp" />
+    <ClCompile Include="src\CertificationRoutine.cpp" />
     <ClCompile Include="src\CommandExecuter.cpp" />
     <ClCompile Include="src\CommandResult.cpp" />
     <ClCompile Include="src\Deprovisioner.cpp" />
@@ -187,6 +190,7 @@
     <ClCompile Include="src\GoalState.cpp" />
     <ClCompile Include="src\HandlerManifest.cpp" />
     <ClCompile Include="src\HostingEnvironmentConfig.cpp" />
+    <ClCompile Include="src\HttpResponse.cpp" />
     <ClCompile Include="src\HttpRoutine.cpp" />
     <ClCompile Include="src\JsonRoutine.cpp" />
     <ClCompile Include="src\Logger.cpp" />
@@ -210,7 +214,7 @@
     <None Include="configure.ac" />
     <None Include="configure.scan" />
     <None Include="COPYING" />
-    <None Include="data\waagent.conf" />
+    <None Include="data\waagent_native.conf" />
     <None Include="INSTALL" />
     <None Include="Makefile" />
     <None Include="Makefile.am" />

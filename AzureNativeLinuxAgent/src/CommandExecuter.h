@@ -10,6 +10,7 @@ class CommandExecuter
 {
 public:
     CommandExecuter();
+    static void PosixSpawn(const char* cmd, const char* cwd);
     static CommandResultPtr RunGetOutput(const char* cmd);
     ~CommandExecuter();
 };

@@ -1,8 +1,5 @@
 #include "JsonRoutine.h"
 
-#ifdef _WIN32
-#else
-#endif
 using namespace std;
 
 JsonRoutine::JsonRoutine()
@@ -12,8 +9,6 @@ JsonRoutine::JsonRoutine()
 HandlerManifest * JsonRoutine::ParseHandlerManifest(const char * filePath)
 {
     HandlerManifest * result = nullptr;
-#ifdef _WIN32
-#else
     JsonParser *parser;
     JsonNode *node;
     JsonReader *reader;
@@ -43,7 +38,6 @@ HandlerManifest * JsonRoutine::ParseHandlerManifest(const char * filePath)
         json_reader_end_member(reader);
         json_reader_end_member(reader);
     }
-#endif
     return result;
 }
 

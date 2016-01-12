@@ -13,6 +13,7 @@ private:
     void DownloadExtractExtensions(xmlDocPtr manifestXmlDoc,int i, const xmlChar* pluginXpathManifestExpr);
 public:
     ExtensionsConfig();
+    void ReportExtensionsStatus();
     void Parse(string * extensionsConfigText);
     void Process();
     ~ExtensionsConfig();
