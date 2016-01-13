@@ -2,11 +2,8 @@
 #include "Logger.h"
 using namespace std;
 
-#ifdef _WIN32
-// your windows code goes here.
-#else
 char HttpRoutine::errorBuffer[CURL_ERROR_SIZE];
-#endif 
+
 
 HttpRoutine::HttpRoutine()
 {
@@ -59,8 +56,6 @@ size_t HttpRoutine::writerToFile(const char * data, size_t size, size_t nmemb, F
     }
 }
 
-#ifdef _WIN32
-#else
 bool HttpRoutine::init_common(CURL *&conn, const char *url)
 {
     CURLcode code;
@@ -90,7 +85,6 @@ bool HttpRoutine::init_common(CURL *&conn, const char *url)
     }
     return true;
 }
-#endif
 
 
 HttpResponse* HttpRoutine::Get(const char * url, map<string, string> *headers)
@@ -98,10 +92,7 @@ HttpResponse* HttpRoutine::Get(const char * url, map<string, string> *headers)
     string *body_buffer = new string();
     HttpResponse *response = new HttpResponse();
     response->body = body_buffer;
-#ifdef _WIN32
 
-    // your windows code.
-#else
     struct curl_slist *chunk = NULL;
     if (headers != NULL)
     {
@@ -162,16 +153,11 @@ HttpResponse* HttpRoutine::Get(const char * url, map<string, string> *headers)
     {
         Logger::getInstance().Error("Failed to get '%s' [%s]\n", url, errorBuffer);
     }
-#endif
     return response;
 }
 
 int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, const char * filePath)
 {
-#ifdef _WIN32
-    // your windows code.
-    return 0;
-#else
     FILE *fp;
     struct curl_slist *chunk = NULL;
     if (headers != NULL)
@@ -226,7 +212,6 @@ int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, cons
         return 1;
     }
     return 0;
-#endif
 
 }
 
@@ -235,9 +220,7 @@ HttpResponse * HttpRoutine::Post(const char * url, map<string, string> * headers
     string *body_buffer = new string();
     HttpResponse * response = new HttpResponse();
     response->body = body_buffer;
-#ifdef _WIN32
-    // your windows code.
-#else
+
     struct curl_slist *chunk = NULL;
     if (headers != NULL)
     {
@@ -299,7 +282,6 @@ HttpResponse * HttpRoutine::Post(const char * url, map<string, string> * headers
     {
         Logger::getInstance().Error("Failed to post '%s' [%s]\n", url, errorBuffer);
     }
-#endif
     return response;
 }
 

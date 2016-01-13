@@ -14,9 +14,9 @@ GoalState::GoalState()
     goalStageFilePrefix = "/var/lib/waagent/Native_GoalState.";
 }
 
-void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
+void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
 {
-    string goalStateEndpoint = string("http://") + azureEnvironment->wireServerAddress + "/machine/?comp=goalstate";
+    string goalStateEndpoint = string("http://") + azureEnvironment.wireServerAddress + "/machine/?comp=goalstate";
 
     //TODO: wrapper up a XML handling in our code
     /* set our custom set of headers */
@@ -108,8 +108,7 @@ void GoalState::UpdateGoalState(AzureEnvironment *azureEnvironment)
             headers["x-ms-version"] = WAAGENT_VERSION;
             headers["x-ms-cipher-name"] = TRANSPORT_CERT_CIPHER_NAME;
             headers["x-ms-guest-agent-public-x509-cert"] = pureCertText;
-            HttpResponse * certificationsText = HttpRoutine::Get(this->certificatesUrl->c_str(), &headers);
-            Logger::getInstance().Warning("certificationsResponse is %s", certificationsText->body->c_str());
+            HttpResponse *certificationsText = HttpRoutine::Get(this->certificatesUrl->c_str(), &headers);
             // get certificates from the remote using the public cert.
             this->certificates->Parse(*(certificationsText->body));
         }

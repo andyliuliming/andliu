@@ -25,7 +25,7 @@ public:
     ExtensionsConfig *extensionsConfig;
     Certificates *certificates;
     GoalState();
-    void UpdateGoalState(AzureEnvironment *azureEnvironment);
+    void UpdateGoalState(AzureEnvironment &azureEnvironment);
     void Process();
     ~GoalState();
 };
