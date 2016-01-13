@@ -20,27 +20,16 @@ void OvfEnv::Parse(string &sharedConfigText)
     namespaces["oe"] = "http://schemas.dmtf.org/ovf/environment/1";
     namespaces["wa"] = "http://schemas.microsoft.com/windowsazure";
 
-    const xmlChar* userNameXpathExpr = xmlCharStrdup("/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:UserName/text()");
-    XmlRoutine::getNodeText(doc, userNameXpathExpr, &namespaces, this->userName);
-
-    delete userNameXpathExpr;
-    userNameXpathExpr = NULL;
-
-    const xmlChar* passWordXpathExpr = xmlCharStrdup("/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:UserPassword/text()");
-    XmlRoutine::getNodeText(doc, passWordXpathExpr, &namespaces, this->passWord);
-    delete passWordXpathExpr;
-    passWordXpathExpr = NULL;
-
-    const xmlChar* disableSshPasswordAuthenticationXpathExpr = xmlCharStrdup("/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:DisableSshPasswordAuthentication/text()");
-    XmlRoutine::getNodeText(doc, disableSshPasswordAuthenticationXpathExpr, &namespaces, this->disableSshPasswordAuthentication);
-    delete disableSshPasswordAuthenticationXpathExpr;
+    XmlRoutine::getNodeText(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:UserName/text()", &namespaces, this->userName);
+    XmlRoutine::getNodeText(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:UserPassword/text()", &namespaces, this->passWord);
+    XmlRoutine::getNodeText(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:DisableSshPasswordAuthentication/text()", &namespaces, this->disableSshPasswordAuthentication);
 
     xmlFreeDoc(doc);
 }
 
 void OvfEnv::Process()
 {
-    UserManager::CreateUser(this->userName.c_str(),this->passWord.c_str());
+    UserManager::CreateUser(this->userName,this->passWord);
 }
 
 OvfEnv::~OvfEnv()

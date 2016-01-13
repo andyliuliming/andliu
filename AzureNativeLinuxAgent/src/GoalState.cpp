@@ -27,41 +27,23 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         xmlDocPtr goalStateDoc = xmlParseMemory(goalStateResponse.body.c_str(), goalStateResponse.body.size());
         xmlNodePtr root = xmlDocGetRootElement(goalStateDoc);
 
-        const xmlChar* incarnationXpathExpr = xmlCharStrdup("/GoalState/Incarnation[1]/text()");
-        XmlRoutine::getNodeText(goalStateDoc, incarnationXpathExpr, NULL, this->incarnation);
-        delete incarnationXpathExpr;
+        XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Incarnation[1]/text()", NULL, this->incarnation);
 
-        const xmlChar* containerIdXpathExpr = xmlCharStrdup("/GoalState/Container/ContainerId/text()");
-        XmlRoutine::getNodeText(goalStateDoc, containerIdXpathExpr, NULL, this->containerId);
-        delete containerIdXpathExpr;
+        XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/ContainerId/text()", NULL, this->containerId);
 
-        const xmlChar* roleInstanceIdXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/InstanceId/text()");
-        XmlRoutine::getNodeText(goalStateDoc, roleInstanceIdXpathExpr, NULL, this->roleInstanceId);
-        delete roleInstanceIdXpathExpr;
+        XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/InstanceId/text()", NULL, this->roleInstanceId);
 
-        const xmlChar* hostingEnvironmentConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/HostingEnvironmentConfig/text()");
-        XmlRoutine::getNodeText(goalStateDoc, hostingEnvironmentConfigXpathExpr, NULL, this->hostingEnvironmentConfigUrl);
-        delete hostingEnvironmentConfigXpathExpr;
+        XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/HostingEnvironmentConfig/text()", NULL, this->hostingEnvironmentConfigUrl);
 
-        const xmlChar* sharedConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/SharedConfig/text()");
-        XmlRoutine::getNodeText(goalStateDoc, sharedConfigXpathExpr, NULL, this->sharedConfigUrl);
-        delete sharedConfigXpathExpr;
+        XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/SharedConfig/text()", NULL, this->sharedConfigUrl);
 
-        const xmlChar* extensionsConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ExtensionsConfig/text()");
-        XmlRoutine::getNodeText(goalStateDoc, extensionsConfigXpathExpr, NULL, this->extensionsConfigUrl);
-        delete extensionsConfigXpathExpr;
+        XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ExtensionsConfig/text()", NULL, this->extensionsConfigUrl);
 
-        const xmlChar* fullConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/FullConfig/text()");
-        XmlRoutine::getNodeText(goalStateDoc, fullConfigXpathExpr, NULL, this->fullConfigUrl);
-        delete fullConfigXpathExpr;
+        XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/FullConfig/text()", NULL, this->fullConfigUrl);
 
-        const xmlChar* configNameXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ConfigName/text()");
-        XmlRoutine::getNodeText(goalStateDoc, configNameXpathExpr, NULL, this->configName);
-        delete configNameXpathExpr;
+        XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ConfigName/text()", NULL, this->configName);
 
-        const xmlChar* certificatesXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/Certificates/text()");
-        XmlRoutine::getNodeText(goalStateDoc, certificatesXpathExpr, NULL, this->certificatesUrl);
-        delete certificatesXpathExpr;
+        XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/Certificates/text()", NULL, this->certificatesUrl);
 
         xmlFreeDoc(goalStateDoc);
 

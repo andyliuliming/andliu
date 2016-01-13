@@ -205,7 +205,7 @@ void ExtensionsConfig::Process()
 
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         HandlerManifest handlerManifest;
-        int parseHandlerManifest = JsonRoutine::ParseHandlerManifest(manifestFilePath.c_str(),handlerManifest);
+        int parseHandlerManifest = JsonRoutine::ParseHandlerManifest(manifestFilePath,handlerManifest);
         if (parseHandlerManifest == 0)
         {
             Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);

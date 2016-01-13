@@ -6,6 +6,6 @@ class JsonRoutine
 {
 public:
     JsonRoutine();
-    static int ParseHandlerManifest(const char * filePath, HandlerManifest &result);
+    static int ParseHandlerManifest(string& filePath, HandlerManifest &result);
     ~JsonRoutine();
 }; 

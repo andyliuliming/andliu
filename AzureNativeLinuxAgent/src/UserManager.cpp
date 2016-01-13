@@ -15,11 +15,9 @@ UserManager::UserManager()
 }
 
 
-int UserManager::CreateUser(const char * userName, const char * passWord)
+int UserManager::CreateUser(const string& userName, const string& passWord)
 {
-    string userNameToCreate = userName;
-
-    struct passwd * existed = getpwnam(userNameToCreate.c_str());
+    struct passwd * existed = getpwnam(userName.c_str());
 
     if (existed != NULL)
     {
@@ -28,7 +26,7 @@ int UserManager::CreateUser(const char * userName, const char * passWord)
     }
     else
     {
-        string command = string("useradd -m ") + userNameToCreate;
+        string command = string("useradd -m ") + userName;
         CommandResult addUserResult;
         CommandExecuter::RunGetOutput(command,addUserResult);
         //TODO deallocate the c_str();
@@ -59,10 +57,11 @@ int UserManager::CreateUser(const char * userName, const char * passWord)
         char * salt = new char[salt_len_val];
         StringUtil::gen_random(salt, salt_len_val);
         string realSalt = crypt_id + salt;
-        char * passWordToSet = crypt(passWord, realSalt.c_str());
+        //TODO check whether the c_str is deallocated.
+        char * passWordToSet = crypt(passWord.c_str(), realSalt.c_str());
         delete salt;
         salt = NULL;
-        string changePasswordCmd = string("usermod -p '") + passWordToSet + "' " + userNameToCreate;
+        string changePasswordCmd = string("usermod -p '") + passWordToSet + "' " + userName;
         delete passWordToSet;
         passWordToSet = NULL;
         CommandResult commandResult;

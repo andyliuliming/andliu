@@ -101,11 +101,14 @@ void XmlRoutine::getNodeProperty(xmlNodePtr node, const char* propertyName, stri
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 }
 
-int XmlRoutine::getNodeText(xmlDocPtr doc, const xmlChar* xpathExpr, map<string, string> * namespaces, string &text)
+int XmlRoutine::getNodeText(xmlDocPtr doc, const char * xpathExpr, map<string, string> * namespaces, string &text)
 {
     /* Evaluate xpath expression */
     //
-    xmlXPathObjectPtr xpathObj = getNodes(doc, xpathExpr, namespaces);
+    const xmlChar* xpathXmlCharExpr = xmlCharStrdup(xpathExpr);
+    xmlXPathObjectPtr xpathObj = getNodes(doc, xpathXmlCharExpr, namespaces);
+    delete xpathXmlCharExpr;
+    xpathXmlCharExpr = NULL;
     if (xpathObj == NULL)
     {
         Logger::getInstance().Error("Error: unable to evaluate xpath expression \"%s\"", xpathExpr);

@@ -6,7 +6,7 @@ JsonRoutine::JsonRoutine()
 {
 }
 
-int JsonRoutine::ParseHandlerManifest(const char * filePath, HandlerManifest &result)
+int JsonRoutine::ParseHandlerManifest(string &filePath, HandlerManifest &result)
 {
     JsonParser *parser;
     JsonNode *node;
@@ -15,8 +15,8 @@ int JsonRoutine::ParseHandlerManifest(const char * filePath, HandlerManifest &re
 
     //g_type_init(); // this is deperecated in 2.36, it's done automatically.
     parser = json_parser_new();  //
-
-    json_parser_load_from_file(parser, filePath, NULL); //
+    //TODO check whether the c_str is deallocated
+    json_parser_load_from_file(parser, filePath.c_str(), NULL); //
     node = json_parser_get_root(parser); //
 
     reader = json_reader_new(node);
