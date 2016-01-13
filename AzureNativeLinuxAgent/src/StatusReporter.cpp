@@ -1,7 +1,7 @@
 #include "HttpRoutine.h"
 #include "Logger.h"
 #include "StatusReporter.h"
-
+#include "StringUtil.h"
 StatusReporter::StatusReporter()
 {
 }
@@ -23,6 +23,7 @@ int StatusReporter::ReportReady(AzureEnvironment &environment, GoalState & goalS
     HttpResponse * response = HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str());
     Logger::getInstance().Verbose("report ready status result %d", response->status_code);
     incarnationValue = response->headers->find("x-ms-latest-goal-state-incarnation-number")->second;
+    StringUtil::trim(incarnationValue);
     delete response;
     response = NULL;
     return 0;

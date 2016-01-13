@@ -79,8 +79,9 @@ int main(void)
         // a. UpdateGoalState
         // b. process goal state
         if (justStarted
-            || goalState.incarnation != incarnationReturned)
+            || goalState.incarnation.compare(incarnationReturned) != 0)
         {
+            Logger::getInstance().Verbose("incarnation in goal state is %s, incarnaitonReturned is %s", goalState.incarnation.c_str(), incarnationReturned.c_str());
             justStarted = false;
             Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
             Logger::getInstance().Verbose("start goal state");

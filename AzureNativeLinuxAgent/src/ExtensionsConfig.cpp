@@ -119,18 +119,19 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
     {
         Logger::getInstance().Verbose("download/extract extension %s", this->extensionConfigs[i]->name.c_str());
         // get the manifest, get the bundle zip file location, download it, extract it.
-        HttpResponse *response  = HttpRoutine::Get(this->extensionConfigs[i]->location.c_str(), NULL);
-        if (response == NULL)
+        HttpResponse response;
+        int getResult = HttpRoutine::Get(this->extensionConfigs[i]->location.c_str(), NULL,response);
+        if (getResult != 0)
         {
-            response = HttpRoutine::Get(this->extensionConfigs[i]->failoverLocation.c_str(), NULL);
+            getResult = HttpRoutine::Get(this->extensionConfigs[i]->failoverLocation.c_str(), NULL, response);
         }
 
-        if (response != NULL)
+        if (getResult != 0)
         {
             // download the extension bundle zip.
             string filepath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + this->extensionConfigs[i]->name + "." + incarnationStr + ".manifest";
-            FileOperator::save_file(*response->body, filepath);
-            xmlDocPtr manifestXmlDoc = xmlParseMemory(response->body->c_str(), response->body->size());
+            FileOperator::save_file(*response.body, filepath);
+            xmlDocPtr manifestXmlDoc = xmlParseMemory(response.body->c_str(), response.body->size());
             const xmlChar* pluginXpathManifestExpr = xmlCharStrdup("/PluginVersionManifest/Plugins/Plugin");
             this->DownloadExtractExtensions(manifestXmlDoc, i, pluginXpathManifestExpr);
             delete pluginXpathManifestExpr;

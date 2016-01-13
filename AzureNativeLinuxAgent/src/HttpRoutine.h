@@ -21,8 +21,8 @@ private:
 
 public:
     HttpRoutine();
-    static HttpResponse* GetWithDefaultHeader(const char *url);
-    static HttpResponse* Get(const char * url, map<string, string> * headers);
+    static int GetWithDefaultHeader(const char *url, HttpResponse &response);
+    static int Get(const char * url, map<string, string> * headers, HttpResponse &response);
     static int GetToFile(const char * url, map<string, string> * headers, const char * filePath);
     static HttpResponse* Post(const char * url, map<string, string> * headers, const char * data);
 
