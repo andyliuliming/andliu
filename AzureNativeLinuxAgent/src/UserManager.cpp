@@ -29,7 +29,8 @@ int UserManager::CreateUser(const char * userName, const char * passWord)
     else
     {
         string command = string("useradd -m ") + userNameToCreate;
-        CommandResultPtr addUserResult = CommandExecuter::RunGetOutput(command.c_str());
+        CommandResultPtr addUserResult = CommandExecuter::RunGetOutput(command);
+        //TODO deallocate the c_str();
         Logger::getInstance().Log("user add result: %s", addUserResult->output->c_str());
         AgentConfig::getInstance().LoadConfig();
 

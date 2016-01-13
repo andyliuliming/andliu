@@ -58,11 +58,10 @@ int FileOperator::get_content(const char * fileName, string &content)
     }
 }
 
-string * FileOperator::get_extension_path(const char* pluginName, const char* pluginVersion)
+int FileOperator::get_extension_path(string& pluginName, string& pluginVersion, string&extensionPath)
 {
-    string *extension_path = new string();
-    *extension_path = string(WAAGENT_LIB_BASE_DIR) + "/Native_" + string(pluginName) + "_" + string(pluginVersion) + "/";
-    return extension_path;
+    extensionPath = string(WAAGENT_LIB_BASE_DIR) + "/Native_" + pluginName + "_" + pluginVersion + "/";
+    return 0;
 }
 
 

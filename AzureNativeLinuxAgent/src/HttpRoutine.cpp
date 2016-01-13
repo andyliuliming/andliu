@@ -9,16 +9,6 @@ HttpRoutine::HttpRoutine()
 {
 }
 
-int HttpRoutine::GetWithDefaultHeader(const char *url, HttpResponse &response)
-{
-    map<string, string> headers;
-    headers["x-ms-agent-name"] = WAAGENT_NAME;
-    headers["Content-Type"] = "text/xml; charset=utf-8";
-    headers["x-ms-version"] = WAAGENT_VERSION;
-    int getResult = HttpRoutine::Get(url, &headers, response);
-    return getResult;
-}
-
 size_t HttpRoutine::writer(const char *data, size_t size, size_t nmemb, string *writerData)
 {
     if (writerData == NULL)
@@ -86,8 +76,22 @@ bool HttpRoutine::init_common(CURL *&conn, const char *url)
 }
 
 
+
+int HttpRoutine::GetWithDefaultHeader(const char *url, HttpResponse &response)
+{
+    map<string, string> headers;
+    headers["x-ms-agent-name"] = WAAGENT_NAME;
+    headers["Content-Type"] = "text/xml; charset=utf-8";
+    headers["x-ms-version"] = WAAGENT_VERSION;
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    int getResult = HttpRoutine::Get(url, &headers, response);
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    return getResult;
+}
+
 int HttpRoutine::Get(const char * url, map<string, string> * headers, HttpResponse &response)
 {
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     int returnCode = 0;
 
     struct curl_slist *chunk = NULL;
@@ -111,28 +115,28 @@ int HttpRoutine::Get(const char * url, map<string, string> * headers, HttpRespon
     code = curl_easy_setopt(conn, CURLOPT_HEADERFUNCTION, header_callback);
     if (code != CURLE_OK)
     {
-        Logger::getInstance().Error("Failed to set header callback [%s]\n", errorBuffer);
+        Logger::getInstance().Error("Failed to set header callback [%s]", errorBuffer);
         returnCode = 1;
     }
 
     code = curl_easy_setopt(conn, CURLOPT_WRITEHEADER, &response);
     if (code != CURLE_OK)
     {
-        Logger::getInstance().Error("Failed to set header data [%s]\n", errorBuffer);
+        Logger::getInstance().Error("Failed to set header data [%s]", errorBuffer);
         returnCode = 1;
     }
 
     code = curl_easy_setopt(conn, CURLOPT_WRITEFUNCTION, writer);
     if (code != CURLE_OK)
     {
-        Logger::getInstance().Error("Failed to set writer [%s]\n", errorBuffer);
+        Logger::getInstance().Error("Failed to set writer [%s]", errorBuffer);
         returnCode = 1;
     }
 
     code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, &response.body);
     if (code != CURLE_OK)
     {
-        Logger::getInstance().Error("Failed to set write data [%s]\n", errorBuffer);
+        Logger::getInstance().Error("Failed to set write data [%s]", errorBuffer);
         returnCode = 1;
     }
 
@@ -148,9 +152,10 @@ int HttpRoutine::Get(const char * url, map<string, string> * headers, HttpRespon
     curl_slist_free_all(chunk);
     if (code != CURLE_OK)
     {
-        Logger::getInstance().Error("Failed to get '%s' [%s]\n", url, errorBuffer);
+        Logger::getInstance().Error("Failed to get '%s' [%s]", url, errorBuffer);
         returnCode = 1;
     }
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     return returnCode;
 }
 

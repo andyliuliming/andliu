@@ -17,15 +17,21 @@ CommandExecuter::CommandExecuter()
 {
 }
 
-void CommandExecuter::PosixSpawn(const char* cmd,const char* cwd)
+void CommandExecuter::PosixSpawn(string& cmd,string &cwd)
 {
     pid_t pid;
     int status;
     pid = fork();
     if (pid == 0)
     {
-        int chDirResult = chdir(cwd);
-        CommandResultPtr installResult = CommandExecuter::RunGetOutput(cmd);
+        const char * cwd_str = cwd.c_str();
+        int chDirResult = chdir(cwd_str);
+        delete cwd_str;
+        cwd_str = NULL;
+        const char * cmd_str = cmd.c_str();
+        delete cmd_str;
+        cmd_str = NULL;
+        CommandResultPtr installResult = CommandExecuter::RunGetOutput(cmd_str);
         if (installResult->exitCode != 0)
         {
             Logger::getInstance().Error("subprocess exit with code:%d, output:%s", installResult->exitCode, installResult->output->c_str());
@@ -46,6 +52,15 @@ void CommandExecuter::PosixSpawn(const char* cmd,const char* cwd)
     }
 }
 
+CommandResultPtr CommandExecuter::RunGetOutput(string &cmd)
+{
+    const char * cmd_str = cmd.c_str();
+    CommandResultPtr result = RunGetOutput(cmd_str);
+    delete cmd_str;
+    cmd_str = NULL;
+    return result;
+}
+
 CommandResultPtr CommandExecuter::RunGetOutput(const char* cmd) {
     CommandResultPtr commandResult = make_shared<CommandResult>();
     FILE* pipe = POPEN(cmd, "r");
@@ -61,6 +76,7 @@ CommandResultPtr CommandExecuter::RunGetOutput(const char* cmd) {
     {
         if (fgets(buffer, 128, pipe) != NULL)
         {
+            //TODO error use this?
             result->append(buffer);
         }
     }

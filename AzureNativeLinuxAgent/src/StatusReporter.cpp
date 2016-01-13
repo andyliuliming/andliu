@@ -23,7 +23,7 @@ int StatusReporter::ReportReady(AzureEnvironment &environment, GoalState & goalS
     HttpResponse response;
     int postResult = HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str(), response);
     Logger::getInstance().Verbose("report ready status result %d", response.status_code);
-    incarnationValue = response.headers->find("x-ms-latest-goal-state-incarnation-number")->second;
+    incarnationValue = response.headers.find("x-ms-latest-goal-state-incarnation-number")->second;
     StringUtil::trim(incarnationValue);
     return 0;
 }

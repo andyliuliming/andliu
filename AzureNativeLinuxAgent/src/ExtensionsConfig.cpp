@@ -10,7 +10,7 @@
 void ExtensionsConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, int i, const xmlChar* pluginXpathManifestExpr)
 {
     xmlXPathObjectPtr xpathManifestObj = XmlRoutine::getNodes(manifestXmlDoc, pluginXpathManifestExpr, NULL);
-    
+
     xmlNodeSetPtr pluginManifestNodes = xpathManifestObj->nodesetval;
     for (int j = 0; j < pluginManifestNodes->nodeNr; j++)
     {
@@ -23,15 +23,13 @@ void ExtensionsConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, int i
             xmlXPathObjectPtr uriObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], BAD_CAST "./Uris/Uri/text()");
             string bundleFilePath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + this->extensionConfigs[i]->name + "_" + this->extensionConfigs[i]->version + ".zip";
             HttpRoutine::GetToFile((const char*)(uriObjects->nodesetval->nodeTab[0]->content), NULL, bundleFilePath.c_str());
-            string *extensionPath = FileOperator::get_extension_path(this->extensionConfigs[i]->name.c_str(), this->extensionConfigs[i]->version.c_str());
-            FileOperator::make_dir(extensionPath->c_str());
-            ZipRoutine::UnZipToDirectory(bundleFilePath.c_str(), extensionPath->c_str());
+            string extensionPath;
+            FileOperator::get_extension_path(this->extensionConfigs[i]->name, this->extensionConfigs[i]->version, extensionPath);
+            FileOperator::make_dir(extensionPath.c_str());
+            ZipRoutine::UnZipToDirectory(bundleFilePath.c_str(), extensionPath.c_str());
 
-            string changePermissionCommand = string("find ") + *extensionPath + " -type f | xargs chmod  u+x ";
+            string changePermissionCommand = string("find ") + extensionPath + " -type f | xargs chmod  u+x ";
             CommandExecuter::RunGetOutput(changePermissionCommand.c_str());
-
-            delete extensionPath;
-            extensionPath = NULL;
             break;
         }
     }
@@ -47,20 +45,24 @@ void ExtensionsConfig::ReportExtensionsStatus()
     Logger::getInstance().Verbose("start report extensions status.");
     for (int i = 0; i < this->extensionConfigs.size(); i++)
     {
-        string *extensionPath = FileOperator::get_extension_path(this->extensionConfigs[i]->name.c_str(), this->extensionConfigs[i]->version.c_str());
-
+        string extensionPath;
+        FileOperator::get_extension_path(this->extensionConfigs[i]->name, this->extensionConfigs[i]->version, extensionPath);
     }
     Logger::getInstance().Verbose("end report extensions status.");
 }
 
 
 void ExtensionsConfig::Parse(string & extensionsConfigText) {
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
     xmlDocPtr extensionsConfigDoc = xmlParseMemory(extensionsConfigText.c_str(), extensionsConfigText.size());
     xmlNodePtr root = xmlDocGetRootElement(extensionsConfigDoc);
 
-    xmlChar * incarnation = xmlGetProp(root, xmlCharStrdup("goalStateIncarnation"));
+    string incarnationStr;
+    XmlRoutine::getNodeProperty(root, "goalStateIncarnation", incarnationStr);
 
-    string incarnationStr((const char*)incarnation);
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
     string configFilePath = string("/var/lib/waagent/Native_ExtensionsConfig.") + incarnationStr + ".xml";
 
     FileOperator::save_file(extensionsConfigText, configFilePath);
@@ -70,49 +72,22 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
     delete pluginXpathExpr;
     pluginXpathExpr = NULL;
 
-    const xmlChar* statusBlobXpathExpr = xmlCharStrdup("/Extensions/StatusUploadBlob");
-    xmlXPathObjectPtr statusBlobXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, statusBlobXpathExpr, NULL);
-    if (statusBlobXpathObj->nodesetval != NULL
-        && statusBlobXpathObj->nodesetval->nodeNr > 0)
-    {
-        xmlChar * statusBlobTypeText = xmlGetProp(statusBlobXpathObj->nodesetval->nodeTab[0], xmlCharStrdup("statusBlobType"));
-        if (statusBlobTypeText == NULL)
-        {
-            Logger::getInstance().Error("statusBlobTypeText is null");
-        }
-        this->statusBlobType = string((const char*)statusBlobTypeText);
-        // get the status link address
-        const char* statusUploadBlob = (const char*)xmlNodeGetContent(statusBlobXpathObj->nodesetval->nodeTab[0]);
-        this->statusUploadBlobUri = string(statusUploadBlob);
-        Logger::getInstance().Verbose("the status blob type:%s, uri:%s",this->statusBlobType.c_str(),this->statusUploadBlobUri.c_str());
-        delete statusUploadBlob;
-        statusUploadBlob = NULL;
-    }
-    else
-    {
-        Logger::getInstance().Warning("no status blob element found.");
-    }
-    
-    delete statusBlobXpathExpr;
-    statusBlobXpathExpr = NULL;
-    xmlXPathFreeObject(statusBlobXpathObj);
     //statusBlobType
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
     xmlNodeSetPtr nodes = pluginsXpathObj->nodesetval;
     this->extensionConfigs.clear();
     for (int i = 0; i < nodes->nodeNr; i++)
     {
         ExtensionConfig *newConfig = new ExtensionConfig();
-        xmlChar * name = xmlGetProp(nodes->nodeTab[i], xmlCharStrdup("name"));
-        newConfig->name = string((const char*)name);
-        xmlChar * version = xmlGetProp(nodes->nodeTab[i], xmlCharStrdup("version"));
-        newConfig->version = string((const char*)version);
-        xmlChar * location = xmlGetProp(nodes->nodeTab[i], xmlCharStrdup("location"));
-        newConfig->location = string((const char*)location);
-        xmlChar * failoverLocation = xmlGetProp(nodes->nodeTab[i], xmlCharStrdup("failoverlocation"));
-        newConfig->failoverLocation = string((const char*)failoverLocation);
+        XmlRoutine::getNodeProperty(nodes->nodeTab[i], "name", newConfig->name);
+        XmlRoutine::getNodeProperty(nodes->nodeTab[i], "version", newConfig->version);
+        XmlRoutine::getNodeProperty(nodes->nodeTab[i], "location", newConfig->location);
+        XmlRoutine::getNodeProperty(nodes->nodeTab[i], "failoverlocation", newConfig->failoverLocation);
         this->extensionConfigs.push_back(newConfig);
     }
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
     xmlXPathFreeObject(pluginsXpathObj);
 
     for (int i = 0; i < this->extensionConfigs.size(); i++)
@@ -120,7 +95,7 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
         Logger::getInstance().Verbose("download/extract extension %s", this->extensionConfigs[i]->name.c_str());
         // get the manifest, get the bundle zip file location, download it, extract it.
         HttpResponse response;
-        int getResult = HttpRoutine::Get(this->extensionConfigs[i]->location.c_str(), NULL,response);
+        int getResult = HttpRoutine::Get(this->extensionConfigs[i]->location.c_str(), NULL, response);
         if (getResult != 0)
         {
             getResult = HttpRoutine::Get(this->extensionConfigs[i]->failoverLocation.c_str(), NULL, response);
@@ -164,35 +139,54 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
         for (int pluginIndex = 0; pluginIndex < pluginSettingsNodeSet->nodeNr; pluginIndex++)
         {
             Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-            xmlChar * pluginName = xmlGetProp(pluginSettingsNodeSet->nodeTab[pluginIndex], xmlCharStrdup("name"));
-            xmlChar * pluginVersion = xmlGetProp(pluginSettingsNodeSet->nodeTab[pluginIndex], xmlCharStrdup("version"));
+            string pluginName, pluginVersion, seqNo;
+            XmlRoutine::getNodeProperty(pluginSettingsNodeSet->nodeTab[pluginIndex], "name", pluginName);
+            XmlRoutine::getNodeProperty(pluginSettingsNodeSet->nodeTab[pluginIndex], "version", pluginVersion);
+
             xmlXPathObjectPtr runtimeSettingsXpathObject = XmlRoutine::findNodeByRelativeXpath(extensionsConfigDoc,
                 pluginSettingsNodeSet->nodeTab[pluginIndex],
                 BAD_CAST "./RuntimeSettings");
-            xmlChar * seqNo = xmlGetProp(runtimeSettingsXpathObject->nodesetval->nodeTab[0], xmlCharStrdup("seqNo"));
-            string *extensionPath = FileOperator::get_extension_path((const char*)pluginName, (const char*)pluginVersion);
+            XmlRoutine::getNodeProperty(runtimeSettingsXpathObject->nodesetval->nodeTab[0], "seqNo", seqNo);
+            string extensionPath;
+            FileOperator::get_extension_path(pluginName, pluginVersion, extensionPath);
 
             Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
-            delete pluginName;
-            pluginName = NULL;
-            delete pluginVersion;
-            pluginVersion = NULL;
-
-            string configFolderPath = *extensionPath + "config/";
+            string configFolderPath = extensionPath + "config/";
             FileOperator::make_dir(configFolderPath.c_str());
-            string settingFilePath = configFolderPath + string((const char*)seqNo) + ".settings";
+            string settingFilePath = configFolderPath + seqNo + ".settings";
             //TODO check delete this.
 
             Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
-            const char* runtimeSettingsText = (const char*)xmlNodeGetContent(runtimeSettingsXpathObject->nodesetval->nodeTab[0]);
-            string settingFileContent(runtimeSettingsText);
+            string settingFileContent;
+            XmlRoutine::getNodeContent(runtimeSettingsXpathObject->nodesetval->nodeTab[0], settingFileContent);
             FileOperator::save_file(settingFileContent, settingFilePath);
             Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         }
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     }
+
+
+    const xmlChar* statusBlobXpathExpr = xmlCharStrdup("/Extensions/StatusUploadBlob");
+    xmlXPathObjectPtr statusBlobXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, statusBlobXpathExpr, NULL);
+    delete statusBlobXpathExpr;
+    statusBlobXpathExpr = NULL;
+
+    if (statusBlobXpathObj->nodesetval != NULL
+        && statusBlobXpathObj->nodesetval->nodeNr > 0)
+    {
+        //TODO error handling for the statusBlobType
+        XmlRoutine::getNodeProperty(statusBlobXpathObj->nodesetval->nodeTab[0], "statusBlobType", statusBlobType);
+        XmlRoutine::getNodeContent(statusBlobXpathObj->nodesetval->nodeTab[0], statusBlobType);
+        Logger::getInstance().Verbose("the status blob type:%s, uri:%s", this->statusBlobType.c_str(), this->statusUploadBlobUri.c_str());
+    }
+    else
+    {
+        Logger::getInstance().Warning("no status blob element found.");
+    }
+
+    xmlXPathFreeObject(statusBlobXpathObj);
     xmlFreeDoc(extensionsConfigDoc);
     xmlCleanupParser();
 }
@@ -204,21 +198,23 @@ void ExtensionsConfig::Process()
     {
         //handle it 
         Logger::getInstance().Verbose("start handling extension %s", this->extensionConfigs[i]->name.c_str());
-        string * extensionPath = FileOperator::get_extension_path(this->extensionConfigs[i]->name.c_str(),
-            this->extensionConfigs[i]->version.c_str());
-        string manifestFilePath = *extensionPath + "/HandlerManifest.json";
-        
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-        HandlerManifest * handlerManifest = JsonRoutine::ParseHandlerManifest(manifestFilePath.c_str());
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+        string  extensionPath;
+        FileOperator::get_extension_path(this->extensionConfigs[i]->name, this->extensionConfigs[i]->version, extensionPath);
+        string manifestFilePath = extensionPath + "/HandlerManifest.json";
 
-        CommandExecuter::PosixSpawn(handlerManifest->installCommand, extensionPath->c_str());
-        CommandExecuter::PosixSpawn(handlerManifest->enableCommand, extensionPath->c_str());
-
-        delete extensionPath;
-        extensionPath = NULL;
-        delete handlerManifest;
-        handlerManifest = NULL;
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+        HandlerManifest handlerManifest;
+        int parseHandlerManifest = JsonRoutine::ParseHandlerManifest(manifestFilePath.c_str(),handlerManifest);
+        if (parseHandlerManifest == 0)
+        {
+            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+            CommandExecuter::PosixSpawn(handlerManifest.installCommand, extensionPath);
+            CommandExecuter::PosixSpawn(handlerManifest.enableCommand, extensionPath);
+        }
+        else
+        {
+            //TODO error handling.
+        }
         Logger::getInstance().Verbose("end handling extension");
     }
     Logger::getInstance().Verbose("end processing extensions.");

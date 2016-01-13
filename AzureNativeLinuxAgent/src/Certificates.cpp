@@ -72,7 +72,7 @@ void Certificates::Process()
     xmlFreeDoc(doc);
     string commandToExportCert = string("openssl cms -decrypt -in ") + PROTECTED_SETTINGS_CERTIFICATE_FILE_NAME + " -inkey " + TRANSPORT_CERT_PRIV + " -recip " + TRANSPORT_CERT_PUB + " | openssl pkcs12 -nodes -password pass: -out " + CERTIFICATIONS_FILE_NAME;
 
-    CommandResultPtr decryptResult = CommandExecuter::RunGetOutput(commandToExportCert.c_str());
+    CommandResultPtr decryptResult = CommandExecuter::RunGetOutput(commandToExportCert);
     if (decryptResult->exitCode != 0)
     {
         Logger::getInstance().Error(decryptResult->output->c_str());
@@ -112,18 +112,19 @@ void Certificates::Process()
         {
             FileOperator::save_file(pubItems[i], tempFileForPubCert);
             string getThumbprint = "openssl x509 -in " + tempFileForPubCert + " -fingerprint -noout";
-            CommandResultPtr getThumbprintResult = CommandExecuter::RunGetOutput(getThumbprint.c_str());
+            CommandResultPtr getThumbprintResult = CommandExecuter::RunGetOutput(getThumbprint);
 
-            string thumbPrint = getThumbprintResult->output->c_str();
+            string thumbPrint = *getThumbprintResult->output;
             vector<string> fingerPrintSplit;
             string fingerPrintSpliter = "=";
             StringUtil::string_split(thumbPrint, fingerPrintSpliter, &fingerPrintSplit);
             std::string::iterator end_pos = std::remove(fingerPrintSplit[1].begin(), fingerPrintSplit[1].end(), ':');
             fingerPrintSplit[1].erase(end_pos, fingerPrintSplit[1].end());
             string getPubKey = string("openssl x509 -in ") + tempFileForPubCert + " -pubkey -noout";
-            CommandResultPtr getPubKeyResult = CommandExecuter::RunGetOutput(getPubKey.c_str());
+            CommandResultPtr getPubKeyResult = CommandExecuter::RunGetOutput(getPubKey);
             StringUtil::trim(fingerPrintSplit[1]);
             string fileNameOfPubKey = fingerPrintSplit[1] + ".crt";
+            // TODO deallocate the c_str();
             FileOperator::move_file(tempFileForPubCert.c_str(), fileNameOfPubKey.c_str());
             thumpPrintPubkeyPair[*(getPubKeyResult->output)] = fingerPrintSplit[1];
         }
@@ -132,7 +133,7 @@ void Certificates::Process()
         {
             FileOperator::save_file(privCertItems[i], tempPriFileForCert);
             string getPubKey = "openssl rsa -in " + tempPriFileForCert + " -pubout 2> /dev/null";
-            CommandResultPtr getPubKeyResult2 = CommandExecuter::RunGetOutput(getPubKey.c_str());
+            CommandResultPtr getPubKeyResult2 = CommandExecuter::RunGetOutput(getPubKey);
             //print the result 
             string fileNameOfPrivateKey = thumpPrintPubkeyPair[*(getPubKeyResult2->output)] + ".prv";
             // Logger::getInstance().Log("move file from %s to %s", tempPriFileForCert.c_str(), fileNameOfPrivateKey.c_str());

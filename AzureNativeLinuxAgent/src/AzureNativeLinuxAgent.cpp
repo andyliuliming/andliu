@@ -119,7 +119,7 @@ int main(void)
             string host_key_path = string("/etc/ssh/ssh_host_") + type + "_key.pub";
 
             string commandToGetFingerPrint = string("ssh-keygen -lf ") + host_key_path;
-            CommandResultPtr fingerPrintResult = CommandExecuter::RunGetOutput(commandToGetFingerPrint.c_str());
+            CommandResultPtr fingerPrintResult = CommandExecuter::RunGetOutput(commandToGetFingerPrint);
             vector<string> splitResult;
             string spliter = " ";
             StringUtil::string_split(*(fingerPrintResult->output), spliter, &splitResult);

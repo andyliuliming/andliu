@@ -15,7 +15,7 @@ public:
     static void save_file(const char * content, long size, const char * fileName);
     static void save_file(const string& content, const string& fileName);
     static int get_content(const char *fileName, string&content);
-    static string * get_extension_path(const char* pluginName, const char* version);
+    static int get_extension_path(string& pluginName, string& pluginVersion, string&extensionPath);
     ~FileOperator();
 };
 

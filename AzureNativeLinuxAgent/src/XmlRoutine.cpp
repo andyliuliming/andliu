@@ -6,9 +6,7 @@ using namespace std;
 XmlRoutine::XmlRoutine()
 {
 }
-#ifdef _WIN32
-//windows code goes here
-#else
+
 xmlXPathObjectPtr XmlRoutine::findNodeByRelativeXpath(xmlDocPtr doc, xmlNodePtr rootnode, const xmlChar * xpathExpr)
 {
     xmlXPathContextPtr xpathCtx = xmlXPathNewContext(doc);
@@ -79,6 +77,30 @@ xmlXPathObjectPtr XmlRoutine::getNodes(xmlDocPtr doc, const xmlChar* xpathExpr, 
     return xpathObj;
 }
 
+void XmlRoutine::getNodeContent(xmlNodePtr node, string &value)
+{
+    const char* runtimeSettingsText = (const char*)xmlNodeGetContent(node);
+    value = string(runtimeSettingsText);
+    delete runtimeSettingsText;
+    runtimeSettingsText = NULL;
+}
+
+void XmlRoutine::getNodeProperty(xmlNodePtr node, const char* propertyName, string&value)
+{
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
+    xmlChar * propertyDup = xmlCharStrdup(propertyName);
+    xmlChar * incarnation = xmlGetProp(node, propertyDup);
+    //TODO error handling when the incarnation is not there.
+    value = string((const char*)incarnation);
+    delete incarnation;
+    incarnation = NULL;
+    delete propertyDup;
+    propertyDup = NULL;
+
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+}
+
 string * XmlRoutine::getNodeText(xmlDocPtr doc, const xmlChar* xpathExpr, map<string, string> * namespaces)
 {
     string * result = NULL;
@@ -104,7 +126,6 @@ string * XmlRoutine::getNodeText(xmlDocPtr doc, const xmlChar* xpathExpr, map<st
         return result;
     }
 }
-#endif
 
 XmlRoutine::~XmlRoutine()
 {

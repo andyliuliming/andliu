@@ -39,12 +39,12 @@ int Provisioner::Prosess()
     string *romDevicePath = DeviceRoutine::findRomDevice();
     FileOperator::make_dir(SECURE_MOUNT_POINT);
     string command("mount " + *romDevicePath + " " + SECURE_MOUNT_POINT);
-    CommandExecuter::RunGetOutput(command.c_str());
+    CommandExecuter::RunGetOutput(command);
     string ovfEnvFullPath = string(OVF_ENV_FILE_FULL_PATH);
     string ovfFileContent;
     int getOvfFileContentResult = FileOperator::get_content(OVF_ENV_FILE_FULL_PATH, ovfFileContent);
     string umount2 = string("umount ") + SECURE_MOUNT_POINT;
-    CommandExecuter::RunGetOutput(umount2.c_str());
+    CommandExecuter::RunGetOutput(umount2);
     if (getOvfFileContentResult == 0)
     {
         OvfEnv *ovfEnv = new OvfEnv();

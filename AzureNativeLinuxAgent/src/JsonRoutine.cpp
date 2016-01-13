@@ -6,9 +6,8 @@ JsonRoutine::JsonRoutine()
 {
 }
 
-HandlerManifest * JsonRoutine::ParseHandlerManifest(const char * filePath)
+int JsonRoutine::ParseHandlerManifest(const char * filePath,HandlerManifest &result)
 {
-    HandlerManifest * result = nullptr;
     JsonParser *parser;
     JsonNode *node;
     JsonReader *reader;
@@ -24,21 +23,20 @@ HandlerManifest * JsonRoutine::ParseHandlerManifest(const char * filePath)
     int count = json_reader_count_elements(reader);
     if (count > 0)
     {
-        result = new HandlerManifest();
         json_reader_read_element(reader, 0); //read the i-index element
         json_reader_read_member(reader, "handlerManifest");
 
         json_reader_read_member(reader, "installCommand");
         const char*installCommand = json_reader_get_string_value(reader);
-        result->installCommand = installCommand;
+        result.installCommand = installCommand;
         json_reader_end_member(reader);
         json_reader_read_member(reader, "enableCommand");
         const char *enableCommand = json_reader_get_string_value(reader);
-        result->enableCommand = enableCommand;
+        result.enableCommand = enableCommand;
         json_reader_end_member(reader);
         json_reader_end_member(reader);
     }
-    return result;
+    return 0;
 }
 
 JsonRoutine::~JsonRoutine()

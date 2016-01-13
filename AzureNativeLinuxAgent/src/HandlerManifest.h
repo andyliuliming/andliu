@@ -1,9 +1,12 @@
 #pragma once
+#include <string>
+using namespace std;
+
 class HandlerManifest
 {
 public:
-    const char*installCommand;
-    const char*enableCommand;
+    string installCommand;
+    string enableCommand;
     HandlerManifest();
     ~HandlerManifest();
 };
