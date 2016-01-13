@@ -11,7 +11,6 @@ HttpRoutine::HttpRoutine()
 
 int HttpRoutine::GetWithDefaultHeader(const char *url, HttpResponse &response)
 {
-    string *buffer = NULL;
     map<string, string> headers;
     headers["x-ms-agent-name"] = WAAGENT_NAME;
     headers["Content-Type"] = "text/xml; charset=utf-8";
@@ -159,6 +158,7 @@ int HttpRoutine::Get(const char * url, map<string, string> * headers, HttpRespon
 
 int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, const char * filePath)
 {
+    int returnCode = 0;
     FILE *fp;
     struct curl_slist *chunk = NULL;
     if (headers != NULL)
@@ -179,7 +179,8 @@ int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, cons
     if (fp == NULL)
     {
         Logger::getInstance().Error("fopen result is : %d", fp);
-        return 1;
+        returnCode = 1;
+        return returnCode;
     }
 
     bool initResult = init_common(conn, url);
@@ -198,30 +199,36 @@ int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, cons
         initResult = false;
     }
 
-    if (chunk != NULL) {
+    if (chunk != NULL)
+    {
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
+        if (code != CURLE_OK)
+        {
+            initResult = false;
+        }
     }
-
-    code = curl_easy_perform(conn);
+    if (initResult == true)
+    {
+        code = curl_easy_perform(conn);
+        if (code != CURLE_OK)
+        {
+            Logger::getInstance().Error("Failed to get '%s' [%s]\n", url, errorBuffer);
+            returnCode = 1;
+        }
+    }
     fclose(fp);
     curl_easy_cleanup(conn);
-
     curl_slist_free_all(chunk);
-    if (code != CURLE_OK)
-    {
-        Logger::getInstance().Error("Failed to get '%s' [%s]\n", url, errorBuffer);
-        return 1;
-    }
-    return 0;
+
+    return returnCode;
 
 }
 
-HttpResponse * HttpRoutine::Post(const char * url, map<string, string> * headers, const char * data)
+int HttpRoutine::Post(const char * url, map<string, string> * headers, const char * data, HttpResponse &response)
 {
+    int returnCode = 0;
     string *body_buffer = new string();
-    HttpResponse * response = new HttpResponse();
-    response->body = body_buffer;
-
+    response.body = body_buffer;
     struct curl_slist *chunk = NULL;
     if (headers != NULL)
     {
@@ -246,7 +253,7 @@ HttpResponse * HttpRoutine::Post(const char * url, map<string, string> * headers
         initResult = false;
     }
 
-    code = curl_easy_setopt(conn, CURLOPT_WRITEHEADER, response);
+    code = curl_easy_setopt(conn, CURLOPT_WRITEHEADER, &response);
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to set header data [%s]\n", errorBuffer);
@@ -270,12 +277,28 @@ HttpResponse * HttpRoutine::Post(const char * url, map<string, string> * headers
     if (chunk != NULL)
     {
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
+        if (code != CURLE_OK)
+        {
+            initResult = false;
+        }
     }
-
-    curl_easy_setopt(conn, CURLOPT_POSTFIELDS, data);
-
-    code = curl_easy_perform(conn);
-
+    code = curl_easy_setopt(conn, CURLOPT_POSTFIELDS, data);
+    if (code != CURLE_OK)
+    {
+        initResult = false;
+    }
+    if (initResult == true)
+    {
+        code = curl_easy_perform(conn);
+        if (code != CURLE_OK)
+        {
+            returnCode = 1;
+        }
+    }
+    else
+    {
+        returnCode = 1;
+    }
     curl_easy_cleanup(conn);
     curl_slist_free_all(chunk);
 
@@ -283,7 +306,7 @@ HttpResponse * HttpRoutine::Post(const char * url, map<string, string> * headers
     {
         Logger::getInstance().Error("Failed to post '%s' [%s]\n", url, errorBuffer);
     }
-    return response;
+    return returnCode;
 }
 
 HttpRoutine::~HttpRoutine()

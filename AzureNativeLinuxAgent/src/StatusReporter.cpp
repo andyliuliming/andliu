@@ -6,7 +6,7 @@ StatusReporter::StatusReporter()
 {
 }
 
-int StatusReporter::ReportReady(AzureEnvironment &environment, GoalState & goalState,string &incarnationValue)
+int StatusReporter::ReportReady(AzureEnvironment &environment, GoalState & goalState, string &incarnationValue)
 {
     string healthReport = "<?xml version=\"1.0\" encoding=\"utf-8\"?><Health xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><GoalStateIncarnation>"
         + goalState.incarnation
@@ -20,12 +20,11 @@ int StatusReporter::ReportReady(AzureEnvironment &environment, GoalState & goalS
     headers["Content-Type"] = "text/xml; charset=utf-8";
     headers["x-ms-version"] = WAAGENT_VERSION;
     string apiAddress = "http://" + environment.wireServerAddress + "/machine?comp=health";
-    HttpResponse * response = HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str());
-    Logger::getInstance().Verbose("report ready status result %d", response->status_code);
-    incarnationValue = response->headers->find("x-ms-latest-goal-state-incarnation-number")->second;
+    HttpResponse response;
+    int postResult = HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str(), response);
+    Logger::getInstance().Verbose("report ready status result %d", response.status_code);
+    incarnationValue = response.headers->find("x-ms-latest-goal-state-incarnation-number")->second;
     StringUtil::trim(incarnationValue);
-    delete response;
-    response = NULL;
     return 0;
 }
 
@@ -45,7 +44,8 @@ void StatusReporter::ReportNotReady(AzureEnvironment &environment, GoalState & g
     headers["Content-Type"] = "text/xml; charset=utf-8";
     headers["x-ms-version"] = WAAGENT_VERSION;
     string apiAddress = "http://" + environment.wireServerAddress + "/machine?comp=health";
-    HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str());
+    HttpResponse response;
+    HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str(), response);
 }
 
 void StatusReporter::ReportRoleProperties(AzureEnvironment & environment, GoalState &goalState, const char * thumbprint)
@@ -61,7 +61,8 @@ void StatusReporter::ReportRoleProperties(AzureEnvironment & environment, GoalSt
     headers["Content-Type"] = "text/xml; charset=utf-8";
     headers["x-ms-version"] = WAAGENT_VERSION;
     string apiAddress = "http://" + environment.wireServerAddress + "/machine?comp=roleProperties";
-    HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str());
+    HttpResponse response;
+    HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str(), response);
 }
 
 
