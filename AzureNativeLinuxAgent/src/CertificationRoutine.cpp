@@ -13,14 +13,15 @@ CertificationRoutine::CertificationRoutine()
 int CertificationRoutine::GenerateTransportCertification()
 {
     //TODO: generate the openssl TRANSPORT_CERT_PRIV
-    string commandToExecute = 
+    string commandToExecute =
         string("openssl req -x509 -nodes -subj /CN=LinuxTransport -days 32768 -newkey rsa:2048 -keyout ") + TRANSPORT_CERT_PRIV + " -out " + TRANSPORT_CERT_PUB;
-    CommandResultPtr result = CommandExecuter::RunGetOutput(commandToExecute.c_str());
-    if (result->exitCode != 0)
+    CommandResult result;
+    CommandExecuter::RunGetOutput(commandToExecute, result);
+    if (result.exitCode != 0)
     {
-        Logger::getInstance().Error(result->output->c_str());
+        Logger::getInstance().Error(result.output->c_str());
     }
-    return result->exitCode;
+    return result.exitCode;
 }
 
 CertificationRoutine::~CertificationRoutine()

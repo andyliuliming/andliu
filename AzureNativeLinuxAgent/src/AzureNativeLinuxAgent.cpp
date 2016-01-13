@@ -119,10 +119,11 @@ int main(void)
             string host_key_path = string("/etc/ssh/ssh_host_") + type + "_key.pub";
 
             string commandToGetFingerPrint = string("ssh-keygen -lf ") + host_key_path;
-            CommandResultPtr fingerPrintResult = CommandExecuter::RunGetOutput(commandToGetFingerPrint);
+            CommandResult fingerPrintResult;
+            CommandExecuter::RunGetOutput(commandToGetFingerPrint, fingerPrintResult);
             vector<string> splitResult;
             string spliter = " ";
-            StringUtil::string_split(*(fingerPrintResult->output), spliter, &splitResult);
+            StringUtil::string_split(*(fingerPrintResult.output), spliter, &splitResult);
             statusReporter->ReportRoleProperties(azureEnvironment, goalState, splitResult[1].c_str());
         }
         else

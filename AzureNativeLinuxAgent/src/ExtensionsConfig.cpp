@@ -29,7 +29,8 @@ void ExtensionsConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, int i
             ZipRoutine::UnZipToDirectory(bundleFilePath.c_str(), extensionPath.c_str());
 
             string changePermissionCommand = string("find ") + extensionPath + " -type f | xargs chmod  u+x ";
-            CommandExecuter::RunGetOutput(changePermissionCommand.c_str());
+            CommandResult changePermissionResult;
+            CommandExecuter::RunGetOutput(changePermissionCommand.c_str(), changePermissionResult);
             break;
         }
     }
@@ -210,6 +211,7 @@ void ExtensionsConfig::Process()
             Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
             CommandExecuter::PosixSpawn(handlerManifest.installCommand, extensionPath);
             CommandExecuter::PosixSpawn(handlerManifest.enableCommand, extensionPath);
+            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         }
         else
         {

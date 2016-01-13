@@ -31,19 +31,20 @@ AzureEnvironment::AzureEnvironment()
 int AzureEnvironment::DoDhcpWork()
 {
     //Open DHCP port if iptables is enabled.
-    shared_ptr<CommandResult> commandResult = CommandExecuter::RunGetOutput("iptables -D INPUT -p udp --dport 68 -j ACCEPT");
-
-    commandResult = CommandExecuter::RunGetOutput("iptables -I INPUT -p udp --dport 68 -j ACCEPT");
+    CommandResult commandResult;
+    //TODO check the deallocation of commandResult
+    CommandExecuter::RunGetOutput("iptables -D INPUT -p udp --dport 68 -j ACCEPT", commandResult);
+    CommandExecuter::RunGetOutput("iptables -I INPUT -p udp --dport 68 -j ACCEPT", commandResult);
 
     PDHCPRequest dhcpRequest = NetworkRoutine::BuildDHCPRequest();
 
     // Configure the default routes.
     bool missingDefaultRoute = true;
     //TODO use the full path of the commands.
-    commandResult = CommandExecuter::RunGetOutput("route -n");
+    CommandExecuter::RunGetOutput("route -n", commandResult);
     vector<string> splitResult;
     string spliter = "\n";
-    StringUtil::string_split((*(commandResult->output)), spliter, &splitResult);
+    StringUtil::string_split((*(commandResult.output)), spliter, &splitResult);
 
     for (unsigned int i = 0; i < splitResult.size(); i++) {
         size_t lastZero = splitResult[i].find_last_of("0.0.0.0");

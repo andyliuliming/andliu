@@ -6,9 +6,9 @@
 #ifndef _WIN32
 #include <sys/param.h>
 #endif
-#ifdef _WIN32
-#include <WinSock2.h>
-#elif defined BSD
+//#ifdef _WIN32
+//#include <WinSock2.h>
+#ifdef BSD
 #include <net/if_dl.h>
 #else
 #include <arpa/inet.h>
@@ -36,11 +36,11 @@ PUINT8 NetworkRoutine::GetMacAddress()
 {
     PUINT8 MAC_ADDRESS = new UINT8[6];
     memset(MAC_ADDRESS, 0, 6);
-#ifdef _WIN32
-    delete MAC_ADDRESS;
-    MAC_ADDRESS = NULL;
-    return MAC_ADDRESS;
-#elif defined BSD
+//#ifdef _WIN32
+//    delete MAC_ADDRESS;
+//    MAC_ADDRESS = NULL;
+//    return MAC_ADDRESS;
+    #ifdef BSD
     struct ifaddrs *ifap, *ifaptr;
     unsigned char *ptr;
     int getIfAddrsResult = getifaddrs(&ifap);

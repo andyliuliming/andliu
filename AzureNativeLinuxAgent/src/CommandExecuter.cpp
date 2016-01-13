@@ -17,7 +17,7 @@ CommandExecuter::CommandExecuter()
 {
 }
 
-void CommandExecuter::PosixSpawn(string& cmd,string &cwd)
+void CommandExecuter::PosixSpawn(string& cmd, string &cwd)
 {
     pid_t pid;
     int status;
@@ -29,14 +29,16 @@ void CommandExecuter::PosixSpawn(string& cmd,string &cwd)
         delete cwd_str;
         cwd_str = NULL;
         const char * cmd_str = cmd.c_str();
+        CommandResult installResult;
+        CommandExecuter::RunGetOutput(cmd_str, installResult);
+
         delete cmd_str;
         cmd_str = NULL;
-        CommandResultPtr installResult = CommandExecuter::RunGetOutput(cmd_str);
-        if (installResult->exitCode != 0)
+        if (installResult.exitCode != 0)
         {
-            Logger::getInstance().Error("subprocess exit with code:%d, output:%s", installResult->exitCode, installResult->output->c_str());
+            Logger::getInstance().Error("subprocess exit with code:%d, output:%s", installResult.exitCode, installResult.output->c_str());
         }
-        exit(installResult->exitCode);
+        exit(installResult.exitCode);
     }
     else
     {
@@ -52,38 +54,38 @@ void CommandExecuter::PosixSpawn(string& cmd,string &cwd)
     }
 }
 
-CommandResultPtr CommandExecuter::RunGetOutput(string &cmd)
+void CommandExecuter::RunGetOutput(string &cmd, CommandResult &commandResult)
 {
     const char * cmd_str = cmd.c_str();
-    CommandResultPtr result = RunGetOutput(cmd_str);
-    delete cmd_str;
-    cmd_str = NULL;
-    return result;
+    RunGetOutput(cmd_str, commandResult);
+    /*delete cmd_str;
+    cmd_str = NULL;*/
 }
 
-CommandResultPtr CommandExecuter::RunGetOutput(const char* cmd) {
-    CommandResultPtr commandResult = make_shared<CommandResult>();
+void CommandExecuter::RunGetOutput(const char* cmd, CommandResult &commandResult) {
+
     FILE* pipe = POPEN(cmd, "r");
     if (!pipe)
     {
-        commandResult->exitCode = 1;
-        return commandResult;
+        commandResult.exitCode = 1;
     }
-    char buffer[128];
-    string *result = new string();
-
-    while (!feof(pipe))
+    else
     {
-        if (fgets(buffer, 128, pipe) != NULL)
+        char buffer[128];
+        string *result = new string();
+
+        while (!feof(pipe))
         {
-            //TODO error use this?
-            result->append(buffer);
+            if (fgets(buffer, 128, pipe) != NULL)
+            {
+                //TODO error use this?
+                result->append(buffer);
+            }
         }
+        int returnCode = PCLOSE(pipe);
+        commandResult.exitCode = returnCode;
+        commandResult.output = result;
     }
-    int returnCode = PCLOSE(pipe);
-    commandResult->exitCode = returnCode;
-    commandResult->output = result;
-    return commandResult;
 }
 
 CommandExecuter::~CommandExecuter()

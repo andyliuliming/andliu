@@ -29,9 +29,10 @@ int UserManager::CreateUser(const char * userName, const char * passWord)
     else
     {
         string command = string("useradd -m ") + userNameToCreate;
-        CommandResultPtr addUserResult = CommandExecuter::RunGetOutput(command);
+        CommandResult addUserResult;
+        CommandExecuter::RunGetOutput(command,addUserResult);
         //TODO deallocate the c_str();
-        Logger::getInstance().Log("user add result: %s", addUserResult->output->c_str());
+        Logger::getInstance().Log("user add result: %s", addUserResult.output->c_str());
         AgentConfig::getInstance().LoadConfig();
 
         string crypt_id;
@@ -64,8 +65,9 @@ int UserManager::CreateUser(const char * userName, const char * passWord)
         string changePasswordCmd = string("usermod -p '") + passWordToSet + "' " + userNameToCreate;
         delete passWordToSet;
         passWordToSet = NULL;
-        CommandResultPtr commandResult = CommandExecuter::RunGetOutput(changePasswordCmd.c_str());
-        Logger::getInstance().Log("user add result: %s", commandResult->output->c_str());
+        CommandResult commandResult;
+        CommandExecuter::RunGetOutput(changePasswordCmd, commandResult);
+        Logger::getInstance().Log("user add result: %s", commandResult.output->c_str());
         return 0;
     }
 }
