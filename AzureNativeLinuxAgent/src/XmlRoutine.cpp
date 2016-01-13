@@ -7,44 +7,20 @@ XmlRoutine::XmlRoutine()
 {
 }
 
-xmlXPathObjectPtr XmlRoutine::findNodeByRelativeXpath(xmlDocPtr doc, xmlNodePtr rootnode, const xmlChar * xpathExpr)
+xmlXPathObjectPtr XmlRoutine::findNodeByRelativeXpath(xmlDocPtr doc, xmlNodePtr rootnode, const char * xpathExpr)
 {
     xmlXPathContextPtr xpathCtx = xmlXPathNewContext(doc);
     // Important part
     xpathCtx->node = rootnode;
-    xmlXPathObjectPtr xpathObj = xmlXPathEvalExpression(xpathExpr, xpathCtx);
+    xmlChar * xpathXmlCharExpr = xmlCharStrdup(xpathExpr);
+    xmlXPathObjectPtr xpathObj = xmlXPathEvalExpression(xpathXmlCharExpr, xpathCtx);
+    delete xpathXmlCharExpr;
+    xpathXmlCharExpr = NULL;
     xmlXPathFreeContext(xpathCtx);
     return xpathObj;
 }
 
-xmlNodePtr XmlRoutine::findNodeByName(xmlNodePtr rootnode, const xmlChar * nodename)
-{
-    xmlNodePtr node = rootnode;
-    if (node == NULL)
-    {
-        return NULL;
-    }
-
-    while (node != NULL)
-    {
-        if (!xmlStrcmp(node->name, nodename))
-        {
-            return node;
-        }
-        else if (node->children != NULL)
-        {
-            xmlNodePtr intNode = findNodeByName(node->children, nodename);
-            if (intNode != NULL)
-            {
-                return intNode;
-            }
-        }
-        node = node->next;
-    }
-    return NULL;
-}
-
-xmlXPathObjectPtr XmlRoutine::getNodes(xmlDocPtr doc, const xmlChar* xpathExpr, map<string, string> * namespaces)
+xmlXPathObjectPtr XmlRoutine::getNodes(xmlDocPtr doc, const char* xpathExpr, map<string, string> * namespaces)
 {
     xmlXPathContextPtr xpathCtx;
     xmlXPathObjectPtr xpathObj;
@@ -65,8 +41,11 @@ xmlXPathObjectPtr XmlRoutine::getNodes(xmlDocPtr doc, const xmlChar* xpathExpr, 
             }
         }
     }
+    xmlChar * xpathXmlCharExpr = xmlCharStrdup(xpathExpr);
 
-    xpathObj = xmlXPathEvalExpression(xpathExpr, xpathCtx);
+    xpathObj = xmlXPathEvalExpression(xpathXmlCharExpr, xpathCtx);
+    delete xpathXmlCharExpr;
+    xpathXmlCharExpr = NULL;
     if (xpathObj == NULL)
     {
         Logger::getInstance().Error("Error: unable to evaluate xpath expression \"%s\"\n", xpathExpr);
@@ -106,7 +85,7 @@ int XmlRoutine::getNodeText(xmlDocPtr doc, const char * xpathExpr, map<string, s
     /* Evaluate xpath expression */
     //
     const xmlChar* xpathXmlCharExpr = xmlCharStrdup(xpathExpr);
-    xmlXPathObjectPtr xpathObj = getNodes(doc, xpathXmlCharExpr, namespaces);
+    xmlXPathObjectPtr xpathObj = getNodes(doc, xpathExpr, namespaces);
     delete xpathXmlCharExpr;
     xpathXmlCharExpr = NULL;
     if (xpathObj == NULL)

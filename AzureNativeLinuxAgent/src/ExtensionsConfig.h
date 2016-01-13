@@ -10,7 +10,7 @@ private:
     vector<ExtensionConfig*> extensionConfigs;
     string statusUploadBlobUri;
     string statusBlobType;
-    void DownloadExtractExtensions(xmlDocPtr manifestXmlDoc,int i, const xmlChar* pluginXpathManifestExpr);
+    void DownloadExtractExtensions(xmlDocPtr manifestXmlDoc,int i, const char* pluginXpathManifestExpr);
 public:
     ExtensionsConfig();
     void ReportExtensionsStatus();

@@ -7,20 +7,20 @@
 #include "Logger.h"
 #include "Macros.h"
 #include "ZipRoutine.h"
-void ExtensionsConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, int i, const xmlChar* pluginXpathManifestExpr)
+void ExtensionsConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, int i, const char* pluginXpathManifestExpr)
 {
     xmlXPathObjectPtr xpathManifestObj = XmlRoutine::getNodes(manifestXmlDoc, pluginXpathManifestExpr, NULL);
 
     xmlNodeSetPtr pluginManifestNodes = xpathManifestObj->nodesetval;
     for (int j = 0; j < pluginManifestNodes->nodeNr; j++)
     {
-        xmlXPathObjectPtr versionObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], BAD_CAST "./Version/text()");
+        xmlXPathObjectPtr versionObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], "./Version/text()");
         string currentVersion = (const char*)versionObjects->nodesetval->nodeTab[0]->content;
         xmlXPathFreeObject(versionObjects);
         if (currentVersion == this->extensionConfigs[i]->version)
         {
             // downloading the bundles
-            xmlXPathObjectPtr uriObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], BAD_CAST "./Uris/Uri/text()");
+            xmlXPathObjectPtr uriObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], "./Uris/Uri/text()");
             string bundleFilePath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + this->extensionConfigs[i]->name + "_" + this->extensionConfigs[i]->version + ".zip";
             HttpRoutine::GetToFile((const char*)(uriObjects->nodesetval->nodeTab[0]->content), NULL, bundleFilePath.c_str());
             string extensionPath;
@@ -68,10 +68,7 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
 
     FileOperator::save_file(extensionsConfigText, configFilePath);
 
-    const xmlChar* pluginXpathExpr = xmlCharStrdup("/Extensions/Plugins/Plugin");
-    xmlXPathObjectPtr pluginsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, pluginXpathExpr, NULL);
-    delete pluginXpathExpr;
-    pluginXpathExpr = NULL;
+    xmlXPathObjectPtr pluginsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, "/Extensions/Plugins/Plugin", NULL);
 
     //statusBlobType
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
@@ -108,19 +105,12 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
             string filepath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + this->extensionConfigs[i]->name + "." + incarnationStr + ".manifest";
             FileOperator::save_file(response.body, filepath);
             xmlDocPtr manifestXmlDoc = xmlParseMemory(response.body.c_str(), response.body.size());
-            const xmlChar* pluginXpathManifestExpr = xmlCharStrdup("/PluginVersionManifest/Plugins/Plugin");
-            this->DownloadExtractExtensions(manifestXmlDoc, i, pluginXpathManifestExpr);
-            delete pluginXpathManifestExpr;
-            pluginXpathManifestExpr = NULL;
+            this->DownloadExtractExtensions(manifestXmlDoc, i, "/PluginVersionManifest/Plugins/Plugin");
 
-            const xmlChar* internalPluginXpathManifestExpr = xmlCharStrdup("/PluginVersionManifest/InternalPlugins/Plugin");
-            this->DownloadExtractExtensions(manifestXmlDoc, i, internalPluginXpathManifestExpr);
+            this->DownloadExtractExtensions(manifestXmlDoc, i, "/PluginVersionManifest/InternalPlugins/Plugin");
 
             /*handler_env = '[{  "name": "' + name + '", "seqNo": "' + seqNo + '", "version": 1.0,  "handlerEnvironment": {    "logFolder": "' + os.path.dirname(p.plugin_log) + '",    "configFolder": "' + root + '/config",    "statusFolder": "' + root + '/status",    "heartbeatFile": "' + root + '/heartbeat.log"}}]'
                 SetFileContents(root + '/HandlerEnvironment.json', handler_env)*/
-
-            delete internalPluginXpathManifestExpr;
-            internalPluginXpathManifestExpr = NULL;
 
             xmlFreeDoc(manifestXmlDoc);
         }
@@ -132,10 +122,8 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
 
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
-        const xmlChar* pluginSettingsXpathExpr = xmlCharStrdup("/Extensions/PluginSettings/Plugin");
-        xmlXPathObjectPtr pluginSettingsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, pluginSettingsXpathExpr, NULL);
-        delete pluginSettingsXpathExpr;
-        pluginSettingsXpathExpr = NULL;
+        xmlXPathObjectPtr pluginSettingsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, "/Extensions/PluginSettings/Plugin", NULL);
+
         xmlNodeSetPtr pluginSettingsNodeSet = pluginSettingsXpathObj->nodesetval;
         for (int pluginIndex = 0; pluginIndex < pluginSettingsNodeSet->nodeNr; pluginIndex++)
         {
@@ -145,8 +133,7 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
             XmlRoutine::getNodeProperty(pluginSettingsNodeSet->nodeTab[pluginIndex], "version", pluginVersion);
 
             xmlXPathObjectPtr runtimeSettingsXpathObject = XmlRoutine::findNodeByRelativeXpath(extensionsConfigDoc,
-                pluginSettingsNodeSet->nodeTab[pluginIndex],
-                BAD_CAST "./RuntimeSettings");
+                pluginSettingsNodeSet->nodeTab[pluginIndex], "./RuntimeSettings");
             XmlRoutine::getNodeProperty(runtimeSettingsXpathObject->nodesetval->nodeTab[0], "seqNo", seqNo);
             string extensionPath;
             FileOperator::get_extension_path(pluginName, pluginVersion, extensionPath);
@@ -169,10 +156,7 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
     }
 
 
-    const xmlChar* statusBlobXpathExpr = xmlCharStrdup("/Extensions/StatusUploadBlob");
-    xmlXPathObjectPtr statusBlobXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, statusBlobXpathExpr, NULL);
-    delete statusBlobXpathExpr;
-    statusBlobXpathExpr = NULL;
+    xmlXPathObjectPtr statusBlobXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, "/Extensions/StatusUploadBlob", NULL);
 
     if (statusBlobXpathObj->nodesetval != NULL
         && statusBlobXpathObj->nodesetval->nodeNr > 0)

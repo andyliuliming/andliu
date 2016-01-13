@@ -14,9 +14,8 @@ class XmlRoutine
 {
 public:
     XmlRoutine();
-    static xmlXPathObjectPtr findNodeByRelativeXpath(xmlDocPtr doc,xmlNodePtr rootnode, const xmlChar * xpathExpr);
-    static xmlNodePtr findNodeByName(xmlNodePtr rootnode, const xmlChar * nodename);
-    static xmlXPathObjectPtr getNodes(xmlDocPtr doc, const xmlChar* xpathExpr, map<string, string> * namespaces);
+    static xmlXPathObjectPtr findNodeByRelativeXpath(xmlDocPtr doc,xmlNodePtr rootnode, const char * xpathExpr);
+    static xmlXPathObjectPtr getNodes(xmlDocPtr doc, const char* xpathExpr, map<string, string> * namespaces);
     static int getNodeText(xmlDocPtr doc, const char* xpathExpr, map<string, string> * namespaces, string &text);
     static void getNodeProperty(xmlNodePtr node, const char* propName, string&value);
     static void getNodeContent(xmlNodePtr node, string &value);
