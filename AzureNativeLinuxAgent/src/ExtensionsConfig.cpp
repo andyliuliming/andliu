@@ -130,8 +130,8 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
         {
             // download the extension bundle zip.
             string filepath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + this->extensionConfigs[i]->name + "." + incarnationStr + ".manifest";
-            FileOperator::save_file(*response.body, filepath);
-            xmlDocPtr manifestXmlDoc = xmlParseMemory(response.body->c_str(), response.body->size());
+            FileOperator::save_file(response.body, filepath);
+            xmlDocPtr manifestXmlDoc = xmlParseMemory(response.body.c_str(), response.body.size());
             const xmlChar* pluginXpathManifestExpr = xmlCharStrdup("/PluginVersionManifest/Plugins/Plugin");
             this->DownloadExtractExtensions(manifestXmlDoc, i, pluginXpathManifestExpr);
             delete pluginXpathManifestExpr;

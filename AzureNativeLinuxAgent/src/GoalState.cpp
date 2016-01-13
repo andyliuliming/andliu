@@ -24,7 +24,7 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
     int getGoalStateResult = HttpRoutine::GetWithDefaultHeader(goalStateEndpoint.c_str(), goalStateResponse);
     if (getGoalStateResult == 0)
     {
-        xmlDocPtr goalStateDoc = xmlParseMemory(goalStateResponse.body->c_str(), goalStateResponse.body->size());
+        xmlDocPtr goalStateDoc = xmlParseMemory(goalStateResponse.body.c_str(), goalStateResponse.body.size());
         xmlNodePtr root = xmlDocGetRootElement(goalStateDoc);
 
         const xmlChar* incarnationXpathExpr = xmlCharStrdup("/GoalState/Incarnation[1]/text()");
@@ -67,14 +67,14 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
 
         // saving the goal state file 
         string goalStageFileName = this->goalStageFilePrefix + incarnation + ".xml";
-        FileOperator::save_file(*(goalStateResponse.body), goalStageFileName);
+        FileOperator::save_file(goalStateResponse.body, goalStageFileName);
         // construct the instances
         HttpResponse hostingEnvironmentConfigText;
         int getHostingEnvironmentConfigResult = HttpRoutine::GetWithDefaultHeader(this->hostingEnvironmentConfigUrl.c_str(), hostingEnvironmentConfigText);
         if (getHostingEnvironmentConfigResult == 0)
         {
             this->hostingEnvironmentConfig = new HostingEnvironmentConfig();
-            this->hostingEnvironmentConfig->Parse(*(hostingEnvironmentConfigText.body));
+            this->hostingEnvironmentConfig->Parse(hostingEnvironmentConfigText.body);
         }
         else
         {
@@ -87,7 +87,7 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         if (getSharedConfigResult == 0)
         {
             this->sharedConfig = new SharedConfig();
-            this->sharedConfig->Parse(*(sharedConfigText.body));
+            this->sharedConfig->Parse(sharedConfigText.body);
         }
         else
         {
@@ -100,7 +100,7 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         if (getExtensionsConfigResult == 0)
         {
             this->extensionsConfig = new ExtensionsConfig();
-            this->extensionsConfig->Parse(*(extentionsConfigText.body));
+            this->extensionsConfig->Parse(extentionsConfigText.body);
         }
         else
         {
@@ -139,7 +139,7 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
                 // get certificates from the remote using the public cert.
                 if (getResult == 0)
                 {
-                    this->certificates->Parse(*(certificationsText.body));
+                    this->certificates->Parse(certificationsText.body);
                 }
             }
             else

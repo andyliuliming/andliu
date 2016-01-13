@@ -5,7 +5,6 @@ using namespace std;
 
 HttpResponse::HttpResponse()
 {
-    this->headers = new map<string, string>();
 }
 
 void HttpResponse::addHeader(const char * header_item)
@@ -16,20 +15,10 @@ void HttpResponse::addHeader(const char * header_item)
     StringUtil::string_split(headerLine, spliter, &splitted);
     if (splitted.size() > 1)
     {
-        this->headers->insert(pair<string, string>(splitted[0], splitted[1]));
+        this->headers.insert(pair<string, string>(splitted[0], splitted[1]));
     }
 }
 
 HttpResponse::~HttpResponse()
 {
-    if (this->body != NULL)
-    {
-        delete this->body;
-        this->body = NULL;
-    }
-    if (this->headers != NULL)
-    {
-        delete this->headers;
-        this->headers = NULL;
-    }
 }
