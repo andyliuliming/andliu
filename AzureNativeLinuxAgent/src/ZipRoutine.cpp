@@ -23,7 +23,7 @@ ZipRoutine::ZipRoutine()
 /*
 the zipExtractDirectory format should be like /var/lib/waagent/xxx_version/
 */
-int ZipRoutine::UnZipToDirectory(const char *archive, const char * zipExtractDirectory)
+int ZipRoutine::UnZipToDirectory(const string& archive, const string& zipExtractDirectory)
 {
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
@@ -36,7 +36,8 @@ int ZipRoutine::UnZipToDirectory(const char *archive, const char * zipExtractDir
     int fd;
     long long sum;
 
-    if ((za = zip_open(archive, 0, &err)) == NULL)
+    //TODO check whether the c_str is deallocated
+    if ((za = zip_open(archive.c_str(), 0, &err)) == NULL)
     {
         zip_error_to_str(buf, sizeof(buf), err, errno);
         Logger::getInstance().Error("can't open zip archive: %s", buf);
@@ -57,7 +58,7 @@ int ZipRoutine::UnZipToDirectory(const char *archive, const char * zipExtractDir
             {
                 //not find so it's 
                 string folder_part = relative_path.substr(0, last_index_slash);
-                string newFolderPath = string(zipExtractDirectory) + folder_part;
+                string newFolderPath = zipExtractDirectory + folder_part;
                 int make_dir_result = FileOperator::make_dir(newFolderPath.c_str());
                 if (make_dir_result != 0)
                 {
@@ -73,7 +74,7 @@ int ZipRoutine::UnZipToDirectory(const char *archive, const char * zipExtractDir
                     Logger::getInstance().Error("failed to open file with index");
                     break;
                 }
-                string newFolderPath = string(zipExtractDirectory) + sb.name;
+                string newFolderPath = zipExtractDirectory + sb.name;
                 fd = open(newFolderPath.c_str(), O_RDWR | O_TRUNC | O_CREAT, 0644);
                 if (fd < 0)
                 {
@@ -109,7 +110,7 @@ int ZipRoutine::UnZipToDirectory(const char *archive, const char * zipExtractDir
 
     if (zip_close(za) == -1)
     {
-        Logger::getInstance().Error("can't close zip archive: %s",archive);
+        Logger::getInstance().Error("can't close zip archive: %s",archive.c_str());
         return 1;
     }
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
