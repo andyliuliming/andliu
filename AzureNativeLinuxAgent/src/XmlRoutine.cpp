@@ -80,7 +80,7 @@ xmlXPathObjectPtr XmlRoutine::getNodes(xmlDocPtr doc, const xmlChar* xpathExpr, 
 void XmlRoutine::getNodeContent(xmlNodePtr node, string &value)
 {
     const char* runtimeSettingsText = (const char*)xmlNodeGetContent(node);
-    value = string(runtimeSettingsText);
+    value = (runtimeSettingsText);
     delete runtimeSettingsText;
     runtimeSettingsText = NULL;
 }
@@ -92,7 +92,7 @@ void XmlRoutine::getNodeProperty(xmlNodePtr node, const char* propertyName, stri
     xmlChar * propertyDup = xmlCharStrdup(propertyName);
     xmlChar * incarnation = xmlGetProp(node, propertyDup);
     //TODO error handling when the incarnation is not there.
-    value = string((const char*)incarnation);
+    value = (const char*)incarnation;
     delete incarnation;
     incarnation = NULL;
     delete propertyDup;
@@ -101,29 +101,27 @@ void XmlRoutine::getNodeProperty(xmlNodePtr node, const char* propertyName, stri
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 }
 
-string * XmlRoutine::getNodeText(xmlDocPtr doc, const xmlChar* xpathExpr, map<string, string> * namespaces)
+int XmlRoutine::getNodeText(xmlDocPtr doc, const xmlChar* xpathExpr, map<string, string> * namespaces, string &text)
 {
-    string * result = NULL;
-
     /* Evaluate xpath expression */
     //
     xmlXPathObjectPtr xpathObj = getNodes(doc, xpathExpr, namespaces);
     if (xpathObj == NULL)
     {
         Logger::getInstance().Error("Error: unable to evaluate xpath expression \"%s\"", xpathExpr);
-        return NULL;
+        return 1;
     }
     else
     {
         if (xpathObj->nodesetval == NULL)
         {
             Logger::getInstance().Error("Error: node set is null for \"%s\"", xpathExpr);
-            return NULL;
+            return 1;
         }
         xmlNodeSetPtr nodes = xpathObj->nodesetval;
-        result = new string((const char*)nodes->nodeTab[0]->content);
+        text = ((const char*)nodes->nodeTab[0]->content);
         xmlXPathFreeObject(xpathObj);
-        return result;
+        return 0;
     }
 }
 

@@ -9,7 +9,7 @@ HttpResponse::HttpResponse()
 
 void HttpResponse::addHeader(const char * header_item)
 {
-    string headerLine = string(header_item);
+    string headerLine = header_item;
     string spliter = ":";
     vector<string> splitted;
     StringUtil::string_split(headerLine, spliter, &splitted);

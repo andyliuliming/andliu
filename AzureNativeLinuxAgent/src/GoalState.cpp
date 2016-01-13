@@ -28,39 +28,39 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         xmlNodePtr root = xmlDocGetRootElement(goalStateDoc);
 
         const xmlChar* incarnationXpathExpr = xmlCharStrdup("/GoalState/Incarnation[1]/text()");
-        this->incarnation = *(XmlRoutine::getNodeText(goalStateDoc, incarnationXpathExpr, NULL));
+        XmlRoutine::getNodeText(goalStateDoc, incarnationXpathExpr, NULL, this->incarnation);
         delete incarnationXpathExpr;
 
         const xmlChar* containerIdXpathExpr = xmlCharStrdup("/GoalState/Container/ContainerId/text()");
-        this->containerId = *(XmlRoutine::getNodeText(goalStateDoc, containerIdXpathExpr, NULL));
+        XmlRoutine::getNodeText(goalStateDoc, containerIdXpathExpr, NULL, this->containerId);
         delete containerIdXpathExpr;
 
         const xmlChar* roleInstanceIdXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/InstanceId/text()");
-        this->roleInstanceId = *(XmlRoutine::getNodeText(goalStateDoc, roleInstanceIdXpathExpr, NULL));
+        XmlRoutine::getNodeText(goalStateDoc, roleInstanceIdXpathExpr, NULL, this->roleInstanceId);
         delete roleInstanceIdXpathExpr;
 
         const xmlChar* hostingEnvironmentConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/HostingEnvironmentConfig/text()");
-        this->hostingEnvironmentConfigUrl = *(XmlRoutine::getNodeText(goalStateDoc, hostingEnvironmentConfigXpathExpr, NULL));
+        XmlRoutine::getNodeText(goalStateDoc, hostingEnvironmentConfigXpathExpr, NULL, this->hostingEnvironmentConfigUrl);
         delete hostingEnvironmentConfigXpathExpr;
 
         const xmlChar* sharedConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/SharedConfig/text()");
-        this->sharedConfigUrl = *(XmlRoutine::getNodeText(goalStateDoc, sharedConfigXpathExpr, NULL));
+        XmlRoutine::getNodeText(goalStateDoc, sharedConfigXpathExpr, NULL, this->sharedConfigUrl);
         delete sharedConfigXpathExpr;
 
         const xmlChar* extensionsConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ExtensionsConfig/text()");
-        this->extensionsConfigUrl = *(XmlRoutine::getNodeText(goalStateDoc, extensionsConfigXpathExpr, NULL));
+        XmlRoutine::getNodeText(goalStateDoc, extensionsConfigXpathExpr, NULL, this->extensionsConfigUrl);
         delete extensionsConfigXpathExpr;
 
         const xmlChar* fullConfigXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/FullConfig/text()");
-        this->fullConfigUrl = *(XmlRoutine::getNodeText(goalStateDoc, fullConfigXpathExpr, NULL));
+        XmlRoutine::getNodeText(goalStateDoc, fullConfigXpathExpr, NULL, this->fullConfigUrl);
         delete fullConfigXpathExpr;
 
         const xmlChar* configNameXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ConfigName/text()");
-        this->configName = *(XmlRoutine::getNodeText(goalStateDoc, configNameXpathExpr, NULL));
+        XmlRoutine::getNodeText(goalStateDoc, configNameXpathExpr, NULL, this->configName);
         delete configNameXpathExpr;
 
         const xmlChar* certificatesXpathExpr = xmlCharStrdup("/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/Certificates/text()");
-        this->certificatesUrl = XmlRoutine::getNodeText(goalStateDoc, certificatesXpathExpr, NULL);
+        XmlRoutine::getNodeText(goalStateDoc, certificatesXpathExpr, NULL, this->certificatesUrl);
         delete certificatesXpathExpr;
 
         xmlFreeDoc(goalStateDoc);
@@ -109,7 +109,7 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
         // get the certificates from the server.
-        if (this->certificatesUrl != NULL)
+        if (this->certificatesUrl.length() > 0)
         {
             this->certificates = new Certificates();
             string certificationFileContent;
@@ -135,7 +135,7 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
                 headers["x-ms-cipher-name"] = TRANSPORT_CERT_CIPHER_NAME;
                 headers["x-ms-guest-agent-public-x509-cert"] = pureCertText;
                 HttpResponse certificationsText;
-                int getResult = HttpRoutine::Get(this->certificatesUrl->c_str(), &headers, certificationsText);
+                int getResult = HttpRoutine::Get(this->certificatesUrl.c_str(), &headers, certificationsText);
                 // get certificates from the remote using the public cert.
                 if (getResult == 0)
                 {
@@ -171,4 +171,24 @@ void GoalState::Process()
 
 GoalState::~GoalState()
 {
+    if (this->hostingEnvironmentConfig != NULL)
+    {
+        delete hostingEnvironmentConfig;
+        hostingEnvironmentConfig = NULL;
+    }
+    if (this->sharedConfig != NULL)
+    {
+        delete sharedConfig;
+        sharedConfig = NULL;
+    }
+    if (this->extensionsConfig != NULL)
+    {
+        delete extensionsConfig;
+        extensionsConfig = NULL;
+    }
+    if (this->certificates != NULL)
+    {
+        delete certificates;
+        certificates = NULL;
+    }
 }

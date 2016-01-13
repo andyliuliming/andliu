@@ -34,13 +34,13 @@ void DeviceRoutine::setIsciTimeOut()
                 while ((dir = readdir(d)) != NULL)
                 {
                     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-                    string directoryName = string(dir->d_name);
+                    string directoryName = dir->d_name;
                     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
                     if (directoryName.find("sd")==0)
                     {
                         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
                         string timeOutFile = "/sys/block/" + directoryName + "/device/timeout";
-                        setBlockDeviceTimeOut(timeOutFile.c_str(), timeOut.c_str());
+                        setBlockDeviceTimeOut(timeOutFile, timeOut);
                         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
                         break;
                     }
@@ -64,7 +64,7 @@ string * DeviceRoutine::findRomDevice()
     {
         while ((dir = readdir(d)) != NULL)
         {
-            string directoryName = string(dir->d_name);
+            string directoryName = dir->d_name;
 
             if (directoryName.find_first_of("acd"))
             {
@@ -86,7 +86,8 @@ string * DeviceRoutine::findRomDevice()
 
     /* Create the udev object */
     udev = udev_new();
-    if (!udev) {
+    if (!udev)
+    {
         printf("Can't create udev\n");
         return result;
     }
@@ -102,7 +103,8 @@ string * DeviceRoutine::findRomDevice()
     devices, setting dev_list_entry to a list entry
     which contains the device's path in /sys. */
 
-    udev_list_entry_foreach(dev_list_entry, devices) {
+    udev_list_entry_foreach(dev_list_entry, devices)
+    {
         const char *path;
 
         /* Get the filename of the /sys entry for the device
@@ -131,7 +133,8 @@ string * DeviceRoutine::findRomDevice()
         printf("\tShort serial: '%s'\n", udev_device_get_property_value(dev, "ID_SERIAL_SHORT"));
         printf("\tRevision: '%s'\n", udev_device_get_property_value(dev, "ID_REVISION"));
         const char * model = udev_device_get_property_value(dev, "ID_MODEL");
-        if (model != NULL) {
+        if (model != NULL)
+        {
             string modelStr(model);
             if (modelStr.compare("Virtual_CD") == 0)
             {
@@ -149,18 +152,19 @@ string * DeviceRoutine::findRomDevice()
 }
 
 
-void DeviceRoutine::setBlockDeviceTimeOut(const char * timeOutFile, const char * timeOut)
+void DeviceRoutine::setBlockDeviceTimeOut(string &timeOutFile, string &timeOut)
 {
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     string timeOutContent;
-    int getContentResult =  FileOperator::get_content(timeOutFile, timeOutContent);
+    //TODO check whether the c_str() is deallocated
+    int getContentResult =  FileOperator::get_content(timeOutFile.c_str(), timeOutContent);
     if (getContentResult == 0)
     {
         StringUtil::trim(timeOutContent);
-        string timeOutToSet = string(timeOut);
+        string timeOutToSet = timeOut;
         if (timeOutContent != timeOutToSet)
         {
-            FileOperator::save_file(timeOutToSet, string(timeOutFile));
+            FileOperator::save_file(timeOutToSet, timeOutFile);
         }
         //TODO implement this.
     }

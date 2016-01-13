@@ -15,7 +15,7 @@ void ExtensionsConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, int i
     for (int j = 0; j < pluginManifestNodes->nodeNr; j++)
     {
         xmlXPathObjectPtr versionObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], BAD_CAST "./Version/text()");
-        string currentVersion = string((const char*)versionObjects->nodesetval->nodeTab[0]->content);
+        string currentVersion = (const char*)versionObjects->nodesetval->nodeTab[0]->content;
         xmlXPathFreeObject(versionObjects);
         if (currentVersion == this->extensionConfigs[i]->version)
         {

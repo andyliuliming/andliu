@@ -61,11 +61,12 @@ void Certificates::Process()
     xmlNodePtr root = xmlDocGetRootElement(doc);
 
     const xmlChar* certificationDataExpr = xmlCharStrdup("/CertificateFile/Data/text()");
-    string *certificationData = (XmlRoutine::getNodeText(doc, certificationDataExpr, NULL));
+    string certificationData;
+    XmlRoutine::getNodeText(doc, certificationDataExpr, NULL, certificationData);
     delete certificationDataExpr;
     certificationDataExpr = NULL;
     string certFileContent = string("MIME-Version: 1.0\nContent-Disposition: attachment; filename=\"") + PROTECTED_SETTINGS_CERTIFICATE_FILE_NAME + "\"\nContent-Type: application/x-pkcs7-mime; name=\"" + PROTECTED_SETTINGS_CERTIFICATE_FILE_NAME + "\"\nContent-Transfer-Encoding: base64\n\n"
-        + *certificationData;
+        + certificationData;
     string certFileName = string(PROTECTED_SETTINGS_CERTIFICATE_FILE_NAME);
     FileOperator::save_file(certFileContent, certFileName);
 

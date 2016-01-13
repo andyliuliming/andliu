@@ -5,8 +5,8 @@ class CommandResult
 {
 public:
     int exitCode;
+    // TODO make this an reference
     string *output;
     CommandResult();
     ~CommandResult();
 };
-

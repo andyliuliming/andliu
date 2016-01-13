@@ -15,7 +15,7 @@ public:
     DeviceRoutine();
     static void setIsciTimeOut();
     static string* findRomDevice();
-    static void setBlockDeviceTimeOut(const char*devicePath, const char*timeOut);
+    static void setBlockDeviceTimeOut(string &timeOutFile, string &timeOut);
     ~DeviceRoutine();
 };
 

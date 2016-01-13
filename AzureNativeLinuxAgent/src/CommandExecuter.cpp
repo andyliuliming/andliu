@@ -24,16 +24,14 @@ void CommandExecuter::PosixSpawn(string& cmd, string &cwd)
     pid = fork();
     if (pid == 0)
     {
+        // TODO check the cwd_str is deallocated.
         const char * cwd_str = cwd.c_str();
         int chDirResult = chdir(cwd_str);
-        delete cwd_str;
-        cwd_str = NULL;
-        const char * cmd_str = cmd.c_str();
+
         CommandResult installResult;
+        const char * cmd_str = cmd.c_str();
         CommandExecuter::RunGetOutput(cmd_str, installResult);
 
-        delete cmd_str;
-        cmd_str = NULL;
         if (installResult.exitCode != 0)
         {
             Logger::getInstance().Error("subprocess exit with code:%d, output:%s", installResult.exitCode, installResult.output->c_str());

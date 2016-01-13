@@ -44,7 +44,7 @@ int Provisioner::Prosess()
     string mountCommand("mount " + *romDevicePath + " " + SECURE_MOUNT_POINT);
     CommandResult mountResult;
     CommandExecuter::RunGetOutput(mountCommand, mountResult);
-    string ovfEnvFullPath = string(OVF_ENV_FILE_FULL_PATH);
+    string ovfEnvFullPath = OVF_ENV_FILE_FULL_PATH;
     string ovfFileContent;
     int getOvfFileContentResult = FileOperator::get_content(OVF_ENV_FILE_FULL_PATH, ovfFileContent);
     string umountCommand = string("umount ") + SECURE_MOUNT_POINT;

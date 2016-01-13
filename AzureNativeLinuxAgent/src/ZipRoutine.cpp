@@ -51,7 +51,7 @@ int ZipRoutine::UnZipToDirectory(const char *archive, const char * zipExtractDir
         {
             len = strlen(sb.name);
             // create the sub dir
-            string relative_path = string(sb.name);
+            string relative_path = sb.name;
             int last_index_slash = relative_path.find_last_of('/');
             if (last_index_slash != string::npos)
             {

@@ -26,7 +26,7 @@ int AgentConfig::getConfig(const char * propertyName,string &value)
     try
     {
         Setting &propertyValue = this->config->lookup(propertyName);
-        value = string(propertyValue.c_str());
+        value = propertyValue.c_str();
         return 0;
     }
     catch (SettingNotFoundException e)

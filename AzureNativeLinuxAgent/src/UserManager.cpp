@@ -17,7 +17,7 @@ UserManager::UserManager()
 
 int UserManager::CreateUser(const char * userName, const char * passWord)
 {
-    string userNameToCreate = string(userName);
+    string userNameToCreate = userName;
 
     struct passwd * existed = getpwnam(userNameToCreate.c_str());
 
@@ -39,7 +39,7 @@ int UserManager::CreateUser(const char * userName, const char * passWord)
         int getCryptIdResult = AgentConfig::getInstance().getConfig("Provisioning_PasswordCryptId", crypt_id);
         if (getCryptIdResult != 0)
         {
-            crypt_id = string("6");
+            crypt_id = "6";
         }
 
         string salt_len;

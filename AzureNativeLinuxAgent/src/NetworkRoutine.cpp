@@ -51,7 +51,7 @@ PUINT8 NetworkRoutine::GetMacAddress()
             if (((ifaptr)->ifa_addr)->sa_family == AF_LINK)
             {
                 ptr = (unsigned char *)LLADDR((struct sockaddr_dl *)(ifaptr)->ifa_addr);
-                string ifName = string((ifaptr)->ifa_name);
+                string ifName = (ifaptr)->ifa_name;
                 //TODO if the ifa_name is null?
                 if (!((ifaptr)->ifa_name[0] == 'l'&& (ifaptr)->ifa_name[1=='o']))
                 {

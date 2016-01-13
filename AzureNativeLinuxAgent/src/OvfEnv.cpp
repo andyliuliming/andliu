@@ -21,18 +21,18 @@ void OvfEnv::Parse(string &sharedConfigText)
     namespaces["wa"] = "http://schemas.microsoft.com/windowsazure";
 
     const xmlChar* userNameXpathExpr = xmlCharStrdup("/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:UserName/text()");
-    this->userName = *(XmlRoutine::getNodeText(doc, userNameXpathExpr, &namespaces));
+    XmlRoutine::getNodeText(doc, userNameXpathExpr, &namespaces, this->userName);
 
     delete userNameXpathExpr;
     userNameXpathExpr = NULL;
 
     const xmlChar* passWordXpathExpr = xmlCharStrdup("/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:UserPassword/text()");
-    this->passWord = *(XmlRoutine::getNodeText(doc, passWordXpathExpr, &namespaces));
+    XmlRoutine::getNodeText(doc, passWordXpathExpr, &namespaces, this->passWord);
     delete passWordXpathExpr;
     passWordXpathExpr = NULL;
 
     const xmlChar* disableSshPasswordAuthenticationXpathExpr = xmlCharStrdup("/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:DisableSshPasswordAuthentication/text()");
-    this->disableSshPasswordAuthentication = *(XmlRoutine::getNodeText(doc, disableSshPasswordAuthenticationXpathExpr, &namespaces));
+    XmlRoutine::getNodeText(doc, disableSshPasswordAuthenticationXpathExpr, &namespaces, this->disableSshPasswordAuthentication);
     delete disableSshPasswordAuthenticationXpathExpr;
 
     xmlFreeDoc(doc);
