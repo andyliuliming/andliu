@@ -125,28 +125,30 @@ int ExtensionConfig::SaveHandlerEnvironemnt(string &seqNo, string &extensionPath
     string configFolder = extensionPathOut + "config";
     string statusFolder = extensionPathOut + "status";
     string heartBeatFile = extensionPathOut + "heartbeat.log";
-
-    const char* handleEnvFormat = "[{\"name\":\"%s\",\"seqNo\":\"%s\",\"version\":%s,\"handlerEnvironment\":{\
-\"logFolder\":\"%s\",\"configFolder\":\"%s\",\
-\"statusFolder\":\"%s\",\"heartbeatFile\":\"%s\"}}]";
+    const char* handleEnvFormat = "[{\"name\":\"%s\",\"seqNo\":\"%s\",\"version\":1.0,\"handlerEnvironment\":{\"logFolder\":\"%s\",\"configFolder\":\"%s\",\"statusFolder\":\"%s\",\"heartbeatFile\":\"%s\"}}]";
+    int formatLength = strlen(handleEnvFormat);
     int sizeOfHandleEnv = this->name.length() + seqNo.length()
-        + this->version.length() + logDir.length()
+        + logDir.length()
         + configFolder.length() + statusFolder.length()
-        + heartBeatFile.length() + strlen(handleEnvFormat);
-    Logger::getInstance().Error("SIZE OF sizeOfHandleEnv IS: %d", sizeOfHandleEnv);
+        + heartBeatFile.length() + formatLength;
+    Logger::getInstance().Error("size of sizeOfHandleEnv IS: %d formatLength is %d", sizeOfHandleEnv, formatLength);
     char* handleEnvText = new char[sizeOfHandleEnv + 1]();
-
+    // there's extra spaces.
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     sprintf(handleEnvText, handleEnvFormat,
-        this->name.c_str(), seqNo.c_str(),
-        version.c_str(), logDir.c_str(),
-        configFolder.c_str(), statusFolder.c_str(),
+        this->name.c_str(),
+        seqNo.c_str(),
+        logDir.c_str(),
+        configFolder.c_str(),
+        statusFolder.c_str(),
         heartBeatFile.c_str());
+
+    printf("FFF%sFFF", handleEnvText);
     string handlelEnvironmentFilePath = extensionPathOut + "HandlerEnvironment.json";
 
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     //TODO make sure the strings are all deallocated including the c_str() ones.
-    FileOperator::save_file(handleEnvText, sizeOfHandleEnv, handlelEnvironmentFilePath.c_str());
+    FileOperator::save_file(handleEnvText, sizeOfHandleEnv-5, handlelEnvironmentFilePath.c_str());
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     delete[]handleEnvText;
     handleEnvText = NULL;
