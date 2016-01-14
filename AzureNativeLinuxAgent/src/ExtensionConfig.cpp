@@ -7,6 +7,8 @@
 #include "Logger.h"
 #include "XmlRoutine.h"
 #include "ZipRoutine.h"
+#include <cstring>
+using namespace std;
 
 int ExtensionConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, const char* pluginXpathManifestExpr)
 {
@@ -80,7 +82,7 @@ int ExtensionConfig::PrepareExtensionPackage(string &incarnationStr)
 }
 int ExtensionConfig::get_extension_path(string& pluginName, string& pluginVersion, string&extensionPath)
 {
-    extensionPath = string(WAAGENT_LIB_BASE_DIR) + "/Native_" + pluginName + "_" + pluginVersion + "/";
+    extensionPath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + pluginName + "_" + pluginVersion + "/";
     return 0;
 }
 
@@ -119,22 +121,37 @@ int ExtensionConfig::SaveHandlerEnvironemnt(string &seqNo, string &extensionPath
 {
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     //TODO implement this.
-    string logDir = string(EXTENSION_LOG_BASE_DIR) + this->name + "/" + this->version;//"logFolder": "/var/log/azure/Microsoft.OSTCExtensions.VMAccessForLinux/1.3.0.1
+    string logDir = string(EXTENSION_LOG_BASE_DIR) + this->name + "/" + this->version;
     string configFolder = extensionPathOut + "config";
     string statusFolder = extensionPathOut + "status";
     string heartBeatFile = extensionPathOut + "heartbeat.log";
 
-    const char* handleEnvFormat = "[{  \"name\": \"' + %s + '\", \"seqNo\": \"' + %s + '\", \"version\": %s,  \"handlerEnvironment\": {\
-\"logFolder\": \"' + %s + '\",    \"configFolder\": \"'%s'\",\
-\"statusFolder\": \"'%s'\",    \"heartbeatFile\": \"'%s'\"}}]\"";
-    int sizeOfHandleEnv = this->name.length() + seqNo.length() + this->version.length() + logDir.length() + configFolder.length() + statusFolder.length() + heartBeatFile.length();
-    char* handleEnvText = new char[sizeOfHandleEnv];
-    sprintf(handleEnvText, handleEnvFormat, this->name.c_str(), seqNo.c_str(), version.c_str(), logDir.c_str(), configFolder.c_str(), statusFolder.c_str(), heartBeatFile.c_str());
+    const char* handleEnvFormat = "[{\"name\":\"%s\",\"seqNo\":\"%s\",\"version\":%s,\"handlerEnvironment\":{\
+\"logFolder\":\"%s\",\"configFolder\":\"%s\",\
+\"statusFolder\":\"%s\",\"heartbeatFile\":\"%s\"}}]";
+    int sizeOfHandleEnv = this->name.length() + seqNo.length()
+        + this->version.length() + logDir.length()
+        + configFolder.length() + statusFolder.length()
+        + heartBeatFile.length() + strlen(handleEnvFormat);
+    Logger::getInstance().Error("SIZE OF sizeOfHandleEnv IS: %d", sizeOfHandleEnv);
+    char* handleEnvText = new char[sizeOfHandleEnv + 1]();
+
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    sprintf(handleEnvText, handleEnvFormat,
+        this->name.c_str(), seqNo.c_str(),
+        version.c_str(), logDir.c_str(),
+        configFolder.c_str(), statusFolder.c_str(),
+        heartBeatFile.c_str());
     string handlelEnvironmentFilePath = extensionPathOut + "HandlerEnvironment.json";
-    delete handleEnvText;
-    handleEnvText = NULL;
+
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     //TODO make sure the strings are all deallocated including the c_str() ones.
     FileOperator::save_file(handleEnvText, sizeOfHandleEnv, handlelEnvironmentFilePath.c_str());
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    delete[]handleEnvText;
+    handleEnvText = NULL;
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    //TODO make sure the handleEnvFormat is deallocated.
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     return 0;
 }
