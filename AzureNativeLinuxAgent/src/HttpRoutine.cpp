@@ -106,7 +106,7 @@ int HttpRoutine::Get(const char * url, map<string, string> * headers, HttpRespon
     }
 
     CURL *conn = NULL;
-    CURLcode code;
+    CURLcode code = CURLE_OK;
     //curl_global_init is not thread safe.
     curl_global_init(CURL_GLOBAL_DEFAULT);
 
@@ -143,12 +143,15 @@ int HttpRoutine::Get(const char * url, map<string, string> * headers, HttpRespon
     if (chunk != NULL)
     {
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
+        if (code != CURLE_OK)
+        {
+            returnCode = 1;
+            Logger::getInstance().Error("Failed to set http header: %s", errorBuffer);
+        }
     }
 
     code = curl_easy_perform(conn);
-
     curl_easy_cleanup(conn);
-
     curl_slist_free_all(chunk);
     if (code != CURLE_OK)
     {

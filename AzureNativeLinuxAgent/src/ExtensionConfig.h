@@ -5,7 +5,8 @@ using namespace std;
 class ExtensionConfig
 {
 private:
-    void DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, const char* pluginXpathManifestExpr);
+    int DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, const char* pluginXpathManifestExpr);
+    int get_extension_path(string& pluginName, string& pluginVersion, string&extensionPath);
 public:
     string autoUpgrade;
     string failoverLocation;
@@ -17,9 +18,12 @@ public:
     string version;
     string RuntimeSettings;
 
-    void PrepareExtensionPackage(string &incarnationStr);
-    void Process();
-    void SaveHandlerStatus();
+    int PrepareExtensionPackage(string &incarnationStr);
+    int Process();
+    int Uninstall();
+    int Disable();
+    int Update(string &previous_version);
+    int SaveHandlerEnvironemnt(string &seqNo, string &extensionPathOut);
     void SavePluginSettings(string &seqNo,string &settings);
     ExtensionConfig();
     ~ExtensionConfig();

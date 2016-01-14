@@ -58,6 +58,7 @@
 #define WAAGENT_SYSLOG_NAME ("AzureNativeLinuxAgent")
 #define WAAGENT_VERSION ("2012-11-30")
 #define WORKING_DIR ("/var/lib/waagent")
+#define EXTENSION_LOG_BASE_DIR ("/var/log/azure/")
 
 typedef unsigned char       BYTE, *PBYTE;
 typedef unsigned char       UINT8, *PUINT8;

@@ -58,11 +58,7 @@ int FileOperator::get_content(const char * fileName, string &content)
     }
 }
 
-int FileOperator::get_extension_path(string& pluginName, string& pluginVersion, string&extensionPath)
-{
-    extensionPath = string(WAAGENT_LIB_BASE_DIR) + "/Native_" + pluginName + "_" + pluginVersion + "/";
-    return 0;
-}
+
 
 
 FileOperator::~FileOperator()

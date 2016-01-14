@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "HandlerManifest.h"
 #include <json-glib/json-glib.h>
 

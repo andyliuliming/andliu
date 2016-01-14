@@ -7,6 +7,8 @@ class HandlerManifest
 public:
     string installCommand;
     string enableCommand;
+    string uninstallCommand;
+    string disableCommand;
     HandlerManifest();
     ~HandlerManifest();
 };
