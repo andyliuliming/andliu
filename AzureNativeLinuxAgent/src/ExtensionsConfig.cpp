@@ -56,45 +56,41 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
         XmlRoutine::getNodeProperty(nodes->nodeTab[i], "name", newConfig->name);
         XmlRoutine::getNodeProperty(nodes->nodeTab[i], "runAsStartupTask", newConfig->runAsStartupTask);
         XmlRoutine::getNodeProperty(nodes->nodeTab[i], "state", newConfig->state);
-        XmlRoutine::getNodeProperty(nodes->nodeTab[i], "version", newConfig->version); 
+        XmlRoutine::getNodeProperty(nodes->nodeTab[i], "version", newConfig->version);
         this->extensionConfigs.push_back(newConfig);
-    }
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
-    xmlXPathFreeObject(pluginsXpathObj);
+        newConfig->PrepareExtensionPackage(incarnationStr);
 
-    for (int i = 0; i < this->extensionConfigs.size(); i++)
-    {
-        this->extensionConfigs[i]->PrepareExtensionPackage(incarnationStr);
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-        string pluginSettingsPath = string("/Extensions/PluginSettings/Plugin[@name='") + this->extensionConfigs[i]->name + "' and @version='" + this->extensionConfigs[i]->version + "']/RuntimeSettings";
-
+        string pluginSettingsPath = string("/Extensions/PluginSettings/Plugin[@name='")
+            + newConfig->name
+            + "' and @version='" + newConfig->version
+            + "']/RuntimeSettings";
+        //TODO make sure the c_str is deallocated
         xmlXPathObjectPtr pluginSettingsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, pluginSettingsPath.c_str(), NULL);
-        xmlNodeSetPtr pluginSettingsNodeSet = pluginSettingsXpathObj->nodesetval;
-
-        if (pluginSettingsNodeSet->nodeNr > 0)
+        if (pluginSettingsXpathObj != NULL
+            &&pluginSettingsXpathObj->nodesetval != NULL
+            && pluginSettingsXpathObj->nodesetval->nodeNr > 0)
         {
             string seqNo;
-            XmlRoutine::getNodeProperty(pluginSettingsNodeSet->nodeTab[0], "seqNo", seqNo);
-            string extensionPathOut;
-            FileOperator::get_extension_path(this->extensionConfigs[i]->name, this->extensionConfigs[i]->version, extensionPathOut);
+            XmlRoutine::getNodeProperty(pluginSettingsXpathObj->nodesetval->nodeTab[0], "seqNo", seqNo);
             string settingFileContent;
-            XmlRoutine::getNodeContent(pluginSettingsNodeSet->nodeTab[0], settingFileContent);
-            string configFolderPath = extensionPathOut + "config/";
-            FileOperator::make_dir(configFolderPath.c_str());
-            string settingFilePath = configFolderPath + seqNo + ".settings";
-            FileOperator::save_file(settingFileContent, settingFilePath);
+            XmlRoutine::getNodeContent(pluginSettingsXpathObj->nodesetval->nodeTab[0], settingFileContent);
+
+            newConfig->SavePluginSettings(seqNo, settingFileContent);
         }
         else
         {
             Logger::getInstance().Warning("no plugin settings found for this extension");
         }
+        xmlXPathFreeObject(pluginSettingsXpathObj);
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     }
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
+    xmlXPathFreeObject(pluginsXpathObj);
 
 
     xmlXPathObjectPtr statusBlobXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, "/Extensions/StatusUploadBlob", NULL);
-
     if (statusBlobXpathObj->nodesetval != NULL
         && statusBlobXpathObj->nodesetval->nodeNr > 0)
     {
@@ -118,28 +114,7 @@ void ExtensionsConfig::Process()
     Logger::getInstance().Verbose("start processing extensions.");
     for (int i = 0; i < this->extensionConfigs.size(); i++)
     {
-        //handle it 
-        Logger::getInstance().Verbose("start handling extension %s", this->extensionConfigs[i]->name.c_str());
-        string  extensionPath;
-        FileOperator::get_extension_path(this->extensionConfigs[i]->name, this->extensionConfigs[i]->version, extensionPath);
-        string manifestFilePath = extensionPath + "/HandlerManifest.json";
-
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-        HandlerManifest handlerManifest;
-        int parseHandlerManifest = JsonRoutine::ParseHandlerManifest(manifestFilePath,handlerManifest);
-        if (parseHandlerManifest == 0)
-        {
-
-            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-            CommandExecuter::PosixSpawn(handlerManifest.installCommand, extensionPath);
-            CommandExecuter::PosixSpawn(handlerManifest.enableCommand, extensionPath);
-            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-        }
-        else
-        {
-            //TODO error handling.
-        }
-        Logger::getInstance().Verbose("end handling extension");
+        this->extensionConfigs[i]->Process();
     }
     Logger::getInstance().Verbose("end processing extensions.");
 

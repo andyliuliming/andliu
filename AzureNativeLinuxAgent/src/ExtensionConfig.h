@@ -4,6 +4,8 @@
 using namespace std;
 class ExtensionConfig
 {
+private:
+    void DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, const char* pluginXpathManifestExpr);
 public:
     string autoUpgrade;
     string failoverLocation;
@@ -16,8 +18,9 @@ public:
     string RuntimeSettings;
 
     void PrepareExtensionPackage(string &incarnationStr);
-    void DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, const char* pluginXpathManifestExpr);
-
+    void Process();
+    void SaveHandlerStatus();
+    void SavePluginSettings(string &seqNo,string &settings);
     ExtensionConfig();
     ~ExtensionConfig();
 };

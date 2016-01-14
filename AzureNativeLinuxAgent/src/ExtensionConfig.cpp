@@ -1,7 +1,9 @@
+#include "CommandExecuter.h"
 #include "ExtensionConfig.h"
 #include "FileOperator.h"
+#include "HandlerManifest.h"
 #include "HttpRoutine.h"
-#include "CommandExecuter.h"
+#include "JsonRoutine.h"
 #include "Logger.h"
 #include "XmlRoutine.h"
 #include "ZipRoutine.h"
@@ -37,6 +39,10 @@ void ExtensionConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, const 
 }
 void ExtensionConfig::PrepareExtensionPackage(string &incarnationStr)
 {
+    if (this->state.compare("uninstall"))
+    {
+
+    }
     Logger::getInstance().Verbose("download/extract extension %s", this->name.c_str());
     // get the manifest, get the bundle zip file location, download it, extract it.
     HttpResponse response;
@@ -66,6 +72,46 @@ void ExtensionConfig::PrepareExtensionPackage(string &incarnationStr)
         //TODO: error handling.
         Logger::getInstance().Error("failed to get the extensions manifest");
     }
+}
+
+void ExtensionConfig::Process()
+{
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    //handle it 
+    Logger::getInstance().Verbose("start handling extension %s", this->name.c_str());
+    string  extensionPath;
+    FileOperator::get_extension_path(this->name, this->version, extensionPath);
+    string manifestFilePath = extensionPath + "/HandlerManifest.json";
+
+    HandlerManifest handlerManifest;
+    int parseHandlerManifest = JsonRoutine::ParseHandlerManifest(manifestFilePath, handlerManifest);
+    if (parseHandlerManifest == 0)
+    {
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+        CommandExecuter::PosixSpawn(handlerManifest.installCommand, extensionPath);
+        CommandExecuter::PosixSpawn(handlerManifest.enableCommand, extensionPath);
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    }
+    else
+    {
+        //TODO error handling.
+    }
+    Logger::getInstance().Verbose("end handling extension");
+}
+
+void ExtensionConfig::SaveHandlerStatus()
+{
+}
+
+void ExtensionConfig::SavePluginSettings(string &seqNo, string &settings)
+{
+    string extensionPathOut;
+    FileOperator::get_extension_path(this->name, this->version, extensionPathOut);
+
+    string configFolderPath = extensionPathOut + "config/";
+    FileOperator::make_dir(configFolderPath.c_str());
+    string settingFilePath = configFolderPath + seqNo + ".settings";
+    FileOperator::save_file(settings, settingFilePath);
 }
 
 ExtensionConfig::ExtensionConfig()
