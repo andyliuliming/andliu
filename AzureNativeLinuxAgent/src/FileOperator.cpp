@@ -40,7 +40,8 @@ void FileOperator::save_file(const char * content, long size, const char * fileN
 {
     ofstream myfile;
     myfile.open(fileName);
-    myfile.write(content, size);
+    myfile << content;
+//    myfile.write(content, size);
     myfile.close();
 }
 

@@ -125,7 +125,8 @@ int ExtensionConfig::SaveHandlerEnvironemnt(string &seqNo, string &extensionPath
     string configFolder = extensionPathOut + "config";
     string statusFolder = extensionPathOut + "status";
     string heartBeatFile = extensionPathOut + "heartbeat.log";
-    const char* handleEnvFormat = "[{\"name\":\"%s\",\"seqNo\":\"%s\",\"version\":1.0,\"handlerEnvironment\":{\"logFolder\":\"%s\",\"configFolder\":\"%s\",\"statusFolder\":\"%s\",\"heartbeatFile\":\"%s\"}}]";
+    const char* handleEnvFormat = 
+        "[{\"name\":\"%s\",\"seqNo\":\"%s\",\"version\":1.0,\"handlerEnvironment\":{\"logFolder\":\"%s\",\"configFolder\":\"%s\",\"statusFolder\":\"%s\",\"heartbeatFile\":\"%s\"}}]";
     int formatLength = strlen(handleEnvFormat);
     int sizeOfHandleEnv = this->name.length() + seqNo.length()
         + logDir.length()
@@ -148,7 +149,7 @@ int ExtensionConfig::SaveHandlerEnvironemnt(string &seqNo, string &extensionPath
 
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     //TODO make sure the strings are all deallocated including the c_str() ones.
-    FileOperator::save_file(handleEnvText, sizeOfHandleEnv-5, handlelEnvironmentFilePath.c_str());
+    FileOperator::save_file(handleEnvText, sizeOfHandleEnv-10, handlelEnvironmentFilePath.c_str());
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     delete[]handleEnvText;
     handleEnvText = NULL;
