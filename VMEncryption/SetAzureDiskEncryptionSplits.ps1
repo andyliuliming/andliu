@@ -2,13 +2,13 @@
 
 
 #Add-AzureAccount
-Select-AzureSubscription "CRP TiP Sub 001"
+Select-AzureRmSubscription "OSTC Shanghai Dev"
 
-New-AzureKeyVault -VaultName "andliukeyvault" -ResourceGroupName "andliu-encrypt" -Location westus
+New-AzureRmKeyVault -VaultName "andliukeyvault" -ResourceGroupName "andliu-eastasia" -Location eastasia
 
-Set-AzureKeyVaultAccessPolicy -VaultName andliukeyvault -ResourceGroupName andliu-encrypt -ServicePrincipalName b7b48143-6c58-4cd4-a9e0-0a15cbda0614 -PermissionsToKeys all -PermissionsToSecrets all
+Set-AzureRmKeyVaultAccessPolicy -VaultName andliukeyvault -ResourceGroupName andliu-eastasia -ServicePrincipalName b7b48143-6c58-4cd4-a9e0-0a15cbda0614 -PermissionsToKeys all -PermissionsToSecrets all
 
-Add-AzureKeyVaultKey -VaultName "andliukeyvault" -Name "mykey" -Destination Software
+Add-AzureRmKeyVaultKey -VaultName "andliukeyvault" -Name "diskencryptionkey" -Destination Software
 
 
 

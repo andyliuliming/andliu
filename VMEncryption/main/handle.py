@@ -187,10 +187,10 @@ def enable():
         setting_file_timestamp = os.path.getmtime(hutil._context._settings_file)
         utcNow = time.time()
         timespan_in_seconds = utcNow - setting_file_timestamp
-        TEN_MINUTES = 10 * 60 # in seconds
+        TEN_SECONDS = 10 # in seconds, this should be lower than 25 seconds.
         # handle the machine identity for the restoration scenario.
         logger.log(msg="utcNow is " + str(utcNow) + " and setting file timestamp is " + str(setting_file_timestamp) + " and timespan_in_seconds is " + str(timespan_in_seconds))
-        if(abs(timespan_in_seconds) > TEN_MINUTES):
+        if(abs(timespan_in_seconds) > TEN_SECONDS):
             logger.log(msg="timestamp for the current setting file is not in valid period",level=CommonVariables.WarningLevel)
             exit_without_status_report()
     else:
@@ -215,8 +215,7 @@ def enable():
                 # we should be careful about proceed for this case, we just
                 # failed this time to wait for customers' retry.
                 exit_without_status_report()
-        hutil.exit_if_enabled()
-    
+
     try:
         protected_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('protectedSettings')
         public_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('publicSettings')

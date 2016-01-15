@@ -1,7 +1,7 @@
 #
 # Handler library for Linux IaaS
 #
-# Copyright 2015 Microsoft Corporation
+# Copyright 2014 Microsoft Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -61,10 +61,11 @@ import imp
 import base64
 import json
 import time
-import tempfile
 from os.path import join
 from Utils.WAAgentUtil import waagent
 from waagent import LoggerInit
+import logging
+import logging.handlers
 
 DateTimeFormat = "%Y-%m-%dT%H:%M:%SZ"
 
@@ -79,10 +80,16 @@ class HandlerUtility:
         self._log = log
         self._error = error
         self._short_name = short_name
-        self.patching = None
-        
+        self.syslogger = logging.getLogger(self._short_name)
+        self.syslogger.setLevel(logging.INFO)
+        self.operation = None
+        handler = logging.handlers.SysLogHandler(address='/dev/log')
+        formatter = logging.Formatter('%(name)s: %(levelname)s %(message)s')
+        handler.setFormatter(formatter)
+        self.syslogger.addHandler(handler)
+
     def _get_log_prefix(self):
-        return '[%s-%s]' %(self._context._name, self._context._version)
+        return '[%s-%s]' % (self._context._name, self._context._version)
 
     def _get_current_seq_no(self, config_folder):
         seq_no = -1
@@ -91,15 +98,16 @@ class HandlerUtility:
         for subdir, dirs, files in os.walk(config_folder):
             for file in files:
                 try:
-                    cur_seq_no = int(os.path.basename(file).split('.')[0])
-                    if(freshest_time is None):
-                        freshest_time = os.path.getmtime(join(config_folder,file))
-                        seq_no = cur_seq_no
-                    else:
-                        current_file_m_time = os.path.getmtime(join(config_folder,file))
-                        if(current_file_m_time > freshest_time):
-                            freshest_time=current_file_m_time
+                    if(file.endswith('.settings')):
+                        cur_seq_no = int(os.path.basename(file).split('.')[0])
+                        if(freshest_time == None):
+                            freshest_time = os.path.getmtime(join(config_folder,file))
                             seq_no = cur_seq_no
+                        else:
+                            current_file_m_time = os.path.getmtime(join(config_folder,file))
+                            if(current_file_m_time > freshest_time):
+                                freshest_time = current_file_m_time
+                                seq_no = cur_seq_no
                 except ValueError:
                     continue
         return seq_no
@@ -109,33 +117,71 @@ class HandlerUtility:
 
     def error(self, message):
         self._error(self._get_log_prefix() + message)
- 
-    def do_parse_context(self,operation):
+
+    def _parse_config(self, ctxt):
+        config = None
+        try:
+            config = json.loads(ctxt)
+        except:
+            self.error('JSON exception decoding ' + ctxt)
+
+        if config == None:
+            self.error("JSON error processing settings file:" + ctxt)
+        else:
+            handlerSettings = config['runtimeSettings'][0]['handlerSettings']
+            if handlerSettings.has_key('protectedSettings') and \
+                    handlerSettings.has_key("protectedSettingsCertThumbprint") and \
+                    handlerSettings['protectedSettings'] is not None and \
+                    handlerSettings["protectedSettingsCertThumbprint"] is not None:
+                protectedSettings = handlerSettings['protectedSettings']
+                thumb = handlerSettings['protectedSettingsCertThumbprint']
+                cert = waagent.LibDir + '/' + thumb + '.crt'
+                pkey = waagent.LibDir + '/' + thumb + '.prv'
+                waagent.SetFileContents('/tmp/kk', protectedSettings)
+                cleartxt = None
+                cleartxt = waagent.RunGetOutput("base64 -d /tmp/kk | openssl smime  -inform DER -decrypt -recip " + cert + "  -inkey " + pkey)[1]
+                os.remove("/tmp/kk")
+                if cleartxt == None:
+                    self.error("OpenSSh decode error using  thumbprint " + thumb)
+                    do_exit(1, self.operation,'error','1', self.operation + ' Failed')
+                jctxt = ''
+                try:
+                    jctxt = json.loads(cleartxt)
+                except:
+                    self.error('JSON exception decoding ' + cleartxt)
+                handlerSettings['protectedSettings'] = jctxt
+                self.log('Config decoded correctly.')
+        return config
+
+    def do_parse_context(self, operation):
+        self.operation = operation
         _context = self.try_parse_context()
         if not _context:
-            self.do_exit(1,operation,'error','1', operation + ' Failed')
+            self.log("maybe no new settings file found")
+            sys.exit(0)
         return _context
-            
+
     def try_parse_context(self):
         self._context = HandlerContext(self._short_name)
-        handler_env=None
-        config=None
-        ctxt=None
-        code=0
-        # get the HandlerEnvironment.json. According to the extension handler spec, it is always in the ./ directory
+        handler_env = None
+        config = None
+        ctxt = None
+        code = 0
+        # get the HandlerEnvironment.json.  According to the extension handler
+        # spec, it is always in the ./ directory
         self.log('cwd is ' + os.path.realpath(os.path.curdir))
-        handler_env_file='./HandlerEnvironment.json'
+        handler_env_file = './HandlerEnvironment.json'
         if not os.path.isfile(handler_env_file):
             self.error("Unable to locate " + handler_env_file)
             return None
-        ctxt=waagent.GetFileContents(handler_env_file)
-        if ctxt is None :
+        ctxt = waagent.GetFileContents(handler_env_file)
+        if ctxt == None :
             self.error("Unable to read " + handler_env_file)
         try:
-            handler_env=json.loads(ctxt)
+            handler_env = json.loads(ctxt)
         except:
             pass
-        if handler_env is None :
+        if handler_env == None :
             self.log("JSON error processing " + handler_env_file)
             return None
         if type(handler_env) == list:
@@ -143,59 +189,34 @@ class HandlerUtility:
 
         self._context._name = handler_env['name']
         self._context._version = str(handler_env['version'])
-        self._context._config_dir=handler_env['handlerEnvironment']['configFolder']
-        self._context._log_dir= handler_env['handlerEnvironment']['logFolder']
-        self._context._log_file= os.path.join(handler_env['handlerEnvironment']['logFolder'],'extension.log')
+        self._context._config_dir = handler_env['handlerEnvironment']['configFolder']
+        self._context._log_dir = handler_env['handlerEnvironment']['logFolder']
+        self._context._log_file = os.path.join(handler_env['handlerEnvironment']['logFolder'],'extension.log')
         self._change_log_file()
-        self._context._status_dir=handler_env['handlerEnvironment']['statusFolder']
-        self._context._heartbeat_file=handler_env['handlerEnvironment']['heartbeatFile']
+        self._context._status_dir = handler_env['handlerEnvironment']['statusFolder']
+        self._context._heartbeat_file = handler_env['handlerEnvironment']['heartbeatFile']
         self._context._seq_no = self._get_current_seq_no(self._context._config_dir)
         if self._context._seq_no < 0:
             self.error("Unable to locate a .settings file!")
             return None
         self._context._seq_no = str(self._context._seq_no)
         self.log('sequence number is ' + self._context._seq_no)
-        self._context._status_file= os.path.join(self._context._status_dir, self._context._seq_no +'.status')
+        self._context._status_file = os.path.join(self._context._status_dir, self._context._seq_no + '.status')
         self._context._settings_file = os.path.join(self._context._config_dir, self._context._seq_no + '.settings')
         self.log("setting file path is" + self._context._settings_file)
-        ctxt=None
-        ctxt=waagent.GetFileContents(self._context._settings_file)
-        if ctxt is None :
+        ctxt = None
+        ctxt = waagent.GetFileContents(self._context._settings_file)
+        if ctxt == None :
             error_msg = 'Unable to read ' + self._context._settings_file + '. '
             self.error(error_msg)
             return None
+        else:
+            if(self.operation is not None and self.operation.lower() == "enable"):
+                # we should keep the current status file
+                self.backup_settings_status_file(self._context._seq_no)
 
         self.log("JSON config: " + ctxt)
-        config = None
-        try:
-            config=json.loads(ctxt)
-        except:
-            self.error('JSON exception decoding ' + ctxt)
-        if config is None:
-            self.error("JSON error processing " + settings_file)
-        else:
-            if config['runtimeSettings'][0]['handlerSettings'].has_key('protectedSettings'):
-                thumb=config['runtimeSettings'][0]['handlerSettings']['protectedSettingsCertThumbprint']
-                cert=waagent.LibDir+'/'+thumb+'.crt'
-                pkey=waagent.LibDir+'/'+thumb+'.prv'
-                f = tempfile.NamedTemporaryFile(delete=False)
-                f.close()
-                waagent.SetFileContents(f.name,config['runtimeSettings'][0]['handlerSettings']['protectedSettings'])
-                cleartxt = None
-                cleartxt = waagent.RunGetOutput(self.patching.base64_path + " -d " + f.name + " | " + self.patching.openssl_path + " smime  -inform DER -decrypt -recip " + cert + "  -inkey " + pkey)[1]
-                if cleartxt is None:
-                    error_msg = "OpenSSh decode error using  thumbprint " + thumb
-                    self.error(error_msg)
-                    return None
-
-                jctxt=''
-                try:
-                    jctxt=json.loads(cleartxt)
-                except:
-                    self.error('JSON exception decoding ' + cleartxt)
-                config['runtimeSettings'][0]['handlerSettings']['protectedSettings']=jctxt
-                self.log('Config decoded correctly.')
-            self._context._config = config
+        self._context._config = self._parse_config(ctxt)
         return self._context
 
     def _change_log_file(self):
@@ -204,43 +225,9 @@ class HandlerUtility:
         self._log = waagent.Log
         self._error = waagent.Error
 
-    def set_verbose_log(self, verbose):
-        if(verbose == "1" or verbose == 1):
-            self.log("Enable verbose log")
-            LoggerInit(self._context._log_file, '/dev/stdout', verbose=True)
-        else:
-            self.log("Disable verbose log")
-            LoggerInit(self._context._log_file, '/dev/stdout', verbose=False)
-
-    def is_seq_smaller(self):
-        return int(self._context._seq_no) <= self._get_most_recent_seq()
-
     def save_seq(self):
         self._set_most_recent_seq(self._context._seq_no)
         self.log("set most recent sequence number to " + self._context._seq_no)
-
-    def exit_if_enabled(self):
-        self.exit_if_seq_smaller()
-
-    def exit_if_seq_smaller(self):
-        if(self.is_seq_smaller()):
-            self.log("Current sequence number, " + self._context._seq_no + ", is not greater than the sequnce number of the most recent executed configuration. Exiting...")
-            sys.exit(0)
-        self.save_seq()
-
-    def _get_most_recent_seq(self):
-        if(os.path.isfile('mrseq')):
-            seq = waagent.GetFileContents('mrseq')
-            if(seq):
-                return int(seq)
-
-        return -1
-
-    def is_current_config_seq_greater_inused(self):
-        return int(self._context._seq_no) > self._get_most_recent_seq()
-
-    def get_inused_config_seq(self):
-        return self._get_most_recent_seq()
 
     def set_inused_config_seq(self,seq):
         self._set_most_recent_seq(seq)
@@ -250,7 +237,7 @@ class HandlerUtility:
 
     def do_status_report(self, operation, status, status_code, message):
         self.log("{0},{1},{2},{3}".format(operation, status, status_code, message))
-        tstamp=time.strftime(DateTimeFormat, time.gmtime())
+        tstamp = time.strftime(DateTimeFormat, time.gmtime())
         stat = [{
             "version" : self._context._version,
             "timestampUTC" : tstamp,
@@ -266,31 +253,41 @@ class HandlerUtility:
             }
         }]
         stat_rept = json.dumps(stat)
+        # rename all other status files, or the WALA would report the wrong
+        # status file.
+        # because the wala choose the status file with the highest sequence
+        # number to report.
         if self._context._status_file:
             with open(self._context._status_file,'w+') as f:
                 f.write(stat_rept)
 
-    def do_heartbeat_report(self, heartbeat_file,status,code,message):
-        # heartbeat
-        health_report='[{"version":"1.0","heartbeat":{"status":"' + status+ '","code":"'+ code + '","Message":"' + message + '"}}]'
-        if waagent.SetFileContents(heartbeat_file,health_report) is None :
-            self.error('Unable to wite heartbeat info to ' + heartbeat_file)
+    def backup_settings_status_file(self, _seq_no):
+        self.log("current seq no is " + _seq_no)
+        for subdir, dirs, files in os.walk(self._context._config_dir):
+            for file in files:
+                try:
+                    if(file.endswith('.settings') and file != (_seq_no + ".settings")):
+                        new_file_name = file.replace(".","_")
+                        os.rename(join(self._context._config_dir,file), join(self._context._config_dir,new_file_name))
+                except Exception as e:
+                    self.log("failed to rename the status file.")
 
-    def do_exit(self,exit_code,operation,status,code,message):
+        for subdir, dirs, files in os.walk(self._context._status_dir):
+            for file in files:
+                try:
+                    if(file.endswith('.status') and file != (_seq_no + ".status")):
+                        new_file_name = file.replace(".","_")
+                        os.rename(join(self._context._status_dir,file), join(self._context._status_dir, new_file_name))
+                except Exception as e:
+                    self.log("failed to rename the status file.")
+
+
+    def do_exit(self, exit_code, operation,status,code,message):
         try:
             self.do_status_report(operation, status,code,message)
         except Exception as e:
-            self.log("Can't update status: "+str(e))
+            self.log("Can't update status: " + str(e))
         sys.exit(exit_code)
-
-    def get_name(self):
-        return self._context._name
-    
-    def get_seq_no(self):
-        return self._context._seq_no
-
-    def get_log_dir(self):
-        return self._context._log_dir
 
     def get_handler_settings(self):
         return self._context._config['runtimeSettings'][0]['handlerSettings']
@@ -300,4 +297,3 @@ class HandlerUtility:
 
     def get_public_settings(self):
         return self.get_handler_settings().get('publicSettings')
-

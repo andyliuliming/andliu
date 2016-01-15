@@ -6,20 +6,19 @@
 Add-AzureRmAccount 
 Set-AzureRmContext -SubscriptionName "OSTC Shanghai Dev"
 
-$resourceGroupName="andliuresourcegroup2"
-$vmName="andliu-encryption"
+$resourceGroupName="andliu-eastasia"
+$vmName="andliu-ubuntu"
 $aadClientId="b7b48143-6c58-4cd4-a9e0-0a15cbda0614"
 $aadClientSecret="/XazYdJ9XaMBbiQ0dwSoyue7LbkQ1OJOePGGcrG3dkA="
-$keyVaultName = "andliu"
 $keyVaultUrl="https://andliukeyvault.vault.azure.net/"
 #$location="North Central US"
-$diskEncryptionKeyVaultId="/subscriptions/c4528d9e-c99a-48bb-b12d-fde2176a43b8/resourceGroups/andliuresourcegroup2/providers/Microsoft.KeyVault/vaults/andliukeyvault"
-$keyEncryptionKeyVaultId="/subscriptions/c4528d9e-c99a-48bb-b12d-fde2176a43b8/resourceGroups/andliuresourcegroup2/providers/Microsoft.KeyVault/vaults/andliukeyvault"
+$diskEncryptionKeyVaultId="/subscriptions/c4528d9e-c99a-48bb-b12d-fde2176a43b8/resourceGroups/andliu-eastasia/providers/Microsoft.KeyVault/vaults/andliukeyvault"
+$keyEncryptionKeyVaultId="/subscriptions/c4528d9e-c99a-48bb-b12d-fde2176a43b8/resourceGroups/andliu-eastasia/providers/Microsoft.KeyVault/vaults/andliukeyvaul"
 $keyEncryptionKeyUrl=$null
 $keyEncryptionAlgorithm="RSA-OAEP"
 $volumeType="Data"
-$extensionName="andliu-encryption"
-$sequenceVersion = "7"
+$extensionName="andliu-ubuntu"
+$sequenceVersion = "1"
 
 #"command":"enableencryption_all_inplace",
 #"KeyEncryptionKeyURL":"https://andliukeyvault.vault.azure.net/keys/mykey",
