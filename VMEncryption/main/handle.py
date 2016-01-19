@@ -183,21 +183,6 @@ def enable():
             logger.log(msg="the config is there, but we could not get the bek file.",level=CommonVariables.WarningLevel)
             exit_without_status_report()
 
-    # we should restrict the time span in 10 seconds.
-    if(hutil is not None and hutil._context is not None and hutil._context._settings_file is not None):
-        setting_file_timestamp = os.path.getmtime(hutil._context._settings_file)
-        utcNow = time.time()
-        timespan_in_seconds = utcNow - setting_file_timestamp
-        TEN_SECONDS = 10 # in seconds, this should be lower than 25 seconds.
-        # handle the machine identity for the restoration scenario.
-        logger.log(msg="now is " + str(utcNow) + " and setting file timestamp is " + str(setting_file_timestamp) + " and timespan_in_seconds is " + str(timespan_in_seconds))
-        if(abs(timespan_in_seconds) > TEN_SECONDS):
-            logger.log(msg="timestamp for the current setting file is not in valid period",level=CommonVariables.WarningLevel)
-            exit_without_status_report()
-    else:
-        logger.log(msg="context is not right or settings file not found",level=CommonVariables.ErrorLevel)
-        exit_without_status_report()
-
     # handle the re-call scenario.  the re-call would resume?
     # if there's one tag for the next reboot.
     encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
