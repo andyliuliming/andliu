@@ -208,13 +208,16 @@ def enable():
         else:
             current_identity = machine_identity.current_identity()
             if(current_identity != stored_identity):
-                current_seq_no = 0
+                current_seq_no = -1
                 backup_logger.log("machine identity not same, set current_seq_no to " + str(current_seq_no) + " " + str(stored_identity) + " " + str(current_identity), True)
-                hutil.set_inused_config_seq(-1)
+                hutil.set_last_seq(current_seq_no)
                 machine_identity.save_identity()
                 # we should be careful about proceed for this case, we just
                 # failed this time to wait for customers' retry.
                 exit_without_status_report()
+
+    hutil.exit_if_same_seq()
+    hutil.save_seq()
 
     try:
         protected_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('protectedSettings')
