@@ -180,6 +180,7 @@ def enable():
         if(existed_passphrase_file is not None):
             mount_encrypted_disks(disk_util=disk_util,bek_util=bek_util,encryption_config=encryption_config,passphrase_file=existed_passphrase_file)
         else:
+            logger.log(msg="the config is there, but we could not get the bek file.",level=CommonVariables.WarningLevel)
             exit_without_status_report()
 
     # we should restrict the time span in 10 seconds.
