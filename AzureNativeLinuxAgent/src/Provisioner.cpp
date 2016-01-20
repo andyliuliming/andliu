@@ -19,6 +19,8 @@ bool Provisioner::isProvisioned()
 
 int Provisioner::Prosess()
 {
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
     //1. provision re-generate key
     AgentConfig::getInstance().LoadConfig();
 
@@ -38,23 +40,34 @@ int Provisioner::Prosess()
         //TODO deallocate the c_str() here.
         CommandExecuter::RunGetOutput(("ssh-keygen -N '' -t " + type + " -f /etc/ssh/ssh_host_" + type + "_key").c_str(), generateCommandResult);
     }
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
     // 2. do the ovf-env
     string *romDevicePath = DeviceRoutine::findRomDevice();
     FileOperator::make_dir(SECURE_MOUNT_POINT);
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
     string mountCommand("mount -t udf " + *romDevicePath + " " + SECURE_MOUNT_POINT);
     CommandResult mountResult;
     CommandExecuter::RunGetOutput(mountCommand, mountResult);
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
     string ovfEnvFullPath = OVF_ENV_FILE_FULL_PATH;
     string ovfFileContent;
     int getOvfFileContentResult = FileOperator::get_content(OVF_ENV_FILE_FULL_PATH, ovfFileContent);
     string umountCommand = string("umount ") + SECURE_MOUNT_POINT;
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
     CommandResult umountResult;
     CommandExecuter::RunGetOutput(umountCommand, umountResult);
     if (getOvfFileContentResult == 0)
     {
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
         OvfEnv *ovfEnv = new OvfEnv();
         ovfEnv->Parse(ovfFileContent);
         ovfEnv->Process();
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     }
     else
     {
