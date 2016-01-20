@@ -95,6 +95,7 @@ int XmlRoutine::getNodeText(xmlDocPtr doc, const char * xpathExpr, map<string, s
     }
     else
     {
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         if (xpathObj->nodesetval == NULL)
         {
             Logger::getInstance().Error("Error: node set is null for \"%s\"", xpathExpr);
@@ -102,6 +103,7 @@ int XmlRoutine::getNodeText(xmlDocPtr doc, const char * xpathExpr, map<string, s
         }
         if (xpathObj->nodesetval->nodeNr > 0)
         {
+            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
             xmlNodeSetPtr nodes = xpathObj->nodesetval;
             text = ((const char*)nodes->nodeTab[0]->content);
             xmlXPathFreeObject(xpathObj);

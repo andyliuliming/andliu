@@ -35,20 +35,28 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/ContainerId/text()", NULL, this->containerId);
 
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/InstanceId/text()", NULL, this->roleInstanceId);
 
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/HostingEnvironmentConfig/text()", NULL, this->hostingEnvironmentConfigUrl);
 
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/SharedConfig/text()", NULL, this->sharedConfigUrl);
 
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ExtensionsConfig/text()", NULL, this->extensionsConfigUrl);
 
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/FullConfig/text()", NULL, this->fullConfigUrl);
 
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ConfigName/text()", NULL, this->configName);
 
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/Certificates/text()", NULL, this->certificatesUrl);
 
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         xmlFreeDoc(goalStateDoc);
 
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
