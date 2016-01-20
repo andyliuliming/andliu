@@ -44,10 +44,14 @@ int Provisioner::Prosess()
 
     // 2. do the ovf-env
     string *romDevicePath = DeviceRoutine::findRomDevice();
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     FileOperator::make_dir(SECURE_MOUNT_POINT);
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-
-    string mountCommand("mount -t udf " + *romDevicePath + " " + SECURE_MOUNT_POINT);
+#ifdef BSD
+    string mountCommand("mount -t udf /dev/" + *romDevicePath + " " + SECURE_MOUNT_POINT);
+#else
+    string mountCommand("mount " + *romDevicePath + " " + SECURE_MOUNT_POINT);
+#endif
     CommandResult mountResult;
     CommandExecuter::RunGetOutput(mountCommand, mountResult);
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);

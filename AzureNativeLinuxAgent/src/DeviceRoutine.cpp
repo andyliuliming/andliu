@@ -91,8 +91,8 @@ string * DeviceRoutine::findRomDevice()
         result = new string(dir->d_name);
 
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-        delete dir;
-        dir = NULL;
+        /*delete dir;
+        dir = NULL;*/
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     }
     return result;
