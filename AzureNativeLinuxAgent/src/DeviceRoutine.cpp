@@ -21,40 +21,40 @@ void DeviceRoutine::setIsciTimeOut()
     Logger::getInstance().Verbose("timeout set to:%s", timeOut.c_str());
     if (getTimeOutResult == 0)
     {
-        #ifdef BSD
-            string commandToSetTimeOut = "sysctl kern.cam.da.default_timeout=" + timeOut;
-            CommandResult setTimeOutResult;
-            CommandExecuter::RunGetOutput(commandToSetTimeOut, setTimeOutResult);
-            if (setTimeOutResult.exitCode != 0)
-            {
-                Logger::getInstance().Error("set timeout result %d", setTimeOutResult.exitCode);
-                Logger::getInstance().Error(setTimeOutResult.output->c_str());
-            }
+#ifdef BSD
+        string commandToSetTimeOut = "sysctl kern.cam.da.default_timeout=" + timeOut;
+        CommandResult setTimeOutResult;
+        CommandExecuter::RunGetOutput(commandToSetTimeOut, setTimeOutResult);
+        if (setTimeOutResult.exitCode != 0)
+        {
+            Logger::getInstance().Error("set timeout result %d", setTimeOutResult.exitCode);
+            Logger::getInstance().Error(setTimeOutResult.output->c_str());
+        }
 
-        #else
-            DIR           *d;
-            struct dirent *dir;
-            d = opendir("/sys/block");
+#else
+        DIR           *d;
+        struct dirent *dir;
+        d = opendir("/sys/block");
 
-            if (d != NULL)
+        if (d != NULL)
+        {
+            while ((dir = readdir(d)) != NULL)
             {
-                while ((dir = readdir(d)) != NULL)
+                Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+                string directoryName = dir->d_name;
+                Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+                if (directoryName.find("sd") == 0)
                 {
                     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-                    string directoryName = dir->d_name;
+                    string timeOutFile = "/sys/block/" + directoryName + "/device/timeout";
+                    setBlockDeviceTimeOut(timeOutFile, timeOut);
                     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-                    if (directoryName.find("sd")==0)
-                    {
-                        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-                        string timeOutFile = "/sys/block/" + directoryName + "/device/timeout";
-                        setBlockDeviceTimeOut(timeOutFile, timeOut);
-                        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-                        break;
-                    }
+                    break;
                 }
-                closedir(d);
             }
-        #endif
+            closedir(d);
+        }
+#endif
     }
 }
 
@@ -73,11 +73,11 @@ string * DeviceRoutine::findRomDevice()
         {
             string directoryName = dir->d_name;
 
-            if (directoryName.find_first_of("acd"))
+            if (directoryName.find("acd") == 0)
             {
                 break;
             }
-            if (directoryName.find_first_of("cd"))
+            if (directoryName.find("cd") == 0)
             {
                 break;
             }
@@ -168,7 +168,7 @@ void DeviceRoutine::setBlockDeviceTimeOut(string &timeOutFile, string &timeOut)
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     string timeOutContent;
     //TODO check whether the c_str() is deallocated
-    int getContentResult =  FileOperator::get_content(timeOutFile.c_str(), timeOutContent);
+    int getContentResult = FileOperator::get_content(timeOutFile.c_str(), timeOutContent);
     if (getContentResult == 0)
     {
         StringUtil::trim(timeOutContent);
