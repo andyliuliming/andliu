@@ -23,7 +23,14 @@ void DeviceRoutine::setIsciTimeOut()
     {
         #ifdef BSD
             string commandToSetTimeOut = "sysctl kern.cam.da.default_timeout=" + timeOut;
-            CommandExecuter::RunGetOutput(commandToSetTimeOut.c_str());
+            CommandResult setTimeOutResult;
+            CommandExecuter::RunGetOutput(commandToSetTimeOut.c_str(), setTimeOutResult);
+            if (getTimeOutResult.exitCode != 0)
+            {
+                Logger::getInstance().Error("set timeout result %d", setTimeOutResult.exitCode);
+                Logger::getInstance().Error(setTimeOutResult.output->c_str());
+            }
+
         #else
             DIR           *d;
             struct dirent *dir;
