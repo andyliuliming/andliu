@@ -16,12 +16,16 @@ GoalState::GoalState()
 
 void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
 {
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     string goalStateEndpoint = string("http://") + azureEnvironment.wireServerAddress + "/machine/?comp=goalstate";
 
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     //TODO: wrapper up a XML handling in our code
     /* set our custom set of headers */
     HttpResponse goalStateResponse;
     int getGoalStateResult = HttpRoutine::GetWithDefaultHeader(goalStateEndpoint.c_str(), goalStateResponse);
+
+    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     if (getGoalStateResult == 0)
     {
         xmlDocPtr goalStateDoc = xmlParseMemory(goalStateResponse.body.c_str(), goalStateResponse.body.size());
@@ -47,9 +51,13 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
 
         xmlFreeDoc(goalStateDoc);
 
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
         // saving the goal state file 
         string goalStageFileName = this->goalStageFilePrefix + incarnation + ".xml";
         FileOperator::save_file(goalStateResponse.body, goalStageFileName);
+
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         // construct the instances
         HttpResponse hostingEnvironmentConfigText;
         int getHostingEnvironmentConfigResult = HttpRoutine::GetWithDefaultHeader(this->hostingEnvironmentConfigUrl.c_str(), hostingEnvironmentConfigText);
@@ -60,6 +68,8 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         }
         else
         {
+            Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
+            Logger::getInstance().Error("failed to get the host environment config");
             //TODO error handling.
         }
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
@@ -73,6 +83,8 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         }
         else
         {
+            Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
+            Logger::getInstance().Error("failed to get the shared config");
             //TODO error handling.
         }
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
@@ -86,6 +98,8 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         }
         else
         {
+            Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
+            Logger::getInstance().Error("failed to get the extensions config");
             //TODO error handling.
         }
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
@@ -126,6 +140,7 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
             }
             else
             {
+                Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
                 Logger::getInstance().Error("get the transport cert pub failed.");
                 // TODO error handling
             }
