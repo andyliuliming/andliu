@@ -54,7 +54,7 @@
 #define WAAGENT_LIB_BASE_DIR  ("/var/lib/waagent/")
 #define PROVISIONED_FILE_PATH ("/var/lib/waagent/provisioned")
 #define WAAGENT_NAME ("AzureNativeLinuxAgent")
-#define WAAGENT_PID_FILE ("/var/run/native_waagent.pid")
+#define WAAGENT_PID_FILE ("/var/run/waagent.pid")
 #define WAAGENT_SYSLOG_NAME ("AzureNativeLinuxAgent")
 #define WAAGENT_VERSION ("2012-11-30")
 #define WORKING_DIR ("/var/lib/waagent")
