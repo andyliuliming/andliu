@@ -276,16 +276,7 @@ class HandlerUtility:
                         new_file_name = file.replace(".","_")
                         os.rename(join(self._context._config_dir,file), join(self._context._config_dir,new_file_name))
                 except Exception as e:
-                    self.log("failed to rename the status file.")
-
-        for subdir, dirs, files in os.walk(self._context._status_dir):
-            for file in files:
-                try:
-                    if(file.endswith('.status') and file != (_seq_no + ".status")):
-                        new_file_name = file.replace(".","_")
-                        os.rename(join(self._context._status_dir,file), join(self._context._status_dir, new_file_name))
-                except Exception as e:
-                    self.log("failed to rename the status file.")
+                    self.log("failed to rename the settings file.")
 
     def do_exit(self, exit_code, operation,status,code,message):
         try:
