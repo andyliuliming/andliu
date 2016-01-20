@@ -20,9 +20,11 @@ AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h netdb.h netinet/in.h stdlib.h str
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
+AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 
 # Checks for library functions.
+AC_FUNC_FORK
 AC_CHECK_FUNCS([memset socket])
 
 CXXFLAGS="$CXXFLAGS -std=c++0x"
