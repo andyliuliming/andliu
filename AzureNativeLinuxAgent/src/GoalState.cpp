@@ -30,9 +30,9 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
     {
         xmlDocPtr goalStateDoc = xmlParseMemory(goalStateResponse.body.c_str(), goalStateResponse.body.size());
         xmlNodePtr root = xmlDocGetRootElement(goalStateDoc);
-
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Incarnation[1]/text()", NULL, this->incarnation);
-
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/ContainerId/text()", NULL, this->containerId);
 
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/InstanceId/text()", NULL, this->roleInstanceId);
@@ -153,6 +153,8 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
     }
     else
     {
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+        Logger::getInstance().Error("failed to get the goal state");
         //TODO Error handling.
     }
 }
