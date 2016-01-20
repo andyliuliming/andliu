@@ -77,6 +77,10 @@ string * DeviceRoutine::findRomDevice()
             {
                 break;
             }
+            if (directoryName.find_first_of("cd"))
+            {
+                break;
+            }
         }
         closedir(d);
         result = new string(dir->d_name);

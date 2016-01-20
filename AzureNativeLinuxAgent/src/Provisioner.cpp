@@ -41,7 +41,7 @@ int Provisioner::Prosess()
     // 2. do the ovf-env
     string *romDevicePath = DeviceRoutine::findRomDevice();
     FileOperator::make_dir(SECURE_MOUNT_POINT);
-    string mountCommand("mount " + *romDevicePath + " " + SECURE_MOUNT_POINT);
+    string mountCommand("mount -t udf " + *romDevicePath + " " + SECURE_MOUNT_POINT);
     CommandResult mountResult;
     CommandExecuter::RunGetOutput(mountCommand, mountResult);
     string ovfEnvFullPath = OVF_ENV_FILE_FULL_PATH;
