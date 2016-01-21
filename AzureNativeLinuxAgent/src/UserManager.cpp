@@ -27,6 +27,28 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
     }
     else
     {
+
+#ifdef BSD
+        string command = string("pw useradd ") + userName + " -m";
+        CommandResult addUserResult;
+        CommandExecuter::RunGetOutput(command, addUserResult);
+        //TODO deallocate the c_str();
+        Logger::getInstance().Log("user add result: %s", addUserResult.output->c_str());
+        AgentConfig::getInstance().LoadConfig();
+
+        string changePasswordCmd = string("echo -n ") + password + string(" | pw usermod ") + userName + " -h0";
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+        CommandResult commandResult;
+        CommandExecuter::RunGetOutput(changePasswordCmd, commandResult);
+        if (commandResult.exitCode == 0)
+        {
+            Logger::getInstance().Warning("user add result:%d, %s", commandResult.exitCode, commandResult.output->c_str());
+        }
+        else
+        {
+            Logger::getInstance().Warning("user add result:%d %s", commandResult.exitCode, commandResult.output->c_str());
+        }
+#else
         string command = string("useradd -m ") + userName;
         CommandResult addUserResult;
         CommandExecuter::RunGetOutput(command,addUserResult);
@@ -69,6 +91,7 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
         delete salt;
         salt = NULL;
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
         string changePasswordCmd = string("usermod -p '") + passWordToSet + "' " + userName;
         delete passWordToSet;
         passWordToSet = NULL;
@@ -84,6 +107,7 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
             Logger::getInstance().Warning("user add result:%d %s", commandResult.exitCode, commandResult.output->c_str());
         }
         return 0;
+#endif
     }
 }
 
