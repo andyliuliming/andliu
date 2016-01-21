@@ -27,8 +27,7 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
     }
     else
     {
-
-#ifdef BSD
+#ifdef __FreeBSD__
         string command = string("pw useradd ") + userName + " -m";
         CommandResult addUserResult;
         CommandExecuter::RunGetOutput(command, addUserResult);
@@ -48,6 +47,7 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
         {
             Logger::getInstance().Warning("user add result:%d %s", commandResult.exitCode, commandResult.output->c_str());
         }
+        return 0;
 #else
         string command = string("useradd -m ") + userName;
         CommandResult addUserResult;

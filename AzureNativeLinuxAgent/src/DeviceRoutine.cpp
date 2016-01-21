@@ -21,7 +21,7 @@ void DeviceRoutine::setIsciTimeOut()
     Logger::getInstance().Verbose("timeout set to:%s", timeOut.c_str());
     if (getTimeOutResult == 0)
     {
-#ifdef BSD
+#ifdef __FreeBSD__
         string commandToSetTimeOut = "sysctl kern.cam.da.default_timeout=" + timeOut;
         CommandResult setTimeOutResult;
         CommandExecuter::RunGetOutput(commandToSetTimeOut, setTimeOutResult);
@@ -61,7 +61,7 @@ void DeviceRoutine::setIsciTimeOut()
 string * DeviceRoutine::findRomDevice()
 {
     string *result = NULL;
-#ifdef BSD
+#ifdef __FreeBSD__
     //TODO just get the information from /proc/sys/dev/cdrom/info
     DIR           *d;
     struct dirent *dir;

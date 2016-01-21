@@ -47,7 +47,7 @@ int Provisioner::Prosess()
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     FileOperator::make_dir(SECURE_MOUNT_POINT);
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-#ifdef BSD
+#ifdef __FreeBSD__
     string mountCommand("mount -t udf /dev/" + *romDevicePath + " " + SECURE_MOUNT_POINT);
 #else
     string mountCommand("mount " + *romDevicePath + " " + SECURE_MOUNT_POINT);

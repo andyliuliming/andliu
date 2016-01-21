@@ -5,7 +5,7 @@
 #endif
 
 #ifdef _WIN32
-#elif defined BSD
+#elif defined __FreeBSD__
 #else
 #include <libudev.h>
 #endif

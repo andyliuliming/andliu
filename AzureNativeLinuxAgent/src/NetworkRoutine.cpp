@@ -8,7 +8,7 @@
 #endif
 //#ifdef _WIN32
 //#include <WinSock2.h>
-#ifdef BSD
+#ifdef __FreeBSD__
 #include <net/if_dl.h>
 #else
 #include <arpa/inet.h>
@@ -40,7 +40,7 @@ PUINT8 NetworkRoutine::GetMacAddress()
 //    delete MAC_ADDRESS;
 //    MAC_ADDRESS = NULL;
 //    return MAC_ADDRESS;
-    #ifdef BSD
+    #ifdef __FreeBSD__
     struct ifaddrs *ifap, *ifaptr;
     unsigned char *ptr;
     int getIfAddrsResult = getifaddrs(&ifap);

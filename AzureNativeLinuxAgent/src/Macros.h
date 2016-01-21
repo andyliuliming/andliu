@@ -32,7 +32,7 @@
 
 //#ifdef _WIN32
 //#define RANDOM() rand()
-#ifdef BSD
+#ifdef __FreeBSD__
 #define RANDOM() random()
 #else
 #define RANDOM() rand()
