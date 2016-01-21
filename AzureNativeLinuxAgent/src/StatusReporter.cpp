@@ -25,10 +25,10 @@ int StatusReporter::ReportReady(AzureEnvironment &environment, GoalState & goalS
     Logger::getInstance().Verbose("report ready status result %d", response.status_code);
     incarnationValue = response.headers.find("x-ms-latest-goal-state-incarnation-number")->second;
     StringUtil::trim(incarnationValue);
-    return 0;
+    return postResult;
 }
 
-void StatusReporter::ReportNotReady(AzureEnvironment &environment, GoalState & goalState, const char*status, const char*desc)
+int StatusReporter::ReportNotReady(AzureEnvironment &environment, GoalState & goalState, const char*status, const char*desc)
 {
     string healthReport = "<?xml version=\"1.0\" encoding=\"utf-8\"?><Health xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><GoalStateIncarnation>"
         + goalState.incarnation
@@ -45,10 +45,11 @@ void StatusReporter::ReportNotReady(AzureEnvironment &environment, GoalState & g
     headers["x-ms-version"] = WAAGENT_VERSION;
     string apiAddress = "http://" + environment.wireServerAddress + "/machine?comp=health";
     HttpResponse response;
-    HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str(), response);
+    long postResult = HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str(), response);
+    return postResult;
 }
 
-void StatusReporter::ReportRoleProperties(AzureEnvironment & environment, GoalState &goalState, const char * thumbprint)
+int StatusReporter::ReportRoleProperties(AzureEnvironment & environment, GoalState &goalState, const char * thumbprint)
 {
     string healthReport = ("<?xml version=\"1.0\" encoding=\"utf-8\"?><RoleProperties><Container><ContainerId>"
         + goalState.containerId + "</ContainerId>"
@@ -62,7 +63,8 @@ void StatusReporter::ReportRoleProperties(AzureEnvironment & environment, GoalSt
     headers["x-ms-version"] = WAAGENT_VERSION;
     string apiAddress = "http://" + environment.wireServerAddress + "/machine?comp=roleProperties";
     HttpResponse response;
-    HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str(), response);
+    long postResult = HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str(), response);
+    return postResult;
 }
 
 

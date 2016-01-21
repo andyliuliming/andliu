@@ -89,8 +89,11 @@ int main(void)
             Logger::getInstance().Verbose("end update goal state");
             if (!provisioned)
             {
-                statusReporter->ReportNotReady(azureEnvironment, goalState, "Provisioning", "Starting");
-                Logger::getInstance().Verbose("report not ready end");
+                int reportNotReadyResult = statusReporter->ReportNotReady(azureEnvironment, goalState, "Provisioning", "Starting");
+                if (reportNotReadyResult != 0)
+                {
+                    Logger::getInstance().Error("report not ready failed with %d", reportNotReadyResult);
+                }
             }
 
             if (!provisioned)
@@ -129,7 +132,11 @@ int main(void)
             vector<string> splitResult;
             string spliter = " ";
             StringUtil::string_split(*(fingerPrintResult.output), spliter, &splitResult);
-            statusReporter->ReportRoleProperties(azureEnvironment, goalState, splitResult[1].c_str());
+            int reportRolePropertiesResult = statusReporter->ReportRoleProperties(azureEnvironment, goalState, splitResult[1].c_str());
+            if (reportRolePropertiesResult != 0)
+            {
+                Logger::getInstance().Error("report ReportRoleProperties failed with %d", reportRolePropertiesResult);
+            }
         }
         else
         {
@@ -143,7 +150,10 @@ int main(void)
             Logger::getInstance().Log("reporting ready");
             Logger::getInstance().Verbose("start do report ready");
             int reportReadyResult = statusReporter->ReportReady(azureEnvironment, goalState, incarnationReturned);
-            Logger::getInstance().Verbose("end report ready result: %d", reportReadyResult);
+            if (reportReadyResult != 0)
+            {
+                Logger::getInstance().Error("ReportReady failed with %d", reportReadyResult);
+            }
         }
 
         SLEEP(25 * 1000);
