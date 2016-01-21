@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "HandlerManifest.h"
-#include <json-glib/json-glib.h>
+#include <json-c/json.h>
 
 class JsonRoutine
 {

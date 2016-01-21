@@ -41,8 +41,8 @@ PKG_CHECK_MODULES([LIBCURL], [libcurl],,
 PKG_CHECK_MODULES([LIBZIP], [libzip],,
   AC_MSG_ERROR([LIBZIP not found.]))
 
-PKG_CHECK_MODULES([JSONGLIB], [json-glib-1.0],,
-  AC_MSG_ERROR([JSONGLIB not found.]))
+PKG_CHECK_MODULES([JSONC], [json-c],,
+  AC_MSG_ERROR([JSONC not found.]))
 
 if test "$OSTYPE" = "linux-gnu"; then
     PKG_CHECK_MODULES([LIBUDEV], [libudev],,

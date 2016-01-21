@@ -88,7 +88,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Personal\cygwin\usr\include\libxml2;C:\Personal\cygwin\usr\include\json-glib-1.0;C:\Personal\cygwin\usr\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Personal\cygwin\usr\include\json-c;C:\Personal\cygwin\usr\include\libxml2;C:\Personal\cygwin\usr\include\json-glib-1.0;C:\Personal\cygwin\usr\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
