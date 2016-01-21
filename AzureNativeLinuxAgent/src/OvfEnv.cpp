@@ -27,9 +27,10 @@ void OvfEnv::Parse(string &sharedConfigText)
     xmlFreeDoc(doc);
 }
 
-void OvfEnv::Process()
+int OvfEnv::Process()
 {
-    UserManager::CreateUser(this->userName,this->passWord);
+    int createUserResult = UserManager::CreateUser(this->userName,this->passWord);
+    return createUserResult;
 }
 
 OvfEnv::~OvfEnv()

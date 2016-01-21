@@ -79,8 +79,17 @@ int Provisioner::Prosess()
             Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
             OvfEnv *ovfEnv = new OvfEnv();
             ovfEnv->Parse(ovfFileContent);
-            ovfEnv->Process();
-            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+            int ovfResult = ovfEnv->Process();
+            if (ovfResult == 0)
+            {
+                Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+                return 0;
+            }
+            else
+            {
+                Logger::getInstance().Error("the ovf process failed.");
+                return 1;
+            }
         }
         else
         {

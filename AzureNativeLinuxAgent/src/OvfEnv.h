@@ -11,7 +11,7 @@ private:
 public:
     OvfEnv(); 
     void Parse(string &sharedConfigText);
-    void Process();
+    int Process();
     ~OvfEnv();
 };
 
