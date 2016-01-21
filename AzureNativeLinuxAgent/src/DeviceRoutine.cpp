@@ -74,7 +74,7 @@ string * DeviceRoutine::findRomDevice()
         {
             Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
             string directoryName = dir->d_name;
-
+            Logger::getInstance().Warning("directoryName is %s",dir->d_name);
             if (directoryName.find("acd") == 0)
             {
                 Logger::getInstance().Warning(" find the acd");
@@ -87,7 +87,7 @@ string * DeviceRoutine::findRomDevice()
             }
         }
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-        result = (dir->d_name);
+        result = new string(dir->d_name);
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         closedir(d);
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
