@@ -35,7 +35,7 @@ int Provisioner::Prosess()
     if (getRegenerateKeysResult != 0 || regenerateKeys.find("y") == 0)
     {
         CommandResult removeCommandResult;
-        CommandExecuter::RunGetOutput("rm -f /etc/ssh/ssh_host_*key*",removeCommandResult);
+        CommandExecuter::RunGetOutput("rm -f /etc/ssh/ssh_host_*key*", removeCommandResult);
         CommandResult generateCommandResult;
         //TODO deallocate the c_str() here.
         CommandExecuter::RunGetOutput(("ssh-keygen -N '' -t " + type + " -f /etc/ssh/ssh_host_" + type + "_key").c_str(), generateCommandResult);
@@ -54,35 +54,49 @@ int Provisioner::Prosess()
 #endif
     CommandResult mountResult;
     CommandExecuter::RunGetOutput(mountCommand, mountResult);
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-
-    string ovfEnvFullPath = OVF_ENV_FILE_FULL_PATH;
-    string ovfFileContent;
-    int getOvfFileContentResult = FileOperator::get_content(OVF_ENV_FILE_FULL_PATH, ovfFileContent);
-    string umountCommand = string("umount ") + SECURE_MOUNT_POINT;
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-
-    CommandResult umountResult;
-    CommandExecuter::RunGetOutput(umountCommand, umountResult);
-    if (getOvfFileContentResult == 0)
+    if (mountResult.exitCode == 0)
     {
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
-        OvfEnv *ovfEnv = new OvfEnv();
-        ovfEnv->Parse(ovfFileContent);
-        ovfEnv->Process();
+        string ovfEnvFullPath = OVF_ENV_FILE_FULL_PATH;
+        string ovfFileContent;
+        int getOvfFileContentResult = FileOperator::get_content(OVF_ENV_FILE_FULL_PATH, ovfFileContent);
+        string umountCommand = string("umount ") + SECURE_MOUNT_POINT;
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
+        CommandResult umountResult;
+        CommandExecuter::RunGetOutput(umountCommand, umountResult);
+        if (umountResult.exitCode != 0)
+        {
+            Logger::getInstance().Error("unmount result: %s", mountResult.output->c_str());
+        }
+        if (getOvfFileContentResult == 0)
+        {
+            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+
+            OvfEnv *ovfEnv = new OvfEnv();
+            ovfEnv->Parse(ovfFileContent);
+            ovfEnv->Process();
+            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+        }
+        else
+        {
+            //TODO error handling.
+            Logger::getInstance().Error("get OvfFile Content failed.");
+            return 1;
+        }
+        return 0;
     }
     else
     {
-        Logger::getInstance().Error("get OvfFile Content failed.");
-        //TODO error handling.
+        Logger::getInstance().Error("mount result: %s", mountResult.output->c_str());
+        return 1;
     }
     // 2. This is done here because regenerated SSH host key pairs may be potentially overwritten when processing the ovfxml
 
     /* fingerprint = RunGetOutput("ssh-keygen -lf /etc/ssh/ssh_host_" + type + "_key.pub")[1].rstrip().split()[1].replace(':', '')
     self.ReportRoleProperties(fingerprint)*/
-    return 0;
+
 }
 
 void Provisioner::markProvisioned()
