@@ -58,17 +58,21 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
             return 1;
         }
 
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         char * salt = new char[salt_len_val];
         StringUtil::gen_random(salt, salt_len_val);
         string realSalt = crypt_id + salt;
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         //TODO check whether the c_str is deallocated.
         char * passWordToSet = crypt(passWord.c_str(), realSalt.c_str());
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         delete salt;
         salt = NULL;
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         string changePasswordCmd = string("usermod -p '") + passWordToSet + "' " + userName;
         delete passWordToSet;
         passWordToSet = NULL;
-
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         CommandResult commandResult;
         CommandExecuter::RunGetOutput(changePasswordCmd, commandResult);
         if (commandResult.exitCode == 0)
