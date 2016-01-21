@@ -46,9 +46,9 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
         int getSaltLenResult = AgentConfig::getInstance().getConfig("Provisioning_PasswordCryptSaltLength", salt_len);
 
         int salt_len_val = 10;
-        if (getSaltLenResult != 0)
+        if (getSaltLenResult == 0)
         {
-            Logger::getInstance().Warning("Provisioning_PasswordCryptSaltLength not found");
+            Logger::getInstance().Warning("Provisioning_PasswordCryptSaltLength found");
             salt_len_val = atoi((salt_len).c_str());
         }
 
