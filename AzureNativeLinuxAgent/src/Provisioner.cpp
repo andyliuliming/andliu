@@ -59,6 +59,7 @@ int Provisioner::Prosess()
     CommandExecuter::RunGetOutput(mountCommand, mountResult);
     if (mountResult.exitCode == 0)
     {
+        Logger::getInstance().Warning("the cd is mounted");
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
         string ovfEnvFullPath = OVF_ENV_FILE_FULL_PATH;
@@ -76,7 +77,6 @@ int Provisioner::Prosess()
         if (getOvfFileContentResult == 0)
         {
             Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-
             OvfEnv *ovfEnv = new OvfEnv();
             ovfEnv->Parse(ovfFileContent);
             ovfEnv->Process();

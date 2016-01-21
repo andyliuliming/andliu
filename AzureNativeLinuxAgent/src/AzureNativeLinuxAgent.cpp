@@ -95,7 +95,7 @@ int main(void)
 
             if (!provisioned)
             {
-                Logger::getInstance().Log("doing provision.");
+                Logger::getInstance().Warning("doing provision.");
                 int provisionResult = provisioner->Prosess();
                 if (provisioned == 0)
                 {
@@ -105,7 +105,7 @@ int main(void)
                 else
                 {
                     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-                    Logger::getInstance().Log("provision failed");
+                    Logger::getInstance().Error("provision failed");
                 }
             }
 
@@ -117,9 +117,9 @@ int main(void)
             {
                 type = "rsa";
             }
-            Logger::getInstance().Verbose("start process.");
+            Logger::getInstance().Warning("start process.");
             goalState.Process();
-            Logger::getInstance().Verbose("end process");
+            Logger::getInstance().Warning("end process");
 
             string host_key_path = string("/etc/ssh/ssh_host_") + type + "_key.pub";
 

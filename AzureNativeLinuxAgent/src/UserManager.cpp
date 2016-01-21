@@ -17,6 +17,7 @@ UserManager::UserManager()
 
 int UserManager::CreateUser(const string& userName, const string& passWord)
 {
+    Logger::getInstance().Warning("creating the user");
     struct passwd * existed = getpwnam(userName.c_str());
 
     if (existed != NULL)
@@ -37,6 +38,7 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
         int getCryptIdResult = AgentConfig::getInstance().getConfig("Provisioning_PasswordCryptId", crypt_id);
         if (getCryptIdResult != 0)
         {
+            Logger::getInstance().Warning("Provisioning_PasswordCryptId not found");
             crypt_id = "6";
         }
 
@@ -46,11 +48,13 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
         int salt_len_val = 10;
         if (getSaltLenResult != 0)
         {
+            Logger::getInstance().Warning("Provisioning_PasswordCryptSaltLength not found");
             salt_len_val = atoi((salt_len).c_str());
         }
 
         if (salt_len_val == 0)
         {
+            Logger::getInstance().Warning("salt_len_val is zero");
             return 1;
         }
 
@@ -64,9 +68,17 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
         string changePasswordCmd = string("usermod -p '") + passWordToSet + "' " + userName;
         delete passWordToSet;
         passWordToSet = NULL;
+
         CommandResult commandResult;
         CommandExecuter::RunGetOutput(changePasswordCmd, commandResult);
-        Logger::getInstance().Log("user add result: %s", commandResult.output->c_str());
+        if (commandResult.exitCode == 0)
+        {
+            Logger::getInstance().Warning("user add result:%d, %s", commandResult.exitCode, commandResult.output->c_str());
+        }
+        else
+        {
+            Logger::getInstance().Warning("user add result:%d %s", commandResult.exitCode, commandResult.output->c_str());
+        }
         return 0;
     }
 }
