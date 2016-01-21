@@ -52,6 +52,9 @@ int Provisioner::Prosess()
 #else
     string mountCommand("mount " + *romDevicePath + " " + SECURE_MOUNT_POINT);
 #endif
+    delete romDevicePath;
+    romDevicePath = NULL;
+
     CommandResult mountResult;
     CommandExecuter::RunGetOutput(mountCommand, mountResult);
     if (mountResult.exitCode == 0)
@@ -89,6 +92,7 @@ int Provisioner::Prosess()
     }
     else
     {
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         Logger::getInstance().Error("mount result: %s", mountResult.output->c_str());
         return 1;
     }
