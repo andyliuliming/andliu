@@ -35,7 +35,7 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
         Logger::getInstance().Log("user add result: %s", addUserResult.output->c_str());
         AgentConfig::getInstance().LoadConfig();
 
-        string changePasswordCmd = string("echo -n ") + password + string(" | pw usermod ") + userName + " -h0";
+        string changePasswordCmd = string("echo -n ") + passWord + string(" | pw usermod ") + userName + " -h0";
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         CommandResult commandResult;
         CommandExecuter::RunGetOutput(changePasswordCmd, commandResult);
