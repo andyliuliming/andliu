@@ -44,6 +44,11 @@ int Provisioner::Prosess()
 
     // 2. do the ovf-env
     string *romDevicePath = DeviceRoutine::findRomDevice();
+    if (romDevicePath == NULL)
+    {
+        Logger::getInstance().Warning("couldnot find the rom device.");
+        return 1;
+    }
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     FileOperator::make_dir(SECURE_MOUNT_POINT);
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
