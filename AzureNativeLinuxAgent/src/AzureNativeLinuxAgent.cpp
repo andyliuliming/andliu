@@ -75,29 +75,26 @@ int main(void)
 
     while (true)
     {
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+        Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
         // a. UpdateGoalState
         // b. process goal state
         if (justStarted
             || goalState.incarnation.compare(incarnationReturned) != 0)
         {
-            Logger::getInstance().Verbose("incarnation in goal state is %s, incarnaitonReturned is %s", goalState.incarnation.c_str(), incarnationReturned.c_str());
+            Logger::getInstance().Error("incarnation in goal state is %s, incarnaitonReturned is %s", goalState.incarnation.c_str(), incarnationReturned.c_str());
             justStarted = false;
-            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-            Logger::getInstance().Verbose("start goal state");
+            Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
+            Logger::getInstance().Error("start goal state");
             goalState.UpdateGoalState(azureEnvironment);
-            Logger::getInstance().Verbose("end update goal state");
+            Logger::getInstance().Error("end update goal state");
             if (!provisioned)
             {
+                Logger::getInstance().Warning("report not ready");
                 int reportNotReadyResult = statusReporter->ReportNotReady(azureEnvironment, goalState, "Provisioning", "Starting");
                 if (reportNotReadyResult != 0)
                 {
                     Logger::getInstance().Error("report not ready failed with %d", reportNotReadyResult);
                 }
-            }
-
-            if (!provisioned)
-            {
                 Logger::getInstance().Warning("doing provision.");
                 int provisionResult = provisioner->Prosess();
                 if (provisioned == 0)
@@ -107,7 +104,7 @@ int main(void)
                 }
                 else
                 {
-                    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+                    Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
                     Logger::getInstance().Error("provision failed");
                 }
             }
@@ -140,15 +137,15 @@ int main(void)
         }
         else
         {
-            Logger::getInstance().Verbose("the goal status is null or the incarnationReturned is empty, or the incarnation is same");
+            Logger::getInstance().Error("the goal status is null or the incarnationReturned is empty, or the incarnation is same");
         }
 
         int sleepToReduceAccessDenied = 3;
         SLEEP(3 * 1000);
         if (provisioned)
         {
-            Logger::getInstance().Log("reporting ready");
-            Logger::getInstance().Verbose("start do report ready");
+            Logger::getInstance().Error("reporting ready");
+            Logger::getInstance().Error("start do report ready");
             int reportReadyResult = statusReporter->ReportReady(azureEnvironment, goalState, incarnationReturned);
             if (reportReadyResult != 0)
             {

@@ -41,11 +41,11 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
         CommandExecuter::RunGetOutput(changePasswordCmd, commandResult);
         if (commandResult.exitCode == 0)
         {
-            Logger::getInstance().Warning("user add result:%d, %s", commandResult.exitCode, commandResult.output->c_str());
+            Logger::getInstance().Warning("user change password result succeeded :%d, %s", commandResult.exitCode, commandResult.output->c_str());
         }
         else
         {
-            Logger::getInstance().Warning("user add result:%d %s", commandResult.exitCode, commandResult.output->c_str());
+            Logger::getInstance().Warning("user change password result failed:%d %s", commandResult.exitCode, commandResult.output->c_str());
         }
         return 0;
 #else
