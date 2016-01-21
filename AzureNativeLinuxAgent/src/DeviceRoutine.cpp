@@ -77,16 +77,18 @@ string * DeviceRoutine::findRomDevice()
 
             if (directoryName.find("acd") == 0)
             {
+                Logger::getInstance().Warning(" find the acd");
                 break;
             }
             if (directoryName.find("cd") == 0)
             {
+                Logger::getInstance().Warning(" find the cd");
                 break;
             }
         }
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-        result = new string(dir->d_name);
-
+        result = (dir->d_name);
+        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         closedir(d);
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         /*delete dir;
