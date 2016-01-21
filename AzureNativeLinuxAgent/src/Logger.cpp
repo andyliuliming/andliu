@@ -14,8 +14,6 @@ void Logger::Verbose(const char * msg, ...)
 #ifdef _WIN32
 #else
     vsyslog(LOG_DEBUG, msg, arguments);
-    vprintf(msg, arguments);
-    printf("%s", "\n");
 #endif
     va_end(arguments);                  // Cleans up the list
 }
@@ -27,8 +25,6 @@ void Logger::Log(const char * msg, ...)
 #ifdef _WIN32
 #else
     vsyslog(LOG_INFO, msg, arguments);
-    vprintf(msg, arguments);
-    printf("%s", "\n");
 #endif
     va_end(arguments);                  // Cleans up the list
 }
@@ -40,8 +36,6 @@ void Logger::Warning(const char * msg, ...)
 #ifdef _WIN32
 #else
     vsyslog(LOG_WARNING, msg, arguments);
-    vprintf(msg, arguments);
-    printf("%s", "\n");
 #endif
     va_end(arguments);                  // Cleans up the list
 }
@@ -53,8 +47,6 @@ void Logger::Error(const char * msg, ...)
 #ifdef _WIN32
 #else
     vsyslog(LOG_ERR, msg, arguments);
-    vprintf(msg, arguments);
-    printf("%s", "\n");
 #endif
     va_end(arguments);                  // Cleans up the list
 }
