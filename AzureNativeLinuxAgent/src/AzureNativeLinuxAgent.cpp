@@ -97,6 +97,7 @@ int main(void)
                 }
                 Logger::getInstance().Warning("doing provision.");
                 int provisionResult = provisioner->Prosess();
+                Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
                 if (provisioned == 0)
                 {
                     provisioner->markProvisioned();
@@ -110,13 +111,14 @@ int main(void)
             }
 
             AgentConfig::getInstance().LoadConfig();
-
+            Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
             string type;
             int result = AgentConfig::getInstance().getConfig("Provisioning_SshHostKeyPairType", type);
             if (result != 0)
             {
                 type = "rsa";
             }
+            Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
             Logger::getInstance().Warning("start process.");
             goalState.Process();
             Logger::getInstance().Warning("end process");

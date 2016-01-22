@@ -39,6 +39,7 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         CommandResult commandResult;
         CommandExecuter::RunGetOutput(changePasswordCmd, commandResult);
+        Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
         if (commandResult.exitCode == 0)
         {
             Logger::getInstance().Warning("user change password result succeeded :%d, %s", commandResult.exitCode, commandResult.output->c_str());
@@ -47,6 +48,7 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
         {
             Logger::getInstance().Warning("user change password result failed:%d %s", commandResult.exitCode, commandResult.output->c_str());
         }
+        Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
         return 0;
 #else
         string command = string("useradd -m ") + userName;
