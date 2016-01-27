@@ -264,7 +264,7 @@ int HttpRoutine::Put(const char * url, map<string, string> * headers, const char
         initResult = false;
     }
     size_t dataLength = strlen(data);
-    code = curl_easy_setopt(conn, CURLOPT_INFILESIZE_LARGE, dataLength);
+    code = curl_easy_setopt(conn, CURLOPT_INFILESIZE, (curl_off_t)dataLength);
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to set header CURLOPT_INFILESIZE_LARGE [%s]\n", errorBuffer);
@@ -306,7 +306,7 @@ int HttpRoutine::Put(const char * url, map<string, string> * headers, const char
             initResult = false;
         }
     }
-    code = curl_easy_setopt(conn, CURLOPT_POSTFIELDS, data);
+    code = curl_easy_setopt(conn, CURLOPT_READDATA, data);
     if (code != CURLE_OK)
     {
         initResult = false;
