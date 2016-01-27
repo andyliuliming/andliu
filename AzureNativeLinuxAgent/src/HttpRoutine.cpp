@@ -1,5 +1,6 @@
 #include "HttpRoutine.h"
 #include "Logger.h"
+#include <string.h>
 using namespace std;
 
 char HttpRoutine::errorBuffer[CURL_ERROR_SIZE];
@@ -260,6 +261,13 @@ int HttpRoutine::Put(const char * url, map<string, string> * headers, const char
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to set opt CURLOPT_PUT [%s]\n", errorBuffer);
+        initResult = false;
+    }
+    size_t dataLength = strlen(data);
+    code = curl_easy_setopt(conn, CURLOPT_INFILESIZE_LARGE, dataLength);
+    if (code != CURLE_OK)
+    {
+        Logger::getInstance().Error("Failed to set header CURLOPT_INFILESIZE_LARGE [%s]\n", errorBuffer);
         initResult = false;
     }
     code = curl_easy_setopt(conn, CURLOPT_HEADERFUNCTION, header_callback);
