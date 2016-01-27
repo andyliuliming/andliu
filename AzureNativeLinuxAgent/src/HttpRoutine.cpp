@@ -49,7 +49,6 @@ size_t HttpRoutine::writerToFile(const char * data, size_t size, size_t nmemb, F
 size_t HttpRoutine::ReadMemoryCallback(void *ptr, size_t size, size_t nmemb, void
     *pMem)
 {
-    Logger::getInstance().Error("the parameters are %d,%d", size, nmemb);
     struct MemoryStruct *pRead = (struct MemoryStruct *)pMem;
     if ((size * nmemb) < 1)
         return 0;
