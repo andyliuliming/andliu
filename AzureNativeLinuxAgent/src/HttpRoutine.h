@@ -7,6 +7,11 @@
 #include <curl/curl.h>
 using namespace std;
 
+struct MemoryStruct
+{
+    const char *memory;
+    size_t size;
+};
 class HttpRoutine
 {
 private:

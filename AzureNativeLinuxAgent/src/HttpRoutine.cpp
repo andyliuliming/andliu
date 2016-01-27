@@ -50,16 +50,17 @@ size_t HttpRoutine::ReadMemoryCallback(void *ptr, size_t size, size_t nmemb, voi
     *pMem)
 {
     Logger::getInstance().Error("the parameters are %d,%d", size, nmemb);
-    return 0;
-    /*unsigned int *pos = ptr;
-    unsigned int wrt;
-
-    wrt = size * nmemb;
-    if (wrt > 8 - (*pos))
-        wrt = 8 - (*pos);
-    memcpy(stream, &("Hello123"[*pos]), wrt);
-    (*pos) += wrt;
-    return wrt;*/
+    struct MemoryStruct *pRead = (struct MemoryStruct *)pMem;
+    if ((size * nmemb) < 1)
+        return 0;
+    if (pRead->size)
+    {
+        *(char *)ptr = pRead->memory[0]; // copy one single byte 
+        pRead->memory++; // advance pointer 
+        pRead->size--; // less data left */ 
+        return 1;
+    }
+    return 0; // no more data left to deliver 
 }
 
 bool HttpRoutine::init_common(CURL *&conn, const char *url)
@@ -91,8 +92,6 @@ bool HttpRoutine::init_common(CURL *&conn, const char *url)
     }
     return true;
 }
-
-
 
 int HttpRoutine::GetWithDefaultHeader(const char *url, HttpResponse &response)
 {
@@ -286,15 +285,16 @@ int HttpRoutine::Put(const char * url, map<string, string> * headers, const char
         Logger::getInstance().Error("Failed to set header CURLOPT_READFUNCTION [%s]\n", errorBuffer);
         initResult = false;
     }
+    struct MemoryStruct sData;
+    sData.memory = data;
+    sData.size = strlen(data);
     code = curl_easy_setopt(conn, CURLOPT_READDATA, data);
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to set header CURLOPT_READDATA [%s]\n", errorBuffer);
         initResult = false;
     }
-
-    size_t dataLength = strlen(data);
-    code = curl_easy_setopt(conn, CURLOPT_INFILESIZE, (curl_off_t)dataLength);
+    code = curl_easy_setopt(conn, CURLOPT_INFILESIZE, (curl_off_t)sData.size);
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to set header CURLOPT_INFILESIZE_LARGE [%s]\n", errorBuffer);
