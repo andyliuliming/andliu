@@ -46,6 +46,22 @@ size_t HttpRoutine::writerToFile(const char * data, size_t size, size_t nmemb, F
     }
 }
 
+size_t HttpRoutine::ReadMemoryCallback(void *ptr, size_t size, size_t nmemb, void
+    *pMem)
+{
+    Logger::getInstance().Error("the parameters are %d,%d", size, nmemb);
+    return 0;
+    /*unsigned int *pos = ptr;
+    unsigned int wrt;
+
+    wrt = size * nmemb;
+    if (wrt > 8 - (*pos))
+        wrt = 8 - (*pos);
+    memcpy(stream, &("Hello123"[*pos]), wrt);
+    (*pos) += wrt;
+    return wrt;*/
+}
+
 bool HttpRoutine::init_common(CURL *&conn, const char *url)
 {
     CURLcode code;
@@ -263,6 +279,20 @@ int HttpRoutine::Put(const char * url, map<string, string> * headers, const char
         Logger::getInstance().Error("Failed to set opt CURLOPT_PUT [%s]\n", errorBuffer);
         initResult = false;
     }
+
+    code = curl_easy_setopt(conn, CURLOPT_READFUNCTION, ReadMemoryCallback);
+    if (code != CURLE_OK)
+    {
+        Logger::getInstance().Error("Failed to set header CURLOPT_READFUNCTION [%s]\n", errorBuffer);
+        initResult = false;
+    }
+    code = curl_easy_setopt(conn, CURLOPT_READDATA, data);
+    if (code != CURLE_OK)
+    {
+        Logger::getInstance().Error("Failed to set header CURLOPT_READDATA [%s]\n", errorBuffer);
+        initResult = false;
+    }
+
     size_t dataLength = strlen(data);
     code = curl_easy_setopt(conn, CURLOPT_INFILESIZE, (curl_off_t)dataLength);
     if (code != CURLE_OK)
@@ -305,11 +335,6 @@ int HttpRoutine::Put(const char * url, map<string, string> * headers, const char
         {
             initResult = false;
         }
-    }
-    code = curl_easy_setopt(conn, CURLOPT_READDATA, data);
-    if (code != CURLE_OK)
-    {
-        initResult = false;
     }
     if (initResult == true)
     {

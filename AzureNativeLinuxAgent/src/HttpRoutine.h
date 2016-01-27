@@ -16,6 +16,7 @@ private:
     static size_t writer(const char *data, size_t size, size_t nmemb, string *writerData);
     static size_t writerToFile(const char *data, size_t size, size_t nmemb, FILE *file);
     static size_t header_callback(const char *buffer, size_t size, size_t nitems, HttpResponse *writerData);
+    static size_t ReadMemoryCallback(void *ptr, size_t size, size_t nmemb, void *pMem);
     static char errorBuffer[CURL_ERROR_SIZE];
     static bool init_common(CURL *&conn, const char *url);
 
