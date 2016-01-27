@@ -17,7 +17,7 @@ int BlobRoutine::Put(const char * url,const char* blobType, const char * data, H
     map<string, string> headers;
     headers["x-ms-date"] = tstamp;
     headers["x-ms-blob-type"] = blobType;
-    headers["Content-Length"] = strlen(data);
+    headers["Content-Length"] = to_string(strlen(data));
     headers["x-ms-version"] = STORAGE_VERSION;
     return HttpRoutine::Put(url, &headers, data, response);
 }
