@@ -1,3 +1,4 @@
+#include "BlobRoutine.h"
 #include "CommandExecuter.h"
 #include "ExtensionsConfig.h"
 #include "FileOperator.h"
@@ -61,11 +62,16 @@ void ExtensionsConfig::ReportExtensionsStatus()
     const char * status_str = json_object_to_json_string(status);
     Logger::getInstance().Error("status string is %s", status_str);
     HttpResponse response;
-    int postResult = HttpRoutine::Post(this->statusUploadBlobUri.c_str(), NULL, status_str, response);
+    int postResult = BlobRoutine::Put(this->statusUploadBlobUri.c_str(), statusBlobType.c_str(), status_str, response);
     if (postResult != 0)
     {
         Logger::getInstance().Error("failed to report the status %d", postResult);
         Logger::getInstance().Error("status upload blob uri is :%s", this->statusUploadBlobUri.c_str());
+    }
+    else
+    {
+        //TODO: check the status code.
+        Logger::getInstance().Error("response is :%s", response.body.c_str());
     }
 }
 

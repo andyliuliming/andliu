@@ -94,6 +94,7 @@ am_AzureNativeLinuxAgent_OBJECTS =  \
 	AzureNativeLinuxAgent-AzureNativeLinuxAgent.$(OBJEXT) \
 	AzureNativeLinuxAgent-AzureEnvironment.$(OBJEXT) \
 	AzureNativeLinuxAgent-AgentConfig.$(OBJEXT) \
+	AzureNativeLinuxAgent-BlobRoutine.$(OBJEXT) \
 	AzureNativeLinuxAgent-Certificates.$(OBJEXT) \
 	AzureNativeLinuxAgent-CertificationRoutine.$(OBJEXT) \
 	AzureNativeLinuxAgent-CommandExecuter.$(OBJEXT) \
@@ -297,7 +298,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AzureNativeLinuxAgent_CXXFLAGS = $(LIBXML2_CFLAGS) $(LIBCONFIGXX_CFLAGS) $(LIBCURL_CFLAGS) $(LIBUDEV_CFLAGS) $(LIBZIP_CFLAGS) $(JSONC_CFLAGS)
 AzureNativeLinuxAgent_LDADD = $(LIBXML2_LIBS) $(LIBCONFIGXX_LIBS) $(LIBCURL_LIBS) $(LIBUDEV_LIBS) $(LIBZIP_LIBS) $(JSONC_LIBS)
-AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp Certificates.cpp CertificationRoutine.cpp CommandExecuter.cpp CommandResult.cpp Deprovisioner.cpp DeviceRoutine.cpp ExtensionConfig.cpp ExtensionsConfig.cpp FileOperator.cpp HandlerManifest.cpp HostingEnvironmentConfig.cpp HttpResponse.cpp HttpRoutine.cpp JsonRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp OvfEnv.cpp Provisioner.cpp SharedConfig.cpp SocketWrapper.cpp StatusReporter.cpp StringUtil.cpp UserManager.cpp XmlRoutine.cpp ZipRoutine.cpp
+AzureNativeLinuxAgent_SOURCES = AzureNativeLinuxAgent.cpp AzureEnvironment.cpp AgentConfig.cpp BlobRoutine.cpp Certificates.cpp CertificationRoutine.cpp CommandExecuter.cpp CommandResult.cpp Deprovisioner.cpp DeviceRoutine.cpp ExtensionConfig.cpp ExtensionsConfig.cpp FileOperator.cpp HandlerManifest.cpp HostingEnvironmentConfig.cpp HttpResponse.cpp HttpRoutine.cpp JsonRoutine.cpp Logger.cpp GoalState.cpp NetworkRoutine.cpp OvfEnv.cpp Provisioner.cpp SharedConfig.cpp SocketWrapper.cpp StatusReporter.cpp StringUtil.cpp UserManager.cpp XmlRoutine.cpp ZipRoutine.cpp
 all: all-am
 
 .SUFFIXES:
@@ -388,6 +389,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-AgentConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-AzureEnvironment.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-AzureNativeLinuxAgent.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-BlobRoutine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-Certificates.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-CertificationRoutine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AzureNativeLinuxAgent-CommandExecuter.Po@am__quote@
@@ -470,6 +472,20 @@ AzureNativeLinuxAgent-AgentConfig.obj: AgentConfig.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AgentConfig.cpp' object='AzureNativeLinuxAgent-AgentConfig.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-AgentConfig.obj `if test -f 'AgentConfig.cpp'; then $(CYGPATH_W) 'AgentConfig.cpp'; else $(CYGPATH_W) '$(srcdir)/AgentConfig.cpp'; fi`
+
+AzureNativeLinuxAgent-BlobRoutine.o: BlobRoutine.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-BlobRoutine.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-BlobRoutine.Tpo -c -o AzureNativeLinuxAgent-BlobRoutine.o `test -f 'BlobRoutine.cpp' || echo '$(srcdir)/'`BlobRoutine.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-BlobRoutine.Tpo $(DEPDIR)/AzureNativeLinuxAgent-BlobRoutine.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='BlobRoutine.cpp' object='AzureNativeLinuxAgent-BlobRoutine.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-BlobRoutine.o `test -f 'BlobRoutine.cpp' || echo '$(srcdir)/'`BlobRoutine.cpp
+
+AzureNativeLinuxAgent-BlobRoutine.obj: BlobRoutine.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-BlobRoutine.obj -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-BlobRoutine.Tpo -c -o AzureNativeLinuxAgent-BlobRoutine.obj `if test -f 'BlobRoutine.cpp'; then $(CYGPATH_W) 'BlobRoutine.cpp'; else $(CYGPATH_W) '$(srcdir)/BlobRoutine.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/AzureNativeLinuxAgent-BlobRoutine.Tpo $(DEPDIR)/AzureNativeLinuxAgent-BlobRoutine.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='BlobRoutine.cpp' object='AzureNativeLinuxAgent-BlobRoutine.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -c -o AzureNativeLinuxAgent-BlobRoutine.obj `if test -f 'BlobRoutine.cpp'; then $(CYGPATH_W) 'BlobRoutine.cpp'; else $(CYGPATH_W) '$(srcdir)/BlobRoutine.cpp'; fi`
 
 AzureNativeLinuxAgent-Certificates.o: Certificates.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AzureNativeLinuxAgent_CXXFLAGS) $(CXXFLAGS) -MT AzureNativeLinuxAgent-Certificates.o -MD -MP -MF $(DEPDIR)/AzureNativeLinuxAgent-Certificates.Tpo -c -o AzureNativeLinuxAgent-Certificates.o `test -f 'Certificates.cpp' || echo '$(srcdir)/'`Certificates.cpp

@@ -146,6 +146,7 @@
     <ClInclude Include="config.h" />
     <ClInclude Include="src\AgentConfig.h" />
     <ClInclude Include="src\AzureEnvironment.h" />
+    <ClInclude Include="src\BlobRoutine.h" />
     <ClInclude Include="src\Certificates.h" />
     <ClInclude Include="src\CertificationRoutine.h" />
     <ClInclude Include="src\CommandExecuter.h" />
@@ -177,6 +178,7 @@
     <ClCompile Include="src\AgentConfig.cpp" />
     <ClCompile Include="src\AzureEnvironment.cpp" />
     <ClCompile Include="src\AzureNativeLinuxAgent.cpp" />
+    <ClCompile Include="src\BlobRoutine.cpp" />
     <ClCompile Include="src\Certificates.cpp" />
     <ClCompile Include="src\CertificationRoutine.cpp" />
     <ClCompile Include="src\CommandExecuter.cpp" />

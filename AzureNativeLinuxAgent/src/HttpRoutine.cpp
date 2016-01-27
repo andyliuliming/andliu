@@ -230,6 +230,101 @@ int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, cons
 
 }
 
+int HttpRoutine::Put(const char * url, map<string, string> * headers, const char * data, HttpResponse &response)
+{
+    int returnCode = 0;
+    struct curl_slist *chunk = NULL;
+    if (headers != NULL)
+    {
+        /* Add a custom header */
+        for (std::map<string, string>::iterator it = headers->begin(); it != headers->end(); ++it)
+        {
+            string headerValue = it->first + ": " + it->second;
+            chunk = curl_slist_append(chunk, headerValue.c_str());
+        }
+    }
+    CURL *conn = NULL;
+    CURLcode code;
+    //curl_global_init is not thread safe.
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+    bool initResult = init_common(conn, url);
+
+    code = curl_easy_setopt(conn, CURLOPT_UPLOAD, 1L);
+    if (code != CURLE_OK)
+    {
+        Logger::getInstance().Error("Failed to set opt CURLOPT_UPLOAD [%s]\n", errorBuffer);
+        initResult = false;
+    }
+    /* HTTP PUT please */
+    code = curl_easy_setopt(conn, CURLOPT_PUT, 1L);
+    if (code != CURLE_OK)
+    {
+        Logger::getInstance().Error("Failed to set opt CURLOPT_PUT [%s]\n", errorBuffer);
+        initResult = false;
+    }
+    code = curl_easy_setopt(conn, CURLOPT_HEADERFUNCTION, header_callback);
+    if (code != CURLE_OK)
+    {
+        Logger::getInstance().Error("Failed to set header callback [%s]\n", errorBuffer);
+        initResult = false;
+    }
+
+    code = curl_easy_setopt(conn, CURLOPT_WRITEHEADER, &response);
+    if (code != CURLE_OK)
+    {
+        Logger::getInstance().Error("Failed to set header data [%s]\n", errorBuffer);
+        initResult = false;
+    }
+
+    code = curl_easy_setopt(conn, CURLOPT_WRITEFUNCTION, writer);
+    if (code != CURLE_OK)
+    {
+        Logger::getInstance().Error("Failed to set writer [%s]\n", errorBuffer);
+        initResult = false;
+    }
+
+    code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, &response.body);
+    if (code != CURLE_OK)
+    {
+        Logger::getInstance().Error("Failed to set write data [%s]\n", errorBuffer);
+        initResult = false;
+    }
+
+    if (chunk != NULL)
+    {
+        code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
+        if (code != CURLE_OK)
+        {
+            initResult = false;
+        }
+    }
+    code = curl_easy_setopt(conn, CURLOPT_POSTFIELDS, data);
+    if (code != CURLE_OK)
+    {
+        initResult = false;
+    }
+    if (initResult == true)
+    {
+        code = curl_easy_perform(conn);
+        if (code != CURLE_OK)
+        {
+            returnCode = 1;
+        }
+    }
+    else
+    {
+        returnCode = 1;
+    }
+    curl_easy_cleanup(conn);
+    curl_slist_free_all(chunk);
+
+    if (code != CURLE_OK)
+    {
+        Logger::getInstance().Error("Failed to post '%s' [%s]\n", url, errorBuffer);
+    }
+    return returnCode;
+}
+
 int HttpRoutine::Post(const char * url, map<string, string> * headers, const char * data, HttpResponse &response)
 {
     int returnCode = 0;

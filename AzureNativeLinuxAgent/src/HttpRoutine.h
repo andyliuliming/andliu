@@ -25,7 +25,7 @@ public:
     static int Get(const char * url, map<string, string> * headers, HttpResponse &response);
     static int GetToFile(const char * url, map<string, string> * headers, const char * filePath);
     static int Post(const char * url, map<string, string> * headers, const char * data, HttpResponse&response);
-
+    static int Put(const char * url, map<string, string> * headers, const char * data, HttpResponse &response);
     ~HttpRoutine();
 };
 
