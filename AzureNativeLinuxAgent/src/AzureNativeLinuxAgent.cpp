@@ -155,6 +155,8 @@ int main(void)
             }
         }
 
+        goalState.extensionsConfig->ReportExtensionsStatus();
+
         SLEEP(25 * 1000);
     }
 }

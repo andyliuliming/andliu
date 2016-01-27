@@ -8,6 +8,12 @@
 #include "Macros.h"
 #include "ZipRoutine.h"
 
+int ExtensionsConfig::GenerateAggStatus(ExtensionConfig & extensionConfig, string &aggStatus)
+{
+
+    return 0;
+}
+
 ExtensionsConfig::ExtensionsConfig()
 {
 }
@@ -15,11 +21,49 @@ ExtensionsConfig::ExtensionsConfig()
 void ExtensionsConfig::ReportExtensionsStatus()
 {
     Logger::getInstance().Verbose("start report extensions status.");
+    string statuses = "";
     for (int i = 0; i < this->extensionConfigs.size(); i++)
     {
-        Logger::getInstance().Verbose("trying to get the extension's status");
+        Logger::getInstance().Verbose("trying to get the extension: %s status", extensionConfigs[i]->name.c_str());
     }
     Logger::getInstance().Verbose("end report extensions status.");
+    
+    time_t     now = time(NULL);
+    struct tm  tstruct;
+    char       tstamp[80];
+    tstruct = *localtime(&now);
+    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
+    // for more information about date/time format
+    strftime(tstamp, sizeof(tstamp), "%Y-%m-%dT%H.%M.%SZ", &tstruct);
+    string agent_state = "Ready";
+    string agent_msg = "GuestAgent is running and accepting new configurations.";
+    json_object *status = json_object_new_object();
+
+    json_object_object_add(status, "version", json_object_new_string("1.0"));
+    json_object_object_add(status, "timestampUTC", json_object_new_string(tstamp));
+
+    json_object *aggregateStatus = json_object_new_object();
+    json_object *guestAgentStatus = json_object_new_object();
+    json_object_object_add(guestAgentStatus, "version", json_object_new_string(WAAGENT_VERSION));
+    json_object_object_add(guestAgentStatus, "status", json_object_new_string(agent_state.c_str()));
+
+    json_object_object_add(guestAgentStatus, "handlerAggregateStatus", json_object_new_string(statuses.c_str()));
+    json_object *formattedMessage = json_object_new_object();
+    json_object_object_add(formattedMessage, "lang", json_object_new_string("en-US"));
+    json_object_object_add(formattedMessage, "message", json_object_new_string(agent_msg.c_str()));
+    json_object_object_add(guestAgentStatus, "formattedMessage", formattedMessage);
+    json_object_object_add(aggregateStatus, "aggregateStatus", guestAgentStatus);
+
+    json_object_object_add(status, "aggregateStatus", aggregateStatus);
+
+    const char * status_str = json_object_to_json_string(status);
+    Logger::getInstance().Verbose("status string is %s", status_str);
+    HttpResponse response;
+    int postResult = HttpRoutine::Post(this->statusUploadBlobUri.c_str(), NULL, status_str, response);
+    if (postResult != 0)
+    {
+        Logger::getInstance().Error("failed to report the status %d", postResult);
+    }
 }
 
 
@@ -28,7 +72,6 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
 
     xmlDocPtr extensionsConfigDoc = xmlParseMemory(extensionsConfigText.c_str(), extensionsConfigText.size());
     xmlNodePtr root = xmlDocGetRootElement(extensionsConfigDoc);
-    string incarnationStr;
     XmlRoutine::getNodeProperty(root, "goalStateIncarnation", incarnationStr);
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     string configFilePath = string("/var/lib/waagent/Native_ExtensionsConfig.") + incarnationStr + ".xml";
