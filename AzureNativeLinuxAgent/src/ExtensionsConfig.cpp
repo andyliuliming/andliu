@@ -47,7 +47,9 @@ void ExtensionsConfig::ReportExtensionsStatus()
     json_object_object_add(guestAgentStatus, "version", json_object_new_string(WAAGENT_VERSION));
     json_object_object_add(guestAgentStatus, "status", json_object_new_string(agent_state.c_str()));
 
-    json_object_object_add(guestAgentStatus, "handlerAggregateStatus", json_object_new_string(statuses.c_str()));
+    json_object *statusesArray = json_object_new_array();
+    // TODO add the status into the statusesArray
+    json_object_object_add(guestAgentStatus, "handlerAggregateStatus", statusesArray);
     json_object *formattedMessage = json_object_new_object();
     json_object_object_add(formattedMessage, "lang", json_object_new_string("en-US"));
     json_object_object_add(formattedMessage, "message", json_object_new_string(agent_msg.c_str()));
@@ -57,12 +59,13 @@ void ExtensionsConfig::ReportExtensionsStatus()
     json_object_object_add(status, "aggregateStatus", aggregateStatus);
 
     const char * status_str = json_object_to_json_string(status);
-    Logger::getInstance().Verbose("status string is %s", status_str);
+    Logger::getInstance().Error("status string is %s", status_str);
     HttpResponse response;
     int postResult = HttpRoutine::Post(this->statusUploadBlobUri.c_str(), NULL, status_str, response);
     if (postResult != 0)
     {
         Logger::getInstance().Error("failed to report the status %d", postResult);
+        Logger::getInstance().Error("status upload blob uri is :%s", this->statusUploadBlobUri.c_str());
     }
 }
 
@@ -131,7 +134,8 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
     {
         //TODO error handling for the statusBlobType
         XmlRoutine::getNodeProperty(statusBlobXpathObj->nodesetval->nodeTab[0], "statusBlobType", this->statusBlobType);
-        XmlRoutine::getNodeContent(statusBlobXpathObj->nodesetval->nodeTab[0], this->statusBlobType);
+        XmlRoutine::getNodeContent(statusBlobXpathObj->nodesetval->nodeTab[0], this->statusUploadBlobUri);
+        
         Logger::getInstance().Verbose("the status blob type:%s, uri:%s", this->statusBlobType.c_str(), this->statusUploadBlobUri.c_str());
     }
     else
