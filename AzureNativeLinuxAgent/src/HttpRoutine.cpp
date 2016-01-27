@@ -288,7 +288,7 @@ int HttpRoutine::Put(const char * url, map<string, string> * headers, const char
     struct MemoryStruct sData;
     sData.memory = data;
     sData.size = strlen(data);
-    code = curl_easy_setopt(conn, CURLOPT_READDATA, data);
+    code = curl_easy_setopt(conn, CURLOPT_READDATA, (void *)&sData);
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to set header CURLOPT_READDATA [%s]\n", errorBuffer);
