@@ -54,7 +54,7 @@ void ExtensionsConfig::ReportExtensionsStatus()
     json_object_object_add(formattedMessage, "lang", json_object_new_string("en-US"));
     json_object_object_add(formattedMessage, "message", json_object_new_string(agent_msg.c_str()));
     json_object_object_add(guestAgentStatus, "formattedMessage", formattedMessage);
-    json_object_object_add(aggregateStatus, "aggregateStatus", guestAgentStatus);
+    json_object_object_add(aggregateStatus, "guestAgentStatus", guestAgentStatus);
 
     json_object_object_add(status, "aggregateStatus", aggregateStatus);
 
@@ -135,7 +135,6 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
         //TODO error handling for the statusBlobType
         XmlRoutine::getNodeProperty(statusBlobXpathObj->nodesetval->nodeTab[0], "statusBlobType", this->statusBlobType);
         XmlRoutine::getNodeContent(statusBlobXpathObj->nodesetval->nodeTab[0], this->statusUploadBlobUri);
-        
         Logger::getInstance().Verbose("the status blob type:%s, uri:%s", this->statusBlobType.c_str(), this->statusUploadBlobUri.c_str());
     }
     else
