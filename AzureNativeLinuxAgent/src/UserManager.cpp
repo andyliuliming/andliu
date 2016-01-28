@@ -18,7 +18,7 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
 {
     Logger::getInstance().Warning("creating the user");
     struct passwd * existed = getpwnam(userName.c_str());
-
+    bool usePassword = true;
     if (existed != NULL)
     {
         Logger::getInstance().Error("user existed already");
@@ -40,6 +40,28 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
         if (commandResult.exitCode == 0)
         {
             Logger::getInstance().Warning("user change password result succeeded :%d, %s", commandResult.exitCode, commandResult.output->c_str());
+            string bsdSudoerDirBase = string(BSD_SUDOERS_DIR_BASE);
+            string modernSusoerDir = bsdSudoerDirBase + "sudoers.d/";
+            if (!FileOperator::file_exists(modernSusoerDir.c_str()))
+            {
+                FileOperator::make_dir(modernSusoerDir.c_str());
+                string sudoersFileContent;
+                string sudoersFilePath = modernSusoerDir + "sudoers";
+                FileOperator::get_content(sudoersFilePath.c_str(), sudoersFileContent);
+                sudoersFileContent + = sudoersFileContent + "\n#includedir " + bsdSudoerDirBase + "sudoers.d\n";
+            }
+            if (usePassword)
+            {
+                string waagentSudoerFileContent = userName + " ALL = (ALL) NOPASSWD: ALL\n";
+                string waagentSudoerFilePath = bsdSudoerDirBase + "sudoers.d/waagent";
+                FileOperator::save_file(waagentSudoerFileContent, waagentSudoerFilePath);
+                int chmodResult =  chmod(waagentSudoerFilePath.c_str(), (mode_t)0440);
+                if (chmodResult != 0)
+                {
+                    Logger::getInstance().Error("chmod failed");
+                }
+            }
+
         }
         else
         {

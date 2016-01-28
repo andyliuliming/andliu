@@ -60,6 +60,7 @@
 #define WORKING_DIR ("/var/lib/waagent")
 #define EXTENSION_LOG_BASE_DIR ("/var/log/azure/")
 #define STORAGE_VERSION ("2014-02-14")
+#define BSD_SUDOERS_DIR_BASE = ("/usr/local/etc/")
 #define AGENT_SUCCESS (0)
 #define AGENT_FAILED (1)
 
