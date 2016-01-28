@@ -98,15 +98,15 @@ int HttpRoutine::GetWithDefaultHeader(const char *url, HttpResponse &response)
     headers["x-ms-agent-name"] = WAAGENT_NAME;
     headers["Content-Type"] = "text/xml; charset=utf-8";
     headers["x-ms-version"] = WAAGENT_VERSION;
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
     int getResult = HttpRoutine::Get(url, &headers, response);
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
     return getResult;
 }
 
 int HttpRoutine::Get(const char * url, map<string, string> * headers, HttpResponse &response)
 {
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
     int returnCode = AGENT_SUCCESS;
 
     struct curl_slist *chunk = NULL;
@@ -173,7 +173,7 @@ int HttpRoutine::Get(const char * url, map<string, string> * headers, HttpRespon
         Logger::getInstance().Error("Failed to get '%s' [%s]", url, errorBuffer);
         returnCode = AGENT_FAILED;
     }
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
     return returnCode;
 }
 

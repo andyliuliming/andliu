@@ -15,7 +15,6 @@ void SharedConfig::Process()
 {
 }
 
-
 SharedConfig::~SharedConfig()
 {
 }

@@ -194,7 +194,6 @@ void NetworkRoutine::stopDHCP()
 {
 }
 
-
 NetworkRoutine::~NetworkRoutine()
 {
 }

@@ -155,7 +155,6 @@ int AzureEnvironment::CheckVersion()
     return AGENT_SUCCESS;
 }
 
-
 AzureEnvironment::~AzureEnvironment()
 {
 }

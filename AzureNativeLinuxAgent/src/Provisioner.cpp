@@ -19,7 +19,7 @@ bool Provisioner::isProvisioned()
 
 int Provisioner::Prosess()
 {
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
 
     //1. provision re-generate key
     AgentConfig::getInstance().LoadConfig();
@@ -40,7 +40,7 @@ int Provisioner::Prosess()
         //TODO deallocate the c_str() here.
         CommandExecuter::RunGetOutput(("ssh-keygen -N '' -t " + type + " -f /etc/ssh/ssh_host_" + type + "_key").c_str(), generateCommandResult);
     }
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
 
     // 2. do the ovf-env
     string *romDevicePath = DeviceRoutine::findRomDevice();
@@ -49,9 +49,9 @@ int Provisioner::Prosess()
         Logger::getInstance().Warning("couldnot find the rom device.");
         return AGENT_FAILED;
     }
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
     FileOperator::make_dir(SECURE_MOUNT_POINT);
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
 #ifdef __FreeBSD__
     string mountCommand("mount -t udf /dev/" + *romDevicePath + " " + SECURE_MOUNT_POINT);
 #else
@@ -65,13 +65,13 @@ int Provisioner::Prosess()
     if (mountResult.exitCode == 0)
     {
         Logger::getInstance().Warning("the cd is mounted");
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+        
 
         string ovfEnvFullPath = OVF_ENV_FILE_FULL_PATH;
         string ovfFileContent;
         int getOvfFileContentResult = FileOperator::get_content(OVF_ENV_FILE_FULL_PATH, ovfFileContent);
         string umountCommand = string("umount ") + SECURE_MOUNT_POINT;
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+        
 
         CommandResult umountResult;
         CommandExecuter::RunGetOutput(umountCommand, umountResult);
@@ -81,13 +81,13 @@ int Provisioner::Prosess()
         }
         if (getOvfFileContentResult == 0)
         {
-            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+            
             OvfEnv *ovfEnv = new OvfEnv();
             ovfEnv->Parse(ovfFileContent);
             int ovfResult = ovfEnv->Process();
             if (ovfResult == 0)
             {
-                Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+                
                 return AGENT_SUCCESS;
             }
             else
@@ -106,7 +106,7 @@ int Provisioner::Prosess()
     }
     else
     {
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+        
         Logger::getInstance().Error("mount result: %s", mountResult.output->c_str());
         return AGENT_FAILED;
     }
@@ -121,7 +121,6 @@ void Provisioner::markProvisioned()
 {
     FileOperator::save_file("", 0, PROVISIONED_FILE_PATH);
 }
-
 
 Provisioner::~Provisioner()
 {

@@ -1,7 +1,6 @@
 #include "Deprovisioner.h"
 
 
-
 Deprovisioner::Deprovisioner()
 {
 }
@@ -9,7 +8,6 @@ Deprovisioner::Deprovisioner()
 void Deprovisioner::Deprovision()
 {
 }
-
 
 Deprovisioner::~Deprovisioner()
 {

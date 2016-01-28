@@ -25,7 +25,7 @@ the zipExtractDirectory format should be like /var/lib/waagent/xxx_version/
 */
 int ZipRoutine::UnZipToDirectory(const string& archive, const string& zipExtractDirectory)
 {
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
 
     struct zip *za;
     struct zip_file *zf;
@@ -104,7 +104,7 @@ int ZipRoutine::UnZipToDirectory(const string& archive, const string& zipExtract
         }
         else
         {
-            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+            
         }
     }
 
@@ -113,7 +113,7 @@ int ZipRoutine::UnZipToDirectory(const string& archive, const string& zipExtract
         Logger::getInstance().Error("can't close zip archive: %s",archive.c_str());
         return AGENT_FAILED;
     }
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
     return AGENT_SUCCESS;
 }
 

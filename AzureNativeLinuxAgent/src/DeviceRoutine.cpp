@@ -162,7 +162,6 @@ string * DeviceRoutine::findRomDevice()
 #endif
 }
 
-
 void DeviceRoutine::setBlockDeviceTimeOut(string &timeOutFile, string &timeOut)
 {
     string timeOutContent;

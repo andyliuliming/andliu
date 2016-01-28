@@ -60,7 +60,6 @@ int FileOperator::get_content(const char * fileName, string &content)
 
 
 
-
 FileOperator::~FileOperator()
 {
 }

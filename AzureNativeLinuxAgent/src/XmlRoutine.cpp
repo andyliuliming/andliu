@@ -66,7 +66,7 @@ void XmlRoutine::getNodeContent(xmlNodePtr node, string &value)
 
 void XmlRoutine::getNodeProperty(xmlNodePtr node, const char* propertyName, string&value)
 {
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
 
     xmlChar * propertyDup = xmlCharStrdup(propertyName);
     xmlChar * incarnation = xmlGetProp(node, propertyDup);
@@ -77,7 +77,7 @@ void XmlRoutine::getNodeProperty(xmlNodePtr node, const char* propertyName, stri
     delete propertyDup;
     propertyDup = NULL;
 
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
 }
 
 int XmlRoutine::getNodeText(xmlDocPtr doc, const char * xpathExpr, map<string, string> * namespaces, string &text)
@@ -95,7 +95,7 @@ int XmlRoutine::getNodeText(xmlDocPtr doc, const char * xpathExpr, map<string, s
     }
     else
     {
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+        
         if (xpathObj->nodesetval == NULL)
         {
             Logger::getInstance().Error("Error: node set is null for \"%s\"", xpathExpr);
@@ -103,7 +103,7 @@ int XmlRoutine::getNodeText(xmlDocPtr doc, const char * xpathExpr, map<string, s
         }
         if (xpathObj->nodesetval->nodeNr > 0)
         {
-            Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+            
             xmlNodeSetPtr nodes = xpathObj->nodesetval;
             text = ((const char*)nodes->nodeTab[0]->content);
             xmlXPathFreeObject(xpathObj);

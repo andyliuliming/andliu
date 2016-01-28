@@ -14,7 +14,6 @@ UserManager::UserManager()
 {
 }
 
-
 int UserManager::CreateUser(const string& userName, const string& passWord)
 {
     Logger::getInstance().Warning("creating the user");
@@ -104,7 +103,6 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
 #endif
     }
 }
-
 
 UserManager::~UserManager()
 {

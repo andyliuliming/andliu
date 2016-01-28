@@ -77,18 +77,18 @@ void ExtensionsConfig::ReportExtensionsStatus()
 
 
 void ExtensionsConfig::Parse(string & extensionsConfigText) {
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
 
     xmlDocPtr extensionsConfigDoc = xmlParseMemory(extensionsConfigText.c_str(), extensionsConfigText.size());
     xmlNodePtr root = xmlDocGetRootElement(extensionsConfigDoc);
     XmlRoutine::getNodeProperty(root, "goalStateIncarnation", incarnationStr);
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
     string configFilePath = string("/var/lib/waagent/Native_ExtensionsConfig.") + incarnationStr + ".xml";
     FileOperator::save_file(extensionsConfigText, configFilePath);
     xmlXPathObjectPtr pluginsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, "/Extensions/Plugins/Plugin", NULL);
 
     //statusBlobType
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
 
     xmlNodeSetPtr nodes = pluginsXpathObj->nodesetval;
     this->extensionConfigs.clear();
@@ -128,9 +128,9 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
             Logger::getInstance().Warning("no plugin settings found for this extension");
         }
         xmlXPathFreeObject(pluginSettingsXpathObj);
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+        
     }
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
 
     xmlXPathFreeObject(pluginsXpathObj);
 

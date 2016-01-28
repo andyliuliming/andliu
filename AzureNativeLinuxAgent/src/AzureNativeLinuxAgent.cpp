@@ -121,7 +121,6 @@ int main(void)
             goalState.Process();
             Logger::getInstance().Warning("end process");
 
-
             // Report SSH key finger print
             string host_key_path = string("/etc/ssh/ssh_host_") + type + "_key.pub";
 

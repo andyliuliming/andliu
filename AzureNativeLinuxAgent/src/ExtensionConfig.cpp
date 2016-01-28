@@ -12,7 +12,7 @@ using namespace std;
 
 int ExtensionConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, const char* pluginXpathManifestExpr)
 {
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
     xmlXPathObjectPtr xpathManifestObj = XmlRoutine::getNodes(manifestXmlDoc, pluginXpathManifestExpr, NULL);
 
     xmlNodeSetPtr pluginManifestNodes = xpathManifestObj->nodesetval;
@@ -39,13 +39,13 @@ int ExtensionConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, const c
         }
     }
     xmlXPathFreeObject(xpathManifestObj);
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
     return AGENT_SUCCESS;
 }
 
 int ExtensionConfig::PrepareExtensionPackage(string &incarnationStr)
 {
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
     if (this->state.compare("uninstall") == 0
         || this->state.compare("disabled") == 0)
     {
@@ -77,7 +77,7 @@ int ExtensionConfig::PrepareExtensionPackage(string &incarnationStr)
         //TODO: error handling.
         Logger::getInstance().Error("failed to get the extensions manifest");
     }
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
+    
     return AGENT_SUCCESS;
 }
 int ExtensionConfig::get_extension_path(string& pluginName, string& pluginVersion, string&extensionPath)
@@ -174,7 +174,6 @@ int ExtensionConfig::Process()
 ExtensionConfig::ExtensionConfig()
 {
 }
-
 
 ExtensionConfig::~ExtensionConfig()
 {

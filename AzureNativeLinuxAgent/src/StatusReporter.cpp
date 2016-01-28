@@ -67,7 +67,6 @@ int StatusReporter::ReportRoleProperties(AzureEnvironment & environment, GoalSta
     return postResult;
 }
 
-
 StatusReporter::~StatusReporter()
 {
 }
