@@ -23,7 +23,7 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
     HttpResponse goalStateResponse;
     int getGoalStateResult = HttpRoutine::GetWithDefaultHeader(goalStateEndpoint.c_str(), goalStateResponse);
 
-    if (getGoalStateResult == 0)
+    if (getGoalStateResult == AGENT_SUCCESS)
     {
         xmlDocPtr goalStateDoc = xmlParseMemory(goalStateResponse.body.c_str(), goalStateResponse.body.size());
         xmlNodePtr root = xmlDocGetRootElement(goalStateDoc);
@@ -46,7 +46,7 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         // construct the instances
         HttpResponse hostingEnvironmentConfigText;
         int getHostingEnvironmentConfigResult = HttpRoutine::GetWithDefaultHeader(this->hostingEnvironmentConfigUrl.c_str(), hostingEnvironmentConfigText);
-        if (getHostingEnvironmentConfigResult == 0)
+        if (getHostingEnvironmentConfigResult == AGENT_SUCCESS)
         {
             this->hostingEnvironmentConfig = new HostingEnvironmentConfig();
             this->hostingEnvironmentConfig->Parse(hostingEnvironmentConfigText.body);
@@ -59,7 +59,7 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
 
         HttpResponse sharedConfigText;
         int getSharedConfigResult = HttpRoutine::GetWithDefaultHeader(this->sharedConfigUrl.c_str(), sharedConfigText);
-        if (getSharedConfigResult == 0)
+        if (getSharedConfigResult == AGENT_SUCCESS)
         {
             this->sharedConfig = new SharedConfig();
             this->sharedConfig->Parse(sharedConfigText.body);
@@ -72,7 +72,7 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
 
         HttpResponse extentionsConfigText;
         int getExtensionsConfigResult = HttpRoutine::GetWithDefaultHeader(this->extensionsConfigUrl.c_str(), extentionsConfigText);
-        if (getExtensionsConfigResult == 0)
+        if (getExtensionsConfigResult == AGENT_SUCCESS)
         {
             this->extensionsConfig = new ExtensionsConfig();
             this->extensionsConfig->Parse(extentionsConfigText.body);
@@ -89,7 +89,7 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
             this->certificates = new Certificates();
             string certificationFileContent;
             int getCertificationFileContentResult = FileOperator::get_content(TRANSPORT_CERT_PUB, certificationFileContent);
-            if (getCertificationFileContentResult == 0)
+            if (getCertificationFileContentResult == AGENT_SUCCESS)
             {
                 vector<string> splitResult;
                 string spliter = "\n";
@@ -112,7 +112,7 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
                 HttpResponse certificationsText;
                 int getResult = HttpRoutine::Get(this->certificatesUrl.c_str(), &headers, certificationsText);
                 // get certificates from the remote using the public cert.
-                if (getResult == 0)
+                if (getResult == AGENT_SUCCESS)
                 {
                     this->certificates->Parse(certificationsText.body);
                 }

@@ -17,7 +17,7 @@ int CertificationRoutine::GenerateTransportCertification()
         string("openssl req -x509 -nodes -subj /CN=LinuxTransport -days 32768 -newkey rsa:2048 -keyout ") + TRANSPORT_CERT_PRIV + " -out " + TRANSPORT_CERT_PUB;
     CommandResult result;
     CommandExecuter::RunGetOutput(commandToExecute, result);
-    if (result.exitCode != 0)
+    if (result.exitCode != AGENT_SUCCESS)
     {
         Logger::getInstance().Error(result.output->c_str());
     }

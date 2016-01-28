@@ -56,12 +56,12 @@ int ExtensionConfig::PrepareExtensionPackage(string &incarnationStr)
     // get the manifest, get the bundle zip file location, download it, extract it.
     HttpResponse response;
     int getResult = HttpRoutine::Get(this->location.c_str(), NULL, response);
-    if (getResult != 0)
+    if (getResult != AGENT_SUCCESS)
     {
         Logger::getInstance().Verbose("failed to get the manifest file from location, download from failover location.");
         getResult = HttpRoutine::Get(this->failoverLocation.c_str(), NULL, response);
     }
-    if (getResult == 0)
+    if (getResult == AGENT_SUCCESS)
     {
         // download the extension bundle zip.
         string filepath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + this->name + "." + incarnationStr + ".manifest";
@@ -124,31 +124,25 @@ int ExtensionConfig::SaveHandlerEnvironemnt(string &seqNo, string &extensionPath
     string configFolder = extensionPathOut + "config";
     string statusFolder = extensionPathOut + "status";
     string heartBeatFile = extensionPathOut + "heartbeat.log";
-    const char* handleEnvFormat = 
-        "[{\"name\":\"%s\",\"seqNo\":\"%s\",\"version\":1.0,\"handlerEnvironment\":{\"logFolder\":\"%s\",\"configFolder\":\"%s\",\"statusFolder\":\"%s\",\"heartbeatFile\":\"%s\"}}]";
-    
+    // use the real json api to handle it.
+    json_object * handleEnvArray = json_object_new_array();
 
-    int formatLength = strlen(handleEnvFormat);
-    int sizeOfHandleEnv = this->name.length() + seqNo.length()
-        + logDir.length()
-        + configFolder.length() + statusFolder.length()
-        + heartBeatFile.length() + formatLength;
-    char* handleEnvText = new char[sizeOfHandleEnv + 1]();
-    // there's extra spaces.
-    sprintf(handleEnvText, handleEnvFormat,
-        this->name.c_str(),
-        seqNo.c_str(),
-        logDir.c_str(),
-        configFolder.c_str(),
-        statusFolder.c_str(),
-        heartBeatFile.c_str());
+    json_object * handleEnvObj = json_object_new_object();
+    json_object_array_add(handleEnvArray, handleEnvObj);
+    json_object_object_add(handleEnvObj, "name", json_object_new_string(this->name.c_str()));
+    json_object_object_add(handleEnvObj, "seqNo", json_object_new_string(seqNo.c_str()));
+    json_object_object_add(handleEnvObj, "version", json_object_new_double(1.0));
+    json_object * handlerEnvironmentObj = json_object_new_object();
+    json_object_object_add(handlerEnvironmentObj, "logFolder", json_object_new_string(logDir.c_str()));
+    json_object_object_add(handlerEnvironmentObj, "configFolder", json_object_new_string(configFolder.c_str()));
+    json_object_object_add(handlerEnvironmentObj, "heartbeatFile", json_object_new_string(heartBeatFile.c_str()));
+
+    const char * handleEnvText = json_object_to_json_string(handleEnvArray);
 
     string handlelEnvironmentFilePath = extensionPathOut + "HandlerEnvironment.json";
 
     //TODO make sure the strings are all deallocated including the c_str() ones.
-    FileOperator::save_file(handleEnvText, sizeOfHandleEnv-10, handlelEnvironmentFilePath.c_str());
-    delete[]handleEnvText;
-    handleEnvText = NULL;
+    FileOperator::save_file(handleEnvText, strlen(handleEnvText), handlelEnvironmentFilePath.c_str());
     //TODO make sure the handleEnvFormat is deallocated.
     return AGENT_SUCCESS;
 }
@@ -163,12 +157,10 @@ int ExtensionConfig::Process()
 
     HandlerManifest handlerManifest;
     int parseHandlerManifest = JsonRoutine::ParseHandlerManifest(manifestFilePath, handlerManifest);
-    if (parseHandlerManifest == 0)
+    if (parseHandlerManifest == AGENT_SUCCESS)
     {
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         CommandExecuter::PosixSpawn(handlerManifest.installCommand, extensionPath);
         CommandExecuter::PosixSpawn(handlerManifest.enableCommand, extensionPath);
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     }
     else
     {

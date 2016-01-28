@@ -74,13 +74,13 @@ void Certificates::Process()
 
         CommandResult decryptResult;
         CommandExecuter::RunGetOutput(commandToExportCert, decryptResult);
-        if (decryptResult.exitCode != 0)
+        if (decryptResult.exitCode != AGENT_SUCCESS)
         {
             Logger::getInstance().Error(decryptResult.output->c_str());
         }
         string certificationsContent;
         int getContentResult = FileOperator::get_content(CERTIFICATIONS_FILE_NAME, certificationsContent);
-        if (getContentResult == 0)
+        if (getContentResult == AGENT_SUCCESS)
         {
             vector<string> splitResult;
             string spliter = "\n";

@@ -37,10 +37,10 @@ int main(void)
     AzureEnvironment azureEnvironment;
     int dhcpWorkResult = 1;
 
-    while (dhcpWorkResult != 0)
+    while (dhcpWorkResult != AGENT_SUCCESS)
     {
         dhcpWorkResult = azureEnvironment.DoDhcpWork();
-        if (dhcpWorkResult != 0)
+        if (dhcpWorkResult != AGENT_SUCCESS)
         {
             Logger::getInstance().Error("no azure environment found.");
             SLEEP(120 * 1000);
@@ -50,7 +50,7 @@ int main(void)
 
     // 3. check version
     int checkResult = azureEnvironment.CheckVersion();
-    if (checkResult != 0)
+    if (checkResult != AGENT_SUCCESS)
     {
         Logger::getInstance().Error("check version failed, so exit.");
         exit(AGENT_FAILED);
@@ -61,7 +61,7 @@ int main(void)
 
     // 5. GenerateTransportCert
     int transportCertGenerationResult = CertificationRoutine::GenerateTransportCertification();
-    if (transportCertGenerationResult != 0)
+    if (transportCertGenerationResult != AGENT_SUCCESS)
     {
         Logger::getInstance().Error("generate the certification failed");
     }
@@ -80,7 +80,7 @@ int main(void)
         // a. UpdateGoalState
         // b. process goal state
         if (pass0
-            || goalState.incarnation.compare(incarnationReturned) != 0)
+            || goalState.incarnation.compare(incarnationReturned) != AGENT_SUCCESS)
         {
             Logger::getInstance().Error("incarnation in goal state is %s, incarnaitonReturned is %s", goalState.incarnation.c_str(), incarnationReturned.c_str());
             pass0 = false;
@@ -93,7 +93,7 @@ int main(void)
                 string status = "Provisioning";
                 string desc = "Starting";
                 int reportNotReadyResult = statusReporter->ReportNotReady(azureEnvironment, goalState, status, desc);
-                if (reportNotReadyResult != 0)
+                if (reportNotReadyResult != AGENT_SUCCESS)
                 {
                     Logger::getInstance().Error("report not ready failed with %d", reportNotReadyResult);
                 }
@@ -113,7 +113,7 @@ int main(void)
 
             string type;
             int result = AgentConfig::getInstance().getConfig("Provisioning_SshHostKeyPairType", type);
-            if (result != 0)
+            if (result != AGENT_SUCCESS)
             {
                 type = "rsa";
             }
@@ -150,7 +150,7 @@ int main(void)
         {
             Logger::getInstance().Warning("start do report ready");
             int reportReadyResult = statusReporter->ReportReady(azureEnvironment, goalState, incarnationReturned);
-            if (reportReadyResult != 0)
+            if (reportReadyResult != AGENT_SUCCESS)
             {
                 Logger::getInstance().Error("ReportReady failed with %d", reportReadyResult);
             }
@@ -161,7 +161,7 @@ int main(void)
             //TODO make the description more clear.
             string desc = "ProvisioningFailed";
             int reportNotReadyResult = statusReporter->ReportNotReady(azureEnvironment, goalState, status, desc);
-            if (reportNotReadyResult != 0)
+            if (reportNotReadyResult != AGENT_SUCCESS)
             {
                 Logger::getInstance().Error("ReportNotReady failed with %d", reportNotReadyResult);
             }

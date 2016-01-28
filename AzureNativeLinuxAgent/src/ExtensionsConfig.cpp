@@ -35,7 +35,7 @@ void ExtensionsConfig::ReportExtensionsStatus()
     tstruct = *localtime(&now);
     // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
     // for more information about date/time format
-    strftime(tstamp, sizeof(tstamp), "%Y-%m-%dT%H.%M.%SZ", &tstruct);
+    strftime(tstamp, sizeof(tstamp), "%Y-%m-%dT%H:%M:%SZ", &tstruct);
     string agent_state = "Ready";
     string agent_msg = "GuestAgent is running and accepting new configurations.";
     json_object *status = json_object_new_object();
@@ -63,7 +63,7 @@ void ExtensionsConfig::ReportExtensionsStatus()
     Logger::getInstance().Error("status string is %s", status_str);
     HttpResponse response;
     int postResult = BlobRoutine::Put(this->statusUploadBlobUri.c_str(), statusBlobType.c_str(), status_str, response);
-    if (postResult != 0)
+    if (postResult != AGENT_SUCCESS)
     {
         Logger::getInstance().Error("failed to report the status %d", postResult);
         Logger::getInstance().Error("status upload blob uri is :%s", this->statusUploadBlobUri.c_str());

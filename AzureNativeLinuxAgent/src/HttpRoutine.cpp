@@ -107,7 +107,7 @@ int HttpRoutine::GetWithDefaultHeader(const char *url, HttpResponse &response)
 int HttpRoutine::Get(const char * url, map<string, string> * headers, HttpResponse &response)
 {
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-    int returnCode = 0;
+    int returnCode = AGENT_SUCCESS;
 
     struct curl_slist *chunk = NULL;
     if (headers != NULL)
@@ -131,28 +131,28 @@ int HttpRoutine::Get(const char * url, map<string, string> * headers, HttpRespon
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to set header callback [%s]", errorBuffer);
-        returnCode = 1;
+        returnCode = AGENT_FAILED;
     }
 
     code = curl_easy_setopt(conn, CURLOPT_WRITEHEADER, &response);
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to set header data [%s]", errorBuffer);
-        returnCode = 1;
+        returnCode = AGENT_FAILED;
     }
 
     code = curl_easy_setopt(conn, CURLOPT_WRITEFUNCTION, writer);
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to set writer [%s]", errorBuffer);
-        returnCode = 1;
+        returnCode = AGENT_FAILED;
     }
 
     code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, &response.body);
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to set write data [%s]", errorBuffer);
-        returnCode = 1;
+        returnCode = AGENT_FAILED;
     }
 
     if (chunk != NULL)
@@ -160,7 +160,7 @@ int HttpRoutine::Get(const char * url, map<string, string> * headers, HttpRespon
         code = curl_easy_setopt(conn, CURLOPT_HTTPHEADER, chunk);
         if (code != CURLE_OK)
         {
-            returnCode = 1;
+            returnCode = AGENT_FAILED;
             Logger::getInstance().Error("Failed to set http header: %s", errorBuffer);
         }
     }
@@ -171,7 +171,7 @@ int HttpRoutine::Get(const char * url, map<string, string> * headers, HttpRespon
     if (code != CURLE_OK)
     {
         Logger::getInstance().Error("Failed to get '%s' [%s]", url, errorBuffer);
-        returnCode = 1;
+        returnCode = AGENT_FAILED;
     }
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     return returnCode;
@@ -179,7 +179,7 @@ int HttpRoutine::Get(const char * url, map<string, string> * headers, HttpRespon
 
 int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, const char * filePath)
 {
-    int returnCode = 0;
+    int returnCode = AGENT_SUCCESS;
     FILE *fp;
     struct curl_slist *chunk = NULL;
     if (headers != NULL)
@@ -200,7 +200,7 @@ int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, cons
     if (fp == NULL)
     {
         Logger::getInstance().Error("fopen result is : %d", fp);
-        returnCode = 1;
+        returnCode = AGENT_FAILED;
         return returnCode;
     }
 
@@ -234,7 +234,7 @@ int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, cons
         if (code != CURLE_OK)
         {
             Logger::getInstance().Error("Failed to get '%s' [%s]\n", url, errorBuffer);
-            returnCode = 1;
+            returnCode = AGENT_FAILED;
         }
     }
     fclose(fp);
@@ -247,7 +247,7 @@ int HttpRoutine::GetToFile(const char * url, map<string, string> * headers, cons
 
 int HttpRoutine::Put(const char * url, map<string, string> * headers, const char * data, HttpResponse &response)
 {
-    int returnCode = 0;
+    int returnCode = AGENT_SUCCESS;
     struct curl_slist *chunk = NULL;
     if (headers != NULL)
     {
@@ -340,12 +340,12 @@ int HttpRoutine::Put(const char * url, map<string, string> * headers, const char
         code = curl_easy_perform(conn);
         if (code != CURLE_OK)
         {
-            returnCode = 1;
+            returnCode = AGENT_FAILED;
         }
     }
     else
     {
-        returnCode = 1;
+        returnCode = AGENT_FAILED;
     }
     curl_easy_cleanup(conn);
     curl_slist_free_all(chunk);
@@ -359,7 +359,7 @@ int HttpRoutine::Put(const char * url, map<string, string> * headers, const char
 
 int HttpRoutine::Post(const char * url, map<string, string> * headers, const char * data, HttpResponse &response)
 {
-    int returnCode = 0;
+    int returnCode = AGENT_SUCCESS;
     struct curl_slist *chunk = NULL;
     if (headers != NULL)
     {
@@ -422,12 +422,12 @@ int HttpRoutine::Post(const char * url, map<string, string> * headers, const cha
         code = curl_easy_perform(conn);
         if (code != CURLE_OK)
         {
-            returnCode = 1;
+            returnCode = AGENT_FAILED;
         }
     }
     else
     {
-        returnCode = 1;
+        returnCode = AGENT_FAILED;
     }
     curl_easy_cleanup(conn);
     curl_slist_free_all(chunk);

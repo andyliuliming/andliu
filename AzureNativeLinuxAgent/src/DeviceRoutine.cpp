@@ -19,13 +19,13 @@ void DeviceRoutine::setIsciTimeOut()
     string timeOut;
     int getTimeOutResult = AgentConfig::getInstance().getConfig("OS_RootDeviceScsiTimeout", timeOut);
     Logger::getInstance().Verbose("timeout set to:%s", timeOut.c_str());
-    if (getTimeOutResult == 0)
+    if (getTimeOutResult == AGENT_SUCCESS)
     {
 #ifdef __FreeBSD__
         string commandToSetTimeOut = "sysctl kern.cam.da.default_timeout=" + timeOut;
         CommandResult setTimeOutResult;
         CommandExecuter::RunGetOutput(commandToSetTimeOut, setTimeOutResult);
-        if (setTimeOutResult.exitCode != 0)
+        if (setTimeOutResult.exitCode != AGENT_SUCCESS)
         {
             Logger::getInstance().Error("set timeout result %d", setTimeOutResult.exitCode);
             Logger::getInstance().Error(setTimeOutResult.output->c_str());
@@ -168,7 +168,7 @@ void DeviceRoutine::setBlockDeviceTimeOut(string &timeOutFile, string &timeOut)
     string timeOutContent;
     //TODO check whether the c_str() is deallocated
     int getContentResult = FileOperator::get_content(timeOutFile.c_str(), timeOutContent);
-    if (getContentResult == 0)
+    if (getContentResult == AGENT_SUCCESS)
     {
         StringUtil::trim(timeOutContent);
         string timeOutToSet = timeOut;

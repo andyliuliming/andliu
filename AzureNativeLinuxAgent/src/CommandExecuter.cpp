@@ -32,7 +32,7 @@ void CommandExecuter::PosixSpawn(string& cmd, string &cwd)
         const char * cmd_str = cmd.c_str();
         CommandExecuter::RunGetOutput(cmd_str, installResult);
 
-        if (installResult.exitCode != 0)
+        if (installResult.exitCode != AGENT_SUCCESS)
         {
             Logger::getInstance().Error("subprocess exit with code:%d, output:%s", installResult.exitCode, installResult.output->c_str());
         }
@@ -65,7 +65,7 @@ void CommandExecuter::RunGetOutput(const char* cmd, CommandResult &commandResult
     FILE* pipe = POPEN(cmd, "r");
     if (!pipe)
     {
-        commandResult.exitCode = 1;
+        commandResult.exitCode = AGENT_FAILED;
     }
     else
     {
