@@ -119,7 +119,6 @@ int ExtensionConfig::Update(string &previous_version)
 
 int ExtensionConfig::SaveHandlerEnvironemnt(string &seqNo, string &extensionPathOut)
 {
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     //TODO implement this.
     string logDir = string(EXTENSION_LOG_BASE_DIR) + this->name + "/" + this->version;
     string configFolder = extensionPathOut + "config";
@@ -135,7 +134,6 @@ int ExtensionConfig::SaveHandlerEnvironemnt(string &seqNo, string &extensionPath
     Logger::getInstance().Error("size of sizeOfHandleEnv IS: %d formatLength is %d", sizeOfHandleEnv, formatLength);
     char* handleEnvText = new char[sizeOfHandleEnv + 1]();
     // there's extra spaces.
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     sprintf(handleEnvText, handleEnvFormat,
         this->name.c_str(),
         seqNo.c_str(),
@@ -144,24 +142,18 @@ int ExtensionConfig::SaveHandlerEnvironemnt(string &seqNo, string &extensionPath
         statusFolder.c_str(),
         heartBeatFile.c_str());
 
-    printf("FFF%sFFF", handleEnvText);
     string handlelEnvironmentFilePath = extensionPathOut + "HandlerEnvironment.json";
 
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     //TODO make sure the strings are all deallocated including the c_str() ones.
     FileOperator::save_file(handleEnvText, sizeOfHandleEnv-10, handlelEnvironmentFilePath.c_str());
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     delete[]handleEnvText;
     handleEnvText = NULL;
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     //TODO make sure the handleEnvFormat is deallocated.
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     return AGENT_SUCCESS;
 }
 
 int ExtensionConfig::Process()
 {
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     //handle it 
     Logger::getInstance().Verbose("start handling extension %s", this->name.c_str());
     string  extensionPath;

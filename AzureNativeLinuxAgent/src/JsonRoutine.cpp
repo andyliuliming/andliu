@@ -18,20 +18,20 @@ int JsonRoutine::ParseHandlerManifest(string &filePath, HandlerManifest &result)
     {
         json_object * jvalue;
         jvalue = json_object_array_get_idx(jarray, 0);
-        json_object * handlerManifest=NULL;
+        json_object * handlerManifest = NULL;
         json_object_object_get_ex(jvalue, "handlerManifest", &handlerManifest);
 
         json_object * installCommand = NULL;
-        json_object_object_get_ex(jvalue, "handlerManifest", &installCommand);
+        json_object_object_get_ex(handlerManifest, "installCommand", &installCommand);
 
         json_object * enableCommand = NULL;
-        json_object_object_get_ex(jvalue, "handlerManifest",&enableCommand);
+        json_object_object_get_ex(handlerManifest, "enableCommand",&enableCommand);
 
         json_object * uninstallCommand = NULL;
-        json_object_object_get_ex(jvalue, "handlerManifest",&uninstallCommand);
+        json_object_object_get_ex(handlerManifest, "uninstallCommand",&uninstallCommand);
 
         json_object * disableCommand = NULL;
-        json_object_object_get_ex(jvalue, "handlerManifest",&disableCommand);
+        json_object_object_get_ex(handlerManifest, "disableCommand",&disableCommand);
         
         const char* installCommandStr = json_object_get_string(installCommand);
         const char* enableCommandStr = json_object_get_string(enableCommand);
