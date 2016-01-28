@@ -206,10 +206,19 @@ def enable():
     hutil.save_seq()
 
     try:
-        protected_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('protectedSettings')
-        public_settings = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('publicSettings')
-        extension_parameter = ExtensionParameter(hutil, protected_settings, public_settings)
+        protected_settings_str = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('protectedSettings')
+        public_settings_str = hutil._context._config['runtimeSettings'][0]['handlerSettings'].get('publicSettings')
+        if(isinstance(public_settings_str,basestring)):
+            public_settings = json.loads(public_settings_str)
+        else:
+            public_settings = public_settings_str;
 
+        if(isinstance(protected_settings_str,basestring)):
+            protected_settings = json.loads(protected_settings_str)
+        else:
+            protected_settings = protected_settings_str
+        extension_parameter = ExtensionParameter(hutil, protected_settings, public_settings)
+        
         kek_secret_id_created = None
 
         encryption_marker = EncryptionMarkConfig(logger, encryption_environment)
