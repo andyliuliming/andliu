@@ -1,5 +1,6 @@
 #include <string>
 #include "AgentConfig.h"
+#include "FileOperator.h"
 #include "Logger.h"
 #include "StringUtil.h"
 #include "UserManager.h"
