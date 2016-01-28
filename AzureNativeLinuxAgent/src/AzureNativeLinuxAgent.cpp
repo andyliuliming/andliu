@@ -144,7 +144,7 @@ int main(void)
 
         // TODO handle the StateConsumer program = Config.get("Role.StateConsumer")
         int sleepToReduceAccessDenied = 3;
-        SLEEP(3 * 1000);
+        SLEEP(sleepToReduceAccessDenied * 1000);
         if (provisioned)
         {
             Logger::getInstance().Warning("start do report ready");
