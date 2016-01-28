@@ -16,56 +16,33 @@ GoalState::GoalState()
 
 void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
 {
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     string goalStateEndpoint = string("http://") + azureEnvironment.wireServerAddress + "/machine/?comp=goalstate";
 
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     //TODO: wrapper up a XML handling in our code
     /* set our custom set of headers */
     HttpResponse goalStateResponse;
     int getGoalStateResult = HttpRoutine::GetWithDefaultHeader(goalStateEndpoint.c_str(), goalStateResponse);
 
-    Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     if (getGoalStateResult == 0)
     {
         xmlDocPtr goalStateDoc = xmlParseMemory(goalStateResponse.body.c_str(), goalStateResponse.body.size());
         xmlNodePtr root = xmlDocGetRootElement(goalStateDoc);
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Incarnation[1]/text()", NULL, this->incarnation);
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/ContainerId/text()", NULL, this->containerId);
-
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/InstanceId/text()", NULL, this->roleInstanceId);
-
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/HostingEnvironmentConfig/text()", NULL, this->hostingEnvironmentConfigUrl);
-
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/SharedConfig/text()", NULL, this->sharedConfigUrl);
-
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ExtensionsConfig/text()", NULL, this->extensionsConfigUrl);
-
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/FullConfig/text()", NULL, this->fullConfigUrl);
-
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ConfigName/text()", NULL, this->configName);
-
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/Certificates/text()", NULL, this->certificatesUrl);
-
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         xmlFreeDoc(goalStateDoc);
 
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
         // saving the goal state file 
         string goalStageFileName = this->goalStageFilePrefix + incarnation + ".xml";
         FileOperator::save_file(goalStateResponse.body, goalStageFileName);
 
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         // construct the instances
         HttpResponse hostingEnvironmentConfigText;
         int getHostingEnvironmentConfigResult = HttpRoutine::GetWithDefaultHeader(this->hostingEnvironmentConfigUrl.c_str(), hostingEnvironmentConfigText);
@@ -76,11 +53,9 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         }
         else
         {
-            Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
             Logger::getInstance().Error("failed to get the host environment config");
             //TODO error handling.
         }
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
         HttpResponse sharedConfigText;
         int getSharedConfigResult = HttpRoutine::GetWithDefaultHeader(this->sharedConfigUrl.c_str(), sharedConfigText);
@@ -91,11 +66,9 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         }
         else
         {
-            Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
             Logger::getInstance().Error("failed to get the shared config");
             //TODO error handling.
         }
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
         HttpResponse extentionsConfigText;
         int getExtensionsConfigResult = HttpRoutine::GetWithDefaultHeader(this->extensionsConfigUrl.c_str(), extentionsConfigText);
@@ -106,11 +79,9 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         }
         else
         {
-            Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
             Logger::getInstance().Error("failed to get the extensions config");
             //TODO error handling.
         }
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
         // get the certificates from the server.
         if (this->certificatesUrl.length() > 0)
@@ -148,7 +119,6 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
             }
             else
             {
-                Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
                 Logger::getInstance().Error("get the transport cert pub failed.");
                 // TODO error handling
             }
@@ -157,11 +127,9 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         {
             Logger::getInstance().Warning("certificates url is null.");
         }
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     }
     else
     {
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         Logger::getInstance().Error("failed to get the goal state");
         //TODO Error handling.
     }

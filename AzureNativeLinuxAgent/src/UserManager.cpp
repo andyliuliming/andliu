@@ -32,23 +32,20 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
         CommandResult addUserResult;
         CommandExecuter::RunGetOutput(command, addUserResult);
         //TODO deallocate the c_str();
-        Logger::getInstance().Log("user add result: %s", addUserResult.output->c_str());
+        Logger::getInstance().Warning("user add result: %s", addUserResult.output->c_str());
         AgentConfig::getInstance().LoadConfig();
 
         string changePasswordCmd = string("echo -n ") + passWord + string(" | pw usermod ") + userName + " -h0";
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         CommandResult commandResult;
         CommandExecuter::RunGetOutput(changePasswordCmd, commandResult);
-        Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
         if (commandResult.exitCode == 0)
         {
             Logger::getInstance().Warning("user change password result succeeded :%d, %s", commandResult.exitCode, commandResult.output->c_str());
         }
         else
         {
-            Logger::getInstance().Warning("user change password result failed:%d %s", commandResult.exitCode, commandResult.output->c_str());
+            Logger::getInstance().Error("user change password result failed:%d %s", commandResult.exitCode, commandResult.output->c_str());
         }
-        Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
         return AGENT_SUCCESS;
 #else
         string command = string("useradd -m ") + userName;
@@ -82,22 +79,17 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
             return AGENT_FAILED;
         }
 
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         char * salt = new char[salt_len_val];
         StringUtil::gen_random(salt, salt_len_val);
         string realSalt = crypt_id + salt;
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         //TODO check whether the c_str is deallocated.
         char * passWordToSet = crypt(passWord.c_str(), realSalt.c_str());
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         delete salt;
         salt = NULL;
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
 
         string changePasswordCmd = string("usermod -p '") + passWordToSet + "' " + userName;
         delete passWordToSet;
         passWordToSet = NULL;
-        Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         CommandResult commandResult;
         CommandExecuter::RunGetOutput(changePasswordCmd, commandResult);
         if (commandResult.exitCode == 0)

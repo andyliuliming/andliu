@@ -8,7 +8,6 @@ StatusReporter::StatusReporter()
 
 int StatusReporter::ReportReady(AzureEnvironment &environment, GoalState & goalState, string &incarnationValue)
 {
-    Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
     string healthReport = "<?xml version=\"1.0\" encoding=\"utf-8\"?><Health xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><GoalStateIncarnation>"
         + goalState.incarnation
         + "</GoalStateIncarnation><Container><ContainerId>"
@@ -26,13 +25,11 @@ int StatusReporter::ReportReady(AzureEnvironment &environment, GoalState & goalS
     Logger::getInstance().Error("report ready status result %d", response.status_code);
     incarnationValue = response.headers.find("x-ms-latest-goal-state-incarnation-number")->second;
     StringUtil::trim(incarnationValue);
-    Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
     return postResult;
 }
 
 int StatusReporter::ReportNotReady(AzureEnvironment &environment, GoalState & goalState, string &status, string&desc)
 {
-    Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
     string healthReport = "<?xml version=\"1.0\" encoding=\"utf-8\"?><Health xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><GoalStateIncarnation>"
         + goalState.incarnation
         + "</GoalStateIncarnation><Container><ContainerId>"
@@ -48,14 +45,12 @@ int StatusReporter::ReportNotReady(AzureEnvironment &environment, GoalState & go
     headers["x-ms-version"] = WAAGENT_VERSION;
     string apiAddress = "http://" + environment.wireServerAddress + "/machine?comp=health";
     HttpResponse response;
-    Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
     long postResult = HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str(), response);
     return postResult;
 }
 
 int StatusReporter::ReportRoleProperties(AzureEnvironment & environment, GoalState &goalState, const char * thumbprint)
 {
-    Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
     string healthReport = ("<?xml version=\"1.0\" encoding=\"utf-8\"?><RoleProperties><Container><ContainerId>"
         + goalState.containerId + "</ContainerId>"
         + "<RoleInstances><RoleInstance>"
@@ -68,7 +63,6 @@ int StatusReporter::ReportRoleProperties(AzureEnvironment & environment, GoalSta
     headers["x-ms-version"] = WAAGENT_VERSION;
     string apiAddress = "http://" + environment.wireServerAddress + "/machine?comp=roleProperties";
     HttpResponse response;
-    Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
     long postResult = HttpRoutine::Post(apiAddress.c_str(), &headers, healthReport.c_str(), response);
     return postResult;
 }

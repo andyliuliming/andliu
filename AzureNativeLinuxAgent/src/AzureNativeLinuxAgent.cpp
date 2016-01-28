@@ -77,7 +77,6 @@ int main(void)
 
     while (true)
     {
-        Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
         // a. UpdateGoalState
         // b. process goal state
         if (pass0
@@ -85,7 +84,6 @@ int main(void)
         {
             Logger::getInstance().Error("incarnation in goal state is %s, incarnaitonReturned is %s", goalState.incarnation.c_str(), incarnationReturned.c_str());
             pass0 = false;
-            Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
             Logger::getInstance().Error("start goal state");
             goalState.UpdateGoalState(azureEnvironment);
             Logger::getInstance().Error("end update goal state");
@@ -102,7 +100,6 @@ int main(void)
                 Logger::getInstance().Warning("doing provision.");
                 int provisionResult = provisioner->Prosess();
                 //TODO execute CustomData if it has.
-                Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
                 if (provisionResult == AGENT_SUCCESS)
                 {
                     provisioner->markProvisioned();
@@ -110,19 +107,16 @@ int main(void)
                 }
                 else
                 {
-                    Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
                     Logger::getInstance().Error("provision failed");
                 }
             }
 
-            Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
             string type;
             int result = AgentConfig::getInstance().getConfig("Provisioning_SshHostKeyPairType", type);
             if (result != 0)
             {
                 type = "rsa";
             }
-            Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
             Logger::getInstance().Warning("start process.");
             goalState.Process();
             Logger::getInstance().Warning("end process");
@@ -155,8 +149,7 @@ int main(void)
         SLEEP(3 * 1000);
         if (provisioned)
         {
-            Logger::getInstance().Error("reporting ready");
-            Logger::getInstance().Error("start do report ready");
+            Logger::getInstance().Warning("start do report ready");
             int reportReadyResult = statusReporter->ReportReady(azureEnvironment, goalState, incarnationReturned);
             if (reportReadyResult != 0)
             {
@@ -171,7 +164,7 @@ int main(void)
             int reportNotReadyResult = statusReporter->ReportNotReady(azureEnvironment, goalState, status, desc);
             if (reportNotReadyResult != 0)
             {
-                Logger::getInstance().Error("ReportReady failed with %d", reportNotReadyResult);
+                Logger::getInstance().Error("ReportNotReady failed with %d", reportNotReadyResult);
             }
         }
 
