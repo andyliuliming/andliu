@@ -126,12 +126,13 @@ int ExtensionConfig::SaveHandlerEnvironemnt(string &seqNo, string &extensionPath
     string heartBeatFile = extensionPathOut + "heartbeat.log";
     const char* handleEnvFormat = 
         "[{\"name\":\"%s\",\"seqNo\":\"%s\",\"version\":1.0,\"handlerEnvironment\":{\"logFolder\":\"%s\",\"configFolder\":\"%s\",\"statusFolder\":\"%s\",\"heartbeatFile\":\"%s\"}}]";
+    
+
     int formatLength = strlen(handleEnvFormat);
     int sizeOfHandleEnv = this->name.length() + seqNo.length()
         + logDir.length()
         + configFolder.length() + statusFolder.length()
         + heartBeatFile.length() + formatLength;
-    Logger::getInstance().Error("size of sizeOfHandleEnv IS: %d formatLength is %d", sizeOfHandleEnv, formatLength);
     char* handleEnvText = new char[sizeOfHandleEnv + 1]();
     // there's extra spaces.
     sprintf(handleEnvText, handleEnvFormat,
