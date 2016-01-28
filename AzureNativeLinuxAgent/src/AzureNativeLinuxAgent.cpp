@@ -140,11 +140,10 @@ int main(void)
         }
         else
         {
-            Logger::getInstance().Error("the goal status is null or the incarnationReturned is empty, or the incarnation is same");
+            Logger::getInstance().Error("the incarnationReturned is empty, or the incarnation is same");
         }
 
         // TODO handle the StateConsumer program = Config.get("Role.StateConsumer")
-
         int sleepToReduceAccessDenied = 3;
         SLEEP(3 * 1000);
         if (provisioned)
