@@ -33,13 +33,13 @@ int JsonRoutine::ParseHandlerManifest(string &filePath, HandlerManifest &result)
         result.enableCommand = installCommandStr;
         result.uninstallCommand = uninstallCommandStr;
         result.disableCommand = disableCommandStr;
-        return 0;
+        return AGENT_SUCCESS;
     }
     else
     {
-        return 1;
+        return AGENT_FAILED;
     }
-    return 0;
+    return AGENT_SUCCESS;
 }
 
 JsonRoutine::~JsonRoutine()

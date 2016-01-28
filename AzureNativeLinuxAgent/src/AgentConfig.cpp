@@ -27,11 +27,11 @@ int AgentConfig::getConfig(const char * propertyName,string &value)
     {
         Setting &propertyValue = this->config->lookup(propertyName);
         value = propertyValue.c_str();
-        return 0;
+        return AGENT_SUCCESS;
     }
     catch (SettingNotFoundException e)
     {
         Logger::getInstance().Error("SettingNotFoundException");
-        return 1;
+        return AGENT_FAILED;
     }
 }

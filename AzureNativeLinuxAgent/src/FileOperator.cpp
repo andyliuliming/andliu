@@ -41,7 +41,6 @@ void FileOperator::save_file(const char * content, long size, const char * fileN
     ofstream myfile;
     myfile.open(fileName);
     myfile << content;
-//    myfile.write(content, size);
     myfile.close();
 }
 
@@ -51,11 +50,11 @@ int FileOperator::get_content(const char * fileName, string &content)
     {
         ifstream t(fileName);
         content = string((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
-        return 0;
+        return AGENT_SUCCESS;
     }
     else
     {
-        return 1;
+        return AGENT_FAILED;
     }
 }
 

@@ -60,6 +60,8 @@
 #define WORKING_DIR ("/var/lib/waagent")
 #define EXTENSION_LOG_BASE_DIR ("/var/log/azure/")
 #define STORAGE_VERSION ("2014-02-14")
+#define AGENT_SUCCESS (0)
+#define AGENT_FAILED (1)
 
 typedef unsigned char       BYTE, *PBYTE;
 typedef unsigned char       UINT8, *PUINT8;

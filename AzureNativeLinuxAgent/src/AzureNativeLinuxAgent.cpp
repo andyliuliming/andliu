@@ -29,10 +29,12 @@ int main(void)
     delete pidBuff;
     pidBuff = NULL;
 
+    // load the config at the beginning.
+    AgentConfig::getInstance().LoadConfig();
 
     // 2. do dhcp 
     Logger::getInstance().Log("DoDhcpWork");
-    AzureEnvironment azureEnvironment;// = new AzureEnvironment();
+    AzureEnvironment azureEnvironment;
     int dhcpWorkResult = 1;
 
     while (dhcpWorkResult != 0)
@@ -51,7 +53,7 @@ int main(void)
     if (checkResult != 0)
     {
         Logger::getInstance().Error("check version failed, so exit.");
-        exit(1);
+        exit(AGENT_FAILED);
     }
 
     // 4. Set SCSI timeout on SCSI disks
@@ -68,7 +70,7 @@ int main(void)
     Provisioner *provisioner = new Provisioner();
     bool provisioned = provisioner->isProvisioned();
     string incarnationReturned;
-    bool justStarted = true;
+    bool pass0 = true;
     GoalState goalState;
 
     StatusReporter *statusReporter = new StatusReporter();
@@ -78,11 +80,11 @@ int main(void)
         Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
         // a. UpdateGoalState
         // b. process goal state
-        if (justStarted
+        if (pass0
             || goalState.incarnation.compare(incarnationReturned) != 0)
         {
             Logger::getInstance().Error("incarnation in goal state is %s, incarnaitonReturned is %s", goalState.incarnation.c_str(), incarnationReturned.c_str());
-            justStarted = false;
+            pass0 = false;
             Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
             Logger::getInstance().Error("start goal state");
             goalState.UpdateGoalState(azureEnvironment);
@@ -90,15 +92,18 @@ int main(void)
             if (!provisioned)
             {
                 Logger::getInstance().Warning("report not ready");
-                int reportNotReadyResult = statusReporter->ReportNotReady(azureEnvironment, goalState, "Provisioning", "Starting");
+                string status = "Provisioning";
+                string desc = "Starting";
+                int reportNotReadyResult = statusReporter->ReportNotReady(azureEnvironment, goalState, status, desc);
                 if (reportNotReadyResult != 0)
                 {
                     Logger::getInstance().Error("report not ready failed with %d", reportNotReadyResult);
                 }
                 Logger::getInstance().Warning("doing provision.");
                 int provisionResult = provisioner->Prosess();
+                //TODO execute CustomData if it has.
                 Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
-                if (provisioned == 0)
+                if (provisionResult == AGENT_SUCCESS)
                 {
                     provisioner->markProvisioned();
                     provisioned = true;
@@ -110,7 +115,6 @@ int main(void)
                 }
             }
 
-            AgentConfig::getInstance().LoadConfig();
             Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
             string type;
             int result = AgentConfig::getInstance().getConfig("Provisioning_SshHostKeyPairType", type);
@@ -123,16 +127,19 @@ int main(void)
             goalState.Process();
             Logger::getInstance().Warning("end process");
 
+
+            // Report SSH key finger print
             string host_key_path = string("/etc/ssh/ssh_host_") + type + "_key.pub";
 
             string commandToGetFingerPrint = string("ssh-keygen -lf ") + host_key_path;
             CommandResult fingerPrintResult;
+            //TODO check the result.
             CommandExecuter::RunGetOutput(commandToGetFingerPrint, fingerPrintResult);
             vector<string> splitResult;
             string spliter = " ";
             StringUtil::string_split(*(fingerPrintResult.output), spliter, &splitResult);
             int reportRolePropertiesResult = statusReporter->ReportRoleProperties(azureEnvironment, goalState, splitResult[1].c_str());
-            if (reportRolePropertiesResult != 0)
+            if (reportRolePropertiesResult != AGENT_SUCCESS)
             {
                 Logger::getInstance().Error("report ReportRoleProperties failed with %d", reportRolePropertiesResult);
             }
@@ -141,6 +148,8 @@ int main(void)
         {
             Logger::getInstance().Error("the goal status is null or the incarnationReturned is empty, or the incarnation is same");
         }
+
+        // TODO handle the StateConsumer program = Config.get("Role.StateConsumer")
 
         int sleepToReduceAccessDenied = 3;
         SLEEP(3 * 1000);
@@ -152,6 +161,17 @@ int main(void)
             if (reportReadyResult != 0)
             {
                 Logger::getInstance().Error("ReportReady failed with %d", reportReadyResult);
+            }
+        }
+        else
+        {
+            string status = "ProvisioningFailed";
+            //TODO make the description more clear.
+            string desc = "ProvisioningFailed";
+            int reportNotReadyResult = statusReporter->ReportNotReady(azureEnvironment, goalState, status, desc);
+            if (reportNotReadyResult != 0)
+            {
+                Logger::getInstance().Error("ReportReady failed with %d", reportNotReadyResult);
             }
         }
 

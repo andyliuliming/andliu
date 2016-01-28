@@ -14,7 +14,7 @@ size_t HttpRoutine::writer(const char *data, size_t size, size_t nmemb, string *
 {
     if (writerData == NULL)
     {
-        return 0;
+        return AGENT_SUCCESS;
     }
     writerData->append(data, size*nmemb);
     return size * nmemb;
@@ -24,7 +24,7 @@ size_t HttpRoutine::header_callback(const char *data, size_t size, size_t nitems
 {
     if (writerData == NULL)
     {
-        return 0;
+        return AGENT_SUCCESS;
     }
     if (data != NULL)
     {
@@ -37,7 +37,7 @@ size_t HttpRoutine::writerToFile(const char * data, size_t size, size_t nmemb, F
 {
     if (data == NULL)
     {
-        return 0;
+        return AGENT_SUCCESS;
     }
     else
     {
@@ -51,15 +51,15 @@ size_t HttpRoutine::ReadMemoryCallback(void *ptr, size_t size, size_t nmemb, voi
 {
     struct MemoryStruct *pRead = (struct MemoryStruct *)pMem;
     if ((size * nmemb) < 1)
-        return 0;
+        return AGENT_SUCCESS;
     if (pRead->size)
     {
         *(char *)ptr = pRead->memory[0]; // copy one single byte 
         pRead->memory++; // advance pointer 
         pRead->size--; // less data left */ 
-        return 1;
+        return AGENT_FAILED;
     }
-    return 0; // no more data left to deliver 
+    return AGENT_SUCCESS; // no more data left to deliver 
 }
 
 bool HttpRoutine::init_common(CURL *&conn, const char *url)

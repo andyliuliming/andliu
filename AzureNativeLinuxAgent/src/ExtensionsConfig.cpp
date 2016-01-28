@@ -12,7 +12,7 @@
 int ExtensionsConfig::GenerateAggStatus(ExtensionConfig & extensionConfig, string &aggStatus)
 {
 
-    return 0;
+    return AGENT_SUCCESS;
 }
 
 ExtensionsConfig::ExtensionsConfig()
@@ -161,8 +161,6 @@ void ExtensionsConfig::Process()
         this->extensionConfigs[i]->Process();
     }
     Logger::getInstance().Verbose("end processing extensions.");
-
-    this->ReportExtensionsStatus();
 }
 
 ExtensionsConfig::~ExtensionsConfig()

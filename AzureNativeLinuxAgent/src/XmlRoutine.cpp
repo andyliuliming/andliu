@@ -91,7 +91,7 @@ int XmlRoutine::getNodeText(xmlDocPtr doc, const char * xpathExpr, map<string, s
     if (xpathObj == NULL)
     {
         Logger::getInstance().Error("Error: unable to evaluate xpath expression \"%s\"", xpathExpr);
-        return 1;
+        return AGENT_FAILED;
     }
     else
     {
@@ -99,7 +99,7 @@ int XmlRoutine::getNodeText(xmlDocPtr doc, const char * xpathExpr, map<string, s
         if (xpathObj->nodesetval == NULL)
         {
             Logger::getInstance().Error("Error: node set is null for \"%s\"", xpathExpr);
-            return 1;
+            return AGENT_FAILED;
         }
         if (xpathObj->nodesetval->nodeNr > 0)
         {
@@ -107,12 +107,12 @@ int XmlRoutine::getNodeText(xmlDocPtr doc, const char * xpathExpr, map<string, s
             xmlNodeSetPtr nodes = xpathObj->nodesetval;
             text = ((const char*)nodes->nodeTab[0]->content);
             xmlXPathFreeObject(xpathObj);
-            return 0;
+            return AGENT_SUCCESS;
         }
         else
         {
             Logger::getInstance().Error("node not found for \"%s\"", xpathExpr);
-            return 1;
+            return AGENT_FAILED;
         }
     }
 }

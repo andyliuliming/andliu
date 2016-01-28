@@ -40,7 +40,7 @@ int ExtensionConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, const c
     }
     xmlXPathFreeObject(xpathManifestObj);
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-    return 0;
+    return AGENT_SUCCESS;
 }
 
 int ExtensionConfig::PrepareExtensionPackage(string &incarnationStr)
@@ -78,12 +78,12 @@ int ExtensionConfig::PrepareExtensionPackage(string &incarnationStr)
         Logger::getInstance().Error("failed to get the extensions manifest");
     }
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-    return 0;
+    return AGENT_SUCCESS;
 }
 int ExtensionConfig::get_extension_path(string& pluginName, string& pluginVersion, string&extensionPath)
 {
     extensionPath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + pluginName + "_" + pluginVersion + "/";
-    return 0;
+    return AGENT_SUCCESS;
 }
 
 void ExtensionConfig::SavePluginSettings(string &seqNo, string &settings)
@@ -102,19 +102,19 @@ void ExtensionConfig::SavePluginSettings(string &seqNo, string &settings)
 int ExtensionConfig::Uninstall()
 {
     //TODO implement this.
-    return 1;
+    return AGENT_FAILED;
 }
 
 int ExtensionConfig::Disable()
 {
     //TODO implement this.
-    return 1;
+    return AGENT_FAILED;
 }
 
 int ExtensionConfig::Update(string &previous_version)
 {
     //TODO implement this.
-    return 1;
+    return AGENT_FAILED;
 }
 
 int ExtensionConfig::SaveHandlerEnvironemnt(string &seqNo, string &extensionPathOut)
@@ -156,7 +156,7 @@ int ExtensionConfig::SaveHandlerEnvironemnt(string &seqNo, string &extensionPath
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     //TODO make sure the handleEnvFormat is deallocated.
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-    return 0;
+    return AGENT_SUCCESS;
 }
 
 int ExtensionConfig::Process()
@@ -182,7 +182,7 @@ int ExtensionConfig::Process()
         //TODO error handling.
     }
     Logger::getInstance().Verbose("end handling extension");
-    return 0;
+    return AGENT_SUCCESS;
 }
 
 

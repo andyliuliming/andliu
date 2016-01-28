@@ -47,7 +47,7 @@ int Provisioner::Prosess()
     if (romDevicePath == NULL)
     {
         Logger::getInstance().Warning("couldnot find the rom device.");
-        return 1;
+        return AGENT_FAILED;
     }
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
     FileOperator::make_dir(SECURE_MOUNT_POINT);
@@ -88,27 +88,27 @@ int Provisioner::Prosess()
             if (ovfResult == 0)
             {
                 Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-                return 0;
+                return AGENT_SUCCESS;
             }
             else
             {
                 Logger::getInstance().Error("the ovf process failed.");
-                return 1;
+                return AGENT_FAILED;
             }
         }
         else
         {
             //TODO error handling.
             Logger::getInstance().Error("get OvfFile Content failed.");
-            return 1;
+            return AGENT_FAILED;
         }
-        return 0;
+        return AGENT_SUCCESS;
     }
     else
     {
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
         Logger::getInstance().Error("mount result: %s", mountResult.output->c_str());
-        return 1;
+        return AGENT_FAILED;
     }
     // 2. This is done here because regenerated SSH host key pairs may be potentially overwritten when processing the ovfxml
 

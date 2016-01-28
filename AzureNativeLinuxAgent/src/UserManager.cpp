@@ -23,7 +23,7 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
     if (existed != NULL)
     {
         Logger::getInstance().Error("user existed already");
-        return 1;
+        return AGENT_FAILED;
     }
     else
     {
@@ -49,7 +49,7 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
             Logger::getInstance().Warning("user change password result failed:%d %s", commandResult.exitCode, commandResult.output->c_str());
         }
         Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
-        return 0;
+        return AGENT_SUCCESS;
 #else
         string command = string("useradd -m ") + userName;
         CommandResult addUserResult;
@@ -79,7 +79,7 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
         if (salt_len_val == 0)
         {
             Logger::getInstance().Warning("salt_len_val is zero");
-            return 1;
+            return AGENT_FAILED;
         }
 
         Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
@@ -108,7 +108,7 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
         {
             Logger::getInstance().Warning("user add result:%d %s", commandResult.exitCode, commandResult.output->c_str());
         }
-        return 0;
+        return AGENT_SUCCESS;
 #endif
     }
 }

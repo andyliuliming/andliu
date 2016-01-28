@@ -71,7 +71,7 @@ int AzureEnvironment::DoDhcpWork()
     if (sck < 0)
     {
         Logger::getInstance().Error("sck < 0 ");
-        return 1;
+        return AGENT_FAILED;
     }
     else
     {
@@ -84,7 +84,7 @@ int AzureEnvironment::DoDhcpWork()
 
         if (bind(sw.get()->s_, (struct sockaddr *)&addr, sizeof(addr)) < 0)
         {
-            return 1;
+            return AGENT_FAILED;
         }
         else
         {
@@ -97,7 +97,7 @@ int AzureEnvironment::DoDhcpWork()
             if (sendResult < 0)
             {
                 Logger::getInstance().Error("send failed\n");
-                return 1;
+                return AGENT_FAILED;
             }
             else
             {
@@ -113,7 +113,7 @@ int AzureEnvironment::DoDhcpWork()
                 if (recvResult < 0)
                 {
                     Logger::getInstance().Verbose("recv failed.");
-                    return 1;
+                    return AGENT_FAILED;
                 }
                 else
                 {
@@ -147,12 +147,12 @@ int AzureEnvironment::DoDhcpWork()
             }
         }
     }
-    return 0;
+    return AGENT_SUCCESS;
 }
 
 int AzureEnvironment::CheckVersion()
 {
-    return 0;
+    return AGENT_SUCCESS;
 }
 
 

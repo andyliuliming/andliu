@@ -30,7 +30,7 @@ int StatusReporter::ReportReady(AzureEnvironment &environment, GoalState & goalS
     return postResult;
 }
 
-int StatusReporter::ReportNotReady(AzureEnvironment &environment, GoalState & goalState, const char*status, const char*desc)
+int StatusReporter::ReportNotReady(AzureEnvironment &environment, GoalState & goalState, string &status, string&desc)
 {
     Logger::getInstance().Error("File[%s] Line[%d]", __FILE__, __LINE__);
     string healthReport = "<?xml version=\"1.0\" encoding=\"utf-8\"?><Health xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><GoalStateIncarnation>"

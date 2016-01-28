@@ -41,7 +41,7 @@ int ZipRoutine::UnZipToDirectory(const string& archive, const string& zipExtract
     {
         zip_error_to_str(buf, sizeof(buf), err, errno);
         Logger::getInstance().Error("can't open zip archive: %s", buf);
-        return 1;
+        return AGENT_FAILED;
     }
 
     int entries_num = zip_get_num_entries(za, 0);
@@ -111,10 +111,10 @@ int ZipRoutine::UnZipToDirectory(const string& archive, const string& zipExtract
     if (zip_close(za) == -1)
     {
         Logger::getInstance().Error("can't close zip archive: %s",archive.c_str());
-        return 1;
+        return AGENT_FAILED;
     }
     Logger::getInstance().Verbose("File[%s] Line[%d]", __FILE__, __LINE__);
-    return 0;
+    return AGENT_SUCCESS;
 }
 
 
