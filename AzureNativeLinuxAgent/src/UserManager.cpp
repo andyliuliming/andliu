@@ -49,7 +49,7 @@ int UserManager::CreateUser(const string& userName, const string& passWord)
                 string sudoersFileContent;
                 string sudoersFilePath = modernSusoerDir + "sudoers";
                 FileOperator::get_content(sudoersFilePath.c_str(), sudoersFileContent);
-                sudoersFileContent + = sudoersFileContent + "\n#includedir " + bsdSudoerDirBase + "sudoers.d\n";
+                sudoersFileContent += sudoersFileContent + "\n#includedir " + bsdSudoerDirBase + "sudoers.d\n";
             }
             if (usePassword)
             {
