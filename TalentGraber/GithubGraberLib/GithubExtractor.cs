@@ -60,6 +60,7 @@ namespace GithubGraberLib
                         }
                     }
                     page_index++;
+                    break;
                 }
             }
 
@@ -71,6 +72,7 @@ namespace GithubGraberLib
                 string urlParameters = string.Format(ApiFormats.UserApi, userLoginEnu.Current);
                 User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
                 users.Add(user);
+                break;
             } while (userLoginEnu.MoveNext());
             // 4. extract the User
 
