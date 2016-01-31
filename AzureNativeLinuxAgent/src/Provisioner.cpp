@@ -19,8 +19,6 @@ bool Provisioner::isProvisioned()
 
 int Provisioner::Prosess()
 {
-    
-
     //1. provision re-generate key
     AgentConfig::getInstance().LoadConfig();
 
@@ -46,7 +44,7 @@ int Provisioner::Prosess()
     string *romDevicePath = DeviceRoutine::findRomDevice();
     if (romDevicePath == NULL)
     {
-        Logger::getInstance().Warning("couldnot find the rom device.");
+        Logger::getInstance().Warning("could not find the rom device.");
         return AGENT_FAILED;
     }
     
@@ -65,7 +63,6 @@ int Provisioner::Prosess()
     if (mountResult.exitCode == 0)
     {
         Logger::getInstance().Warning("the cd is mounted");
-        
 
         string ovfEnvFullPath = OVF_ENV_FILE_FULL_PATH;
         string ovfFileContent;
@@ -81,13 +78,11 @@ int Provisioner::Prosess()
         }
         if (getOvfFileContentResult == 0)
         {
-            
             OvfEnv *ovfEnv = new OvfEnv();
             ovfEnv->Parse(ovfFileContent);
             int ovfResult = ovfEnv->Process();
             if (ovfResult == 0)
             {
-                
                 return AGENT_SUCCESS;
             }
             else
