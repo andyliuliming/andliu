@@ -54,7 +54,10 @@ namespace GithubGraberLib
                 {
                     for(int i = 0; i < pagedDetails.Count; i++)
                     {
-                        user_logins.Add(pagedDetails[i].author.login);
+                        if (pagedDetails[i].author != null)
+                        {
+                            user_logins.Add(pagedDetails[i].author.login);
+                        }
                     }
                     page_index++;
                 }
@@ -62,11 +65,13 @@ namespace GithubGraberLib
 
             RestApiCaller<User> userInfoCaller = new RestApiCaller<User>(ApiFormats.BaseUri);
             // 3. extract the commit info ("login") 
-            for (int i = 0; i < user_logins.Count; i++)
+            var userLoginEnu = user_logins.GetEnumerator();
+            do
             {
-
-            }
-
+                string urlParameters = string.Format(ApiFormats.UserApi, userLoginEnu.Current);
+                User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
+                users.Add(user);
+            } while (userLoginEnu.MoveNext());
             // 4. extract the User
 
             return users;

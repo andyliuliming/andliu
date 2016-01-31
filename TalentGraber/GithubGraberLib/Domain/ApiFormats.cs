@@ -10,7 +10,7 @@ namespace GithubGraberLib
     {
         public const string BaseUri = "https://api.github.com";
         // {0} is the "login" of the User
-        public const string UserApi = "https://api.github.com/users/{0}";
+        public const string UserApi = "/users/{0}";
         // {0} is owner {1} is repository {2} is branch
         public const string CommitRelativePathPattern = "/repos/{0}/{1}/commits";
 
