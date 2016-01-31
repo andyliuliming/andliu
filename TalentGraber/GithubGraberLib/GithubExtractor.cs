@@ -30,6 +30,7 @@ namespace GithubGraberLib
         {
             GithubFeed githubFee = this.Parse(url);
 
+            HashSet<string> user_logins = new HashSet<string>();
             List<User> users = new List<User>();
             // 1. first get the branches https://api.github.com/repos/torvalds/linux
 
@@ -51,11 +52,20 @@ namespace GithubGraberLib
                 }
                 else
                 {
+                    for(int i = 0; i < pagedDetails.Count; i++)
+                    {
+                        user_logins.Add(pagedDetails[i].author.login);
+                    }
                     page_index++;
                 }
             }
-            // 3. extract the commit info ("login") 
 
+            RestApiCaller<User> userInfoCaller = new RestApiCaller<User>(ApiFormats.BaseUri);
+            // 3. extract the commit info ("login") 
+            for (int i = 0; i < user_logins.Count; i++)
+            {
+
+            }
 
             // 4. extract the User
 
