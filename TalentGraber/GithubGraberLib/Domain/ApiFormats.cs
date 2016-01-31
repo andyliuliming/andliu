@@ -8,10 +8,11 @@ namespace GithubGraberLib
 {
     public class ApiFormats
     {
-        public const string BaseUri = "https://api.github.com/";
+        public const string BaseUri = "https://api.github.com";
         // {0} is the "login" of the User
         public const string UserApi = "https://api.github.com/users/{0}";
         // {0} is owner {1} is repository {2} is branch
-        public const string CommitApi = "https://api.github.com/repos/{0}/{1}/commits?sha={2}";
+        public const string CommitRelativePathPattern = "/repos/{0}/{1}/commits";
+
     }
 }

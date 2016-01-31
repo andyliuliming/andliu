@@ -8,8 +8,10 @@ namespace GithubGraberLib.Domain
 {
     public class RepositoryInfo
     {
-        public string owner;
-        public string repository;
-        public string branch;
+        public long id { get; set; }
+        public string repository { get; set; }
+        public string branch { get; set; }
+        public Author owner { get; set; }
+        public string language { get; set; }
     }
 }

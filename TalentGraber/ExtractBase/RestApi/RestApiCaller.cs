@@ -22,18 +22,19 @@ namespace ExtractBase.RestApi
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(this.baseUrl);
 
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                client.DefaultRequestHeaders.Add(AuthorizeUtil.TokenHeaderName, "Basic " + accessToken);
+            }
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36");
+
             // Add an Accept header for JSON format.
-            client.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage response = null;
             T result = null;
             switch (method.ToLower())
             {
                 case "get":
-                    if (!string.IsNullOrEmpty(accessToken))
-                    {
-                        client.DefaultRequestHeaders.Add(AuthorizeUtil.TokenHeaderName, accessToken);
-                    }
                     response = client.GetAsync(urlParameters).Result;
                     result = response.Content.ReadAsAsync<T>().Result;
                     return result;
