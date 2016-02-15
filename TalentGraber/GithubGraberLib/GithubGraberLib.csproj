@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\ApiFormats.cs" />
+    <Compile Include="Domain\Budget.cs" />
     <Compile Include="Domain\CommitInfo.cs" />
     <Compile Include="Domain\GithubAccount.cs" />
     <Compile Include="Domain\GithubFeed.cs" />

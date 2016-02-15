@@ -26,7 +26,7 @@ namespace GithubGraberLib
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public List<User> Extract(string url, string userName, string passWord)
+        public List<User> Extract(string url, Budget budget)
         {
             GithubFeed githubFee = this.Parse(url);
 
@@ -38,7 +38,7 @@ namespace GithubGraberLib
             RestApiCaller<List<CommitDetail>> commitInfoCaller = new RestApiCaller<List<CommitDetail>>(ApiFormats.BaseUri);
 
             string repoBaseUri = string.Format(ApiFormats.CommitRelativePathPattern, githubFee.owner, githubFee.repo);
-            string accessToken = AuthorizeUtil.GetToken(userName, passWord);
+            string accessToken = AuthorizeUtil.GetToken(budget.Account.UserName, budget.Account.Password);
 
             long per_page = 100;
             long page_index = 0;
