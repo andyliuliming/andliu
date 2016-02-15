@@ -1,4 +1,5 @@
 ﻿using GithubGraberLib;
+using GithubGraberLib.Domain;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +13,8 @@ namespace TalentGraber
     {
         static void Main(string[] args)
         {
+            List<GithubAccount> githubAccounts = GithubAccountsLoader.Load();
+
             string githubAddress = args[0];
             string userName = args[1];
             string passWord = args[2];
