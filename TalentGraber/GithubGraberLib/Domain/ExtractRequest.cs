@@ -9,6 +9,7 @@ namespace GithubGraberLib.Domain
     public class ExtractRequest
     {
         public GithubAccount Account { get; set; }
+        public string AccessToken { get; set; }
         public string URL { get; set; }
         public int StartPage { get; set; }
         public int PerPage { get; set; }

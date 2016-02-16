@@ -30,13 +30,11 @@ namespace GithubGraberLib
             RestApiCaller<List<CommitDetail>> commitInfoCaller = new RestApiCaller<List<CommitDetail>>(ApiFormats.BaseUri);
 
             string repoBaseUri = string.Format(ApiFormats.CommitRelativePathPattern, githubFee.owner, githubFee.repo);
-            string accessToken = AuthorizeUtil.GetToken(extractRequest.Account.UserName, extractRequest.Account.Password);
-
             while (extractRequest.Left > 0)
             {
                 Console.WriteLine("getting the page: " + extractRequest.StartPage);
                 string urlParameters = repoBaseUri + "?page=" + extractRequest.StartPage + "&per_page=" + extractRequest.PerPage;
-                List<CommitDetail> pagedDetails = commitInfoCaller.CallApi("get", accessToken, urlParameters, null);
+                List<CommitDetail> pagedDetails = commitInfoCaller.CallApi("get", extractRequest.AccessToken, urlParameters, null);
                 extractRequest.Left--;
                 if (pagedDetails == null || pagedDetails.Count == 0)
                 {
@@ -67,8 +65,6 @@ namespace GithubGraberLib
         {
             GithubFeed githubFee = this.Parse(extractRequest.URL);
             List<User> users = new List<User>();
-            string accessToken = AuthorizeUtil.GetToken(extractRequest.Account.UserName, extractRequest.Account.Password);
-
             RestApiCaller<User> userInfoCaller = new RestApiCaller<User>(ApiFormats.BaseUri);
             // 3. extract the commit info ("login") 
 
@@ -80,7 +76,7 @@ namespace GithubGraberLib
             {
                 Console.WriteLine("getting the user's info: " + user_logins[extractRequest.StartIndex + i]);
                 string urlParameters = string.Format(ApiFormats.UserApi, user_logins[extractRequest.StartIndex + i]);
-                User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
+                User user = userInfoCaller.CallApi("get", extractRequest.AccessToken, urlParameters, null);
                 extractRequest.Left--;
                 users.Add(user);
             }

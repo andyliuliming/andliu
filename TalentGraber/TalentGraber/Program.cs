@@ -23,6 +23,10 @@ namespace TalentGraber
             extractRequest.StartPage = 0;
             extractRequest.PerPage = 100;
 
+
+            string accessToken = AuthorizeUtil.GetToken(extractRequest.Account.UserName, extractRequest.Account.Password);
+            extractRequest.AccessToken = accessToken;
+
             int accountIndex = 0;
             HashSet<string> userLogins = new HashSet<string>();
             for (; accountIndex < githubAccounts.Count;)
