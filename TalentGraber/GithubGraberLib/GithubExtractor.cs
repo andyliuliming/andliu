@@ -25,6 +25,7 @@ namespace GithubGraberLib
             GithubFeed githubFee = this.Parse(extractRequest.URL);
             HashSet<string> user_logins = new HashSet<string>();
             // 1. first get the branches https://api.github.com/repos/torvalds/linux
+            //                              https://api.github.com/repos/apache/hadoop
 
             // 2. get the commits from the branches. https://api.github.com/repos/torvalds/linux/commits?page=3&per_page=100
             RestApiCaller<List<CommitDetail>> commitInfoCaller = new RestApiCaller<List<CommitDetail>>(ApiFormats.BaseUri);

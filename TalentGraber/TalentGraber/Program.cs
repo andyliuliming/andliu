@@ -23,8 +23,6 @@ namespace TalentGraber
             extractRequest.StartPage = 0;
             extractRequest.PerPage = 100;
 
-
-
             int accountIndex = 0;
             HashSet<string> userLogins = new HashSet<string>();
             for (; accountIndex < githubAccounts.Count;)
