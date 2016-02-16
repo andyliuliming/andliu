@@ -90,7 +90,7 @@ namespace TalentGraber
                     foreach (User user in users)
                     {
                         StringBuilder sb = new StringBuilder();
-                        sb.Append(user.name).Append(","); //没一个字段后面都加逗号，表示是一列，因为这是第一行    因此也是列标题
+                        sb.Append(user.name).Append(",");
                         sb.Append(user.followers).Append(",");
                         sb.Append(user.email).Append(",");
                         sb.Append(user.company).Append(",");

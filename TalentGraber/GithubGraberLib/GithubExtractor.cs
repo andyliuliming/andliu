@@ -20,7 +20,7 @@ namespace GithubGraberLib
             return githubFeed;
         }
 
-        public HashSet<string>  ExtractUserLogin(ExtractRequest extractRequest)
+        public HashSet<string> ExtractUserLogin(ExtractRequest extractRequest)
         {
             GithubFeed githubFee = this.Parse(extractRequest.URL);
             HashSet<string> user_logins = new HashSet<string>();
@@ -34,6 +34,7 @@ namespace GithubGraberLib
 
             while (extractRequest.Left > 0)
             {
+                Console.WriteLine("getting the page: " + extractRequest.StartPage);
                 string urlParameters = repoBaseUri + "?page=" + extractRequest.StartPage + "&per_page=" + extractRequest.PerPage;
                 List<CommitDetail> pagedDetails = commitInfoCaller.CallApi("get", accessToken, urlParameters, null);
                 extractRequest.Left--;
@@ -77,12 +78,14 @@ namespace GithubGraberLib
 
             for (int i = 0; i < numberToRetrieve; i++)
             {
+                Console.WriteLine("getting the user's info: " + user_logins[extractRequest.StartIndex + i]);
                 string urlParameters = string.Format(ApiFormats.UserApi, user_logins[extractRequest.StartIndex + i]);
                 User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
+                extractRequest.Left--;
                 users.Add(user);
             }
 
-            extractRequest.StartIndex+= numberToRetrieve;
+            extractRequest.StartIndex += numberToRetrieve;
 
             return users;
         }
