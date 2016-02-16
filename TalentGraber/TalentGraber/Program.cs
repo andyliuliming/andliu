@@ -31,7 +31,7 @@ namespace TalentGraber
 
                 string accessToken = AuthorizeUtil.GetToken(extractRequest.Account.UserName, extractRequest.Account.Password);
                 extractRequest.AccessToken = accessToken;
-                extractRequest.Left = 4500;
+                extractRequest.Left = 5000;
                 HashSet<string> user_logins = githubExtractor.ExtractUserLogin(extractRequest);
                 if (user_logins.Count == 0)
                 {
@@ -86,7 +86,7 @@ namespace TalentGraber
 
                 string accessToken = AuthorizeUtil.GetToken(extractRequest.Account.UserName, extractRequest.Account.Password);
                 extractRequest.AccessToken = accessToken;
-                extractRequest.Left = 4500;
+                extractRequest.Left = 5000;
                 List<User> users = githubExtractor.Extract(extractRequest, userLoginList);
 
                 // calculate the initial page of next.
