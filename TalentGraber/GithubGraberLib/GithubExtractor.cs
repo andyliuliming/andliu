@@ -20,61 +20,69 @@ namespace GithubGraberLib
             return githubFeed;
         }
 
-        // pagenation is ?page=2&per_page=100
-        /// <summary>
-        /// the url is like this: https://github.com/andyliuliming/WALinuxAgent.git
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        public List<User> Extract(string url, Budget budget)
+        public HashSet<string>  ExtractUserLogin(ExtractRequest extractRequest)
         {
-            GithubFeed githubFee = this.Parse(url);
-
+            GithubFeed githubFee = this.Parse(extractRequest.URL);
             HashSet<string> user_logins = new HashSet<string>();
-            List<User> users = new List<User>();
             // 1. first get the branches https://api.github.com/repos/torvalds/linux
 
             // 2. get the commits from the branches. https://api.github.com/repos/torvalds/linux/commits?page=3&per_page=100
             RestApiCaller<List<CommitDetail>> commitInfoCaller = new RestApiCaller<List<CommitDetail>>(ApiFormats.BaseUri);
 
             string repoBaseUri = string.Format(ApiFormats.CommitRelativePathPattern, githubFee.owner, githubFee.repo);
-            string accessToken = AuthorizeUtil.GetToken(budget.Account.UserName, budget.Account.Password);
+            string accessToken = AuthorizeUtil.GetToken(extractRequest.Account.UserName, extractRequest.Account.Password);
 
-            long per_page = 100;
-            long page_index = 0;
-            while (true)
+            while (extractRequest.Left > 0)
             {
-                string urlParameters = repoBaseUri + "?page=" + page_index + "&per_page=" + per_page;
+                string urlParameters = repoBaseUri + "?page=" + extractRequest.StartPage + "&per_page=" + extractRequest.PerPage;
                 List<CommitDetail> pagedDetails = commitInfoCaller.CallApi("get", accessToken, urlParameters, null);
+                extractRequest.Left--;
                 if (pagedDetails == null || pagedDetails.Count == 0)
                 {
                     break;
                 }
                 else
                 {
-                    for(int i = 0; i < pagedDetails.Count; i++)
+                    for (int i = 0; i < pagedDetails.Count; i++)
                     {
                         if (pagedDetails[i].author != null)
                         {
                             user_logins.Add(pagedDetails[i].author.login);
                         }
                     }
-                    page_index++;
-                    break;
+                    extractRequest.StartPage++;
                 }
             }
+            return user_logins;
+        }
+
+        // pagenation is ?page=2&per_page=100
+        /// <summary>
+        /// the url is like this: https://github.com/andyliuliming/WALinuxAgent.git
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public List<User> Extract(ExtractRequest extractRequest, List<string> user_logins)
+        {
+            GithubFeed githubFee = this.Parse(extractRequest.URL);
+            List<User> users = new List<User>();
+            string accessToken = AuthorizeUtil.GetToken(extractRequest.Account.UserName, extractRequest.Account.Password);
 
             RestApiCaller<User> userInfoCaller = new RestApiCaller<User>(ApiFormats.BaseUri);
             // 3. extract the commit info ("login") 
-            var userLoginEnu = user_logins.GetEnumerator();
-            do
+
+            int leftUserLength = user_logins.Count - extractRequest.StartIndex;
+
+            int numberToRetrieve = leftUserLength > extractRequest.Left ? extractRequest.Left : leftUserLength;
+
+            for (int i = 0; i < numberToRetrieve; i++)
             {
-                string urlParameters = string.Format(ApiFormats.UserApi, userLoginEnu.Current);
+                string urlParameters = string.Format(ApiFormats.UserApi, user_logins[extractRequest.StartIndex + i]);
                 User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
                 users.Add(user);
-                break;
-            } while (userLoginEnu.MoveNext());
-            // 4. extract the User
+            }
+
+            extractRequest.StartIndex+= numberToRetrieve;
 
             return users;
         }
