@@ -20,6 +20,26 @@ namespace GithubGraberLib
             return githubFeed;
         }
 
+        public void Retry(Action action, Action final)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                try
+                {
+                    action();
+                    break;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
+                finally
+                {
+                    final();
+                }
+            }
+        }
+
         public HashSet<string> ExtractUserLogin(ExtractRequest extractRequest)
         {
             GithubFeed githubFee = this.Parse(extractRequest.URL);
@@ -35,8 +55,17 @@ namespace GithubGraberLib
             {
                 Console.WriteLine("getting the page: " + extractRequest.StartPage);
                 string urlParameters = repoBaseUri + "?page=" + extractRequest.StartPage + "&per_page=" + extractRequest.PerPage;
-                List<CommitDetail> pagedDetails = commitInfoCaller.CallApi("get", extractRequest.AccessToken, urlParameters, null);
-                extractRequest.Left--;
+                List<CommitDetail> pagedDetails = null;
+                Retry(
+                () =>
+                {
+                    pagedDetails = commitInfoCaller.CallApi("get", extractRequest.AccessToken, urlParameters, null);
+                },
+                () =>
+                {
+                    extractRequest.Left--;
+                }
+                );
                 if (pagedDetails == null || pagedDetails.Count == 0)
                 {
                     break;
@@ -77,8 +106,17 @@ namespace GithubGraberLib
             {
                 Console.WriteLine("getting the user's info: " + user_logins[extractRequest.StartIndex + i]);
                 string urlParameters = string.Format(ApiFormats.UserApi, user_logins[extractRequest.StartIndex + i]);
-                User user = userInfoCaller.CallApi("get", extractRequest.AccessToken, urlParameters, null);
-                extractRequest.Left--;
+                User user = null;
+                Retry(
+                () =>
+                {
+                    user = userInfoCaller.CallApi("get", extractRequest.AccessToken, urlParameters, null);
+                },
+                () =>
+                {
+                    extractRequest.Left--;
+                }
+                );
                 users.Add(user);
             }
 
