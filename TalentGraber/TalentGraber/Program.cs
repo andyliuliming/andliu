@@ -24,15 +24,16 @@ namespace TalentGraber
             extractRequest.PerPage = 100;
 
 
-            string accessToken = AuthorizeUtil.GetToken(extractRequest.Account.UserName, extractRequest.Account.Password);
-            extractRequest.AccessToken = accessToken;
 
             int accountIndex = 0;
             HashSet<string> userLogins = new HashSet<string>();
             for (; accountIndex < githubAccounts.Count;)
             {
                 extractRequest.Account = githubAccounts[accountIndex];
-                extractRequest.Left = 5000;
+
+                string accessToken = AuthorizeUtil.GetToken(extractRequest.Account.UserName, extractRequest.Account.Password);
+                extractRequest.AccessToken = accessToken;
+                extractRequest.Left = 4000;
                 HashSet<string> user_logins = githubExtractor.ExtractUserLogin(extractRequest);
                 if (user_logins.Count == 0)
                 {
@@ -84,6 +85,9 @@ namespace TalentGraber
             for (; accountIndex < githubAccounts.Count; accountIndex++)
             {
                 extractRequest.Account = githubAccounts[accountIndex];
+
+                string accessToken = AuthorizeUtil.GetToken(extractRequest.Account.UserName, extractRequest.Account.Password);
+                extractRequest.AccessToken = accessToken;
                 extractRequest.Left = 5000;
                 List<User> users = githubExtractor.Extract(extractRequest, userLoginList);
 
