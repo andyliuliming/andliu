@@ -28,6 +28,12 @@ int FileOperator::make_dir(const char* dir_path)
     return dir_err;
 }
 
+int FileOperator::prepare_dir(const char * file_path)
+{
+    //TODO implement this.
+    return 0;
+}
+
 void FileOperator::save_file(const string & content, const string & fileName)
 {
     ofstream myfile;
@@ -56,6 +62,12 @@ int FileOperator::get_content(const char * fileName, string &content)
     {
         return AGENT_FAILED;
     }
+}
+
+int FileOperator::append_content(const char * filePath, string & content)
+{
+    //TODO implement this.
+    return 0;
 }
 
 

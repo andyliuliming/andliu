@@ -6,6 +6,8 @@
 #include "StringUtil.h"
 #include "UserManager.h"
 #include "XmlRoutine.h"
+#include <algorithm>
+#include <map>
 using namespace std;
 
 OvfEnv::OvfEnv()
@@ -46,10 +48,22 @@ int OvfEnv::Parse(string &sharedConfigText)
     XmlRoutine::getNodeText(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:HostName/text()", &namespaces, this->hostName);
     XmlRoutine::getNodeText(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:UserName/text()", &namespaces, this->userName);
     XmlRoutine::getNodeText(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:UserPassword/text()", &namespaces, this->passWord);
-    XmlRoutine::getNodeText(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:DisableSshPasswordAuthentication/text()", &namespaces, this->disableSshPasswordAuthentication);
+    string disableSshPasswordAuthenticationStr;
+    XmlRoutine::getNodeText(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:DisableSshPasswordAuthentication/text()", &namespaces, disableSshPasswordAuthenticationStr);
+
+    std::transform(disableSshPasswordAuthenticationStr.begin(), disableSshPasswordAuthenticationStr.end(), disableSshPasswordAuthenticationStr.begin(), ::tolower);
+    if (disableSshPasswordAuthenticationStr.compare("yes"))
+    {
+        this->disableSshPasswordAuthentication = true;
+    }
+    else
+    {
+        this->disableSshPasswordAuthentication = false;
+    }
+
     XmlRoutine::getNodeText(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:CustomData/text()", &namespaces, this->customData);
 
-    xmlXPathObjectPtr publicKeys = 
+    xmlXPathObjectPtr publicKeys =
         XmlRoutine::getNodes(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:SSH/wa:PublicKeys", &namespaces);
     if (publicKeys != NULL)
     {
@@ -81,7 +95,7 @@ int OvfEnv::Parse(string &sharedConfigText)
                 xmlXPathObjectPtr pathObject = XmlRoutine::findNodeByRelativeXpath(doc, keyPair, "./Path/text()");
                 string fingerPrint = (char *)fingerPrintObject->nodesetval->nodeTab[0]->content;
                 string path = (char*)pathObject->nodesetval->nodeTab[0]->content;
-                this->SshPublicKeys[fingerPrint] = path;
+                this->SshKeyPairs[fingerPrint] = path;
             }
         }
     }
@@ -94,7 +108,39 @@ int OvfEnv::Parse(string &sharedConfigText)
 int OvfEnv::Process()
 {
     AbstractDistro::getInstance().setHostName(this->hostName);
-    int createUserResult = UserManager::CreateUser(this->userName,this->passWord);
+    if (this->disableSshPasswordAuthentication)
+    {
+        AbstractDistro::getInstance().disableSshPasswordAuthentication();
+    }
+    //TODO handle if the passWord is empty.
+    int createUserResult = UserManager::CreateUser(this->userName, this->passWord);
+
+    string home = AbstractDistro::getInstance().getHome();
+
+    for (map<string, string>::iterator it = this->SshPublicKeys.begin(); it != this->SshPublicKeys.end(); ++it)
+    {
+        string keyFilePath = it->first + ".crt";
+        if (FileOperator::file_exists(keyFilePath.c_str()))
+        {
+            FileOperator::prepare_dir(it->second.c_str());
+            CommandResult commandResult;
+            string exportPubKey = "openssl x509 -in " + it->first + ".crt -noout -pubkey >" + it->first + ".pub";
+            CommandExecuter::RunGetOutput(exportPubKey.c_str(), commandResult);
+        }
+    }
+    for (map<string, string>::iterator it = this->SshKeyPairs.begin(); it != this->SshKeyPairs.end(); ++it)
+    {
+        string keyFilePath = it->first + ".prv";
+        if (FileOperator::file_exists(keyFilePath.c_str()))
+        {
+            FileOperator::prepare_dir(it->second.c_str());
+            CommandResult commandResult;
+            //TODO normalize the path.
+            string exportPubKey = "ssh-keygen -y -f " + it->first + ".prv > " + it->second + ".pub";
+            CommandExecuter::RunGetOutput(exportPubKey.c_str(), commandResult);
+        }
+    }
+    AbstractDistro::getInstance().restartSshService();
     return createUserResult;
 }
 

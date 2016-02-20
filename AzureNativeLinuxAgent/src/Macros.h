@@ -63,6 +63,7 @@
 #define BSD_SUDOERS_DIR_BASE ("/usr/local/etc/")
 #define AGENT_SUCCESS (0)
 #define AGENT_FAILED (1)
+#define PROCESS_EXIT_SUCCESS (0)
 #define ELEMENT_NOT_FOUNT (404)
 #define OVF_VERSION_NOT_MATCH (2)
 

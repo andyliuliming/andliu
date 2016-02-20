@@ -9,10 +9,11 @@ private:
     string hostName;
     string userName;
     string passWord;
-    string disableSshPasswordAuthentication;
+    bool disableSshPasswordAuthentication;
     string customData;
     string fingerPrint;
     map<string, string> SshPublicKeys;
+    map<string, string> SshKeyPairs;
     int majorVersion = 1;
     int minorVersion = 0;
 public:
