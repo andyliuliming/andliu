@@ -1,7 +1,8 @@
-#include "OvfEnv.h"
+#include "AbstractDistro.h"
 #include "FileOperator.h"
 #include "Logger.h"
 #include "Macros.h"
+#include "OvfEnv.h"
 #include "StringUtil.h"
 #include "UserManager.h"
 #include "XmlRoutine.h"
@@ -42,18 +43,57 @@ int OvfEnv::Parse(string &sharedConfigText)
         }
     }
     //TODO: find the section with the specified version.(if have multiple ProvisioningSections).
+    XmlRoutine::getNodeText(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:HostName/text()", &namespaces, this->hostName);
     XmlRoutine::getNodeText(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:UserName/text()", &namespaces, this->userName);
     XmlRoutine::getNodeText(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:UserPassword/text()", &namespaces, this->passWord);
     XmlRoutine::getNodeText(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:DisableSshPasswordAuthentication/text()", &namespaces, this->disableSshPasswordAuthentication);
     XmlRoutine::getNodeText(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:CustomData/text()", &namespaces, this->customData);
 
-    //TODO: handle the public key too.
+    xmlXPathObjectPtr publicKeys = 
+        XmlRoutine::getNodes(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:SSH/wa:PublicKeys", &namespaces);
+    if (publicKeys != NULL)
+    {
+        if (publicKeys->nodesetval != NULL)
+        {
+            for (int j = 0; j < publicKeys->nodesetval->nodeNr; j++)
+            {
+                xmlNodePtr publicKey = publicKeys->nodesetval->nodeTab[j];
+                xmlXPathObjectPtr fingerPrintObject = XmlRoutine::findNodeByRelativeXpath(doc, publicKey, "./Fingerprint/text()");
+                xmlXPathObjectPtr pathObject = XmlRoutine::findNodeByRelativeXpath(doc, publicKey, "./Path/text()");
+                string fingerPrint = (char *)fingerPrintObject->nodesetval->nodeTab[0]->content;
+                string path = (char*)pathObject->nodesetval->nodeTab[0]->content;
+                this->SshPublicKeys[fingerPrint] = path;
+            }
+        }
+    }
+    xmlXPathFreeObject(publicKeys);
+
+    xmlXPathObjectPtr keyPairs =
+        XmlRoutine::getNodes(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:SSH/wa:KeyPairs", &namespaces);
+    if (keyPairs != NULL)
+    {
+        if (keyPairs->nodesetval != NULL)
+        {
+            for (int i = 0; i < keyPairs->nodesetval->nodeNr; i++)
+            {
+                xmlNodePtr keyPair = publicKeys->nodesetval->nodeTab[i];
+                xmlXPathObjectPtr fingerPrintObject = XmlRoutine::findNodeByRelativeXpath(doc, keyPair, "./Fingerprint/text()");
+                xmlXPathObjectPtr pathObject = XmlRoutine::findNodeByRelativeXpath(doc, keyPair, "./Path/text()");
+                string fingerPrint = (char *)fingerPrintObject->nodesetval->nodeTab[0]->content;
+                string path = (char*)pathObject->nodesetval->nodeTab[0]->content;
+                this->SshPublicKeys[fingerPrint] = path;
+            }
+        }
+    }
+    xmlXPathFreeObject(keyPairs);
+
     xmlFreeDoc(doc);
     return AGENT_SUCCESS;
 }
 
 int OvfEnv::Process()
 {
+    AbstractDistro::getInstance().setHostName(this->hostName);
     int createUserResult = UserManager::CreateUser(this->userName,this->passWord);
     return createUserResult;
 }

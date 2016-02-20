@@ -60,6 +60,7 @@ void ExtensionsConfig::ReportExtensionsStatus()
     json_object_object_add(status, "aggregateStatus", aggregateStatus);
 
     const char * status_str = json_object_to_json_string(status);
+    //TODO remove the json_object from memory.
     Logger::getInstance().Error("status string is %s", status_str);
     HttpResponse response;
     int postResult = BlobRoutine::Put(this->statusUploadBlobUri.c_str(), statusBlobType.c_str(), status_str, response);

@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AbstractDistro.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="src\AgentConfig.h" />
     <ClInclude Include="src\AzureEnvironment.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="src\ZipRoutine.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AbstractDistro.cpp" />
     <ClCompile Include="src\AgentConfig.cpp" />
     <ClCompile Include="src\AzureEnvironment.cpp" />
     <ClCompile Include="src\AzureNativeLinuxAgent.cpp" />
@@ -231,6 +233,7 @@
     <Xml Include="data\ExtensionConfig.1.xml" />
     <Xml Include="data\GoalState.1.xml" />
     <Xml Include="data\HostingEnvironmentConfig.xml" />
+    <Xml Include="data\ovf-env-key.xml" />
     <Xml Include="data\ovf-env.xml" />
     <Xml Include="data\ShareConfig.xml" />
   </ItemGroup>

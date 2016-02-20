@@ -66,8 +66,6 @@ void XmlRoutine::getNodeContent(xmlNodePtr node, string &value)
 
 void XmlRoutine::getNodeProperty(xmlNodePtr node, const char* propertyName, string&value)
 {
-    
-
     xmlChar * propertyDup = xmlCharStrdup(propertyName);
     xmlChar * incarnation = xmlGetProp(node, propertyDup);
     //TODO error handling when the incarnation is not there.
@@ -76,8 +74,6 @@ void XmlRoutine::getNodeProperty(xmlNodePtr node, const char* propertyName, stri
     incarnation = NULL;
     delete propertyDup;
     propertyDup = NULL;
-
-    
 }
 
 int XmlRoutine::getNodeText(xmlDocPtr doc, const char * xpathExpr, map<string, string> * namespaces, string &text)
