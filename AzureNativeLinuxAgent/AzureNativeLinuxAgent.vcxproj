@@ -225,6 +225,7 @@
     <None Include="src\Makefile" />
     <None Include="src\Makefile.am" />
     <None Include="src\Makefile.in" />
+    <None Include="wala_task.conf" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="data\ExtensionConfig.1.xml" />

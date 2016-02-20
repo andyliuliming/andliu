@@ -8,9 +8,12 @@ private:
     string userName;
     string passWord;
     string disableSshPasswordAuthentication;
+    string customData;
+    int majorVersion = 1;
+    int minorVersion = 0;
 public:
     OvfEnv(); 
-    void Parse(string &sharedConfigText);
+    int Parse(string &sharedConfigText);
     int Process();
     ~OvfEnv();
 };
