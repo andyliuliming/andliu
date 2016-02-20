@@ -60,7 +60,6 @@ void Certificates::Process()
     if (FileOperator::file_exists(CERTIFICATIONS_XML_FILE_NAME))
     {
         xmlDocPtr doc = xmlParseFile(CERTIFICATIONS_XML_FILE_NAME);
-        xmlNodePtr root = xmlDocGetRootElement(doc);
 
         string certificationData;
         XmlRoutine::getNodeText(doc, "/CertificateFile/Data/text()", NULL, certificationData);

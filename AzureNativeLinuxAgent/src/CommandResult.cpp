@@ -7,7 +7,8 @@ CommandResult::CommandResult()
 
 CommandResult::~CommandResult()
 {
-    if (this->output) {
+    if (this->output)
+    {
         delete this->output;
         this->output = NULL;
     }

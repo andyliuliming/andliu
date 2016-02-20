@@ -106,7 +106,6 @@ int HttpRoutine::GetWithDefaultHeader(const char *url, HttpResponse &response)
 
 int HttpRoutine::Get(const char * url, map<string, string> * headers, HttpResponse &response)
 {
-    
     int returnCode = AGENT_SUCCESS;
 
     struct curl_slist *chunk = NULL;

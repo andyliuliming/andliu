@@ -17,7 +17,6 @@ int OvfEnv::Parse(string &sharedConfigText)
     FileOperator::save_file(sharedConfigText, string("/var/lib/waagent/Native_ovf-env.xml"));
 
     xmlDocPtr doc = xmlParseMemory(sharedConfigText.c_str(), sharedConfigText.size());
-    xmlNodePtr root = xmlDocGetRootElement(doc);
 
     map<string, string> namespaces;
     namespaces["oe"] = "http://schemas.dmtf.org/ovf/environment/1";

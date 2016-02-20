@@ -77,8 +77,6 @@ void ExtensionsConfig::ReportExtensionsStatus()
 
 
 void ExtensionsConfig::Parse(string & extensionsConfigText) {
-    
-
     xmlDocPtr extensionsConfigDoc = xmlParseMemory(extensionsConfigText.c_str(), extensionsConfigText.size());
     xmlNodePtr root = xmlDocGetRootElement(extensionsConfigDoc);
     XmlRoutine::getNodeProperty(root, "goalStateIncarnation", incarnationStr);
@@ -88,7 +86,6 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
     xmlXPathObjectPtr pluginsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, "/Extensions/Plugins/Plugin", NULL);
 
     //statusBlobType
-    
 
     xmlNodeSetPtr nodes = pluginsXpathObj->nodesetval;
     this->extensionConfigs.clear();
@@ -130,7 +127,6 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
         xmlXPathFreeObject(pluginSettingsXpathObj);
         
     }
-    
 
     xmlXPathFreeObject(pluginsXpathObj);
 
@@ -147,7 +143,7 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
     {
         Logger::getInstance().Warning("no status blob element found.");
     }
-
+    xmlFreeNode(root);
     xmlXPathFreeObject(statusBlobXpathObj);
     xmlFreeDoc(extensionsConfigDoc);
     xmlCleanupParser();

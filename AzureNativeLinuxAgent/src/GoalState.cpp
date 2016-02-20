@@ -26,7 +26,6 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
     if (getGoalStateResult == AGENT_SUCCESS)
     {
         xmlDocPtr goalStateDoc = xmlParseMemory(goalStateResponse.body.c_str(), goalStateResponse.body.size());
-        xmlNodePtr root = xmlDocGetRootElement(goalStateDoc);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Incarnation[1]/text()", NULL, this->incarnation);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/ContainerId/text()", NULL, this->containerId);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/InstanceId/text()", NULL, this->roleInstanceId);
@@ -37,7 +36,6 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ConfigName/text()", NULL, this->configName);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/Certificates/text()", NULL, this->certificatesUrl);
         xmlFreeDoc(goalStateDoc);
-
 
         // saving the goal state file 
         string goalStageFileName = this->goalStageFilePrefix + incarnation + ".xml";
