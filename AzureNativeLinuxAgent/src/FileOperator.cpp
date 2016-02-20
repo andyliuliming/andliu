@@ -66,7 +66,12 @@ int FileOperator::get_content(const char * fileName, string &content)
 
 int FileOperator::append_content(const char * filePath, string & content)
 {
-    //TODO implement this.
+    std::ofstream outfile;
+
+    outfile.open(filePath, std::ios_base::app);
+    outfile << content;
+    outfile.close();
+    //TODO error handling.
     return 0;
 }
 
