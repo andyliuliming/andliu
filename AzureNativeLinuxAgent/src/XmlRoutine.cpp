@@ -91,23 +91,28 @@ int XmlRoutine::getNodeText(xmlDocPtr doc, const char * xpathExpr, map<string, s
     }
     else
     {
+        int result = AGENT_FAILED;
         if (xpathObj->nodesetval == NULL)
         {
             Logger::getInstance().Error("Error: node set is null for \"%s\"", xpathExpr);
-            return ELEMENT_NOT_FOUNT;
-        }
-        if (xpathObj->nodesetval->nodeNr > 0)
-        {
-            xmlNodeSetPtr nodes = xpathObj->nodesetval;
-            text = ((const char*)nodes->nodeTab[0]->content);
-            xmlXPathFreeObject(xpathObj);
-            return AGENT_SUCCESS;
+            result = ELEMENT_NOT_FOUNT;
         }
         else
         {
-            Logger::getInstance().Error("node not found for \"%s\"", xpathExpr);
-            return ELEMENT_NOT_FOUNT;
+            if (xpathObj->nodesetval->nodeNr > 0)
+            {
+                xmlNodeSetPtr nodes = xpathObj->nodesetval;
+                text = ((const char*)nodes->nodeTab[0]->content);
+                result = AGENT_SUCCESS;
+            }
+            else
+            {
+                Logger::getInstance().Error("node not found for \"%s\"", xpathExpr);
+                result = ELEMENT_NOT_FOUNT;
+            }
         }
+        xmlXPathFreeObject(xpathObj);
+        return result;
     }
 }
 
