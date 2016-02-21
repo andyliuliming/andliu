@@ -16,6 +16,7 @@ void AgentConfig::LoadConfig()
         delete this->task_config;
         this->task_config = NULL;
     }
+    this->task_config = new Config();
     // Read the file. If there is an error, report it and exit.
     try
     {
