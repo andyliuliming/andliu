@@ -13,6 +13,8 @@ public:
     void setHostName(string &hostName);
     void disableSshPasswordAuthentication();
     void restartSshService();
+    void stopDhcp();
+    bool isDhcpEnabled();
     void sshDeployPublicKey(string &pubKeyFilePath, string &sshFilePath);
     
     string getHome();

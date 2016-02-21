@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <string.h>
 #include "Macros.h"
 
 using namespace std;
@@ -28,15 +29,32 @@ typedef struct _DHCPRequest {
     UINT8 End;                          /* 255 */
 } DHCPRequest, *PDHCPRequest;
 
+class Interface
+{
+public:
+    Interface()
+    {
+        this->mac_address = new UINT8[6];
+        memset(this->mac_address, 0, 6);
+    }
+    string name;
+    PUINT8 mac_address;
+    ~Interface()
+    {
+        if (mac_address != NULL)
+        {
+            delete mac_address;
+            mac_address = NULL;
+        }
+    }
+};
+
 class NetworkRoutine
 {
 public:
     NetworkRoutine();
-    static PUINT8 GetMacAddress();
+    static Interface* getFirstActiveNonLoopInterface();
     static PDHCPRequest BuildDHCPRequest();
-    bool isDHCPEnabled();
-    void stopDHCP();
-
     ~NetworkRoutine();
 };
 

@@ -25,6 +25,17 @@ void AbstractDistro::restartSshService()
     }
 }
 
+void AbstractDistro::stopDhcp()
+{
+    //TODO implement this.
+}
+
+bool AbstractDistro::isDhcpEnabled()
+{
+    //TODO implement this.
+    return false;
+}
+
 void AbstractDistro::sshDeployPublicKey(string & pubKeyFilePath, string & sshFilePath)
 {
     //TODO implement this.

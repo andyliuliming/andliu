@@ -29,18 +29,10 @@ NetworkRoutine::NetworkRoutine()
 {
 }
 
-/*
-TODO we should get the first active network interface.
-*/
-PUINT8 NetworkRoutine::GetMacAddress()
+Interface * NetworkRoutine::getFirstActiveNonLoopInterface()
 {
-    PUINT8 MAC_ADDRESS = new UINT8[6];
-    memset(MAC_ADDRESS, 0, 6);
-//#ifdef _WIN32
-//    delete MAC_ADDRESS;
-//    MAC_ADDRESS = NULL;
-//    return MAC_ADDRESS;
-    #ifdef __FreeBSD__
+    Interface * iface = NULL;
+#ifdef __FreeBSD__
     struct ifaddrs *ifap, *ifaptr;
     unsigned char *ptr;
     int getIfAddrsResult = getifaddrs(&ifap);
@@ -51,28 +43,27 @@ PUINT8 NetworkRoutine::GetMacAddress()
             if (((ifaptr)->ifa_addr)->sa_family == AF_LINK)
             {
                 ptr = (unsigned char *)LLADDR((struct sockaddr_dl *)(ifaptr)->ifa_addr);
-                string ifName = (ifaptr)->ifa_name;
                 //TODO if the ifa_name is null?
-                if (!((ifaptr)->ifa_name[0] == 'l'&& (ifaptr)->ifa_name[1=='o']))
+                if (!(ifaptr->ifa_name[0] == 'l' && ifaptr->ifa_name[1 == 'o']))
                 {
-                    Logger::getInstance().Verbose("name is not lo, so set the mac.");
-                    ptr = (unsigned char *)LLADDR((struct sockaddr_dl *)(ifaptr)->ifa_addr);
-                    MAC_ADDRESS[0] = *ptr;
-                    MAC_ADDRESS[1] = *(ptr + 1);
-                    MAC_ADDRESS[2] = *(ptr + 2);
-                    MAC_ADDRESS[3] = *(ptr + 3);
-                    MAC_ADDRESS[4] = *(ptr + 4);
-                    MAC_ADDRESS[5] = *(ptr + 5);
+                    iface = new Interface();
+                    iface->name = ifaptr->ifa_name;
+                    iface->mac_address[0] = *ptr;
+                    iface->mac_address[1] = *(ptr + 1);
+                    iface->mac_address[2] = *(ptr + 2);
+                    iface->mac_address[3] = *(ptr + 3);
+                    iface->mac_address[4] = *(ptr + 4);
+                    iface->mac_address[5] = *(ptr + 5);
                     break;
                 }
             }
         }
         freeifaddrs(ifap);
     }
-    else {
+    else
+    {
         Logger::getInstance().Error("get if addrs failed with error: %d", getIfAddrsResult);
     }
-    return MAC_ADDRESS;
 #else
     char buf[8192] = { 0 };
     struct ifconf ifc = { 0 };
@@ -137,19 +128,20 @@ PUINT8 NetworkRoutine::GetMacAddress()
             if (!(item->ifr_name[0] == 'l'
                 &&item->ifr_name[1] == 'o'))
             {
-                Logger::getInstance().Verbose("name is not lo, so set the mac.");
-                MAC_ADDRESS[0] = item->ifr_hwaddr.sa_data[0];
-                MAC_ADDRESS[1] = item->ifr_hwaddr.sa_data[1];
-                MAC_ADDRESS[2] = item->ifr_hwaddr.sa_data[2];
-                MAC_ADDRESS[3] = item->ifr_hwaddr.sa_data[3];
-                MAC_ADDRESS[4] = item->ifr_hwaddr.sa_data[4];
-                MAC_ADDRESS[5] = item->ifr_hwaddr.sa_data[5];
+                iface = new Interface();
+                iface->name = item->ifr_name;
+                iface->mac_address[0] = item->ifr_hwaddr.sa_data[0];
+                iface->mac_address[1] = item->ifr_hwaddr.sa_data[1];
+                iface->mac_address[2] = item->ifr_hwaddr.sa_data[2];
+                iface->mac_address[3] = item->ifr_hwaddr.sa_data[3];
+                iface->mac_address[4] = item->ifr_hwaddr.sa_data[4];
+                iface->mac_address[5] = item->ifr_hwaddr.sa_data[5];
                 break;
             }
+        }
     }
-}
-    return MAC_ADDRESS;
 #endif
+    return iface;
 }
 
 PDHCPRequest NetworkRoutine::BuildDHCPRequest()
@@ -165,8 +157,8 @@ PDHCPRequest NetworkRoutine::BuildDHCPRequest()
     memcpy(dhcpRequest->TransactionID, &lvalue, 4);
 
     memset(dhcpRequest->Seconds, 0, 2);
-
-    PUINT8 macAddress = NetworkRoutine::GetMacAddress();
+    Interface * iface = NetworkRoutine::getFirstActiveNonLoopInterface();
+    PUINT8 macAddress = iface->mac_address;
     memcpy(dhcpRequest->ClientHardwareAddress, macAddress, 6);
     delete macAddress;
 
@@ -183,15 +175,6 @@ PDHCPRequest NetworkRoutine::BuildDHCPRequest()
     dhcpRequest->MessageType = DHCPDISCOVER;
     dhcpRequest->End = 255;
     return dhcpRequest;
-}
-
-bool NetworkRoutine::isDHCPEnabled()
-{
-    return false;
-}
-
-void NetworkRoutine::stopDHCP()
-{
 }
 
 NetworkRoutine::~NetworkRoutine()

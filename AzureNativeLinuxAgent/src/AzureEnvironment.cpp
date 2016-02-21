@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include "AbstractDistro.h"
 #include "AzureEnvironment.h"
 #include "CommandExecuter.h"
 #include "Logger.h"
@@ -40,13 +41,18 @@ int AzureEnvironment::DoDhcpWork()
 
     // Configure the default routes.
     bool missingDefaultRoute = true;
+
     //TODO use the full path of the commands.
+    #ifdef __FreeBSD__
+
+    #else
     CommandExecuter::RunGetOutput("route -n", commandResult);
     vector<string> splitResult;
     string spliter = "\n";
     StringUtil::string_split((*(commandResult.output)), spliter, &splitResult);
 
-    for (unsigned int i = 0; i < splitResult.size(); i++) {
+    for (unsigned int i = 0; i < splitResult.size(); i++)
+    {
         size_t lastZero = splitResult[i].find_last_of("0.0.0.0");
         size_t lastDefault = splitResult[i].find_last_of("default ");
         if (lastZero > 0 || lastDefault > 0)
@@ -55,9 +61,16 @@ int AzureEnvironment::DoDhcpWork()
             break;
         }
     }
+    #endif
     if (missingDefaultRoute)
     {
         Logger::getInstance().Log("default route missing");
+        
+    }
+
+    if (AbstractDistro::getInstance().isDhcpEnabled())
+    {
+        AbstractDistro::getInstance().stopDhcp();
     }
 
     struct sockaddr_in addr;
@@ -126,16 +139,17 @@ int AzureEnvironment::DoDhcpWork()
                         {
                             option_length = buffer[i + 1];
                         }
-                        if (option == 255) {
-
+                        if (option == 255)
+                        {
                         }
-                        if (option == 249) {
-
+                        if (option == 249)
+                        {
                         }
-                        if (option == 3) {
-
+                        if (option == 3)
+                        {
                         }
-                        if (option == 245) {
+                        if (option == 245)
+                        {
                             char ip[INET6_ADDRSTRLEN];
                             sprintf(ip, "%d.%d.%d.%d", (int)(buffer[i + 2]), (int)(buffer[i + 3]), (int)(buffer[i + 4]), (int)(buffer[i + 5]));
                             wireServerAddress = ip;
