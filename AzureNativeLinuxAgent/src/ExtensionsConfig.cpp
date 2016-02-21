@@ -60,6 +60,11 @@ void ExtensionsConfig::ReportExtensionsStatus()
     json_object_object_add(status, "aggregateStatus", aggregateStatus);
 
     const char * status_str = json_object_to_json_string(status);
+    if (status != NULL)
+    {
+        json_object_put(status);
+        status = NULL;
+    }
     //TODO remove the json_object from memory.
     Logger::getInstance().Error("status string is %s", status_str);
     HttpResponse response;

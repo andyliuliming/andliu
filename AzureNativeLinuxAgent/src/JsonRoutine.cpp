@@ -8,6 +8,7 @@ JsonRoutine::JsonRoutine()
 
 int JsonRoutine::ParseHandlerManifest(string &filePath, HandlerManifest &result)
 {
+    int parse_result = AGENT_FAILED;
     string content;
     FileOperator::get_content(filePath.c_str(), content);
     const char* jsonContent = content.c_str();
@@ -16,7 +17,7 @@ int JsonRoutine::ParseHandlerManifest(string &filePath, HandlerManifest &result)
 
     if (arraylen > 0)
     {
-        json_object * jvalue;
+        json_object * jvalue = NULL;
         jvalue = json_object_array_get_idx(jarray, 0);
         json_object * handlerManifest = NULL;
         json_object_object_get_ex(jvalue, "handlerManifest", &handlerManifest);
@@ -37,17 +38,42 @@ int JsonRoutine::ParseHandlerManifest(string &filePath, HandlerManifest &result)
         const char* enableCommandStr = json_object_get_string(enableCommand);
         const char* uninstallCommandStr = json_object_get_string(uninstallCommand);
         const char* disableCommandStr = json_object_get_string(disableCommand);
+        
+        if (installCommand != NULL)
+        {
+            json_object_put(installCommand);
+            installCommand = NULL;
+        }
+        if (enableCommand != NULL)
+        {
+            json_object_put(enableCommand);
+            enableCommand = NULL;
+        }
+        if (uninstallCommand != NULL)
+        {
+            json_object_put(uninstallCommand);
+            uninstallCommand = NULL;
+        }
+        if (disableCommand != NULL)
+        {
+            json_object_put(disableCommand);
+            disableCommand = NULL;
+        }
         result.installCommand = installCommandStr;
         result.enableCommand = installCommandStr;
         result.uninstallCommand = uninstallCommandStr;
         result.disableCommand = disableCommandStr;
-        return AGENT_SUCCESS;
+        parse_result = AGENT_SUCCESS;
     }
     else
     {
-        return AGENT_FAILED;
+        parse_result = AGENT_FAILED;
     }
-    return AGENT_SUCCESS;
+    if (jarray != NULL)
+    {
+        json_object_put(jarray);
+    }
+    return parse_result;
 }
 
 JsonRoutine::~JsonRoutine()
