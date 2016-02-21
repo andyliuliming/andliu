@@ -44,7 +44,15 @@ int AzureEnvironment::DoDhcpWork()
 
     //TODO use the full path of the commands.
     #ifdef __FreeBSD__
-
+    Interface *iface = NetworkRoutine::getFirstActiveNonLoopInterface();
+    if (iface != NULL)
+    {
+        string command = "route add -net 255.255.255.255 -iface " + iface->name;
+        CommandResult commandResult;
+        CommandExecuter::RunGetOutput(command.c_str(), commandResult);
+        delete iface;
+        iface = NULL;
+    }
     #else
     CommandExecuter::RunGetOutput("route -n", commandResult);
     vector<string> splitResult;
@@ -61,12 +69,21 @@ int AzureEnvironment::DoDhcpWork()
             break;
         }
     }
-    #endif
+
     if (missingDefaultRoute)
     {
         Logger::getInstance().Log("default route missing");
-        
+        Interface *iface = NetworkRoutine::getFirstActiveNonLoopInterface();
+        if (iface != NULL)
+        {
+            string command = "route add 255.255.255.255 dev " + iface->name;
+            CommandResult commandResult;
+            CommandExecuter::RunGetOutput(command.c_str(), commandResult);
+            delete iface;
+            iface = NULL;
+        }
     }
+    #endif
 
     if (AbstractDistro::getInstance().isDhcpEnabled())
     {
