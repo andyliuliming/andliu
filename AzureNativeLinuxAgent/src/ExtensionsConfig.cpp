@@ -90,7 +90,6 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
     string configFilePath = string("/var/lib/waagent/Native_ExtensionsConfig.") + incarnationStr + ".xml";
     FileOperator::save_file(extensionsConfigText, configFilePath);
     xmlXPathObjectPtr pluginsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, "/Extensions/Plugins/Plugin", NULL);
-
     //statusBlobType
     if (pluginsXpathObj != NULL && pluginsXpathObj->nodesetval != NULL)
     {
@@ -116,6 +115,7 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
                 + "' and @version='" + newConfig->version
                 + "']/RuntimeSettings";
             //TODO make sure the c_str is deallocated
+
             xmlXPathObjectPtr pluginSettingsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, pluginSettingsPath.c_str(), NULL);
             if (pluginSettingsXpathObj != NULL
                 && pluginSettingsXpathObj->nodesetval != NULL
@@ -140,7 +140,6 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
         xmlXPathFreeObject(pluginsXpathObj);
         pluginsXpathObj = NULL;
     }
-   
 
     xmlXPathObjectPtr statusBlobXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, "/Extensions/StatusUploadBlob", NULL);
     if (statusBlobXpathObj != NULL
@@ -156,6 +155,7 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
     {
         Logger::getInstance().Warning("no status blob element found.");
     }
+
     if (root != NULL)
     {
         xmlFreeNode(root);
@@ -165,8 +165,8 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
     {
         xmlXPathFreeObject(statusBlobXpathObj);
     }
+    
     xmlFreeDoc(extensionsConfigDoc);
-    xmlCleanupParser();
 }
 
 void ExtensionsConfig::Process()
