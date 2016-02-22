@@ -156,16 +156,11 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
         Logger::getInstance().Warning("no status blob element found.");
     }
 
-    if (root != NULL)
-    {
-        xmlFreeNode(root);
-        root = NULL;
-    }
     if (statusBlobXpathObj != NULL)
     {
         xmlXPathFreeObject(statusBlobXpathObj);
     }
-    
+
     xmlFreeDoc(extensionsConfigDoc);
 }
 
