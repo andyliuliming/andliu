@@ -36,11 +36,9 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/ConfigName/text()", NULL, this->configName);
         XmlRoutine::getNodeText(goalStateDoc, "/GoalState/Container/RoleInstanceList/RoleInstance/Configuration/Certificates/text()", NULL, this->certificatesUrl);
         xmlFreeDoc(goalStateDoc);
-
         // saving the goal state file 
         string goalStageFileName = this->goalStageFilePrefix + incarnation + ".xml";
         FileOperator::save_file(goalStateResponse.body, goalStageFileName);
-
         // construct the instances
         HttpResponse hostingEnvironmentConfigText;
         int getHostingEnvironmentConfigResult = HttpRoutine::GetWithDefaultHeader(this->hostingEnvironmentConfigUrl.c_str(), hostingEnvironmentConfigText);
@@ -84,6 +82,7 @@ void GoalState::UpdateGoalState(AzureEnvironment &azureEnvironment)
         // get the certificates from the server.
         if (this->certificatesUrl.length() > 0)
         {
+            Logger::getInstance().Error("the certificates Url length is not 0");
             this->certificates = new Certificates();
             string certificationFileContent;
             int getCertificationFileContentResult = FileOperator::get_content(TRANSPORT_CERT_PUB, certificationFileContent);

@@ -86,58 +86,65 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
     xmlDocPtr extensionsConfigDoc = xmlParseMemory(extensionsConfigText.c_str(), extensionsConfigText.size());
     xmlNodePtr root = xmlDocGetRootElement(extensionsConfigDoc);
     XmlRoutine::getNodeProperty(root, "goalStateIncarnation", incarnationStr);
-    
+
     string configFilePath = string("/var/lib/waagent/Native_ExtensionsConfig.") + incarnationStr + ".xml";
     FileOperator::save_file(extensionsConfigText, configFilePath);
     xmlXPathObjectPtr pluginsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, "/Extensions/Plugins/Plugin", NULL);
 
     //statusBlobType
-
-    xmlNodeSetPtr nodes = pluginsXpathObj->nodesetval;
-    this->extensionConfigs.clear();
-    for (int i = 0; i < nodes->nodeNr; i++)
+    if (pluginsXpathObj != NULL && pluginsXpathObj->nodesetval != NULL)
     {
-        ExtensionConfig *newConfig = new ExtensionConfig();
-        XmlRoutine::getNodeProperty(nodes->nodeTab[i], "autoUpgrade", newConfig->autoUpgrade);
-        XmlRoutine::getNodeProperty(nodes->nodeTab[i], "failoverlocation", newConfig->failoverLocation);
-        XmlRoutine::getNodeProperty(nodes->nodeTab[i], "isJson", newConfig->isJson);
-        XmlRoutine::getNodeProperty(nodes->nodeTab[i], "location", newConfig->location);
-        XmlRoutine::getNodeProperty(nodes->nodeTab[i], "name", newConfig->name);
-        XmlRoutine::getNodeProperty(nodes->nodeTab[i], "runAsStartupTask", newConfig->runAsStartupTask);
-        XmlRoutine::getNodeProperty(nodes->nodeTab[i], "state", newConfig->state);
-        XmlRoutine::getNodeProperty(nodes->nodeTab[i], "version", newConfig->version);
-        this->extensionConfigs.push_back(newConfig);
-
-        newConfig->PrepareExtensionPackage(incarnationStr);
-
-        string pluginSettingsPath = string("/Extensions/PluginSettings/Plugin[@name='")
-            + newConfig->name
-            + "' and @version='" + newConfig->version
-            + "']/RuntimeSettings";
-        //TODO make sure the c_str is deallocated
-        xmlXPathObjectPtr pluginSettingsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, pluginSettingsPath.c_str(), NULL);
-        if (pluginSettingsXpathObj != NULL
-            && pluginSettingsXpathObj->nodesetval != NULL
-            && pluginSettingsXpathObj->nodesetval->nodeNr > 0)
+        xmlNodeSetPtr nodes = pluginsXpathObj->nodesetval;
+        this->extensionConfigs.clear();
+        for (int i = 0; i < nodes->nodeNr; i++)
         {
-            string seqNo;
-            XmlRoutine::getNodeProperty(pluginSettingsXpathObj->nodesetval->nodeTab[0], "seqNo", seqNo);
-            string settingFileContent;
-            XmlRoutine::getNodeContent(pluginSettingsXpathObj->nodesetval->nodeTab[0], settingFileContent);
-            newConfig->SavePluginSettings(seqNo, settingFileContent);
+            ExtensionConfig *newConfig = new ExtensionConfig();
+            XmlRoutine::getNodeProperty(nodes->nodeTab[i], "autoUpgrade", newConfig->autoUpgrade);
+            XmlRoutine::getNodeProperty(nodes->nodeTab[i], "failoverlocation", newConfig->failoverLocation);
+            XmlRoutine::getNodeProperty(nodes->nodeTab[i], "isJson", newConfig->isJson);
+            XmlRoutine::getNodeProperty(nodes->nodeTab[i], "location", newConfig->location);
+            XmlRoutine::getNodeProperty(nodes->nodeTab[i], "name", newConfig->name);
+            XmlRoutine::getNodeProperty(nodes->nodeTab[i], "runAsStartupTask", newConfig->runAsStartupTask);
+            XmlRoutine::getNodeProperty(nodes->nodeTab[i], "state", newConfig->state);
+            XmlRoutine::getNodeProperty(nodes->nodeTab[i], "version", newConfig->version);
+            this->extensionConfigs.push_back(newConfig);
+
+            newConfig->PrepareExtensionPackage(incarnationStr);
+
+            string pluginSettingsPath = string("/Extensions/PluginSettings/Plugin[@name='")
+                + newConfig->name
+                + "' and @version='" + newConfig->version
+                + "']/RuntimeSettings";
+            //TODO make sure the c_str is deallocated
+            xmlXPathObjectPtr pluginSettingsXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, pluginSettingsPath.c_str(), NULL);
+            if (pluginSettingsXpathObj != NULL
+                && pluginSettingsXpathObj->nodesetval != NULL
+                && pluginSettingsXpathObj->nodesetval->nodeNr > 0)
+            {
+                string seqNo;
+                XmlRoutine::getNodeProperty(pluginSettingsXpathObj->nodesetval->nodeTab[0], "seqNo", seqNo);
+                string settingFileContent;
+                XmlRoutine::getNodeContent(pluginSettingsXpathObj->nodesetval->nodeTab[0], settingFileContent);
+                newConfig->SavePluginSettings(seqNo, settingFileContent);
+            }
+            else
+            {
+                Logger::getInstance().Warning("no plugin settings found for this extension");
+            }
+            if (pluginSettingsXpathObj != NULL)
+            {
+                xmlXPathFreeObject(pluginSettingsXpathObj);
+                pluginSettingsXpathObj = NULL;
+            }
         }
-        else
-        {
-            Logger::getInstance().Warning("no plugin settings found for this extension");
-        }
-        xmlXPathFreeObject(pluginSettingsXpathObj);
-        
+        xmlXPathFreeObject(pluginsXpathObj);
+        pluginsXpathObj = NULL;
     }
-
-    xmlXPathFreeObject(pluginsXpathObj);
+   
 
     xmlXPathObjectPtr statusBlobXpathObj = XmlRoutine::getNodes(extensionsConfigDoc, "/Extensions/StatusUploadBlob", NULL);
-    if (statusBlobXpathObj->nodesetval != NULL
+    if (statusBlobXpathObj != NULL
+        &&statusBlobXpathObj->nodesetval != NULL
         && statusBlobXpathObj->nodesetval->nodeNr > 0)
     {
         //TODO error handling for the statusBlobType
@@ -149,8 +156,15 @@ void ExtensionsConfig::Parse(string & extensionsConfigText) {
     {
         Logger::getInstance().Warning("no status blob element found.");
     }
-    xmlFreeNode(root);
-    xmlXPathFreeObject(statusBlobXpathObj);
+    if (root != NULL)
+    {
+        xmlFreeNode(root);
+        root = NULL;
+    }
+    if (statusBlobXpathObj != NULL)
+    {
+        xmlXPathFreeObject(statusBlobXpathObj);
+    }
     xmlFreeDoc(extensionsConfigDoc);
     xmlCleanupParser();
 }
