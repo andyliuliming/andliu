@@ -143,8 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AbstractDistro.h" />
     <ClInclude Include="config.h" />
+    <ClInclude Include="src\AbstractDistro.h" />
     <ClInclude Include="src\AgentConfig.h" />
     <ClInclude Include="src\AzureEnvironment.h" />
     <ClInclude Include="src\BlobRoutine.h" />
@@ -176,7 +176,7 @@
     <ClInclude Include="src\ZipRoutine.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AbstractDistro.cpp" />
+    <ClCompile Include="src\AbstractDistro.cpp" />
     <ClCompile Include="src\AgentConfig.cpp" />
     <ClCompile Include="src\AzureEnvironment.cpp" />
     <ClCompile Include="src\AzureNativeLinuxAgent.cpp" />
