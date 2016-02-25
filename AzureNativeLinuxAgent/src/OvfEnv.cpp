@@ -65,6 +65,7 @@ int OvfEnv::Parse(string &sharedConfigText)
 
     xmlXPathObjectPtr publicKeys =
         XmlRoutine::getNodes(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:SSH/wa:PublicKeys", &namespaces);
+    
     if (publicKeys != NULL)
     {
         if (publicKeys->nodesetval != NULL)
@@ -79,8 +80,8 @@ int OvfEnv::Parse(string &sharedConfigText)
                 this->SshPublicKeys[fingerPrint] = path;
             }
         }
+        xmlXPathFreeObject(publicKeys);
     }
-    xmlXPathFreeObject(publicKeys);
 
     xmlXPathObjectPtr keyPairs =
         XmlRoutine::getNodes(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:SSH/wa:KeyPairs", &namespaces);
@@ -98,8 +99,8 @@ int OvfEnv::Parse(string &sharedConfigText)
                 this->SshKeyPairs[fingerPrint] = path;
             }
         }
+        xmlXPathFreeObject(keyPairs);
     }
-    xmlXPathFreeObject(keyPairs);
 
     xmlFreeDoc(doc);
     return AGENT_SUCCESS;

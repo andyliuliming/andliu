@@ -1,29 +1,34 @@
-<ns0:Environment xmlns:ns0="http://schemas.dmtf.org/ovf/environment/1" xmlns:ns1="http://schemas.microsoft.com/windowsazure" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="utf-8"?>
+<Environment xmlns="http://schemas.dmtf.org/ovf/environment/1" 
+             xmlns:oe="http://schemas.dmtf.org/ovf/environment/1" 
+             xmlns:wa="http://schemas.microsoft.com/windowsazure" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <ns1:ProvisioningSection>
-    <ns1:Version>1.0</ns1:Version>
-    <ns1:LinuxProvisioningConfigurationSet>
-      <ns1:ConfigurationSetType>LinuxProvisioningConfiguration</ns1:ConfigurationSetType>
-      <ns1:HostName>andliu-ubuntu</ns1:HostName>
-      <ns1:UserName>andy</ns1:UserName>
-      <ns1:DisableSshPasswordAuthentication>true</ns1:DisableSshPasswordAuthentication>
-      <ns1:SSH>
-        <ns1:PublicKeys>
-          <ns1:PublicKey>
-            <ns1:Fingerprint>2DCB27E6B3E9F95195D3C0AC14675AC1C3BB0F20</ns1:Fingerprint>
-            <ns1:Path>/home/andy/.ssh/authorized_keys</ns1:Path>
-          </ns1:PublicKey>
-        </ns1:PublicKeys>
-      </ns1:SSH>
-    </ns1:LinuxProvisioningConfigurationSet>
-  </ns1:ProvisioningSection>
+  <wa:ProvisioningSection>
+    <wa:Version>1.0</wa:Version>
+    <LinuxProvisioningConfigurationSet xmlns="http://schemas.microsoft.com/windowsazure" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+      <ConfigurationSetType>LinuxProvisioningConfiguration</ConfigurationSetType>
+      <HostName>andliu-bsd</HostName>
+      <UserName>andy9</UserName>
+      <DisableSshPasswordAuthentication>true</DisableSshPasswordAuthentication>
+      <SSH>
+        <PublicKeys>
+          <PublicKey>
+            <Fingerprint>6E5EEDF9A1D98E3234D5FDD2034B24726AC529FF</Fingerprint>
+            <Path>/home/andy9/.ssh/authorized_keys</Path>
+          </PublicKey>
+        </PublicKeys>
+      </SSH>
+    </LinuxProvisioningConfigurationSet>
+  </wa:ProvisioningSection>
 
-  <ns1:PlatformSettingsSection>
-    <ns1:Version>1.0</ns1:Version>
-    <ns1:PlatformSettings>
-      <ns1:KmsServerHostname>kms.core.windows.net</ns1:KmsServerHostname>
-      <ns1:ProvisionGuestAgent>false</ns1:ProvisionGuestAgent>
-      <ns1:GuestAgentPackageName xsi:nil="true" />
-    </ns1:PlatformSettings>
-  </ns1:PlatformSettingsSection>
-</ns0:Environment>
+  <wa:PlatformSettingsSection>
+    <wa:Version>1.0</wa:Version>
+    <PlatformSettings xmlns="http://schemas.microsoft.com/windowsazure" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+      <KmsServerHostname>kms.core.windows.net</KmsServerHostname>
+      <ProvisionGuestAgent>true</ProvisionGuestAgent>
+      <GuestAgentPackageName>Win7_Win8_IaaS_rd_art_stable_150912-1548_GuestAgentPackage.zip</GuestAgentPackageName>
+      <UseAVMA>false</UseAVMA>
+    </PlatformSettings>
+  </wa:PlatformSettingsSection>
+</Environment>
