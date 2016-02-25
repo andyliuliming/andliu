@@ -82,6 +82,10 @@ int OvfEnv::Parse(string &sharedConfigText)
         }
         xmlXPathFreeObject(publicKeys);
     }
+    else
+    {
+        Logger::getInstance().Warning("no public keys found.");
+    }
 
     xmlXPathObjectPtr keyPairs =
         XmlRoutine::getNodes(doc, "/oe:Environment/wa:ProvisioningSection/wa:LinuxProvisioningConfigurationSet/wa:SSH/wa:KeyPairs", &namespaces);
@@ -100,6 +104,10 @@ int OvfEnv::Parse(string &sharedConfigText)
             }
         }
         xmlXPathFreeObject(keyPairs);
+    }
+    else
+    {
+        Logger::getInstance().Warning("no key pairs found.");
     }
 
     xmlFreeDoc(doc);
