@@ -38,75 +38,74 @@ int Provisioner::Prosess()
         //TODO deallocate the c_str() here.
         CommandExecuter::RunGetOutput(("ssh-keygen -N '' -t " + type + " -f /etc/ssh/ssh_host_" + type + "_key").c_str(), generateCommandResult);
     }
-    
 
     // 2. do the ovf-env
     string ovfFileTestHooking;
     int hookResult = AgentConfig::getInstance().getConfig("OvfFileTestHooking", ovfFileTestHooking);
-    if (hookResult == AGENT_SUCCESS)
+
+    string ovfFileContent;
+    int getOvfFileContentResult = AGENT_FAILED;
+    if (hookResult != AGENT_SUCCESS)
     {
-
-    }
-    string *romDevicePath = DeviceRoutine::findRomDevice();
-    if (romDevicePath == NULL)
-    {
-        Logger::getInstance().Warning("could not find the rom device.");
-        return AGENT_FAILED;
-    }
-    
-    FileOperator::make_dir(SECURE_MOUNT_POINT);
-    
-#ifdef __FreeBSD__
-    string mountCommand("mount -t udf /dev/" + *romDevicePath + " " + SECURE_MOUNT_POINT);
-#else
-    string mountCommand("mount " + *romDevicePath + " " + SECURE_MOUNT_POINT);
-#endif
-    delete romDevicePath;
-    romDevicePath = NULL;
-
-    CommandResult mountResult;
-    CommandExecuter::RunGetOutput(mountCommand, mountResult);
-    if (mountResult.exitCode == 0)
-    {
-        Logger::getInstance().Warning("the cd is mounted");
-
-        string ovfEnvFullPath = OVF_ENV_FILE_FULL_PATH;
-        string ovfFileContent;
-        int getOvfFileContentResult = FileOperator::get_content(OVF_ENV_FILE_FULL_PATH, ovfFileContent);
-        string umountCommand = string("umount ") + SECURE_MOUNT_POINT;
-
-        CommandResult umountResult;
-        CommandExecuter::RunGetOutput(umountCommand, umountResult);
-        if (umountResult.exitCode != 0)
+        string *romDevicePath = DeviceRoutine::findRomDevice();
+        if (romDevicePath == NULL)
         {
-            Logger::getInstance().Error("unmount result: %s", mountResult.output->c_str());
+            Logger::getInstance().Warning("could not find the rom device.");
+            return AGENT_FAILED;
         }
-        if (getOvfFileContentResult == 0)
+
+        FileOperator::make_dir(SECURE_MOUNT_POINT);
+        #ifdef __FreeBSD__
+                string mountCommand("mount -t udf /dev/" + *romDevicePath + " " + SECURE_MOUNT_POINT);
+        #else
+                string mountCommand("mount " + *romDevicePath + " " + SECURE_MOUNT_POINT);
+        #endif
+        delete romDevicePath;
+        romDevicePath = NULL;
+        CommandResult mountResult;
+        CommandExecuter::RunGetOutput(mountCommand, mountResult);
+        if (mountResult.exitCode == 0)
         {
-            OvfEnv *ovfEnv = new OvfEnv();
-            ovfEnv->Parse(ovfFileContent);
-            int ovfResult = ovfEnv->Process();
-            if (ovfResult == 0)
+            Logger::getInstance().Warning("the cd is mounted");
+            string ovfEnvFullPath = OVF_ENV_FILE_FULL_PATH;
+            getOvfFileContentResult = FileOperator::get_content(OVF_ENV_FILE_FULL_PATH, ovfFileContent);
+            string umountCommand = string("umount ") + SECURE_MOUNT_POINT;
+            CommandResult umountResult;
+            CommandExecuter::RunGetOutput(umountCommand, umountResult);
+            if (umountResult.exitCode != 0)
             {
-                return AGENT_SUCCESS;
-            }
-            else
-            {
-                Logger::getInstance().Error("the ovf process failed.");
-                return AGENT_FAILED;
+                Logger::getInstance().Error("unmount result: %s", mountResult.output->c_str());
             }
         }
         else
         {
-            //TODO error handling.
-            Logger::getInstance().Error("get OvfFile Content failed.");
+            Logger::getInstance().Error("mount result: %s", mountResult.output->c_str());
             return AGENT_FAILED;
         }
     }
     else
     {
-        
-        Logger::getInstance().Error("mount result: %s", mountResult.output->c_str());
+        getOvfFileContentResult = FileOperator::get_content(OVF_ENV_FILE_FULL_PATH_TEST_HOOK, ovfFileContent);
+    }
+    if (getOvfFileContentResult == AGENT_SUCCESS)
+    {
+        OvfEnv *ovfEnv = new OvfEnv();
+        ovfEnv->Parse(ovfFileContent);
+        int ovfResult = ovfEnv->Process();
+        if (ovfResult == 0)
+        {
+            return AGENT_SUCCESS;
+        }
+        else
+        {
+            Logger::getInstance().Error("the ovf process failed.");
+            return AGENT_FAILED;
+        }
+    }
+    else
+    {
+        //TODO error handling.
+        Logger::getInstance().Error("get OvfFile Content failed.");
         return AGENT_FAILED;
     }
     // 2. This is done here because regenerated SSH host key pairs may be potentially overwritten when processing the ovfxml

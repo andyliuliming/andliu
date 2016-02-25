@@ -237,3 +237,5 @@ AzureNativeLinuxAgent/AzureNativeLinuxAgent.vcxproj.filters
 AzureNativeLinuxAgent/src/AzureNativeLinuxAgent
 AzureNativeLinuxAgent/Makefile
 AzureNativeLinuxAgent/src/Makefile
+
+AzureNativeLinuxAgent/config.status
