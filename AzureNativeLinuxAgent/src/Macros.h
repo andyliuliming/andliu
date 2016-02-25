@@ -44,7 +44,6 @@
 #define PROTECTED_SETTINGS_CERTIFICATE_FILE_NAME ("Native_Certificates.p7m")
 #define OVF_ENV_FILE_NAME ("Native_ovf-env.xml")
 #define OVF_ENV_FILE_FULL_PATH ("/mnt/cdrom/secure/ovf-env.xml")
-#define OVF_ENV_FILE_FULL_PATH_TEST_HOOK ("/var/lib/waagent/Native_ovf-env.xml")
 #define SECURE_MOUNT_POINT ("/mnt/cdrom/secure")
 #define SHARED_CONFIG_FILE_NAME ("Native_SharedConfig.xml");
 #define TRANSPORT_CERT_CIPHER_NAME ("DES_EDE3_CBC")

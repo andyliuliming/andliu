@@ -85,7 +85,7 @@ int Provisioner::Prosess()
     }
     else
     {
-        getOvfFileContentResult = FileOperator::get_content(OVF_ENV_FILE_FULL_PATH_TEST_HOOK, ovfFileContent);
+        getOvfFileContentResult = FileOperator::get_content(ovfFileTestHooking.c_str(), ovfFileContent);
     }
     if (getOvfFileContentResult == AGENT_SUCCESS)
     {
