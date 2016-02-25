@@ -12,19 +12,18 @@ using namespace std;
 
 int ExtensionConfig::DownloadExtractExtensions(xmlDocPtr manifestXmlDoc, const char* pluginXpathManifestExpr)
 {
-    
     xmlXPathObjectPtr xpathManifestObj = XmlRoutine::getNodes(manifestXmlDoc, pluginXpathManifestExpr, NULL);
 
     xmlNodeSetPtr pluginManifestNodes = xpathManifestObj->nodesetval;
     for (int j = 0; j < pluginManifestNodes->nodeNr; j++)
     {
-        xmlXPathObjectPtr versionObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], "./Version/text()");
+        xmlXPathObjectPtr versionObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], "./Version/text()", NULL);
         string currentVersion = (const char*)versionObjects->nodesetval->nodeTab[0]->content;
         xmlXPathFreeObject(versionObjects);
         if (currentVersion == this->version)
         {
             // downloading the bundles
-            xmlXPathObjectPtr uriObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], "./Uris/Uri/text()");
+            xmlXPathObjectPtr uriObjects = XmlRoutine::findNodeByRelativeXpath(manifestXmlDoc, pluginManifestNodes->nodeTab[j], "./Uris/Uri/text()", NULL);
             string bundleFilePath = string(WAAGENT_LIB_BASE_DIR) + "Native_" + this->name + "_" + this->version + ".zip";
             HttpRoutine::GetToFile((const char*)(uriObjects->nodesetval->nodeTab[0]->content), NULL, bundleFilePath.c_str());
             string extensionPath;

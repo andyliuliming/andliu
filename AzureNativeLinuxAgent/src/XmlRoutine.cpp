@@ -7,11 +7,21 @@ XmlRoutine::XmlRoutine()
 {
 }
 
-xmlXPathObjectPtr XmlRoutine::findNodeByRelativeXpath(xmlDocPtr doc, xmlNodePtr rootnode, const char * xpathExpr)
+xmlXPathObjectPtr XmlRoutine::findNodeByRelativeXpath(xmlDocPtr doc, xmlNodePtr rootnode, const char * xpathExpr, map<string,string> *namespaces)
 {
     xmlXPathContextPtr xpathCtx = xmlXPathNewContext(doc);
     // Important part
     xpathCtx->node = rootnode;
+    if (namespaces != NULL)
+    {
+        for (std::map<string, string>::iterator it = namespaces->begin(); it != namespaces->end(); ++it)
+        {
+            if (xmlXPathRegisterNs(xpathCtx, BAD_CAST it->first.c_str(), BAD_CAST it->second.c_str()) != 0)
+            {
+                Logger::getInstance().Error("Error: unable to register NS with prefix");
+            }
+        }
+    }
     xmlChar * xpathXmlCharExpr = xmlCharStrdup(xpathExpr);
     xmlXPathObjectPtr xpathObj = xmlXPathEvalExpression(xpathXmlCharExpr, xpathCtx);
     delete xpathXmlCharExpr;
@@ -30,7 +40,6 @@ xmlXPathObjectPtr XmlRoutine::getNodes(xmlDocPtr doc, const char* xpathExpr, map
         Logger::getInstance().Error("Error: unable to create new XPath context");
         return NULL;
     }
-
     if (namespaces != NULL)
     {
         for (std::map<string, string>::iterator it = namespaces->begin(); it != namespaces->end(); ++it)
@@ -51,7 +60,6 @@ xmlXPathObjectPtr XmlRoutine::getNodes(xmlDocPtr doc, const char* xpathExpr, map
         Logger::getInstance().Error("Error: unable to evaluate xpath expression \"%s\"\n", xpathExpr);
         return NULL;
     }
-
     xmlXPathFreeContext(xpathCtx);
     return xpathObj;
 }

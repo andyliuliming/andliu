@@ -55,11 +55,11 @@ int Provisioner::Prosess()
         }
 
         FileOperator::make_dir(SECURE_MOUNT_POINT);
-        #ifdef __FreeBSD__
-                string mountCommand("mount -t udf /dev/" + *romDevicePath + " " + SECURE_MOUNT_POINT);
-        #else
-                string mountCommand("mount " + *romDevicePath + " " + SECURE_MOUNT_POINT);
-        #endif
+#ifdef __FreeBSD__
+        string mountCommand("mount -t udf /dev/" + *romDevicePath + " " + SECURE_MOUNT_POINT);
+#else
+        string mountCommand("mount " + *romDevicePath + " " + SECURE_MOUNT_POINT);
+#endif
         delete romDevicePath;
         romDevicePath = NULL;
         CommandResult mountResult;

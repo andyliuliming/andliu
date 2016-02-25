@@ -73,11 +73,17 @@ int OvfEnv::Parse(string &sharedConfigText)
             for (int j = 0; j < publicKeys->nodesetval->nodeNr; j++)
             {
                 xmlNodePtr publicKey = publicKeys->nodesetval->nodeTab[j];
-                xmlXPathObjectPtr fingerPrintObject = XmlRoutine::findNodeByRelativeXpath(doc, publicKey, "./Fingerprint/text()");
-                xmlXPathObjectPtr pathObject = XmlRoutine::findNodeByRelativeXpath(doc, publicKey, "./Path/text()");
+                Logger::getInstance().Error("#################X1");
+                xmlXPathObjectPtr fingerPrintObject = XmlRoutine::findNodeByRelativeXpath(doc, publicKey, "./wa:PublicKey/wa:Fingerprint/text()", &namespaces);
+                Logger::getInstance().Error("#################X2");
+                xmlXPathObjectPtr pathObject = XmlRoutine::findNodeByRelativeXpath(doc, publicKey, "./wa:PublicKey/wa:Path/text()", &namespaces);
+                Logger::getInstance().Error("#################X3");
                 string fingerPrint = (char *)fingerPrintObject->nodesetval->nodeTab[0]->content;
+                Logger::getInstance().Error("#################X4");
                 string path = (char*)pathObject->nodesetval->nodeTab[0]->content;
+                Logger::getInstance().Error("#################X5");
                 this->SshPublicKeys[fingerPrint] = path;
+                Logger::getInstance().Error("#################X6");
             }
         }
         xmlXPathFreeObject(publicKeys);
@@ -96,8 +102,8 @@ int OvfEnv::Parse(string &sharedConfigText)
             for (int i = 0; i < keyPairs->nodesetval->nodeNr; i++)
             {
                 xmlNodePtr keyPair = publicKeys->nodesetval->nodeTab[i];
-                xmlXPathObjectPtr fingerPrintObject = XmlRoutine::findNodeByRelativeXpath(doc, keyPair, "./Fingerprint/text()");
-                xmlXPathObjectPtr pathObject = XmlRoutine::findNodeByRelativeXpath(doc, keyPair, "./Path/text()");
+                xmlXPathObjectPtr fingerPrintObject = XmlRoutine::findNodeByRelativeXpath(doc, keyPair, "./wa:KeyPair/wa:Fingerprint/text()", &namespaces);
+                xmlXPathObjectPtr pathObject = XmlRoutine::findNodeByRelativeXpath(doc, keyPair, "./wa:KeyPair/wa:Path/text()", &namespaces);
                 string fingerPrint = (char *)fingerPrintObject->nodesetval->nodeTab[0]->content;
                 string path = (char*)pathObject->nodesetval->nodeTab[0]->content;
                 this->SshKeyPairs[fingerPrint] = path;
