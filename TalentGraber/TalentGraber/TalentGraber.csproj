@@ -66,7 +66,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="emaiaccounts.txt">
+    <Content Include="emailaccounts.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="accounts.txt">
