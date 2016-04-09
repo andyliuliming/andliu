@@ -115,16 +115,12 @@
     <None Include="pslib\azureadapter.ps1" />
     <None Include="azureauth.ps1" />
     <None Include="pslib\buildstardust.ps1" />
-    <None Include="pslib\clear_static_public_ip_production.ps1" />
     <None Include="pslib\common-global.ps1" />
     <None Include="pslib\common-china.ps1" />
     <None Include="pslib\common.ps1" />
     <None Include="deployin-china.ps1" />
     <None Include="pslib\deploystardust_to_staging.ps1" />
     <None Include="pslib\make_resources.ps1" />
-    <None Include="pslib\clear_static_public_ip_staging.ps1" />
-    <None Include="pslib\set_static_public_ip_to_staging.ps1" />
-    <None Include="pslib\set_static_public_ip_to_production.ps1" />
     <None Include="scratch\createdatabaseschema.ps1" />
     <None Include="deployin-global.ps1" />
     <None Include="pslib\enablediagnostic.ps1" />

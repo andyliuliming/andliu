@@ -28,7 +28,7 @@ $databaseServerName="stardustdatabase"
 ######################  azure service related  ############################
 $StarDustAffinityGroupName = "TalentGraberAffinityGroup"
 $StarDustProductAzureServiceName = "TalentGraberProductAzureService"
-$StarDustProductAzureServiceProject = "ProductAzureService"
+$StarDustProductAzureServiceProjectName = "ProductAzureService"
 $StarDustProductServiceRoleName = "ProductService"
 
 ####################################  redis cache related #####################################
