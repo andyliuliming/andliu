@@ -1,6 +1,6 @@
 ﻿######################  common config     ############################
 $buildType = "Debug"
-$Prefix = "StarDust"
+$Prefix = "TalentGraber"
 
 ###################### account for monitoring #######################
 $MonitoringAccount="13310100283"
@@ -26,11 +26,10 @@ $databasePassword="User@123"
 $databaseServerName="stardustdatabase"
 
 ######################  azure service related  ############################
-$StarDustAffinityGroupName = "StarDustAffinityGroup"
-$StarDustProductAzureServiceName = "StarDustProductAzureService"
-$StarDustProductServiceRoleName = "StarDustProductService"
-$StarDustPortalAzureServiceName = "StarDustPortalAzureService"
-$StarDustPortalServiceRoleName = "StarDustPortalService"
+$StarDustAffinityGroupName = "TalentGraberAffinityGroup"
+$StarDustProductAzureServiceName = "TalentGraberProductAzureService"
+$StarDustProductAzureServiceProject = "ProductAzureService"
+$StarDustProductServiceRoleName = "ProductService"
 
 ####################################  redis cache related #####################################
 $StarDustRedisCacheProductServerName = "StarDustcache"

@@ -10,13 +10,14 @@ if($Environment -eq "AzureChinaCloud")
 
 # wrap up the javascript and the css
 npm install -g requirejs
-r.js.cmd -o ..\PortalService\management-build.js
+r.js.cmd -o ..\ProductService\management-build.js
 
 Invoke-MsBuild -Path ..\TalentGraberService.sln -P "/t:Clean" #-ShowBuildWindow
 
-Invoke-MsBuild -Path ..\pic_dotnet_sdk\pic_dotnet_sdk.csproj -P "/P:Configuration=$buildType" # -ShowBuildWindow
 # build the authentication lib
 Invoke-MsBuild -Path ..\Common\Common.csproj -P "/P:Configuration=$buildType" # -ShowBuildWindow
+Invoke-MsBuild -Path ..\ExtractBase\ExtractBase.csproj -P "/P:Configuration=$buildType" # -ShowBuildWindow
+Invoke-MsBuild -Path ..\GithubGraberLib\GithubGraberLib.csproj -P "/P:Configuration=$buildType" # -ShowBuildWindow
 # build the AzureEnvironment
 
 # build the database model project
@@ -35,8 +36,5 @@ $intelliTraceConnectionString="BaseEndpoint=core.windows.net;Protocol=https;Acco
 
 $intelliTraceParameter='"'+"$intelliTraceConnectionString"+'"'
 
-Invoke-MsBuild -Path ..\StarDustProductService\StarDustProductService.csproj -P "/P:Configuration=$buildType"# -ShowBuildWindow
-Invoke-MsBuild -Path ..\StarDustProductAzureService\StarDustProductAzureService.ccproj -P "/P:Configuration=$buildType /t:Publish /p:TargetProfile=Cloud /p:EnableIntelliTrace=true /p:IntelliTraceConnectionString=$intelliTraceParameter"# -ShowBuildWindow
-
-Invoke-MsBuild -Path ..\StarDustPortalService\StarDustPortalService.csproj -P "/P:Configuration=$buildType"# -ShowBuildWindow
-Invoke-MsBuild -Path ..\StarDustPortalAzureService\StarDustPortalAzureService.ccproj -P "/P:Configuration=$buildType /t:Publish /p:TargetProfile=Cloud /p:EnableIntelliTrace=true /p:IntelliTraceConnectionString=$intelliTraceParameter"# -ShowBuildWindow
+Invoke-MsBuild -Path ..\ProductService\ProductService.csproj -P "/P:Configuration=$buildType"# -ShowBuildWindow
+Invoke-MsBuild -Path ..\ProductAzureService\ProductAzureService.ccproj -P "/P:Configuration=$buildType /t:Publish /p:TargetProfile=Cloud /p:EnableIntelliTrace=true /p:IntelliTraceConnectionString=$intelliTraceParameter"# -ShowBuildWindow
