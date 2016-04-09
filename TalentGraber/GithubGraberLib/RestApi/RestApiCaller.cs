@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -9,6 +10,16 @@ using System.Threading.Tasks;
 
 namespace ExtractBase.RestApi
 {
+    public class HttpException : Exception
+    {
+        private HttpStatusCode statusCode = 0;
+        private string msg = null;
+        public HttpException(HttpStatusCode statusCode, string msg)
+        {
+            this.statusCode = statusCode;
+            this.msg = msg;
+        }
+    }
     public class RestApiCaller<T> where T : class
     {
         private string baseUrl;
@@ -36,16 +47,32 @@ namespace ExtractBase.RestApi
             {
                 case "get":
                     response = client.GetAsync(urlParameters).Result;
-                    result = response.Content.ReadAsAsync<T>().Result;
-                    return result;
+                    if (response.StatusCode == HttpStatusCode.Accepted
+                        || response.StatusCode == HttpStatusCode.OK)
+                    {
+                        result = response.Content.ReadAsAsync<T>().Result;
+                        return result;
+                    }
+                    else
+                    {
+                        throw new HttpException(response.StatusCode, null);
+                    }
                 case "post":
                     if (!string.IsNullOrEmpty(accessToken))
                     {
                         client.DefaultRequestHeaders.Add(AuthorizeUtil.TokenHeaderName, accessToken);
                     }
                     response = client.PostAsJsonAsync<T>(urlParameters, body).Result;
-                    result = response.Content.ReadAsAsync<T>().Result;
-                    return result;
+                    if (response.StatusCode == HttpStatusCode.Accepted
+                        || response.StatusCode == HttpStatusCode.OK)
+                    {
+                        result = response.Content.ReadAsAsync<T>().Result;
+                        return result;
+                    }
+                    else
+                    {
+                        throw new HttpException(response.StatusCode, null);
+                    }
                 default:
                     throw new NotImplementedException();
             }
