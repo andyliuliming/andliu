@@ -32,7 +32,6 @@ namespace TalentGraber
 
                 string accessToken = AuthorizeUtil.GetToken(extractRequest.Account.UserName, extractRequest.Account.Password);
                 extractRequest.AccessToken = accessToken;
-                extractRequest.Left = 5000;
                 HashSet<string> user_logins = githubExtractor.ExtractUserLogin(extractRequest);
                 if (user_logins.Count == 0)
                 {
@@ -42,11 +41,6 @@ namespace TalentGraber
                 foreach (string ul in user_logins)
                 {
                     userLogins.Add(ul);
-                }
-                if (extractRequest.Left > 0)
-                {
-                    accountIndex++;
-                    break;
                 }
             }
 
@@ -87,7 +81,6 @@ namespace TalentGraber
 
                 string accessToken = AuthorizeUtil.GetToken(extractRequest.Account.UserName, extractRequest.Account.Password);
                 extractRequest.AccessToken = accessToken;
-                extractRequest.Left = 5000;
                 List<User> users = githubExtractor.Extract(extractRequest, userLoginList);
 
                 // calculate the initial page of next.
@@ -111,10 +104,6 @@ namespace TalentGraber
                         }
                         streamWriter.WriteLine(sb.ToString());
                     }
-                }
-                if (extractRequest.Left > 0)
-                {
-                    break;
                 }
             }
         }

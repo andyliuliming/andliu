@@ -56,10 +56,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ExtractBase\ExtractBase.csproj">
-      <Project>{37bd1a6e-bee8-4886-8012-38de6e6267ee}</Project>
-      <Name>ExtractBase</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GithubGraberLib\GithubGraberLib.csproj">
       <Project>{ac117594-8748-4e22-a38d-c14ee764537d}</Project>
       <Name>GithubGraberLib</Name>

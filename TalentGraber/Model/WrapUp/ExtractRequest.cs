@@ -14,8 +14,6 @@ namespace GithubGraberLib.Domain
         public string URL { get; set; }
         public int StartPage { get; set; }
         public int PerPage { get; set; }
-
         public int StartIndex { get; set; }
-        public int Left { get; set; }
     }
 }

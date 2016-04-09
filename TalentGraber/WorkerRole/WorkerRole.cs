@@ -10,6 +10,7 @@ using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using Microsoft.WindowsAzure.Storage;
 using Macrodeek.StarDustModel;
+using GithubGraberLib;
 
 namespace WorkerRole
 {
@@ -60,11 +61,6 @@ namespace WorkerRole
             Trace.TraceInformation("WorkerRole has stopped");
         }
 
-        private GithubAccount GetAccount()
-        {
-            return db.GithubAccounts.First<GithubAccount>();
-        }
-
         private async Task RunAsync(CancellationToken cancellationToken)
         {
             // TODO: Replace the following with your own logic.
@@ -72,11 +68,38 @@ namespace WorkerRole
             {
                 Trace.TraceInformation("Working");
 
-                foreach(var githubRepo in db.GithubRepoes)
+                List<GithubAccount> githubAccounts = db.GithubAccounts.ToList<GithubAccount>();
+                for(int i = 0; i < githubAccounts.Count; i++)
                 {
+                    GithubAccount account = githubAccounts[i];
 
+                    string accessToken = AuthorizeUtil.GetToken(account.UserName, account.Password);
+                    GithubExtractor githubExtractor = new GithubExtractor();
+                    foreach (var githubRepo in db.GithubRepoes)
+                    {
+                        //HashSet<string> user_logins = githubExtractor.ExtractUserLogin(extractRequest);
+                        //
+                        //extractRequest.AccessToken = accessToken;
+                        //extractRequest.Left = 5000;
+                        //HashSet<string> user_logins = githubExtractor.ExtractUserLogin(extractRequest);
+                        //if (user_logins.Count == 0)
+                        //{
+                        //    accountIndex++;
+                        //    break;
+                        //}
+                        //foreach (string ul in user_logins)
+                        //{
+                        //    userLogins.Add(ul);
+                        //}
+                        //if (extractRequest.Left > 0)
+                        //{
+                        //    accountIndex++;
+                        //    break;
+                        //}
+                    }
                 }
-                await Task.Delay(1000);
+
+                await Task.Delay(1000 * 60 * 60 * 5);
             }
         }
     }

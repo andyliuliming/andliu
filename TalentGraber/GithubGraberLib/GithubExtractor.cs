@@ -2,6 +2,7 @@
 using GithubGraberLib.Domain;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -20,9 +21,10 @@ namespace GithubGraberLib
             return githubFeed;
         }
 
-        public void Retry(Action action, Action final)
+        public void Retry(int times, Action action)
         {
-            for (int i = 0; i < 10; i++)
+            int i = 0;
+            while (true)
             {
                 try
                 {
@@ -31,13 +33,17 @@ namespace GithubGraberLib
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.ToString());
-                }
-                finally
-                {
-                    final();
+                    if (i++ < times)
+                    {
+                        Trace.TraceError(e.ToString());
+                    }
+                    else
+                    {
+                        throw e;
+                    }
                 }
             }
+
         }
 
         public HashSet<string> ExtractUserLogin(ExtractRequest extractRequest)
@@ -51,21 +57,16 @@ namespace GithubGraberLib
             RestApiCaller<List<CommitDetail>> commitInfoCaller = new RestApiCaller<List<CommitDetail>>(ApiFormats.BaseUri);
 
             string repoBaseUri = string.Format(ApiFormats.CommitRelativePathPattern, githubFee.owner, githubFee.repo);
-            while (extractRequest.Left > 0)
+            while (true)
             {
                 Console.WriteLine("getting the page: " + extractRequest.StartPage);
                 string urlParameters = repoBaseUri + "?page=" + extractRequest.StartPage + "&per_page=" + extractRequest.PerPage;
                 List<CommitDetail> pagedDetails = null;
-                Retry(
+                Retry(5,
                 () =>
                 {
                     pagedDetails = commitInfoCaller.CallApi("get", extractRequest.AccessToken, urlParameters, null);
-                },
-                () =>
-                {
-                    extractRequest.Left--;
-                }
-                );
+                });
                 if (pagedDetails == null || pagedDetails.Count == 0)
                 {
                     break;
@@ -100,27 +101,18 @@ namespace GithubGraberLib
 
             int leftUserLength = user_logins.Count - extractRequest.StartIndex;
 
-            int numberToRetrieve = leftUserLength > extractRequest.Left ? extractRequest.Left : leftUserLength;
-
-            for (int i = 0; i < numberToRetrieve; i++)
+            for (int i = 0; i < user_logins.Count; i++)
             {
                 Console.WriteLine("getting the user's info: " + user_logins[extractRequest.StartIndex + i]);
                 string urlParameters = string.Format(ApiFormats.UserApi, user_logins[extractRequest.StartIndex + i]);
                 User user = null;
-                Retry(
+                Retry(5,
                 () =>
                 {
                     user = userInfoCaller.CallApi("get", extractRequest.AccessToken, urlParameters, null);
-                },
-                () =>
-                {
-                    extractRequest.Left--;
-                }
-                );
+                });
                 users.Add(user);
             }
-
-            extractRequest.StartIndex += numberToRetrieve;
 
             return users;
         }
