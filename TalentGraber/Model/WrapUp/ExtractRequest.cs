@@ -11,7 +11,7 @@ namespace GithubGraberLib.Domain
     {
         public GithubAccount Account { get; set; }
         public string AccessToken { get; set; }
-        public string URL { get; set; }
+        public string Url { get; set; }
         public int StartPage { get; set; }
         public int PerPage { get; set; }
         public int StartIndex { get; set; }

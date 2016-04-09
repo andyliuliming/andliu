@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/09/2016 13:35:22
+-- Date Created: 04/09/2016 15:55:06
 -- Generated from EDMX file: C:\Users\andliu\Documents\GitHub\andliu\TalentGraber\Model\StarDustGoldModel.edmx
 -- --------------------------------------------------
 
@@ -28,6 +28,9 @@ GO
 IF OBJECT_ID(N'[dbo].[TalentCandidates]', 'U') IS NOT NULL
     DROP TABLE [dbo].[TalentCandidates];
 GO
+IF OBJECT_ID(N'[dbo].[GithubAccounts]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[GithubAccounts];
+GO
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -46,6 +49,7 @@ CREATE TABLE [dbo].[TalentCandidates] (
     [Email] nvarchar(max)  NOT NULL,
     [Company] nvarchar(max)  NOT NULL,
     [Location] nvarchar(max)  NOT NULL,
+    [Login] nvarchar(max)  NOT NULL,
     [Followers] nvarchar(max)  NOT NULL,
     [ReposUrl] nvarchar(max)  NOT NULL,
     [FollowersUrl] nvarchar(max)  NOT NULL

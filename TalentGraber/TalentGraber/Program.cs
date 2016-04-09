@@ -20,7 +20,7 @@ namespace TalentGraber
             GithubExtractor githubExtractor = new GithubExtractor();
 
             ExtractRequest extractRequest = new ExtractRequest();
-            extractRequest.URL = githubAddress;
+            extractRequest.Url = githubAddress;
             extractRequest.StartPage = 0;
             extractRequest.PerPage = 100;
 
@@ -32,7 +32,8 @@ namespace TalentGraber
 
                 string accessToken = AuthorizeUtil.GetToken(extractRequest.Account.UserName, extractRequest.Account.Password);
                 extractRequest.AccessToken = accessToken;
-                HashSet<string> user_logins = githubExtractor.ExtractUserLogin(extractRequest);
+                HashSet<string> user_logins = new HashSet<string>();
+                githubExtractor.ExtractUserLogin(extractRequest, user_logins);
                 if (user_logins.Count == 0)
                 {
                     accountIndex++;

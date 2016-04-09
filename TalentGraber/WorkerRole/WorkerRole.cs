@@ -11,6 +11,8 @@ using Microsoft.WindowsAzure.ServiceRuntime;
 using Microsoft.WindowsAzure.Storage;
 using Macrodeek.StarDustModel;
 using GithubGraberLib;
+using GithubGraberLib.Domain;
+using ExtractBase.RestApi;
 
 namespace WorkerRole
 {
@@ -61,6 +63,15 @@ namespace WorkerRole
             Trace.TraceInformation("WorkerRole has stopped");
         }
 
+        private GithubFeed Parse(string url)
+        {
+            GithubFeed githubFeed = new GithubFeed();
+            string[] array = url.Split('/');
+            githubFeed.owner = array[3];
+            githubFeed.repo = array[4].Split('.')[0];
+            return githubFeed;
+        }
+
         private async Task RunAsync(CancellationToken cancellationToken)
         {
             // TODO: Replace the following with your own logic.
@@ -69,33 +80,69 @@ namespace WorkerRole
                 Trace.TraceInformation("Working");
 
                 List<GithubAccount> githubAccounts = db.GithubAccounts.ToList<GithubAccount>();
-                for(int i = 0; i < githubAccounts.Count; i++)
-                {
-                    GithubAccount account = githubAccounts[i];
 
-                    string accessToken = AuthorizeUtil.GetToken(account.UserName, account.Password);
-                    GithubExtractor githubExtractor = new GithubExtractor();
-                    foreach (var githubRepo in db.GithubRepoes)
+
+                int accountIndex = 0;
+                GithubExtractor githubExtractor = new GithubExtractor();
+                foreach (var githubRepo in db.GithubRepoes)
+                {
+                    int startPage = 0;
+                    int perPage = 100;
+
+                    GithubFeed githubFee = this.Parse(githubRepo.Url);
+                    RestApiCaller<List<CommitDetail>> commitInfoCaller = new RestApiCaller<List<CommitDetail>>(ApiFormats.BaseUri);
+
+                    string repoBaseUri = string.Format(ApiFormats.CommitRelativePathPattern, githubFee.owner, githubFee.repo);
+
+                    string accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
+
+                    while (true)
                     {
-                        //HashSet<string> user_logins = githubExtractor.ExtractUserLogin(extractRequest);
-                        //
-                        //extractRequest.AccessToken = accessToken;
-                        //extractRequest.Left = 5000;
-                        //HashSet<string> user_logins = githubExtractor.ExtractUserLogin(extractRequest);
-                        //if (user_logins.Count == 0)
-                        //{
-                        //    accountIndex++;
-                        //    break;
-                        //}
-                        //foreach (string ul in user_logins)
-                        //{
-                        //    userLogins.Add(ul);
-                        //}
-                        //if (extractRequest.Left > 0)
-                        //{
-                        //    accountIndex++;
-                        //    break;
-                        //}
+                        string urlParameters = repoBaseUri + "?page=" + startPage + "&per_page=" + perPage;
+                        try
+                        {
+                            List<CommitDetail> pagedDetails = commitInfoCaller.CallApi("get", accessToken, urlParameters, null);
+                            if (pagedDetails == null || pagedDetails.Count == 0)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                for (int i = 0; i < pagedDetails.Count; i++)
+                                {
+                                    if (pagedDetails[i].author != null)
+                                    {
+                                        TalentCandidate candidate = db.TalentCandidates.Where((tc) => tc.Login == pagedDetails[i].author.login).FirstOrDefault();
+                                        if(candidate == null)
+                                        {
+                                            TalentCandidate newCandidate = new TalentCandidate();
+                                            newCandidate.Company = string.Empty;
+                                            newCandidate.Email = string.Empty;
+                                            newCandidate.Followers = string.Empty;
+                                            newCandidate.FollowersUrl = string.Empty;
+                                            newCandidate.Location = string.Empty;
+                                            newCandidate.Login = pagedDetails[i].author.login;
+                                            newCandidate.ReposUrl = string.Empty;
+                                            db.TalentCandidates.Add(newCandidate);
+                                            db.SaveChanges();
+                                        }
+                                    }
+                                }
+                                startPage++;
+                            }
+                        }
+                        catch (HttpException e)
+                        {
+                            if (e.StatusCode == HttpStatusCode.Forbidden)
+                            {
+                                accountIndex++;
+                                accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
+                            }
+                            else
+                            {
+                                throw e;
+                            }
+                        }
                     }
                 }
 

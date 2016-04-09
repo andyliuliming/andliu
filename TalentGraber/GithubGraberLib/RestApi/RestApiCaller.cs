@@ -14,10 +14,37 @@ namespace ExtractBase.RestApi
     {
         private HttpStatusCode statusCode = 0;
         private string msg = null;
+
+        public HttpStatusCode StatusCode
+        {
+            get
+            {
+                return statusCode;
+            }
+
+            set
+            {
+                statusCode = value;
+            }
+        }
+
+        public string Msg
+        {
+            get
+            {
+                return msg;
+            }
+
+            set
+            {
+                msg = value;
+            }
+        }
+
         public HttpException(HttpStatusCode statusCode, string msg)
         {
-            this.statusCode = statusCode;
-            this.msg = msg;
+            this.StatusCode = statusCode;
+            this.Msg = msg;
         }
     }
     public class RestApiCaller<T> where T : class

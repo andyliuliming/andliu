@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GithubGraberLib
@@ -21,69 +22,48 @@ namespace GithubGraberLib
             return githubFeed;
         }
 
-        public void Retry(int times, Action action)
+        public void ExtractUserLogin(ExtractRequest extractRequest, HashSet<string> user_logins)
         {
-            int i = 0;
-            while (true)
-            {
-                try
-                {
-                    action();
-                    break;
-                }
-                catch (Exception e)
-                {
-                    if (i++ < times)
-                    {
-                        Trace.TraceError(e.ToString());
-                    }
-                    else
-                    {
-                        throw e;
-                    }
-                }
-            }
-
-        }
-
-        public HashSet<string> ExtractUserLogin(ExtractRequest extractRequest)
-        {
-            GithubFeed githubFee = this.Parse(extractRequest.URL);
-            HashSet<string> user_logins = new HashSet<string>();
-            // 1. first get the branches https://api.github.com/repos/torvalds/linux
-            //                              https://api.github.com/repos/apache/hadoop
-
-            // 2. get the commits from the branches. https://api.github.com/repos/torvalds/linux/commits?page=3&per_page=100
+            GithubFeed githubFee = this.Parse(extractRequest.Url);
             RestApiCaller<List<CommitDetail>> commitInfoCaller = new RestApiCaller<List<CommitDetail>>(ApiFormats.BaseUri);
 
             string repoBaseUri = string.Format(ApiFormats.CommitRelativePathPattern, githubFee.owner, githubFee.repo);
             while (true)
             {
-                Console.WriteLine("getting the page: " + extractRequest.StartPage);
                 string urlParameters = repoBaseUri + "?page=" + extractRequest.StartPage + "&per_page=" + extractRequest.PerPage;
-                List<CommitDetail> pagedDetails = null;
-                Retry(5,
-                () =>
+                try
                 {
-                    pagedDetails = commitInfoCaller.CallApi("get", extractRequest.AccessToken, urlParameters, null);
-                });
-                if (pagedDetails == null || pagedDetails.Count == 0)
-                {
-                    break;
-                }
-                else
-                {
-                    for (int i = 0; i < pagedDetails.Count; i++)
+                    List<CommitDetail> pagedDetails = commitInfoCaller.CallApi("get", extractRequest.AccessToken, urlParameters, null);
+                    if (pagedDetails == null || pagedDetails.Count == 0)
                     {
-                        if (pagedDetails[i].author != null)
-                        {
-                            user_logins.Add(pagedDetails[i].author.login);
-                        }
+                        break;
                     }
-                    extractRequest.StartPage++;
+                    else
+                    {
+                        for (int i = 0; i < pagedDetails.Count; i++)
+                        {
+                            if (pagedDetails[i].author != null)
+                            {
+                                user_logins.Add(pagedDetails[i].author.login);
+                            }
+                        }
+                        extractRequest.StartPage++;
+                    }
+                }
+                catch (HttpException e)
+                {
+                    if(e.StatusCode==System.Net.HttpStatusCode.Forbidden)
+                    {
+                        throw e;
+                    }
+                    else
+                    {
+                        // retry it.
+                        Thread.Sleep(1000);
+                        continue;
+                    }
                 }
             }
-            return user_logins;
         }
 
         // pagenation is ?page=2&per_page=100
@@ -94,7 +74,7 @@ namespace GithubGraberLib
         /// <returns></returns>
         public List<User> Extract(ExtractRequest extractRequest, List<string> user_logins)
         {
-            GithubFeed githubFee = this.Parse(extractRequest.URL);
+            GithubFeed githubFee = this.Parse(extractRequest.Url);
             List<User> users = new List<User>();
             RestApiCaller<User> userInfoCaller = new RestApiCaller<User>(ApiFormats.BaseUri);
             // 3. extract the commit info ("login") 
@@ -105,12 +85,8 @@ namespace GithubGraberLib
             {
                 Console.WriteLine("getting the user's info: " + user_logins[extractRequest.StartIndex + i]);
                 string urlParameters = string.Format(ApiFormats.UserApi, user_logins[extractRequest.StartIndex + i]);
-                User user = null;
-                Retry(5,
-                () =>
-                {
-                    user = userInfoCaller.CallApi("get", extractRequest.AccessToken, urlParameters, null);
-                });
+                User user = userInfoCaller.CallApi("get", extractRequest.AccessToken, urlParameters, null);
+
                 users.Add(user);
             }
 
