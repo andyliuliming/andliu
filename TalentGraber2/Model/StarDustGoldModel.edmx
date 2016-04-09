@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="StarDustGoldModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="StarDustGoldModelStoreContainer">
+    <EntitySet Name="AzureImages" EntityType="StarDustGoldModel.Store.AzureImages" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ImageBuckets" EntityType="StarDustGoldModel.Store.ImageBuckets" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ImageBucketUsages" EntityType="StarDustGoldModel.Store.ImageBucketUsages" store:Type="Tables" Schema="dbo" />
+  </EntityContainer>
+  <EntityType Name="AzureImages">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="BucketName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Type" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="IsPorn" Type="int" Nullable="false" />
+    <Property Name="HotScore" Type="int" Nullable="false" />
+    <Property Name="NormalScore" Type="int" Nullable="false" />
+    <Property Name="PornScore" Type="int" Nullable="false" />
+    <Property Name="Timestamp" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ImageBuckets">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Timestamp" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ImageBucketUsages">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="BucketName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="TotalStorage" Type="bigint" Nullable="false" />
+    <Property Name="ThroughPut" Type="bigint" Nullable="false" />
+    <Property Name="Timestamp" Type="datetime" Nullable="false" />
+  </EntityType>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="StarDustGoldModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="StarDustGoldModelContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AzureImages" EntityType="StarDustGoldModel.AzureImage" />
+          <EntitySet Name="ImageBuckets" EntityType="StarDustGoldModel.ImageBucket" />
+          <EntitySet Name="ImageBucketUsages" EntityType="StarDustGoldModel.ImageBucketUsage" />
+        </EntityContainer>
+        <EntityType Name="AzureImage">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BucketName" Type="String" Nullable="false" MaxLength="50" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" />
+          <Property Name="Type" Type="String" Nullable="false" />
+          <Property Name="IsPorn" Type="Int32" Nullable="false" />
+          <Property Name="HotScore" Type="Int32" Nullable="false" />
+          <Property Name="NormalScore" Type="Int32" Nullable="false" />
+          <Property Name="PornScore" Type="Int32" Nullable="false" />
+          <Property Name="Timestamp" Type="DateTime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ImageBucket">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Timestamp" Type="DateTime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ImageBucketUsage">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BucketName" Type="String" Nullable="false" />
+          <Property Name="TotalStorage" Type="Int64" Nullable="false" />
+          <Property Name="ThroughPut" Type="Int64" Nullable="false" />
+          <Property Name="Timestamp" Type="DateTime" Nullable="false" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="StarDustGoldModelStoreContainer" CdmEntityContainer="StarDustGoldModelContainer">
+    <EntitySetMapping Name="AzureImages">
+      <EntityTypeMapping TypeName="IsTypeOf(StarDustGoldModel.AzureImage)">
+        <MappingFragment StoreEntitySet="AzureImages">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="BucketName" ColumnName="BucketName" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="IsPorn" ColumnName="IsPorn" />
+          <ScalarProperty Name="HotScore" ColumnName="HotScore" />
+          <ScalarProperty Name="NormalScore" ColumnName="NormalScore" />
+          <ScalarProperty Name="PornScore" ColumnName="PornScore" />
+          <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ImageBuckets">
+      <EntityTypeMapping TypeName="IsTypeOf(StarDustGoldModel.ImageBucket)">
+        <MappingFragment StoreEntitySet="ImageBuckets">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ImageBucketUsages">
+      <EntityTypeMapping TypeName="IsTypeOf(StarDustGoldModel.ImageBucketUsage)">
+        <MappingFragment StoreEntitySet="ImageBucketUsages">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="BucketName" ColumnName="BucketName" />
+          <ScalarProperty Name="TotalStorage" ColumnName="TotalStorage" />
+          <ScalarProperty Name="ThroughPut" ColumnName="ThroughPut" />
+          <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
