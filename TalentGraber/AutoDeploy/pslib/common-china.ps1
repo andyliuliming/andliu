@@ -5,7 +5,7 @@ $Environment = "AzureChinaCloud"
 $subscriptionId = "cc1624c7-3f1d-4ed3-a855-668a86e96ad8"
 
 ######################  azure service related  ############################
-$StarDustProductServiceAddress="http://"+$StarDustProductAzureServiceName+".chinacloudapp.cn"
+$ProductServiceAddress="http://"+$ProductAzureServiceName+".chinacloudapp.cn"
 $StorageAccountEndpoint = "core.chinacloudapi.cn"
 $databaseSuffix = "database.chinacloudapi.cn"
 

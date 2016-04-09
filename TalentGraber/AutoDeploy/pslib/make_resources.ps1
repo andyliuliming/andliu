@@ -9,22 +9,22 @@ if($Environment -eq "AzureChinaCloud")
 
 $ErrorActionPreference= 'Continue'
 
-MakeSureAffinityGroupExists -Location $location -AffinityGroupName $StarDustAffinityGroupName
+MakeSureAffinityGroupExists -Location $location -AffinityGroupName $AffinityGroupName
 # create the cloud services if not exists
-MakeSureAzureServiceExists -ServiceName $StarDustProductAzureServiceName -AffinityGroupName $StarDustAffinityGroupName
-MakeSureAzureServiceExists -ServiceName $StarDustPortalAzureServiceName -AffinityGroupName $StarDustAffinityGroupName
+MakeSureAzureServiceExists -ServiceName $ProductAzureServiceName -AffinityGroupName $AffinityGroupName
+MakeSureAzureServiceExists -ServiceName $StarDustPortalAzureServiceName -AffinityGroupName $AffinityGroupName
 
 
-MakeSureResourceGroupExists -ResourceGroupName $StarDustResourceGroupName -Location $location
+MakeSureResourceGroupExists -ResourceGroupName $ResourceGroupName -Location $location
 $Sku = "Basic"
 $Size = "C2"
-MakeSureRedisCacheExists -RedisCacheServerName $StarDustRedisCacheProductServerName -ResourceGroupName $StarDustResourceGroupName -Location $location -Size $Size -Sku $Sku
+MakeSureRedisCacheExists -RedisCacheServerName $StarDustRedisCacheProductServerName -ResourceGroupName $ResourceGroupName -Location $location -Size $Size -Sku $Sku
 
 
 $databaseSecpasswd = ConvertTo-SecureString $databasePassword -AsPlainText -Force
 $databaseCredential = New-Object System.Management.Automation.PSCredential ($databaseUserName, $databaseSecpasswd)
-MakeSureDatabaseServerExists -ResourceGroupName $StarDustResourceGroupName -ServerName $databaseServerName -Credential $databaseCredential -Location $location
-MakeSureDatabaseExists -ResourceGroupName $StarDustResourceGroupName -DatabaseName $goldDataBaseName -ServerName $databaseServerName -DatabaseEdition $databaseEdition -DatabaseMaxSize $databaseMaxSize
+MakeSureDatabaseServerExists -ResourceGroupName $ResourceGroupName -ServerName $databaseServerName -Credential $databaseCredential -Location $location
+MakeSureDatabaseExists -ResourceGroupName $ResourceGroupName -DatabaseName $goldDataBaseName -ServerName $databaseServerName -DatabaseEdition $databaseEdition -DatabaseMaxSize $databaseMaxSize
 
 
 MakeSureStorageAccountExists -StorageName $diagnosticStorageAccountName -Location $location

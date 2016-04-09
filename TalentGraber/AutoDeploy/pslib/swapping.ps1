@@ -9,8 +9,8 @@ if($Environment -eq "AzureChinaCloud")
 
 $ErrorActionPreference= 'Continue'
 
-Write-Host "Swapping the environment $StarDustProductAzureServiceName"
-Move-AzureDeployment -ServiceName $StarDustProductAzureServiceName
+Write-Host "Swapping the environment $ProductAzureServiceName"
+Move-AzureDeployment -ServiceName $ProductAzureServiceName
 
 Write-Host "Swapping the environment $StarDustPortalAzureServiceName"
 Move-AzureDeployment -ServiceName $StarDustPortalAzureServiceName

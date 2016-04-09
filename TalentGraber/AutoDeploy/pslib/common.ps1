@@ -26,13 +26,13 @@ $databasePassword="User@123"
 $databaseServerName="talentgraberdatabase"
 
 ######################  azure service related  ############################
-$StarDustAffinityGroupName = "TalentGraberAffinityGroup"
-$StarDustProductAzureServiceName = "TalentGraberProductAzureService"
-$StarDustProductAzureServiceProjectName = "ProductAzureService"
-$StarDustProductServiceRoleName = "ProductService"
+$AffinityGroupName = "TalentGraberAffinityGroup"
+$ProductAzureServiceName = "TalentGraberProductAzureService"
+$ProductAzureServiceProjectName = "ProductAzureService"
+$ProductServiceRoleName = "ProductService"
 
 $AllowedCrossDomainHost="*"
-$StarDustResourceGroupName="TalentGraberResourceGroup"
+$ResourceGroupName="TalentGraberResourceGroup"
 
 #################################### all kinds of accounts #######################################
 
@@ -54,31 +54,16 @@ function ReplaceRealValue
     $TemplateOrigin=$TemplateOrigin -replace "{GOLD_DATABASENAME}",$goldDataBaseName
     $TemplateOrigin=$TemplateOrigin -replace "{DATABASE_USER_NAME}",$databaseUserName
     $TemplateOrigin=$TemplateOrigin -replace "{DATABASE_PASSWORD}",$databasePassword
-    $TemplateOrigin=$TemplateOrigin -replace "{StarDustProductServiceAddress}",$StarDustProductServiceAddress
-    $TemplateOrigin=$TemplateOrigin -replace "{StarDustSearchClusterName}",$StarDustSearchClusterName
-    $TemplateOrigin=$TemplateOrigin -replace "{StarDustSearchClusterPort}",$StarDustSearchClusterPort
+    $TemplateOrigin=$TemplateOrigin -replace "{ProductServiceAddress}",$ProductServiceAddress
     $TemplateOrigin=$TemplateOrigin -replace "{StorageAccountEndpoint}",$StorageAccountEndpoint
     $TemplateOrigin=$TemplateOrigin -replace "{AzureImageStorageAccount}",$imageStorageAccountName
     $TemplateOrigin=$TemplateOrigin -replace "{AzureImageStorageAccountKey}",$imageStorageAccountKey
 
-    # #####################porn image detection ##########################
-    $TemplateOrigin=$TemplateOrigin -replace "{WanXiangAppId}",$WanXiangAppId
-    $TemplateOrigin=$TemplateOrigin -replace "{WanXiangSecretId}",$WanXiangSecretId
-    $TemplateOrigin=$TemplateOrigin -replace "{WanXiangSecretKey}",$WanXiangSecretKey
     # ##################### monitoring accounts ##########################
     $TemplateOrigin=$TemplateOrigin -replace "{MonitoringAccount}",$MonitoringAccount
     $TemplateOrigin=$TemplateOrigin -replace "{MonitoringPassword}",$MonitoringPassword
 
-    # ##################### fulfill the redis cache ########################
-    $TemplateOrigin=$TemplateOrigin -replace "{StarDustProductCacheAddress}",$StarDustProductCacheAddress
-    $TemplateOrigin=$TemplateOrigin -replace "{StarDustProductCacheKey}",$StarDustProductCacheKey
-    
     # ##################### network related ##############################
-    $TemplateOrigin=$TemplateOrigin -replace "___StarDust_portal_ip___",$reservedIpForPortalServiceName
-    $TemplateOrigin=$TemplateOrigin -replace "___StarDust_product_ip___",$reservedIpForProductServiceName
     $TemplateOrigin=$TemplateOrigin -replace "{AllowedCrossDomainHost}",$AllowedCrossDomainHost
-
-    # ##################### kuaidi100 related ############################
-
     return $TemplateOrigin
 }

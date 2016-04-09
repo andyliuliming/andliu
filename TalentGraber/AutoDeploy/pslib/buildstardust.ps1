@@ -29,10 +29,10 @@ Invoke-MsBuild -Path ..\DataCacheLayer\DataCacheLayer.csproj -P "/P:Configuratio
 Invoke-MsBuild -Path ..\ServiceBase\ServiceBase.csproj -P "/P:Configuration=$buildType" #-ShowBuildWindow
 
 Write-Host "DiagnosticStorageAccountName is $diagnosticStorageAccountName"
-$diagnosticStorageKey=GetStorageAccountKey -ResourceGroupName $StarDustResourceGroupName -StorageAccountName $diagnosticStorageAccountName
+$diagnosticStorageKey = GetStorageAccountKey -ResourceGroupName $ResourceGroupName -StorageAccountName $diagnosticStorageAccountName
 Write-Host "diagnosticStorageKey is $diagnosticStorageKey"
 
-$intelliTraceConnectionString="BaseEndpoint=core.windows.net;Protocol=https;AccountName="+$diagnosticStorageAccountName+";AccountKey="+$diagnosticStorageKey
+$intelliTraceConnectionString="BaseEndpoint="+$StorageAccountEndpoint+";Protocol=https;AccountName="+$diagnosticStorageAccountName+";AccountKey="+$diagnosticStorageKey
 
 $intelliTraceParameter='"'+"$intelliTraceConnectionString"+'"'
 

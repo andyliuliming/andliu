@@ -7,7 +7,7 @@ $Environment = "AzureCloud"
 $subscriptionId="c4528d9e-c99a-48bb-b12d-fde2176a43b8"
 
 ######################  azure service related  ############################
-$StarDustProductServiceAddress="http://"+$StarDustProductAzureServiceName+".chinacloudapp.cn"
+$ProductServiceAddress="http://"+$ProductAzureServiceName+".chinacloudapp.cn"
 $StorageAccountEndpoint = "core.windows.net"
 $databaseSuffix = "database.windows.net"
 
