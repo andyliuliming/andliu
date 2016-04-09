@@ -32,16 +32,16 @@ namespace Macrodeek.StarDustProductService.Controllers
     builder.EntitySet<AzureImage>("AzureImages");
     config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
     */
-    public class AzureImagesController : GoldODataController
+    public class TalentCandidatesController : GoldODataController
     {
         // GET: odata/AzureImages
         // the format of the query could be 
         // odata/AzureImages?$FileName=a.jpg&$Tag=small1
         // odata/AzureImages?$FileName=b.jpg&$Tag=watermark1
         //[MacroDeekAuthorize]
-        public async Task<IHttpActionResult> GetAzureImages(ODataQueryOptions<AzureImage> queryOptions)
+        public async Task<IHttpActionResult> GetTalentCandidates(ODataQueryOptions<TalentCandidate> queryOptions)
         {
-            return Ok<IEnumerable<AzureImage>>((IQueryable<AzureImage>)queryOptions.ApplyTo(db.AzureImages));
+            return Ok<IEnumerable<TalentCandidate>>((IQueryable<TalentCandidate>)queryOptions.ApplyTo(db.TalentCandidates));
         }
 
     }

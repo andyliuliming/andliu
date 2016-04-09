@@ -6,7 +6,7 @@ namespace Macrodeek.StarDustServiceBase.Controllers
 {
     public class GoldODataController : ODataBaseController
     {
-        protected StarDustGoldModelContainer db = new StarDustGoldModelContainer();
+        protected GoldModelContainer db = new GoldModelContainer();
         public GoldODataController()
             : base()
         {

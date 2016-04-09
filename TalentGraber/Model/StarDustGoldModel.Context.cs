@@ -14,10 +14,10 @@ namespace Macrodeek.StarDustModel
     using System.Data.Entity.Infrastructure;
     using Macrodeek.MacrodeekCommon;
     
-    public partial class StarDustGoldModelContainer : DbContext
+    public partial class GoldModelContainer : DbContext
     {
-        public StarDustGoldModelContainer()
-            : base(AppSettingsProvider.GetSetting("StarDustGoldModelContainer"))
+        public GoldModelContainer()
+            : base(AppSettingsProvider.GetSetting("GoldModelContainer"))
         {
         }
     
@@ -26,8 +26,7 @@ namespace Macrodeek.StarDustModel
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<AzureImage> AzureImages { get; set; }
-        public virtual DbSet<ImageBucket> ImageBuckets { get; set; }
-        public virtual DbSet<ImageBucketUsage> ImageBucketUsages { get; set; }
+        public virtual DbSet<GithubRepo> GithubRepoes { get; set; }
+        public virtual DbSet<TalentCandidate> TalentCandidates { get; set; }
     }
 }

@@ -129,13 +129,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AzureImage.cs">
-      <DependentUpon>StarDustGoldModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ImageBucket.cs">
-      <DependentUpon>StarDustGoldModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ImageBucketUsage.cs">
+    <Compile Include="GithubRepo.cs">
       <DependentUpon>StarDustGoldModel.tt</DependentUpon>
     </Compile>
     <Compile Include="StarDustGoldModel.Context.cs">
@@ -154,6 +148,9 @@
       <DependentUpon>StarDustGoldModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TalentCandidate.cs">
+      <DependentUpon>StarDustGoldModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="WrapUp\BlobDownloadModel.cs" />
     <Compile Include="WrapUp\ImageModel.cs" />
     <Compile Include="WrapUp\ImageData.cs" />

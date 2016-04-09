@@ -2,13 +2,13 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/07/2016 21:50:36
--- Generated from EDMX file: C:\Users\andliu\Documents\GitHub\azureimagehost\StarDustModel\StarDustGoldModel.edmx
+-- Date Created: 04/09/2016 12:55:42
+-- Generated from EDMX file: C:\Users\andliu\Documents\GitHub\andliu\TalentGraber\Model\StarDustGoldModel.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
 GO
-USE [stardustgold];
+USE [talentgrabergold];
 GO
 IF SCHEMA_ID(N'dbo') IS NULL EXECUTE(N'CREATE SCHEMA [dbo]');
 GO
@@ -22,49 +22,26 @@ GO
 -- Dropping existing tables
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[AzureImages]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[AzureImages];
+IF OBJECT_ID(N'[dbo].[GithubRepoes]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[GithubRepoes];
 GO
-IF OBJECT_ID(N'[dbo].[ImageBuckets]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[ImageBuckets];
-GO
-IF OBJECT_ID(N'[dbo].[ImageBucketUsages]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[ImageBucketUsages];
+IF OBJECT_ID(N'[dbo].[TalentCandidates]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[TalentCandidates];
 GO
 
 -- --------------------------------------------------
 -- Creating all tables
 -- --------------------------------------------------
 
--- Creating table 'AzureImages'
-CREATE TABLE [dbo].[AzureImages] (
-    [Id] int IDENTITY(1,1) NOT NULL,
-    [BucketName] nvarchar(50)  NOT NULL,
-    [Name] nvarchar(50)  NOT NULL,
-    [Type] nvarchar(max)  NOT NULL,
-    [IsPorn] int  NOT NULL,
-    [HotScore] int  NOT NULL,
-    [NormalScore] int  NOT NULL,
-    [PornScore] int  NOT NULL,
-    [Timestamp] datetime  NOT NULL
+-- Creating table 'GithubRepoes'
+CREATE TABLE [dbo].[GithubRepoes] (
+    [Id] int IDENTITY(1,1) NOT NULL
 );
 GO
 
--- Creating table 'ImageBuckets'
-CREATE TABLE [dbo].[ImageBuckets] (
-    [Id] int IDENTITY(1,1) NOT NULL,
-    [Name] nvarchar(max)  NOT NULL,
-    [Timestamp] datetime  NOT NULL
-);
-GO
-
--- Creating table 'ImageBucketUsages'
-CREATE TABLE [dbo].[ImageBucketUsages] (
-    [Id] int IDENTITY(1,1) NOT NULL,
-    [BucketName] nvarchar(max)  NOT NULL,
-    [TotalStorage] bigint  NOT NULL,
-    [ThroughPut] bigint  NOT NULL,
-    [Timestamp] datetime  NOT NULL
+-- Creating table 'TalentCandidates'
+CREATE TABLE [dbo].[TalentCandidates] (
+    [Id] int IDENTITY(1,1) NOT NULL
 );
 GO
 
@@ -72,21 +49,15 @@ GO
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
 
--- Creating primary key on [Id] in table 'AzureImages'
-ALTER TABLE [dbo].[AzureImages]
-ADD CONSTRAINT [PK_AzureImages]
+-- Creating primary key on [Id] in table 'GithubRepoes'
+ALTER TABLE [dbo].[GithubRepoes]
+ADD CONSTRAINT [PK_GithubRepoes]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
--- Creating primary key on [Id] in table 'ImageBuckets'
-ALTER TABLE [dbo].[ImageBuckets]
-ADD CONSTRAINT [PK_ImageBuckets]
-    PRIMARY KEY CLUSTERED ([Id] ASC);
-GO
-
--- Creating primary key on [Id] in table 'ImageBucketUsages'
-ALTER TABLE [dbo].[ImageBucketUsages]
-ADD CONSTRAINT [PK_ImageBucketUsages]
+-- Creating primary key on [Id] in table 'TalentCandidates'
+ALTER TABLE [dbo].[TalentCandidates]
+ADD CONSTRAINT [PK_TalentCandidates]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 

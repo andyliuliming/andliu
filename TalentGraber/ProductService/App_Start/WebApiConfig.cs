@@ -35,7 +35,7 @@ namespace Macrodeek.StarDustProductService
             config.MapHttpAttributeRoutes();
 
             builder = new ODataConventionModelBuilder();
-            builder.EntitySet<AzureImage>("AzureImages");
+            builder.EntitySet<TalentCandidate>("TalentCandidates");
 
             // External Notify Backs
             iEdmModel = builder.GetEdmModel();

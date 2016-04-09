@@ -12,12 +12,8 @@ namespace Macrodeek.StarDustModel
     using System;
     using System.Collections.Generic;
     
-    public partial class ImageBucketUsage
+    public partial class GithubRepo
     {
         public int Id { get; set; }
-        public string BucketName { get; set; }
-        public long TotalStorage { get; set; }
-        public long ThroughPut { get; set; }
-        public System.DateTime Timestamp { get; set; }
     }
 }

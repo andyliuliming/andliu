@@ -5,9 +5,8 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="a75c88e297004510a46d61e4af123943" Name="Diagram1" ZoomLevel="80" >
-        <EntityTypeShape EntityType="StarDustGoldModel.AzureImage" Width="2" PointX="3" PointY="0.875" />
-        <EntityTypeShape EntityType="StarDustGoldModel.ImageBucket" Width="1.875" PointX="0.625" PointY="0.875" />
-        <EntityTypeShape EntityType="StarDustGoldModel.ImageBucketUsage" Width="1.875" PointX="0.625" PointY="2.875" />
+        <EntityTypeShape EntityType="GoldModel.GithubRepo" Width="2.625" PointX="0.875" PointY="1.25" />
+        <EntityTypeShape EntityType="GoldModel.TalentCandidate" Width="3" PointX="3.875" PointY="1.25" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

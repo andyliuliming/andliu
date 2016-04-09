@@ -12,10 +12,8 @@ namespace Macrodeek.StarDustModel
     using System;
     using System.Collections.Generic;
     
-    public partial class ImageBucket
+    public partial class TalentCandidate
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public System.DateTime Timestamp { get; set; }
     }
 }
