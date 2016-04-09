@@ -81,8 +81,9 @@ namespace WorkerRole
 
                 List<GithubAccount> githubAccounts = db.GithubAccounts.ToList<GithubAccount>();
 
-
                 int accountIndex = 0;
+                string accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
+
                 GithubExtractor githubExtractor = new GithubExtractor();
                 foreach (var githubRepo in db.GithubRepoes)
                 {
@@ -91,11 +92,8 @@ namespace WorkerRole
 
                     GithubFeed githubFee = this.Parse(githubRepo.Url);
                     RestApiCaller<List<CommitDetail>> commitInfoCaller = new RestApiCaller<List<CommitDetail>>(ApiFormats.BaseUri);
-
                     string repoBaseUri = string.Format(ApiFormats.CommitRelativePathPattern, githubFee.owner, githubFee.repo);
-
-                    string accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
-
+                    
                     while (true)
                     {
                         string urlParameters = repoBaseUri + "?page=" + startPage + "&per_page=" + perPage;
@@ -144,6 +142,14 @@ namespace WorkerRole
                             }
                         }
                     }
+                }
+
+                RestApiCaller<User> userInfoCaller = new RestApiCaller<User>(ApiFormats.BaseUri);
+                foreach ( var tc in db.TalentCandidates)
+                {
+                    string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
+                    User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
+                    //TODO set the values in the user 
                 }
 
                 await Task.Delay(1000 * 60 * 60 * 5);
