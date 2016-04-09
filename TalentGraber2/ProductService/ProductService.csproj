@@ -244,8 +244,75 @@
     <Compile Include="WebRole.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="common\changepass\changepass.css" />
+    <Content Include="common\changepass\changepass.html" />
+    <Content Include="common\changepass\changepass.js" />
+    <Content Include="common\listview\listview.css" />
+    <Content Include="common\listview\listview.html" />
+    <Content Include="common\listview\listview.js" />
+    <Content Include="common\login\login.css" />
+    <Content Include="common\login\login.html" />
+    <Content Include="common\login\login.js" />
+    <Content Include="common\register\register.css" />
+    <Content Include="common\register\register.html" />
+    <Content Include="common\register\register.js" />
+    <Content Include="common\shared\common.css" />
+    <Content Include="common\shared\dialog.css" />
+    <Content Include="common\shared\util.js" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="lib\bootstrap\css\bootstrap-theme.css" />
+    <Content Include="lib\bootstrap\css\bootstrap-theme.min.css" />
+    <Content Include="lib\bootstrap\css\bootstrap.css" />
+    <Content Include="lib\bootstrap\css\bootstrap.min.css" />
+    <Content Include="lib\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="lib\bootstrap\js\bootstrap.js" />
+    <Content Include="lib\bootstrap\js\bootstrap.min.js" />
+    <Content Include="lib\bootstrap\js\npm.js" />
+    <Content Include="lib\Chart.min.js" />
+    <Content Include="lib\jquery.cookie.js" />
+    <Content Include="lib\jquery.js" />
+    <Content Include="lib\jquery.ztree.all-3.5.js" />
+    <Content Include="lib\knockout.js" />
+    <Content Include="lib\knockout.mapping-latest.js" />
+    <Content Include="lib\require.js" />
+    <Content Include="lib\text.js" />
+    <Content Include="lib\ztree\metroStyle\img\line_conn.png" />
+    <Content Include="lib\ztree\metroStyle\img\loading.gif" />
+    <Content Include="lib\ztree\metroStyle\img\metro.gif" />
+    <Content Include="lib\ztree\metroStyle\img\metro.png" />
+    <Content Include="lib\ztree\metroStyle\metroStyle.css" />
+    <Content Include="management-build.js" />
+    <Content Include="management-index-debug.html" />
+    <Content Include="management-index.html" />
+    <Content Include="management-main.js" />
+    <Content Include="manage\bucketusages\bucketusage-item.css" />
+    <Content Include="manage\bucketusages\bucketusage-item.html" />
+    <Content Include="manage\bucketusages\bucketusage-item.js" />
+    <Content Include="manage\bucketusages\bucketusages.css" />
+    <Content Include="manage\bucketusages\bucketusages.html" />
+    <Content Include="manage\bucketusages\bucketusages.js" />
+    <Content Include="manage\imagebuckets\imagebucket-detail.css" />
+    <Content Include="manage\imagebuckets\imagebucket-detail.html" />
+    <Content Include="manage\imagebuckets\imagebucket-detail.js" />
+    <Content Include="manage\imagebuckets\imagebucket-item.css" />
+    <Content Include="manage\imagebuckets\imagebucket-item.html" />
+    <Content Include="manage\imagebuckets\imagebucket-item.js" />
+    <Content Include="manage\imagebuckets\imagebuckets.css" />
+    <Content Include="manage\imagebuckets\imagebuckets.html" />
+    <Content Include="manage\imagebuckets\imagebuckets.js" />
+    <Content Include="manage\imagemanagement\image-item.css" />
+    <Content Include="manage\imagemanagement\image-item.html" />
+    <Content Include="manage\imagemanagement\image-item.js" />
+    <Content Include="manage\imagemanagement\imagemanagement.css" />
+    <Content Include="manage\imagemanagement\imagemanagement.html" />
+    <Content Include="manage\imagemanagement\imagemanagement.js" />
+    <Content Include="manage\managementlayout\managementlayout.css" />
+    <Content Include="manage\managementlayout\managementlayout.html" />
+    <Content Include="manage\managementlayout\managementlayout.js" />
+    <Content Include="manage\servicestatus\servicestatus.css" />
+    <Content Include="manage\servicestatus\servicestatus.html" />
+    <Content Include="manage\servicestatus\servicestatus.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -256,9 +323,19 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="manage\configuration\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <Content Include="lib\bootstrap\css\bootstrap-theme.css.map" />
+    <Content Include="lib\bootstrap\css\bootstrap-theme.min.css.map" />
+    <Content Include="lib\bootstrap\css\bootstrap.css.map" />
+    <Content Include="lib\bootstrap\css\bootstrap.min.css.map" />
+    <Content Include="lib\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="lib\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="lib\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="lib\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>

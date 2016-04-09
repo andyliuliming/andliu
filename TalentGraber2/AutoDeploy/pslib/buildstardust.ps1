@@ -10,24 +10,22 @@ if($Environment -eq "AzureChinaCloud")
 
 # wrap up the javascript and the css
 npm install -g requirejs
-r.js.cmd -o ..\StarDustPortalService\management-build.js
+r.js.cmd -o ..\PortalService\management-build.js
 
-Invoke-MsBuild -Path ..\StarDustService.sln -P "/t:Clean" #-ShowBuildWindow
+Invoke-MsBuild -Path ..\TalentGraberService.sln -P "/t:Clean" #-ShowBuildWindow
 
 Invoke-MsBuild -Path ..\pic_dotnet_sdk\pic_dotnet_sdk.csproj -P "/P:Configuration=$buildType" # -ShowBuildWindow
 # build the authentication lib
-Invoke-MsBuild -Path ..\StarDustCommon\StarDustCommon.csproj -P "/P:Configuration=$buildType" # -ShowBuildWindow
+Invoke-MsBuild -Path ..\Common\Common.csproj -P "/P:Configuration=$buildType" # -ShowBuildWindow
 # build the AzureEnvironment
 
 # build the database model project
-Invoke-MsBuild -Path ..\StarDustModel\StarDustModel.csproj -P "/P:Configuration=$buildType" #-ShowBuildWindow
+Invoke-MsBuild -Path ..\Model\Model.csproj -P "/P:Configuration=$buildType" #-ShowBuildWindow
 
-Invoke-MsBuild -Path ..\StarDustAzureStorageService\StarDustAzureStorageService.csproj -P "/P:Configuration=$buildType" #-ShowBuildWindow
-
-Invoke-MsBuild -Path ..\StarDustDataCacheLayer\StarDustDataCacheLayer.csproj -P "/P:Configuration=$buildType" #-ShowBuildWindow
+Invoke-MsBuild -Path ..\DataCacheLayer\DataCacheLayer.csproj -P "/P:Configuration=$buildType" #-ShowBuildWindow
 
 # build the service base project
-Invoke-MsBuild -Path ..\StarDustServiceBase\StarDustServiceBase.csproj -P "/P:Configuration=$buildType" #-ShowBuildWindow
+Invoke-MsBuild -Path ..\ServiceBase\ServiceBase.csproj -P "/P:Configuration=$buildType" #-ShowBuildWindow
 
 Write-Host "DiagnosticStorageAccountName is $diagnosticStorageAccountName"
 $diagnosticStorageKey=GetStorageAccountKey -ResourceGroupName $StarDustResourceGroupName -StorageAccountName $diagnosticStorageAccountName
