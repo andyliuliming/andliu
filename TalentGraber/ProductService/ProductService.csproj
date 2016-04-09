@@ -343,10 +343,6 @@
       <Project>{dc609afb-a535-4f76-adea-4e1187db2a56}</Project>
       <Name>Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DataCacheLayer\DataCacheLayer.csproj">
-      <Project>{271b6b6d-b1d2-4e8d-a40a-73a65fab4934}</Project>
-      <Name>DataCacheLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{558871f5-1f5c-4d80-b765-331e1e986cc4}</Project>
       <Name>Model</Name>

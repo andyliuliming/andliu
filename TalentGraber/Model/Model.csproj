@@ -129,6 +129,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GithubAccount.cs">
+      <DependentUpon>StarDustGoldModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="GithubRepo.cs">
       <DependentUpon>StarDustGoldModel.tt</DependentUpon>
     </Compile>
@@ -151,10 +154,12 @@
     <Compile Include="TalentCandidate.cs">
       <DependentUpon>StarDustGoldModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="WrapUp\BlobDownloadModel.cs" />
-    <Compile Include="WrapUp\ImageModel.cs" />
-    <Compile Include="WrapUp\ImageData.cs" />
-    <Compile Include="WrapUp\BlobUploadModel.cs" />
+    <Compile Include="WrapUp\ApiFormats.cs" />
+    <Compile Include="WrapUp\CommitInfo.cs" />
+    <Compile Include="WrapUp\ExtractRequest.cs" />
+    <Compile Include="WrapUp\GithubFeed.cs" />
+    <Compile Include="WrapUp\RepositoryInfo.cs" />
+    <Compile Include="WrapUp\User.cs" />
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="StarDustGoldModel.edmx">

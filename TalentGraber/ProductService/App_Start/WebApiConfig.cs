@@ -1,7 +1,6 @@
 ﻿using StarDustCommon.Util;
 using Macrodeek.AzureEnvironment;
 using Macrodeek.StarDustModel;
-using Macrodeek.StarDustModel.WrapUp;
 using Macrodeek.StarDustServiceBase.Traces;
 using Macrodeek.MacrodeekCommon;
 using Microsoft.OData.Edm;

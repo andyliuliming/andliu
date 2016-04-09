@@ -1,6 +1,4 @@
-﻿using Macrodeek.StarDustDataCacheLayer.RedisCache;
-using Macrodeek.StarDustModel;
-using Macrodeek.StarDustModel.WrapUp;
+﻿using Macrodeek.StarDustModel;
 using Macrodeek.StarDustServiceBase;
 using Macrodeek.StarDustServiceBase.Controllers;
 using Microsoft.OData.Core;

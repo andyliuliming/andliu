@@ -9,6 +9,7 @@ using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using Microsoft.WindowsAzure.Storage;
+using Macrodeek.StarDustModel;
 
 namespace WorkerRole
 {
@@ -17,10 +18,11 @@ namespace WorkerRole
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
 
+        private GoldModelContainer db = new GoldModelContainer();
+
         public override void Run()
         {
             Trace.TraceInformation("WorkerRole is running");
-
             try
             {
                 this.RunAsync(this.cancellationTokenSource.Token).Wait();
@@ -58,12 +60,22 @@ namespace WorkerRole
             Trace.TraceInformation("WorkerRole has stopped");
         }
 
+        private GithubAccount GetAccount()
+        {
+            return db.GithubAccounts.First<GithubAccount>();
+        }
+
         private async Task RunAsync(CancellationToken cancellationToken)
         {
             // TODO: Replace the following with your own logic.
             while (!cancellationToken.IsCancellationRequested)
             {
                 Trace.TraceInformation("Working");
+
+                foreach(var githubRepo in db.GithubRepoes)
+                {
+
+                }
                 await Task.Delay(1000);
             }
         }

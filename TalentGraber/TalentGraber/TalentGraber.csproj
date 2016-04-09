@@ -64,6 +64,10 @@
       <Project>{ac117594-8748-4e22-a38d-c14ee764537d}</Project>
       <Name>GithubGraberLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{558871f5-1f5c-4d80-b765-331e1e986cc4}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="emailaccounts.txt">

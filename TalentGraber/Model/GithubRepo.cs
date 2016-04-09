@@ -15,5 +15,6 @@ namespace Macrodeek.StarDustModel
     public partial class GithubRepo
     {
         public int Id { get; set; }
+        public string Url { get; set; }
     }
 }

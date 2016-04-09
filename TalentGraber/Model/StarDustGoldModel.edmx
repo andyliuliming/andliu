@@ -8,18 +8,34 @@
   <EntityContainer Name="GoldModelStoreContainer">
     <EntitySet Name="GithubRepoes" EntityType="GoldModel.Store.GithubRepoes" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="TalentCandidates" EntityType="GoldModel.Store.TalentCandidates" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="GithubAccounts" EntityType="GoldModel.Store.GithubAccounts" store:Type="Tables" Schema="dbo" />
   </EntityContainer>
   <EntityType Name="GithubRepoes">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Url" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="TalentCandidates">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Email" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Company" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Location" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Followers" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ReposUrl" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="FollowersUrl" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="GithubAccounts">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -28,18 +44,34 @@
         <EntityContainer Name="GoldModelContainer" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="GithubRepoes" EntityType="GoldModel.GithubRepo" />
           <EntitySet Name="TalentCandidates" EntityType="GoldModel.TalentCandidate" />
+          <EntitySet Name="GithubAccounts" EntityType="GoldModel.GithubAccount" />
         </EntityContainer>
         <EntityType Name="GithubRepo">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Url" Type="String" Nullable="false" />
         </EntityType>
         <EntityType Name="TalentCandidate">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Email" Type="String" Nullable="false" />
+          <Property Name="Company" Type="String" Nullable="false" />
+          <Property Name="Location" Type="String" Nullable="false" />
+          <Property Name="Followers" Type="String" Nullable="false" />
+          <Property Name="ReposUrl" Type="String" Nullable="false" />
+          <Property Name="FollowersUrl" Type="String" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GithubAccount">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" Nullable="false" />
+          <Property Name="Password" Type="String" Nullable="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -51,6 +83,7 @@
       <EntityTypeMapping TypeName="IsTypeOf(GoldModel.GithubRepo)">
         <MappingFragment StoreEntitySet="GithubRepoes">
           <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Url" ColumnName="Url" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -58,6 +91,21 @@
       <EntityTypeMapping TypeName="IsTypeOf(GoldModel.TalentCandidate)">
         <MappingFragment StoreEntitySet="TalentCandidates">
           <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Company" ColumnName="Company" />
+          <ScalarProperty Name="Location" ColumnName="Location" />
+          <ScalarProperty Name="Followers" ColumnName="Followers" />
+          <ScalarProperty Name="ReposUrl" ColumnName="ReposUrl" />
+          <ScalarProperty Name="FollowersUrl" ColumnName="FollowersUrl" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="GithubAccounts">
+      <EntityTypeMapping TypeName="IsTypeOf(GoldModel.GithubAccount)">
+        <MappingFragment StoreEntitySet="GithubAccounts">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

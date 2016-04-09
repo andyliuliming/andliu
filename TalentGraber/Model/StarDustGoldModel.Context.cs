@@ -28,5 +28,6 @@ namespace Macrodeek.StarDustModel
     
         public virtual DbSet<GithubRepo> GithubRepoes { get; set; }
         public virtual DbSet<TalentCandidate> TalentCandidates { get; set; }
+        public virtual DbSet<GithubAccount> GithubAccounts { get; set; }
     }
 }

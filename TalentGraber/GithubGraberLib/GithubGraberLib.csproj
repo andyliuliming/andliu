@@ -40,21 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Domain\ApiFormats.cs" />
-    <Compile Include="Domain\ExtractRequest.cs" />
-    <Compile Include="Domain\CommitInfo.cs" />
-    <Compile Include="Domain\GithubAccount.cs" />
-    <Compile Include="Domain\GithubFeed.cs" />
-    <Compile Include="Domain\RepositoryInfo.cs" />
     <Compile Include="GithubExtractor.cs" />
-    <Compile Include="UserInfoExtractor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Domain\User.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ExtractBase\ExtractBase.csproj">
       <Project>{37bd1a6e-bee8-4886-8012-38de6e6267ee}</Project>
       <Name>ExtractBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{558871f5-1f5c-4d80-b765-331e1e986cc4}</Project>
+      <Name>Model</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

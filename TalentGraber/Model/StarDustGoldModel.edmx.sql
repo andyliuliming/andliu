@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/09/2016 12:55:42
+-- Date Created: 04/09/2016 13:35:22
 -- Generated from EDMX file: C:\Users\andliu\Documents\GitHub\andliu\TalentGraber\Model\StarDustGoldModel.edmx
 -- --------------------------------------------------
 
@@ -35,13 +35,28 @@ GO
 
 -- Creating table 'GithubRepoes'
 CREATE TABLE [dbo].[GithubRepoes] (
-    [Id] int IDENTITY(1,1) NOT NULL
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [Url] nvarchar(max)  NOT NULL
 );
 GO
 
 -- Creating table 'TalentCandidates'
 CREATE TABLE [dbo].[TalentCandidates] (
-    [Id] int IDENTITY(1,1) NOT NULL
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [Email] nvarchar(max)  NOT NULL,
+    [Company] nvarchar(max)  NOT NULL,
+    [Location] nvarchar(max)  NOT NULL,
+    [Followers] nvarchar(max)  NOT NULL,
+    [ReposUrl] nvarchar(max)  NOT NULL,
+    [FollowersUrl] nvarchar(max)  NOT NULL
+);
+GO
+
+-- Creating table 'GithubAccounts'
+CREATE TABLE [dbo].[GithubAccounts] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [UserName] nvarchar(max)  NOT NULL,
+    [Password] nvarchar(max)  NOT NULL
 );
 GO
 
@@ -58,6 +73,12 @@ GO
 -- Creating primary key on [Id] in table 'TalentCandidates'
 ALTER TABLE [dbo].[TalentCandidates]
 ADD CONSTRAINT [PK_TalentCandidates]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'GithubAccounts'
+ALTER TABLE [dbo].[GithubAccounts]
+ADD CONSTRAINT [PK_GithubAccounts]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 

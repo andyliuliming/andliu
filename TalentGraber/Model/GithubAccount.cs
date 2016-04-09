@@ -12,14 +12,10 @@ namespace Macrodeek.StarDustModel
     using System;
     using System.Collections.Generic;
     
-    public partial class TalentCandidate
+    public partial class GithubAccount
     {
         public int Id { get; set; }
-        public string Email { get; set; }
-        public string Company { get; set; }
-        public string Location { get; set; }
-        public string Followers { get; set; }
-        public string ReposUrl { get; set; }
-        public string FollowersUrl { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
     }
 }
