@@ -121,7 +121,6 @@
     <None Include="deployin-china.ps1" />
     <None Include="pslib\deploystardust_to_staging.ps1" />
     <None Include="pslib\make_resources.ps1" />
-    <None Include="scratch\createdatabaseschema.ps1" />
     <None Include="deployin-global.ps1" />
     <None Include="pslib\enablediagnostic.ps1" />
     <None Include="pslib\Invoke-MsBuild.ps1" />

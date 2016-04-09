@@ -15,15 +15,15 @@ $imageStorageAccountKey = ""
 $StorageAccountEndpoint = ""
 
 ######################  database related  ############################
-$goldDataBaseName = "stardustgold"
+$goldDataBaseName = "talentgrabergold"
 $collation = "SQL_Latin1_General_CP1_CI_AS"
 $databaseEdition="Basic"
 #https://msdn.microsoft.com/en-us/library/Dn546722.aspx
 $databaseVersion=2.0
 $databaseMaxSize=(2*1024*1024*1024)# this is in bytes
-$databaseUserName="StarDust"
+$databaseUserName="TalentGraber"
 $databasePassword="User@123"
-$databaseServerName="stardustdatabase"
+$databaseServerName="talentgraberdatabase"
 
 ######################  azure service related  ############################
 $StarDustAffinityGroupName = "TalentGraberAffinityGroup"
@@ -31,23 +31,8 @@ $StarDustProductAzureServiceName = "TalentGraberProductAzureService"
 $StarDustProductAzureServiceProjectName = "ProductAzureService"
 $StarDustProductServiceRoleName = "ProductService"
 
-####################################  redis cache related #####################################
-$StarDustRedisCacheProductServerName = "StarDustcache"
-$StarDustProductCacheAddress=$StarDustRedisCacheProductServerName+".redis.cache.windows.net"
-$StarDustProductCacheKey=""
-
-####################################  porn image detection ####################################
-$WanXiangAppId="10031424"
-$WanXiangSecretId="AKID0CGuJzFzot73krquuui9Kmj91SxIkMUC"
-$WanXiangSecretKey="izZoLPWxtT35vwyZQihyt5mMKwZIdFWE"
-
-#$AllowedCrossDomainHost="http://$StarDustPortalAzureServiceName.cloudapp.net,http://StarDust.com,https://$StarDustPortalAzureServiceName.cloudapp.net,https://StarDust.com"
 $AllowedCrossDomainHost="*"
-$StarDustResourceGroupName="StarDustResourceGroup"
-$reservedIpForProductServiceName = $Prefix + "_product_ip"
-$reservedIpForProductServiceNameStage = $Prefix + "_product_ip_stage"
-$reservedIpForPortalServiceName = $Prefix + "_portal_ip"
-$reservedIpForPortalServiceNameStage = $Prefix + "_portal_ip_stage"
+$StarDustResourceGroupName="TalentGraberResourceGroup"
 
 #################################### all kinds of accounts #######################################
 
