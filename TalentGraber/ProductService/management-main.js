@@ -15,42 +15,33 @@
         }
     });
 
-require(["jquery",
-    "common/shared/util",
-    "jcookie",
-    "ztree",
-    "knockout",
-    "komapping",
-    "text",
-    "manage/managementlayout/managementlayout",
-    "manage/imagemanagement/imagemanagement",
-    "manage/imagebuckets/imagebuckets",
-    "manage/bucketusages/bucketusages",
-    "manage/imagebuckets/imagebucket-detail",
-    "manage/servicestatus/servicestatus"],
-    function ($,
-        util,
-        jcookie,
-        ztree,
-        ko,
-        komapping,
-        text,
-        managementlayout,
-        imagemanagement,
-        imagebuckets,
-        bucketusages,
-        imagebucketdetail,
-        servicestatus) {
+    require(["jquery",
+        "common/shared/util",
+        "jcookie",
+        "ztree",
+        "knockout",
+        "komapping",
+        "text",
+        "manage/managementlayout/managementlayout",
+        "manage/talentsmanagement/talentmanagement",
+        "manage/githubrepo/githubrepomanagement"],
+        function ($,
+            util,
+            jcookie,
+            ztree,
+            ko,
+            komapping,
+            text,
+            managementlayout,
+            talentmanagement,
+            githubrepo) {
 
-        util.checkAccess();
+            util.checkAccess();
 
-        managementlayout.vm.LayoutTitle("AzureImage Management");
-        managementlayout.route("imagebuckets", "Image Buckets", imagebuckets.tmplId, new imagebuckets.ImageBucketListViewModel);
-        managementlayout.route("imagebuckets/new", "Add ImageBucket", imagebucketdetail.tmplId, new imagebucketdetail.ImageBucketDetailViewModel(true), "imagebuckets");
-        managementlayout.route("bucketusages", "Bucket Usages", bucketusages.tmplId, new bucketusages.BucketUsagesListViewModel);
-        managementlayout.route("servicestatus", "Service Status", servicestatus.tmplId, new servicestatus.ServiceStatusViewModel);
-        managementlayout.route("imagemanagement", "Image Sample App", imagemanagement.tmplId, new imagemanagement.ImageListViewModel);
-        managementlayout.init();
+            managementlayout.vm.LayoutTitle("Talent Management");
+            managementlayout.route("githubrepomanagement", "Github Repo", githubrepo.tmplId, new githubrepo.GithubRepoListViewModel);
+            managementlayout.route("talentmanagement", "Talents", talentmanagement.tmplId, new talentmanagement.TalentListViewModel);
+            managementlayout.init();
 
-    });
+        });
 })()

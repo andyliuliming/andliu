@@ -217,10 +217,7 @@
             self.imageError("could not upload image");
         }
     };
-    //util.productEndpoint = "http://localhost:64130/";
-    //util.imageEndpoint = "http://localhost:64130";
-    util.productEndpoint = "http://stardustproductazureservice.chinacloudapp.cn/";
-    util.imageEndpoint = "http://stardustproductazureservice.chinacloudapp.cn";
+    util.productEndpoint = "";
 
     return util;
 });

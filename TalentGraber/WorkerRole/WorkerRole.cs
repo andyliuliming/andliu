@@ -123,6 +123,7 @@ namespace WorkerRole
                                             newCandidate.FollowersUrl = string.Empty;
                                             newCandidate.Location = string.Empty;
                                             newCandidate.Login = pagedCommitDetails[i].author.login;
+                                            newCandidate.Name = string.Empty;
                                             newCandidate.ReposUrl = string.Empty;
                                             db.TalentCandidates.Add(newCandidate);
                                             db.SaveChanges();
@@ -165,6 +166,7 @@ namespace WorkerRole
                             tc.Followers = getEmptyOrValue(user.followers);
                             tc.FollowersUrl = getEmptyOrValue(user.followers_url);
                             tc.Location = getEmptyOrValue(user.location);
+                            tc.Name = getEmptyOrValue(user.name);
                             tc.ReposUrl = getEmptyOrValue(user.repos_url);
                             db.SaveChanges();
                         }

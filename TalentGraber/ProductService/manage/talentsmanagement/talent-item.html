@@ -1,5 +1,5 @@
-﻿<tr class="imagebucket-item">
-<!-- ko with: imageBucket-->
+﻿<tr class="talent-item">
+<!-- ko with: talentCandidate-->
 <td class="theme-border-color">
 <span data-bind="text:Id"></span>
 </td>
@@ -7,9 +7,10 @@
 <span data-bind="text:Name"></span>
 </td>
 <td class="theme-border-color">
-<span>
-<input type="button" data-bind="click:$parent.removeImageBucket" value="Delete" />
-</span>
+<span data-bind="text:Company"></span>
+</td>
+<td class="theme-border-color">
+<span data-bind="text:Location"></span>
 </td>
 <!-- /ko -->
 </tr>

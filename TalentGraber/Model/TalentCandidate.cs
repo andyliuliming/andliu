@@ -19,6 +19,7 @@ namespace Macrodeek.Model
         public string Company { get; set; }
         public string Location { get; set; }
         public string Login { get; set; }
+        public string Name { get; set; }
         public string Followers { get; set; }
         public string ReposUrl { get; set; }
         public string FollowersUrl { get; set; }

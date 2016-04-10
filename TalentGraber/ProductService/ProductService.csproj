@@ -235,6 +235,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\GithubRepoesController.cs" />
     <Compile Include="Controllers\AzureImagesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -286,33 +287,21 @@
     <Content Include="management-index-debug.html" />
     <Content Include="management-index.html" />
     <Content Include="management-main.js" />
-    <Content Include="manage\bucketusages\bucketusage-item.css" />
-    <Content Include="manage\bucketusages\bucketusage-item.html" />
-    <Content Include="manage\bucketusages\bucketusage-item.js" />
-    <Content Include="manage\bucketusages\bucketusages.css" />
-    <Content Include="manage\bucketusages\bucketusages.html" />
-    <Content Include="manage\bucketusages\bucketusages.js" />
-    <Content Include="manage\imagebuckets\imagebucket-detail.css" />
-    <Content Include="manage\imagebuckets\imagebucket-detail.html" />
-    <Content Include="manage\imagebuckets\imagebucket-detail.js" />
-    <Content Include="manage\imagebuckets\imagebucket-item.css" />
-    <Content Include="manage\imagebuckets\imagebucket-item.html" />
-    <Content Include="manage\imagebuckets\imagebucket-item.js" />
-    <Content Include="manage\imagebuckets\imagebuckets.css" />
-    <Content Include="manage\imagebuckets\imagebuckets.html" />
-    <Content Include="manage\imagebuckets\imagebuckets.js" />
-    <Content Include="manage\imagemanagement\image-item.css" />
-    <Content Include="manage\imagemanagement\image-item.html" />
-    <Content Include="manage\imagemanagement\image-item.js" />
-    <Content Include="manage\imagemanagement\imagemanagement.css" />
-    <Content Include="manage\imagemanagement\imagemanagement.html" />
-    <Content Include="manage\imagemanagement\imagemanagement.js" />
+    <Content Include="manage\githubrepo\githubrepo-item.css" />
+    <Content Include="manage\githubrepo\githubrepo-item.html" />
+    <Content Include="manage\githubrepo\githubrepo-item.js" />
+    <Content Include="manage\githubrepo\githubrepomanagement.css" />
+    <Content Include="manage\githubrepo\githubrepomanagement.html" />
+    <Content Include="manage\githubrepo\githubrepomanagement.js" />
+    <Content Include="manage\talentsmanagement\talent-item.css" />
+    <Content Include="manage\talentsmanagement\talent-item.html" />
+    <Content Include="manage\talentsmanagement\talent-item.js" />
+    <Content Include="manage\talentsmanagement\talentmanagement.css" />
+    <Content Include="manage\talentsmanagement\talentmanagement.html" />
+    <Content Include="manage\talentsmanagement\talentmanagement.js" />
     <Content Include="manage\managementlayout\managementlayout.css" />
     <Content Include="manage\managementlayout\managementlayout.html" />
     <Content Include="manage\managementlayout\managementlayout.js" />
-    <Content Include="manage\servicestatus\servicestatus.css" />
-    <Content Include="manage\servicestatus\servicestatus.html" />
-    <Content Include="manage\servicestatus\servicestatus.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -323,9 +312,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="manage\configuration\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
     <Content Include="lib\bootstrap\css\bootstrap-theme.css.map" />

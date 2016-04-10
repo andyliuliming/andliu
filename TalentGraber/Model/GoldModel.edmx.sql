@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/10/2016 10:02:31
+-- Date Created: 04/10/2016 15:52:25
 -- Generated from EDMX file: C:\Users\andliu\Documents\GitHub\andliu\TalentGraber\Model\GoldModel.edmx
 -- --------------------------------------------------
 
@@ -50,6 +50,7 @@ CREATE TABLE [dbo].[TalentCandidates] (
     [Company] nvarchar(max)  NOT NULL,
     [Location] nvarchar(max)  NOT NULL,
     [Login] nvarchar(max)  NOT NULL,
+    [Name] nvarchar(max)  NOT NULL,
     [Followers] nvarchar(max)  NOT NULL,
     [ReposUrl] nvarchar(max)  NOT NULL,
     [FollowersUrl] nvarchar(max)  NOT NULL

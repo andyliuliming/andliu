@@ -34,6 +34,7 @@ namespace Macrodeek.StarDustProductService
             config.MapHttpAttributeRoutes();
 
             builder = new ODataConventionModelBuilder();
+            builder.EntitySet<GithubRepo>("GithubRepoes");
             builder.EntitySet<TalentCandidate>("TalentCandidates");
 
             // External Notify Backs
