@@ -9,6 +9,7 @@
     <EntitySet Name="GithubRepoes" EntityType="GoldModel.Store.GithubRepoes" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="TalentCandidates" EntityType="GoldModel.Store.TalentCandidates" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="GithubAccounts" EntityType="GoldModel.Store.GithubAccounts" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TalentGraberUsers" EntityType="GoldModel.Store.TalentGraberUsers" store:Type="Tables" Schema="dbo" />
   </EntityContainer>
   <EntityType Name="GithubRepoes">
     <Key>
@@ -39,6 +40,14 @@
     <Property Name="UserName" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
+  <EntityType Name="TalentGraberUsers">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -47,6 +56,7 @@
           <EntitySet Name="GithubRepoes" EntityType="GoldModel.GithubRepo" />
           <EntitySet Name="TalentCandidates" EntityType="GoldModel.TalentCandidate" />
           <EntitySet Name="GithubAccounts" EntityType="GoldModel.GithubAccount" />
+          <EntitySet Name="TalentGraberUsers" EntityType="GoldModel.TalentGraberUser" />
         </EntityContainer>
         <EntityType Name="GithubRepo">
           <Key>
@@ -70,6 +80,14 @@
           <Property Name="FollowersUrl" Type="String" Nullable="false" />
         </EntityType>
         <EntityType Name="GithubAccount">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" Nullable="false" />
+          <Property Name="Password" Type="String" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TalentGraberUser">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -109,6 +127,15 @@
     <EntitySetMapping Name="GithubAccounts">
       <EntityTypeMapping TypeName="IsTypeOf(GoldModel.GithubAccount)">
         <MappingFragment StoreEntitySet="GithubAccounts">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TalentGraberUsers">
+      <EntityTypeMapping TypeName="IsTypeOf(GoldModel.TalentGraberUser)">
+        <MappingFragment StoreEntitySet="TalentGraberUsers">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="UserName" ColumnName="UserName" />
           <ScalarProperty Name="Password" ColumnName="Password" />

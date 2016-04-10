@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/10/2016 15:52:25
+-- Date Created: 04/10/2016 18:00:12
 -- Generated from EDMX file: C:\Users\andliu\Documents\GitHub\andliu\TalentGraber\Model\GoldModel.edmx
 -- --------------------------------------------------
 
@@ -30,6 +30,9 @@ IF OBJECT_ID(N'[dbo].[TalentCandidates]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[GithubAccounts]', 'U') IS NOT NULL
     DROP TABLE [dbo].[GithubAccounts];
+GO
+IF OBJECT_ID(N'[dbo].[TalentGraberUsers]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[TalentGraberUsers];
 GO
 
 -- --------------------------------------------------
@@ -65,6 +68,14 @@ CREATE TABLE [dbo].[GithubAccounts] (
 );
 GO
 
+-- Creating table 'TalentGraberUsers'
+CREATE TABLE [dbo].[TalentGraberUsers] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [UserName] nvarchar(max)  NOT NULL,
+    [Password] nvarchar(max)  NOT NULL
+);
+GO
+
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
@@ -84,6 +95,12 @@ GO
 -- Creating primary key on [Id] in table 'GithubAccounts'
 ALTER TABLE [dbo].[GithubAccounts]
 ADD CONSTRAINT [PK_GithubAccounts]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'TalentGraberUsers'
+ALTER TABLE [dbo].[TalentGraberUsers]
+ADD CONSTRAINT [PK_TalentGraberUsers]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
