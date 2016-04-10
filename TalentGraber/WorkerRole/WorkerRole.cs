@@ -68,6 +68,11 @@ namespace WorkerRole
             return githubFeed;
         }
 
+        private string getEmptyOrValue(string value)
+        {
+            return value == null ? string.Empty : value;
+        }
+
         private async Task RunAsync(CancellationToken cancellationToken)
         {
             // TODO: Replace the following with your own logic.
@@ -143,28 +148,32 @@ namespace WorkerRole
                 }
 
                 RestApiCaller<User> userInfoCaller = new RestApiCaller<User>(ApiFormats.BaseUri);
+                int candidateIndex = 0;
+                int stepSize = 10;
                 while (true)
                 {
-                    IQueryable<TalentCandidate> talentCandidates = db.TalentCandidates.Skip<TalentCandidate>(10).Take<TalentCandidate>(10);
+                    List<TalentCandidate> talentCandidates = 
+                        db.TalentCandidates.OrderBy(tc => tc.Id).Skip(candidateIndex).Take(stepSize).ToList<TalentCandidate>();
                     if (talentCandidates != null && talentCandidates.Count<TalentCandidate>() > 0)
                     {
                         foreach (TalentCandidate tc in talentCandidates)
                         {
                             string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
                             User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
-                            tc.Company = user.company;
-                            tc.Email = user.email;
-                            tc.Followers = user.followers;
-                            tc.FollowersUrl = user.followers_url;
-                            tc.Location = user.location;
-                            tc.ReposUrl = user.repos_url;
-                            //TODO set the values in the user 
+                            tc.Company = getEmptyOrValue(user.company);
+                            tc.Email = getEmptyOrValue(user.email);
+                            tc.Followers = getEmptyOrValue(user.followers);
+                            tc.FollowersUrl = getEmptyOrValue(user.followers_url);
+                            tc.Location = getEmptyOrValue(user.location);
+                            tc.ReposUrl = getEmptyOrValue(user.repos_url);
+                            db.SaveChanges();
                         }
                     }
                     else
                     {
                         break;
                     }
+                    candidateIndex += stepSize;
                 }
                 await Task.Delay(1000 * 60 * 60 * 5);
             }
