@@ -16,14 +16,11 @@ Invoke-MsBuild -Path ..\TalentGraberService.sln -P "/t:Clean" #-ShowBuildWindow
 
 # build the authentication lib
 Invoke-MsBuild -Path ..\Common\Common.csproj -P "/P:Configuration=$buildType" # -ShowBuildWindow
-Invoke-MsBuild -Path ..\ExtractBase\ExtractBase.csproj -P "/P:Configuration=$buildType" # -ShowBuildWindow
 Invoke-MsBuild -Path ..\GithubGraberLib\GithubGraberLib.csproj -P "/P:Configuration=$buildType" # -ShowBuildWindow
 # build the AzureEnvironment
 
 # build the database model project
 Invoke-MsBuild -Path ..\Model\Model.csproj -P "/P:Configuration=$buildType" #-ShowBuildWindow
-
-Invoke-MsBuild -Path ..\DataCacheLayer\DataCacheLayer.csproj -P "/P:Configuration=$buildType" #-ShowBuildWindow
 
 # build the service base project
 Invoke-MsBuild -Path ..\ServiceBase\ServiceBase.csproj -P "/P:Configuration=$buildType" #-ShowBuildWindow
