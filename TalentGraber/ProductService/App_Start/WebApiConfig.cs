@@ -1,6 +1,5 @@
 ﻿using StarDustCommon.Util;
 using Macrodeek.AzureEnvironment;
-using Macrodeek.StarDustModel;
 using Macrodeek.StarDustServiceBase.Traces;
 using Macrodeek.MacrodeekCommon;
 using Microsoft.OData.Edm;
@@ -10,6 +9,7 @@ using System.Web.Http.ExceptionHandling;
 using System.Web.Http.Routing;
 using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
+using Macrodeek.Model;
 
 namespace Macrodeek.StarDustProductService
 {

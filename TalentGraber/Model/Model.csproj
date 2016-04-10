@@ -7,8 +7,8 @@
     <ProjectGuid>{558871F5-1F5C-4D80-B765-331E1E986CC4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Macrodeek.StarDustModel</RootNamespace>
-    <AssemblyName>StarDustModel</AssemblyName>
+    <RootNamespace>Macrodeek.Model</RootNamespace>
+    <AssemblyName>Model</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -131,29 +131,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GithubAccount.cs">
-      <DependentUpon>StarDustGoldModel.tt</DependentUpon>
+      <DependentUpon>GoldModel.tt</DependentUpon>
     </Compile>
     <Compile Include="GithubRepo.cs">
-      <DependentUpon>StarDustGoldModel.tt</DependentUpon>
+      <DependentUpon>GoldModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="StarDustGoldModel.Context.cs">
+    <Compile Include="GoldModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>StarDustGoldModel.Context.tt</DependentUpon>
+      <DependentUpon>GoldModel.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="StarDustGoldModel.cs">
+    <Compile Include="GoldModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>StarDustGoldModel.tt</DependentUpon>
+      <DependentUpon>GoldModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="StarDustGoldModel.Designer.cs">
+    <Compile Include="GoldModel.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>StarDustGoldModel.edmx</DependentUpon>
+      <DependentUpon>GoldModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TalentCandidate.cs">
-      <DependentUpon>StarDustGoldModel.tt</DependentUpon>
+      <DependentUpon>GoldModel.tt</DependentUpon>
     </Compile>
     <Compile Include="WrapUp\ApiFormats.cs" />
     <Compile Include="WrapUp\CommitInfo.cs" />
@@ -163,25 +163,25 @@
     <Compile Include="WrapUp\User.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EntityDeploy Include="StarDustGoldModel.edmx">
+    <EntityDeploy Include="GoldModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>StarDustGoldModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>GoldModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
-    <None Include="StarDustGoldModel.Context.tt">
+    <None Include="GoldModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>StarDustGoldModel.Context.cs</LastGenOutput>
-      <DependentUpon>StarDustGoldModel.edmx</DependentUpon>
+      <LastGenOutput>GoldModel.Context.cs</LastGenOutput>
+      <DependentUpon>GoldModel.edmx</DependentUpon>
     </None>
-    <None Include="StarDustGoldModel.edmx.diagram">
-      <DependentUpon>StarDustGoldModel.edmx</DependentUpon>
+    <None Include="GoldModel.edmx.diagram">
+      <DependentUpon>GoldModel.edmx</DependentUpon>
     </None>
-    <None Include="StarDustGoldModel.tt">
+    <None Include="GoldModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>StarDustGoldModel.cs</LastGenOutput>
-      <DependentUpon>StarDustGoldModel.edmx</DependentUpon>
+      <LastGenOutput>GoldModel.cs</LastGenOutput>
+      <DependentUpon>GoldModel.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
@@ -190,7 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CreateIndex.sql" />
-    <Content Include="StarDustGoldModel.edmx.sql" />
+    <Content Include="GoldModel.edmx.sql" />
     <Content Include="pre-post-build.txt" />
   </ItemGroup>
   <ItemGroup>

@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Macrodeek.StarDustModel
+namespace Macrodeek.Model
 {
     using System;
     using System.Data.Entity;

@@ -1,15 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
-using Microsoft.WindowsAzure.Storage;
-using Macrodeek.StarDustModel;
+using Macrodeek.Model;
 using GithubGraberLib;
 using GithubGraberLib.Domain;
 using ExtractBase.RestApi;
@@ -93,7 +89,7 @@ namespace WorkerRole
                     GithubFeed githubFee = this.Parse(githubRepo.Url);
                     RestApiCaller<List<CommitDetail>> commitInfoCaller = new RestApiCaller<List<CommitDetail>>(ApiFormats.BaseUri);
                     string repoBaseUri = string.Format(ApiFormats.CommitRelativePathPattern, githubFee.owner, githubFee.repo);
-                    
+
                     while (true)
                     {
                         string urlParameters = repoBaseUri + "?page=" + startPage + "&per_page=" + perPage;
@@ -111,7 +107,7 @@ namespace WorkerRole
                                     if (pagedDetails[i].author != null)
                                     {
                                         TalentCandidate candidate = db.TalentCandidates.Where((tc) => tc.Login == pagedDetails[i].author.login).FirstOrDefault();
-                                        if(candidate == null)
+                                        if (candidate == null)
                                         {
                                             TalentCandidate newCandidate = new TalentCandidate();
                                             newCandidate.Company = string.Empty;
@@ -145,13 +141,29 @@ namespace WorkerRole
                 }
 
                 RestApiCaller<User> userInfoCaller = new RestApiCaller<User>(ApiFormats.BaseUri);
-                foreach ( var tc in db.TalentCandidates)
+                while (true)
                 {
-                    string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
-                    User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
-                    //TODO set the values in the user 
+                    IQueryable<TalentCandidate> talentCandidates = db.TalentCandidates.Skip<TalentCandidate>(10).Take<TalentCandidate>(10);
+                    if (talentCandidates != null && talentCandidates.Count<TalentCandidate>() > 0)
+                    {
+                        foreach (TalentCandidate tc in talentCandidates)
+                        {
+                            string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
+                            User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
+                            tc.Company = user.company;
+                            tc.Email = user.email;
+                            tc.Followers = user.followers;
+                            tc.FollowersUrl = user.followers_url;
+                            tc.Location = user.location;
+                            tc.ReposUrl = user.repos_url;
+                            //TODO set the values in the user 
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
-
                 await Task.Delay(1000 * 60 * 60 * 5);
             }
         }

@@ -1,13 +1,8 @@
-﻿"%windir%\Microsoft.NET\Framework\v4.0.30319\EdmGen.exe" /nologo /language:CSharp /mode:ViewGeneration "/inssdl:$(TargetDir)StarDustGoldModel.ssdl" "/incsdl:$(TargetDir)StarDustGoldModel.csdl" "/inmsl:$(TargetDir)StarDustGoldModel.msl" "/outviews:$(ProjectDir)StarDustGoldModel.Views.cs" /targetVersion:4.5
-"%windir%\Microsoft.NET\Framework\v4.0.30319\EdmGen.exe" /nologo /language:CSharp /mode:ViewGeneration "/inssdl:$(TargetDir)StarDustSilverModel.ssdl" "/incsdl:$(TargetDir)StarDustSilverModel.csdl" "/inmsl:$(TargetDir)StarDustSilverModel.msl" "/outviews:$(ProjectDir)StarDustSilverModel.Views.cs"  /targetVersion:4.5
+﻿"%windir%\Microsoft.NET\Framework\v4.0.30319\EdmGen.exe" /nologo /language:CSharp /mode:ViewGeneration "/inssdl:$(TargetDir)GoldModel.ssdl" "/incsdl:$(TargetDir)GoldModel.csdl" "/inmsl:$(TargetDir)GoldModel.msl" "/outviews:$(ProjectDir)GoldModel.Views.cs" /targetVersion:4.5
 
 
+XCOPY "$(TargetDir)GoldModel.csdl" "$(ProjectDir)" /R /Y 
+XCOPY "$(TargetDir)GoldModel.ssdl" "$(ProjectDir)" /R /Y 
+XCOPY "$(TargetDir)GoldModel.msl" "$(ProjectDir)" /R /Y
 
-XCOPY "$(TargetDir)StarDustGoldModel.csdl" "$(ProjectDir)" /R /Y 
-XCOPY "$(TargetDir)StarDustGoldModel.ssdl" "$(ProjectDir)" /R /Y 
-XCOPY "$(TargetDir)StarDustGoldModel.msl" "$(ProjectDir)" /R /Y
-
-XCOPY "$(TargetDir)StarDustSilverModel.csdl" "$(ProjectDir)" /R /Y 
-XCOPY "$(TargetDir)StarDustSilverModel.ssdl" "$(ProjectDir)" /R /Y 
-XCOPY "$(TargetDir)StarDustSilverModel.msl" "$(ProjectDir)" /R /Y
 

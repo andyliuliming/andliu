@@ -1,4 +1,4 @@
-﻿using Macrodeek.StarDustModel;
+﻿using Macrodeek.Model;
 using Macrodeek.StarDustServiceBase;
 using Macrodeek.StarDustServiceBase.Controllers;
 using Microsoft.OData.Core;

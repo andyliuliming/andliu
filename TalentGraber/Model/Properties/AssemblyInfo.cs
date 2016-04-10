@@ -1,4 +1,4 @@
-﻿using Macrodeek.StarDustModel;
+﻿using Macrodeek.Model;
 using System.Data.Entity.Infrastructure.MappingViews;
 using System.Reflection;
 using System.Runtime.CompilerServices;
