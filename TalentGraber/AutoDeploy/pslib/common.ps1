@@ -10,8 +10,6 @@ $MonitoringPassword="User@123"
 $storageType="Standard_GRS"
 $deploymentStorageAccountName=$Prefix.ToLower() + "deployments"
 $diagnosticStorageAccountName=$Prefix.ToLower() + "diagnostic"
-$imageStorageAccountName=$Prefix.ToLower() + "images"
-$imageStorageAccountKey = ""
 $StorageAccountEndpoint = ""
 
 ######################  database related  ############################
@@ -57,12 +55,6 @@ function ReplaceRealValue
     $TemplateOrigin=$TemplateOrigin -replace "{DATABASE_PASSWORD}",$databasePassword
     $TemplateOrigin=$TemplateOrigin -replace "{ProductServiceAddress}",$ProductServiceAddress
     $TemplateOrigin=$TemplateOrigin -replace "{StorageAccountEndpoint}",$StorageAccountEndpoint
-    $TemplateOrigin=$TemplateOrigin -replace "{AzureImageStorageAccount}",$imageStorageAccountName
-    $TemplateOrigin=$TemplateOrigin -replace "{AzureImageStorageAccountKey}",$imageStorageAccountKey
-
-    # ##################### monitoring accounts ##########################
-    $TemplateOrigin=$TemplateOrigin -replace "{MonitoringAccount}",$MonitoringAccount
-    $TemplateOrigin=$TemplateOrigin -replace "{MonitoringPassword}",$MonitoringPassword
 
     # ##################### network related ##############################
     $TemplateOrigin=$TemplateOrigin -replace "{AllowedCrossDomainHost}",$AllowedCrossDomainHost
