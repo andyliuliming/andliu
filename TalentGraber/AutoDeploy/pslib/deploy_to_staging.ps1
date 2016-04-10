@@ -28,11 +28,6 @@ $cloudConfig = Get-Content -Encoding UTF8 -Path $ProductServiceConfig
 $cloudConfig = ReplaceRealValue -TemplateOrigin $cloudConfig
 Set-Content -Encoding UTF8 -Path $ProductServiceConfig -Value $cloudConfig
 
-$ProductDaemonRoleConfig = "$currentFolder/$ProductDaemonRoleProjectName/bin/$buildType/app.publish/ServiceConfiguration.Cloud.cscfg"
-$cloudConfig = Get-Content -Encoding UTF8 -Path $ProductDaemonRoleConfig
-$cloudConfig = ReplaceRealValue -TemplateOrigin $cloudConfig
-Set-Content -Encoding UTF8 -Path $ProductDaemonRoleConfig -Value $cloudConfig
-
 #todo generate the CloudDeploy.cscfg according to the cloud because.
 $deploymentStorageKey = GetStorageAccountKey -ResourceGroupName $ResourceGroupName -StorageAccountName $deploymentStorageAccountName
 Write-Host "DeploymentStorageAccountName is $deploymentStorageAccountName "
@@ -44,22 +39,22 @@ $deploymentStorageContext = New-AzureStorageContext -StorageAccountName $deploym
 Write-Host "deploying the product service"
 NewOrUpgradeDeployment -ServiceName $ProductAzureServiceName `
             -Package "$currentFolder/$ProductAzureServiceProjectName/bin/$buildType/app.publish/ProductAzureService.cspkg" `
-            -Configuration $StarDustProductServiceConfig `
+            -Configuration $ProductServiceConfig `
             -StorageContext $deploymentStorageContext `
             -Slot Staging
 
 ###### wait for the role to be running status ###########################
 While($true)
 {
-    $StarDustProductAzureServiceStagingDeployment = Get-AzureDeployment -ServiceName $ProductAzureServiceName -Slot Staging
-    if($StarDustProductAzureServiceStagingDeployment.Status -eq "Running")
+    $ProductAzureServiceStagingDeployment = Get-AzureDeployment -ServiceName $ProductAzureServiceName -Slot Staging
+    if($ProductAzureServiceStagingDeployment.Status -eq "Running")
     {
-        Write-Host "role status is $StarDustProductAzureServiceStagingDeployment.Status"
+        Write-Host "role status is $ProductAzureServiceStagingDeployment.Status"
         break;
     }
     else
     {
-        Write-Host "$ProductAzureServiceName status is "+$StarDustProductAzureServiceStagingDeployment.Status
+        Write-Host "$ProductAzureServiceName status is "+$ProductAzureServiceStagingDeployment.Status
         Start-Sleep -s 5
     }
 }
