@@ -166,6 +166,7 @@
     <Compile Include="WrapUp\ExtractRequest.cs" />
     <Compile Include="WrapUp\GithubFeed.cs" />
     <Compile Include="WrapUp\RepositoryInfo.cs" />
+    <Compile Include="WrapUp\SearchQueryBody.cs" />
     <Compile Include="WrapUp\User.cs" />
   </ItemGroup>
   <ItemGroup>

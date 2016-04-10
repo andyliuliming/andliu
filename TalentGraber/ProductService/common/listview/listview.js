@@ -16,107 +16,198 @@
     list.ListViewModel = function (option) {
         var self = this;
         this.url = option.url;
+        this.searchurl = util.productEndpoint + "/api/Search";
         this.headers = option.headers;
         this.itemTmplId = option.itemTmplId || "";
         this.tags = option.tags || [];
         this.DataItemViewModel = option.DataItemViewModel || Object;
+        this.itemList = ko.observableArray([]);
 
-        this.list = ko.observableArray([]);
         this.top = 20;
         this.skip = 0;
 
-        this.defaultFilter = option.filter;
-        this.filter = ko.observable(null);
-        this.filter.subscribe(function () {
-            var selfFilter = self.filter();
-            var filterInQuery = util.getQuery("$filter");
-            if (selfFilter != filterInQuery) {
-                window.location.href = "#" + util.getHash() + self.getQueryStr();
-            }
-        });
+        this.filter = ko.observable(option.filter);
+        this.searchFieldText = ko.observable("");
 
         this.loading = ko.observable(false);
         this.error = ko.observable("");
         this.xhr = null;
+
+        this.filter.subscribe(function () {
+            self.Jump();
+        });
+
     };
 
-    list.ListViewModel.prototype.getQueryStr = function () {
-        var query = "?";
-        query += "$top=" + this.top;
-        query += "&$skip=" + this.skip;
-        if (this.filter()) {
-            query += "&$filter=" + this.filter();
-        }
-        return query;
+    list.ListViewModel.prototype.enterKeyPressed = function () {
+        var self = this;
+        self.Jump();
     };
+
+    list.ListViewModel.prototype.Jump = function () {
+        var self = this;
+        //TODO if there any not same, do the real jump.
+        var currentQueryObject = self.getQueryObjectFromModel();
+
+        var queryStrInUrl = window.location.hash;
+        var newHash = "#" + util.getHash() + currentQueryObject.queryString;
+        if (queryStrInUrl != newHash) {
+            window.location.href = newHash;
+        }
+    };
+
+    list.ListViewModel.prototype.getQueryObjectFromModel = function () {
+        var self = this;
+        var queryObject = { "url": self.url, "queryString": "" }
+        var queryStr = "?";
+        var fullTextSearch = self.searchFieldText();
+        if (fullTextSearch != undefined && fullTextSearch != "") {
+            queryObject.url = self.searchurl;
+        }
+        queryStr += "$top=" + this.top;
+        queryStr += "&$skip=" + this.skip;
+        var currentFilter = self.filter();
+        if (currentFilter != undefined && currentFilter != "") {
+            queryStr += "&$filter=" + currentFilter;
+        }
+
+        queryStr += "&$fullTextQuery=" + fullTextSearch;
+        queryObject.queryString = queryStr;
+        return queryObject;
+    };
+
+    list.ListViewModel.prototype.parseFromQueryStr = function () {
+        var self = this;
+        var top = (util.getQuery("$top") || 10);
+        self.top = parseInt(top);
+        var skip = (util.getQuery("$skip") || 0);
+        self.skip = parseInt(skip);
+        var fullTextQuery = util.getQuery("$fullTextQuery");
+        self.searchFieldText(fullTextQuery);
+        self.filter(encodeURI(util.getQuery("$filter")));
+    }
+
+    list.ListViewModel.prototype.search = function () {
+        console.dir("search");
+        var self = this;
+        self.Jump();
+    }
 
     list.ListViewModel.prototype.refresh = function () {
+        console.dir("refresh");
         var self = this;
         this.loading(true);
-        this.top = (util.getQuery("$top") || 10);
-        this.top = parseInt(this.top);
-        this.skip = (util.getQuery("$skip") || 0);
-        this.skip = parseInt(this.skip);
 
-        var filterInUri = util.getQuery("$filter");
-        if (!filterInUri) {
-            if (self.defaultFilter) {
-                self.filter(self.defaultFilter);
-            }
+        // parse the parameters in the url first.
+        self.parseFromQueryStr();
+        var currentFilter = util.getQuery("$filter");
+        currentFilter = decodeURI(currentFilter);
+        var filterCreteria = currentFilter.split("and");
+        console.dir(filterCreteria);
+        var queryStrings = [];
+        for (var filterItemStr in filterCreteria) {
+            var filterItemArr = filterItemStr.split(" ");
+            var queryString = {
+                "DefaultField": filterItemArr[0],
+                "Operation": filterItemArr[1],
+                "Query": filterItemArr[2]
+            };
+            queryStrings.push(queryString);
         }
+        var queryObject = this.getQueryObjectFromModel();
 
-        var query = this.getQueryStr();
+        var fullTextQuery = util.getQuery("$fullTextQuery");
+        if (fullTextQuery != undefined && fullTextQuery != "") {
+            var currentHash = util.getHash();
+            var searchQueryBody = {
+                "ObjectType": "",
+                "FullText": self.searchFieldText(),
+                "From": self.skip,
+                "Size": self.top,
+                "QueryStrings": queryStrings
+            };
 
-        this.xhr = util.ajax({
-            url: this.url + query,
-            type: "GET",
-            success: function (data) {
-                self.loading(false);
-                if (!data) {
-                    console.log(data);
-                    throw "Service returned invalid data";
-                }
-                self.list.removeAll();
-                if (data.value) {
-                    for (var i = 0; i < data.value.length; i++) {
-                        self.list.push(new self.DataItemViewModel(data.value[i]));
-                    }
-                } else {
-                    for (var i = 0; i < data.length; i++) {
-                        self.list.push(new self.DataItemViewModel(data[i]));
-                    }
-                }
-            },
-            error: function (e) {
-                if (e.status !== 0) {
-                    self.loading(false);
-                    console.log(e);
-                    self.error("服务暂不可用, 请稍后再试");
-                }
+            switch (currentHash) {
+                case "talentmanagement":
+                    searchQueryBody.ObjectType = "TalentCandidate";
+                    break;
+                default:
+                    break;
             }
-        });
+
+            util.ajax({
+                url: queryObject.url,
+                type: "POST",
+                data: JSON.stringify(searchQueryBody),
+                success: function (data) {
+                    self.loading(false);
+                    self.itemList.removeAll();
+                    if (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            self.itemList.push(new self.DataItemViewModel(data[i]));
+                        }
+                    } else {
+                        for (var i = 0; i < data.length; i++) {
+                            self.itemList.push(new self.DataItemViewModel(data[i]));
+                        }
+                    }
+                    console.dir(data);
+                },
+                error: function (e) {
+                    if (e.status !== 0) {
+                        self.loading(false);
+                        console.log(e);
+                        self.error("服务暂不可用, 请稍后再试");
+                    }
+                }
+            });
+
+        } else {
+            util.ajax({
+                url: queryObject.url + queryObject.queryString,
+                type: "GET",
+                success: function (data) {
+                    self.loading(false);
+                    if (!data) {
+                        console.log(data);
+                        throw "Service returned invalid data";
+                    }
+                    self.itemList.removeAll();
+                    if (data.value) {
+                        for (var i = 0; i < data.value.length; i++) {
+                            self.itemList.push(new self.DataItemViewModel(data.value[i]));
+                        }
+                    } else {
+                        for (var i = 0; i < data.length; i++) {
+                            self.itemList.push(new self.DataItemViewModel(data[i]));
+                        }
+                    }
+                },
+                error: function (e) {
+                    if (e.status !== 0) {
+                        self.loading(false);
+                        console.log(e);
+                        self.error("服务暂不可用, 请稍后再试");
+                    }
+                }
+            });
+        }
     };
 
     list.ListViewModel.prototype.nextPage = function (data, event) {
         this.skip += this.top;
-        window.location.href = "#" + util.getHash() + this.getQueryStr();
+        var queryObject = this.getQueryObjectFromModel();
+        window.location.href = "#" + util.getHash() + queryObject.queryString;
     }
 
     list.ListViewModel.prototype.previousPage = function (data, event) {
         this.skip -= this.top;
-        window.location.href = "#" + util.getHash() + this.getQueryStr();
-    }
-
-    list.ListViewModel.prototype.del = function (data, event) {
-        this.list.remove(data);
+        var queryObject = this.getQueryObjectFromModel();
+        window.location.href = "#" + util.getHash() + queryObject.queryString;
     }
 
     list.ListViewModel.prototype.cancel = function () {
-        if (this.xhr) {
-            this.xhr.abort();
-            this.xhr = null;
-        }
+
     }
-    
     return list;
 });

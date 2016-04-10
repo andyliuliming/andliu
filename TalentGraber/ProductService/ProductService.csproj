@@ -236,6 +236,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\GithubRepoesController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\TalentCandidatesController.cs" />
     <Compile Include="Controllers\UserTokensController.cs" />
     <Compile Include="Global.asax.cs">
