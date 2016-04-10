@@ -294,6 +294,9 @@
     <Content Include="manage\githubrepo\githubrepomanagement.css" />
     <Content Include="manage\githubrepo\githubrepomanagement.html" />
     <Content Include="manage\githubrepo\githubrepomanagement.js" />
+    <Content Include="manage\githubrepo\githubrepo-detail.css" />
+    <Content Include="manage\githubrepo\githubrepo-detail.html" />
+    <Content Include="manage\githubrepo\githubrepo-detail.js" />
     <Content Include="manage\talentsmanagement\talent-item.css" />
     <Content Include="manage\talentsmanagement\talent-item.html" />
     <Content Include="manage\talentsmanagement\talent-item.js" />

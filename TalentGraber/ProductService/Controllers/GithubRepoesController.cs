@@ -43,5 +43,20 @@ namespace Macrodeek.StarDustProductService.Controllers
             return Ok<IEnumerable<GithubRepo>>((IQueryable<GithubRepo>)queryOptions.ApplyTo(db.GithubRepoes));
         }
 
+        [MacroDeekAuthorize]
+        public IHttpActionResult Post(GithubRepo githubRepo)
+        {
+            GithubRepo repo = db.GithubRepoes.Where(gr => gr.Url == githubRepo.Url.Trim()).FirstOrDefault();
+            if (repo == null)
+            {
+                db.GithubRepoes.Add(repo);
+                db.SaveChanges();
+                return Created(githubRepo);
+            }
+            else
+            {
+                return Conflict();
+            }
+        }
     }
 }
