@@ -81,7 +81,7 @@ namespace WorkerRole
                 string accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
 
                 GithubExtractor githubExtractor = new GithubExtractor();
-                foreach (var githubRepo in db.GithubRepoes)
+                foreach (var githubRepo in db.GithubRepoes.ToList())
                 {
                     int startPage = 0;
                     int perPage = 100;
@@ -95,18 +95,20 @@ namespace WorkerRole
                         string urlParameters = repoBaseUri + "?page=" + startPage + "&per_page=" + perPage;
                         try
                         {
-                            List<CommitDetail> pagedDetails = commitInfoCaller.CallApi("get", accessToken, urlParameters, null);
-                            if (pagedDetails == null || pagedDetails.Count == 0)
+                            List<CommitDetail> pagedCommitDetails = commitInfoCaller.CallApi("get", accessToken, urlParameters, null);
+                            if (pagedCommitDetails == null || pagedCommitDetails.Count == 0)
                             {
                                 break;
                             }
                             else
                             {
-                                for (int i = 0; i < pagedDetails.Count; i++)
+                                for (int i = 0; i < pagedCommitDetails.Count; i++)
                                 {
-                                    if (pagedDetails[i].author != null)
+                                    if (pagedCommitDetails[i].author != null)
                                     {
-                                        TalentCandidate candidate = db.TalentCandidates.Where((tc) => tc.Login == pagedDetails[i].author.login).FirstOrDefault();
+                                        string loginString = pagedCommitDetails[i].author.login;
+                                        TalentCandidate candidate = db.TalentCandidates.Where(
+                                            (tc) => tc.Login == loginString).FirstOrDefault();
                                         if (candidate == null)
                                         {
                                             TalentCandidate newCandidate = new TalentCandidate();
@@ -115,7 +117,7 @@ namespace WorkerRole
                                             newCandidate.Followers = string.Empty;
                                             newCandidate.FollowersUrl = string.Empty;
                                             newCandidate.Location = string.Empty;
-                                            newCandidate.Login = pagedDetails[i].author.login;
+                                            newCandidate.Login = pagedCommitDetails[i].author.login;
                                             newCandidate.ReposUrl = string.Empty;
                                             db.TalentCandidates.Add(newCandidate);
                                             db.SaveChanges();
