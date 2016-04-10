@@ -47,7 +47,7 @@ define(function (require) {
     LayoutViewModel.prototype.logout = function () {
         $.removeCookie("token");
         $.removeCookie("refreshToken");
-        $.removeCookie("userId");
+        $.removeCookie("userName");
         util.checkAccess();
     };
 

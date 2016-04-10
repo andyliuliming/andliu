@@ -32,6 +32,7 @@ namespace Macrodeek.StarDustProductService.Controllers
 
             UserToken userToken = new UserToken();
             userToken.Token = token;
+            userToken.Password = string.Empty;
             userToken.Timestamp = DateTime.UtcNow;
             return userToken;
         }
@@ -48,6 +49,7 @@ namespace Macrodeek.StarDustProductService.Controllers
             if (user != null)
             {
                 UserToken userToken = this.GenerateUserToken();
+                userToken.UserName = userTokenToAuth.UserName;
                 db.UserTokens.Add(userToken);
                 db.SaveChanges();
                 return Created(userToken);

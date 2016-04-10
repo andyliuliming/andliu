@@ -18,12 +18,13 @@
             var returnurl = $.cookie("returnuri");
             function LoginViewModel() {
                 var self = this;
-                this.username = ko.observable("").extend({ required: "请输入手机号" });
-                this.password = ko.observable("").extend({ required: "请输入密码" });
+                this.username = ko.observable("").extend({ required: "Please type in username" });
+                this.password = ko.observable("").extend({ required: "Please type in password" });
                 this.rememberMe = ko.observable(false);
                 this.error = ko.observable();
                 this.enableSubmit = ko.observable(true);
             }
+
             LoginViewModel.prototype.login = function (self, event) {
                 //Trigger validateion
                 self.username.valueHasMutated()
@@ -44,13 +45,7 @@
                         self.enableSubmit(true);
                         if (data && data.Token) {
                             $.cookie("token", data.Token, { path: '/', expires: 1 });
-                            if (self.rememberMe()) {
-                                $.cookie("refreshToken", data.RefreshToken, { path: '/', expires: 1 });
-                            } else {
-                                $.removeCookie("refreshToken");
-                            }
-                            $.cookie("Roles", data.Roles, { path: '/', expires: 1 });
-                            $.cookie("userId", data.UserId, { path: '/', expires: 1 });
+                            $.cookie("userName", data.UserName, { path: '/', expires: 1 });
                             window.location.href = returnurl || "/";
                         }
                         else {
@@ -61,9 +56,9 @@
                         self.enableSubmit(true);
                         console.log(e);
                         if (e.status == 401 || e.status == 404) {
-                            self.error("手机号或密码错误");
+                            self.error("Username or password wrong.");
                         } else {
-                            self.error("出错啦,请稍后重试");
+                            self.error("one error occured.");
                         }
                     }
                 });

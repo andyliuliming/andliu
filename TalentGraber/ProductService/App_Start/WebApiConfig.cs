@@ -36,6 +36,7 @@ namespace Macrodeek.StarDustProductService
             builder = new ODataConventionModelBuilder();
             builder.EntitySet<GithubRepo>("GithubRepoes");
             builder.EntitySet<TalentCandidate>("TalentCandidates");
+            builder.EntitySet<UserToken>("UserTokens");
 
             // External Notify Backs
             iEdmModel = builder.GetEdmModel();

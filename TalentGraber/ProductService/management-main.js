@@ -36,7 +36,7 @@
             talentmanagement,
             githubrepo) {
 
-            util.checkAccess();
+            util.checkAccess("/common/login/login.html");
 
             managementlayout.vm.LayoutTitle("Talent Management");
             managementlayout.route("githubrepomanagement", "Github Repo", githubrepo.tmplId, new githubrepo.GithubRepoListViewModel);
