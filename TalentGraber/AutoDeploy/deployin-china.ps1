@@ -1,6 +1,6 @@
 ﻿$Environment = "AzureChinaCloud"
 . .\azureauth.ps1
-. .\pslib\deploystardust_to_staging.ps1
+. .\pslib\deploy_to_staging.ps1
 
 #. .\pslib\clear_static_public_ip_production.ps1
 #. .\pslib\clear_static_public_ip_staging.ps1

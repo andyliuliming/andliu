@@ -17,8 +17,6 @@ Write-Host "DiagnosticStorageAccountName is $diagnosticStorageAccountName and ke
 
 $diagnosticStorageContext = New-AzureStorageContext -StorageAccountName $diagnosticStorageAccountName -StorageAccountKey $diagnosticStorageKey
 
-$StarDustProductCacheKey = GetRedisCacheKey -ResourceGroupName $ResourceGroupName -name $StarDustRedisCacheProductServerName
-
 $imageStorageAccountKey = GetStorageAccountKey -ResourceGroupName $ResourceGroupName -StorageAccountName $imageStorageAccountName
 
 # Set-AzureDeployment -Upgrade we should check whether the azure service exists.
