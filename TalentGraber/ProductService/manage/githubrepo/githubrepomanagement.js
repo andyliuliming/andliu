@@ -40,6 +40,10 @@
         });
     };
 
+    githubRepoModule.GithubRepoListViewModel.prototype.addGithubRepo = function () {
+        window.location.href = "#githubrepo-new";
+    };
+
     githubRepoModule.GithubRepoListViewModel.prototype.refresh = function () {
         this.listViewModel.refresh();
     };

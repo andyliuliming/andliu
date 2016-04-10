@@ -24,7 +24,8 @@
         "text",
         "manage/managementlayout/managementlayout",
         "manage/talentsmanagement/talentmanagement",
-        "manage/githubrepo/githubrepomanagement"],
+        "manage/githubrepo/githubrepomanagement",
+        "manage/githubrepo/githubrepo-detail"],
         function ($,
             util,
             jcookie,
@@ -34,13 +35,16 @@
             text,
             managementlayout,
             talentmanagement,
-            githubrepo) {
+            githubrepo,
+            githubrepodetail) {
 
             util.checkAccess("/common/login/login.html");
 
             managementlayout.vm.LayoutTitle("Talent Management");
             managementlayout.route("githubrepomanagement", "Github Repo", githubrepo.tmplId, new githubrepo.GithubRepoListViewModel);
+            managementlayout.route("githubrepo-new", "Add Repo", githubrepodetail.tmplId, new githubrepodetail.GithubRepoDetailViewModel(), "githubrepomanagement");
             managementlayout.route("talentmanagement", "Talents", talentmanagement.tmplId, new talentmanagement.TalentListViewModel);
+
             managementlayout.init();
 
         });

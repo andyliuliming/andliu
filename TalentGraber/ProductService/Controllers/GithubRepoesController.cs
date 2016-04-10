@@ -46,10 +46,11 @@ namespace Macrodeek.StarDustProductService.Controllers
         [MacroDeekAuthorize]
         public IHttpActionResult Post(GithubRepo githubRepo)
         {
-            GithubRepo repo = db.GithubRepoes.Where(gr => gr.Url == githubRepo.Url.Trim()).FirstOrDefault();
+            string urlToAdd = githubRepo.Url.Trim();
+            GithubRepo repo = db.GithubRepoes.Where(gr => gr.Url == urlToAdd).FirstOrDefault();
             if (repo == null)
             {
-                db.GithubRepoes.Add(repo);
+                db.GithubRepoes.Add(githubRepo);
                 db.SaveChanges();
                 return Created(githubRepo);
             }

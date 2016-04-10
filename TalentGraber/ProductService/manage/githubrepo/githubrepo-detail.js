@@ -27,10 +27,11 @@
     githubRepoDetail.GithubRepoDetailViewModel.prototype.saveGithubRepo = function () {
         console.dir("save github repo");
         var self = this;
+        var githubRepoObj = komapping.toJS(self.githubRepo);
         util.ajax({
             url: util.productEndpoint + "odata/GithubRepoes",
             type: "POST",
-            data: JSON.stringify(self.githubRepo),
+            data: JSON.stringify(githubRepoObj),
             success: function (data) {
                 if (!data) {
                     alert("Failed to create github repo.");
