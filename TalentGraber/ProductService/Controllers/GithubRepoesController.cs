@@ -1,4 +1,5 @@
-﻿using Macrodeek.Model;
+﻿using Macrodeek.HappyZLServiceBase;
+using Macrodeek.Model;
 using Macrodeek.StarDustServiceBase;
 using Macrodeek.StarDustServiceBase.Controllers;
 using Microsoft.OData.Core;
@@ -36,7 +37,7 @@ namespace Macrodeek.StarDustProductService.Controllers
         // the format of the query could be 
         // odata/GithubRepoes?$FileName=a.jpg&$Tag=small1
         // odata/GithubRepoes?$FileName=b.jpg&$Tag=watermark1
-        //[MacroDeekAuthorize]
+        [MacroDeekAuthorize]
         public async Task<IHttpActionResult> GetGithubRepoes(ODataQueryOptions<GithubRepo> queryOptions)
         {
             return Ok<IEnumerable<GithubRepo>>((IQueryable<GithubRepo>)queryOptions.ApplyTo(db.GithubRepoes));

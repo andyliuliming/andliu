@@ -30,5 +30,6 @@ namespace Macrodeek.Model
         public virtual DbSet<TalentCandidate> TalentCandidates { get; set; }
         public virtual DbSet<GithubAccount> GithubAccounts { get; set; }
         public virtual DbSet<TalentGraberUser> TalentGraberUsers { get; set; }
+        public virtual DbSet<UserToken> UserTokens { get; set; }
     }
 }

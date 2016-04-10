@@ -54,29 +54,8 @@
         return target;
     };
 
-    ko.extenders.digitOnly = function (target, precision) {
-        function validate(newValue) {
-            if (newValue == null) {
-                newValue = 0;
-            } else {
-                newValue = newValue.replace(/[^0-9\.]/g, '');
-                if (newValue === "") {
-                    newValue = 0;
-                }
-            }
-
-            //TODO disable update event
-            target(parseFloat(newValue).toFixed(precision));
-        }
-
-        //validate whenever the value changes
-        target.subscribe(validate);
-
-        //return the original observable
-        return target;
-    };
-
     var util = util || {};
+
     var loadCss = util.loadCss = function (css) {
         var style = document.createElement("style");
         style.type = "text/css";
@@ -121,27 +100,25 @@
         _unauthorizedHandler = handler;
     };
 
-    var checkAccess = util.checkAccess = function () {
+    var checkAccess = util.checkAccess = function (loginAddress) {
         var returnUri = encodeURI(window.location.pathname + window.location.hash);
         $.cookie("returnuri", returnUri);
 
         util.setUnauthorizedHandler(function () {
-            //TODO we should adgd the parameters too.
-            window.location.href = "/common/login/login.html";
+            window.location.href = loginAddress;
         });
 
         var token = $.cookie("token");
-        console.dir(token);
-        //if (!token) {
-        //    _unauthorizedHandler && _unauthorizedHandler("请重新登录");
-        //}
+        if (!token) {
+            _unauthorizedHandler && _unauthorizedHandler("Login Please.");
+        }
     };
 
     var ajax = util.ajax = function (option) {
         var headers = {};
         // we should not require every api to have the token.
         var token = $.cookie("token");
-        var userId = $.cookie("userId");
+        var userName = $.cookie("userName");
         if (!token) {
             if (!option.skipauth) {
                 _unauthorizedHandler && _unauthorizedHandler("请重新登录");
@@ -150,7 +127,7 @@
             headers = {
                 "AuthorizationType": "Token",
                 "Token": token,
-                "UserId": userId,
+                "UserName": userName,
                 "Prefer": "return=representation"
             };
         }
@@ -170,7 +147,7 @@
             error: function (e) {
                 if (e.status === 401) {
                     $.removeCookie("token");
-                    _unauthorizedHandler && _unauthorizedHandler("请重新登录");
+                    _unauthorizedHandler && _unauthorizedHandler("Login Please.");
                 }
                 option.error && option.error(e)
             }
@@ -188,35 +165,6 @@
         }
     }
 
-    var toPrice = util.toPrice = function (price) {
-        return (parseFloat(price) / 100).toFixed(2)
-    };
-
-    var reversePrice = util.reversePrice = function (price) {
-        return (parseFloat(price) * 100);
-    };
-
-    util.PostImage = function (file, bucketName, successFunc, failFunc) {
-        var data = new FormData();
-        data.append('file', file);
-        data.append('imageName', file.name);
-        data.append('bucketName', bucketName);
-        var request = new XMLHttpRequest();
-        request.open('POST', util.imageEndpoint + '/api/ImageDatas');
-        request.onload = function (e) {
-            resp = JSON.parse(request.response);
-            if (resp.code == 200) {
-                successFunc();
-            } else {
-                failFunc();
-            }
-        };
-        try {
-            request.send(data);
-        } catch (e) {
-            self.imageError("could not upload image");
-        }
-    };
     util.productEndpoint = "";
 
     return util;

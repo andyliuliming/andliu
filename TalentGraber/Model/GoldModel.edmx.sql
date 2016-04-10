@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/10/2016 18:00:12
+-- Date Created: 04/10/2016 18:24:02
 -- Generated from EDMX file: C:\Users\andliu\Documents\GitHub\andliu\TalentGraber\Model\GoldModel.edmx
 -- --------------------------------------------------
 
@@ -33,6 +33,9 @@ IF OBJECT_ID(N'[dbo].[GithubAccounts]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[TalentGraberUsers]', 'U') IS NOT NULL
     DROP TABLE [dbo].[TalentGraberUsers];
+GO
+IF OBJECT_ID(N'[dbo].[UserTokens]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[UserTokens];
 GO
 
 -- --------------------------------------------------
@@ -76,6 +79,16 @@ CREATE TABLE [dbo].[TalentGraberUsers] (
 );
 GO
 
+-- Creating table 'UserTokens'
+CREATE TABLE [dbo].[UserTokens] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [UserName] nvarchar(max)  NOT NULL,
+    [Token] nvarchar(max)  NOT NULL,
+    [Password] nvarchar(max)  NOT NULL,
+    [Timestamp] datetime  NOT NULL
+);
+GO
+
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
@@ -101,6 +114,12 @@ GO
 -- Creating primary key on [Id] in table 'TalentGraberUsers'
 ALTER TABLE [dbo].[TalentGraberUsers]
 ADD CONSTRAINT [PK_TalentGraberUsers]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'UserTokens'
+ALTER TABLE [dbo].[UserTokens]
+ADD CONSTRAINT [PK_UserTokens]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 

@@ -121,8 +121,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthorizeUtil.cs" />
     <Compile Include="BaseController.cs" />
     <Compile Include="ConstStrings.cs" />
+    <Compile Include="MacroDeekAuthorize.cs" />
     <Compile Include="ODataQueryOptionBuilder.cs" />
     <Compile Include="GoldODataController.cs" />
     <Compile Include="PasswordHashGenerator.cs" />

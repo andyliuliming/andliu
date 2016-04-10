@@ -1,5 +1,4 @@
 ﻿using Macrodeek.Model;
-using Macrodeek.Model.WrapUp;
 using Macrodeek.StarDustServiceBase;
 using Macrodeek.StarDustServiceBase.Controllers;
 using System;
@@ -33,7 +32,7 @@ namespace Macrodeek.StarDustProductService.Controllers
 
             UserToken userToken = new UserToken();
             userToken.Token = token;
-            userToken.RefreshToken = refreshToken;
+            userToken.Timestamp = DateTime.UtcNow;
             return userToken;
         }
 
@@ -49,6 +48,8 @@ namespace Macrodeek.StarDustProductService.Controllers
             if (user != null)
             {
                 UserToken userToken = this.GenerateUserToken();
+                db.UserTokens.Add(userToken);
+                db.SaveChanges();
                 return Created(userToken);
             }
             else

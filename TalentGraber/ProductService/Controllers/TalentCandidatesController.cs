@@ -1,4 +1,5 @@
-﻿using Macrodeek.Model;
+﻿using Macrodeek.HappyZLServiceBase;
+using Macrodeek.Model;
 using Macrodeek.StarDustServiceBase;
 using Macrodeek.StarDustServiceBase.Controllers;
 using Microsoft.OData.Core;
@@ -36,7 +37,7 @@ namespace Macrodeek.StarDustProductService.Controllers
         // the format of the query could be 
         // odata/AzureImages?$FileName=a.jpg&$Tag=small1
         // odata/AzureImages?$FileName=b.jpg&$Tag=watermark1
-        //[MacroDeekAuthorize]
+        [MacroDeekAuthorize]
         public async Task<IHttpActionResult> GetTalentCandidates(ODataQueryOptions<TalentCandidate> queryOptions)
         {
             return Ok<IEnumerable<TalentCandidate>>((IQueryable<TalentCandidate>)queryOptions.ApplyTo(db.TalentCandidates));

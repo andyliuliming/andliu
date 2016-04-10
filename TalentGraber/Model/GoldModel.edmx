@@ -10,6 +10,7 @@
     <EntitySet Name="TalentCandidates" EntityType="GoldModel.Store.TalentCandidates" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="GithubAccounts" EntityType="GoldModel.Store.GithubAccounts" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="TalentGraberUsers" EntityType="GoldModel.Store.TalentGraberUsers" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="UserTokens" EntityType="GoldModel.Store.UserTokens" store:Type="Tables" Schema="dbo" />
   </EntityContainer>
   <EntityType Name="GithubRepoes">
     <Key>
@@ -48,6 +49,16 @@
     <Property Name="UserName" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
+  <EntityType Name="UserTokens">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Token" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Timestamp" Type="datetime" Nullable="false" />
+  </EntityType>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -57,6 +68,7 @@
           <EntitySet Name="TalentCandidates" EntityType="GoldModel.TalentCandidate" />
           <EntitySet Name="GithubAccounts" EntityType="GoldModel.GithubAccount" />
           <EntitySet Name="TalentGraberUsers" EntityType="GoldModel.TalentGraberUser" />
+          <EntitySet Name="UserTokens" EntityType="GoldModel.UserToken" />
         </EntityContainer>
         <EntityType Name="GithubRepo">
           <Key>
@@ -94,6 +106,16 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserName" Type="String" Nullable="false" />
           <Property Name="Password" Type="String" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserToken">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" Nullable="false" />
+          <Property Name="Token" Type="String" Nullable="false" />
+          <Property Name="Password" Type="String" Nullable="false" />
+          <Property Name="Timestamp" Type="DateTime" Nullable="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -139,6 +161,17 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="UserName" ColumnName="UserName" />
           <ScalarProperty Name="Password" ColumnName="Password" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserTokens">
+      <EntityTypeMapping TypeName="IsTypeOf(GoldModel.UserToken)">
+        <MappingFragment StoreEntitySet="UserTokens">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="Token" ColumnName="Token" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

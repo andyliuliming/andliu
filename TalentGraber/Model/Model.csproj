@@ -158,13 +158,15 @@
     <Compile Include="TalentGraberUser.cs">
       <DependentUpon>GoldModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="UserToken.cs">
+      <DependentUpon>GoldModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="WrapUp\ApiFormats.cs" />
     <Compile Include="WrapUp\CommitInfo.cs" />
     <Compile Include="WrapUp\ExtractRequest.cs" />
     <Compile Include="WrapUp\GithubFeed.cs" />
     <Compile Include="WrapUp\RepositoryInfo.cs" />
     <Compile Include="WrapUp\User.cs" />
-    <Compile Include="WrapUp\UserToken.cs" />
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="GoldModel.edmx">

@@ -13,12 +13,12 @@
     require(["jquery",
         "knockout",
         "text",
-        "shared/util"], function ($, ko, text, util) {
+        "../../common/shared/util"], function ($, ko, text, util) {
             //TODO this is not a full returnurl.
             var returnurl = $.cookie("returnuri");
             function LoginViewModel() {
                 var self = this;
-                this.cellphone = ko.observable("").extend({ required: "请输入手机号" });
+                this.username = ko.observable("").extend({ required: "请输入手机号" });
                 this.password = ko.observable("").extend({ required: "请输入密码" });
                 this.rememberMe = ko.observable(false);
                 this.error = ko.observable();
@@ -26,16 +26,47 @@
             }
             LoginViewModel.prototype.login = function (self, event) {
                 //Trigger validateion
-                self.cellphone.valueHasMutated()
+                self.username.valueHasMutated()
                 self.password.valueHasMutated();
-                if (self.cellphone.hasError() || self.password.hasError()) {
+                if (self.username.hasError() || self.password.hasError()) {
                     return;
                 }
-                var token = "auth_token";
-                $.cookie("cellphone", self.cellphone(), { path: '/', expires: 1 });
-                $.cookie("token", token, { path: '/', expires: 1 });
+
                 self.enableSubmit(false);
-                window.location.href = returnurl || "/";
+                util.ajax({
+                    url: util.productEndpoint + "/odata/UserTokens",
+                    type: "POST",
+                    data: JSON.stringify({
+                        UserName: self.username(),
+                        Password: self.password()
+                    }),
+                    success: function (data) {
+                        self.enableSubmit(true);
+                        if (data && data.Token) {
+                            $.cookie("token", data.Token, { path: '/', expires: 1 });
+                            if (self.rememberMe()) {
+                                $.cookie("refreshToken", data.RefreshToken, { path: '/', expires: 1 });
+                            } else {
+                                $.removeCookie("refreshToken");
+                            }
+                            $.cookie("Roles", data.Roles, { path: '/', expires: 1 });
+                            $.cookie("userId", data.UserId, { path: '/', expires: 1 });
+                            window.location.href = returnurl || "/";
+                        }
+                        else {
+                            throw "Server returns an invalid token";
+                        }
+                    },
+                    error: function (e) {
+                        self.enableSubmit(true);
+                        console.log(e);
+                        if (e.status == 401 || e.status == 404) {
+                            self.error("手机号或密码错误");
+                        } else {
+                            self.error("出错啦,请稍后重试");
+                        }
+                    }
+                });
                 return false;
             }
             var vm = new LoginViewModel();
