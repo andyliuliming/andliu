@@ -119,7 +119,7 @@
     <None Include="pslib\common-china.ps1" />
     <None Include="pslib\common.ps1" />
     <None Include="deployin-china.ps1" />
-    <None Include="pslib\deploystardust_to_staging.ps1" />
+    <None Include="pslib\deploy_to_staging.ps1" />
     <None Include="pslib\make_resources.ps1" />
     <None Include="deployin-global.ps1" />
     <None Include="pslib\enablediagnostic.ps1" />

@@ -15,5 +15,3 @@ $Slot="Staging"
 
 Remove-AzureDeployment -ServiceName $ProductAzureServiceName -Slot $Slot -Force
 Write-Host "$ProductAzureServiceName is removed"
-Remove-AzureDeployment -ServiceName $StarDustPortalAzureServiceName -Slot $Slot -Force
-Write-Host "$StarDustPortalAzureServiceName is removed"
