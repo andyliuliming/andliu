@@ -17,8 +17,6 @@ Write-Host "DiagnosticStorageAccountName is $diagnosticStorageAccountName and ke
 
 $diagnosticStorageContext = New-AzureStorageContext -StorageAccountName $diagnosticStorageAccountName -StorageAccountKey $diagnosticStorageKey
 
-$imageStorageAccountKey = GetStorageAccountKey -ResourceGroupName $ResourceGroupName -StorageAccountName $imageStorageAccountName
-
 # Set-AzureDeployment -Upgrade we should check whether the azure service exists.
 # i don't know why the CurrentStorageAccountName is mandatory...
 

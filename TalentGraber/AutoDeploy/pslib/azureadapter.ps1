@@ -158,7 +158,7 @@ Function SetDiagnosticExtension
         $StorageContext,
         $Slot
     )
-    Write-Host "setting diagnostic extension for $RoleName"
+    Write-Host "setting diagnostic extension for $ServiceName $RoleName"
     Set-AzureServiceDiagnosticsExtension -ServiceName $ServiceName -DiagnosticsConfigurationPath $DiagnosticConfigurationPath -Role $RoleName -Slot $Slot -StorageContext $StorageContext 
 }
 
