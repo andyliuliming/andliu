@@ -23,15 +23,17 @@ $imageStorageAccountKey = GetStorageAccountKey -ResourceGroupName $ResourceGroup
 # i don't know why the CurrentStorageAccountName is mandatory...
 
 #replace the values in the service service/diagnostic config
-#$StarDustProductServiceConfig = "$currentFolder/$ProductAzureServiceName/bin/$buildType/app.publish/ServiceConfiguration.Cloud.cscfg"
-$StarDustProductServiceConfig = "$currentFolder/$ProductAzureServiceProjectName/bin/$buildType/app.publish/ServiceConfiguration.Cloud.cscfg"
-
-$cloudConfig = Get-Content -Encoding UTF8 -Path $StarDustProductServiceConfig
+$ProductServiceConfig = "$currentFolder/$ProductAzureServiceProjectName/bin/$buildType/app.publish/ServiceConfiguration.Cloud.cscfg"
+$cloudConfig = Get-Content -Encoding UTF8 -Path $ProductServiceConfig
 $cloudConfig = ReplaceRealValue -TemplateOrigin $cloudConfig
-Set-Content -Encoding UTF8 -Path $StarDustProductServiceConfig -Value $cloudConfig
+Set-Content -Encoding UTF8 -Path $ProductServiceConfig -Value $cloudConfig
+
+$ProductDaemonRoleConfig = "$currentFolder/$ProductDaemonRoleProjectName/bin/$buildType/app.publish/ServiceConfiguration.Cloud.cscfg"
+$cloudConfig = Get-Content -Encoding UTF8 -Path $ProductDaemonRoleConfig
+$cloudConfig = ReplaceRealValue -TemplateOrigin $cloudConfig
+Set-Content -Encoding UTF8 -Path $ProductDaemonRoleConfig -Value $cloudConfig
 
 #todo generate the CloudDeploy.cscfg according to the cloud because.
-
 $deploymentStorageKey = GetStorageAccountKey -ResourceGroupName $ResourceGroupName -StorageAccountName $deploymentStorageAccountName
 Write-Host "DeploymentStorageAccountName is $deploymentStorageAccountName "
 $deploymentStorageContext = New-AzureStorageContext -StorageAccountName $deploymentStorageAccountName -StorageAccountKey $deploymentStorageKey

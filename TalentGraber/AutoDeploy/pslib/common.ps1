@@ -30,6 +30,7 @@ $AffinityGroupName = "TalentGraberAffinityGroup"
 $ProductAzureServiceName = "TalentGraberProductAzureService"
 $ProductAzureServiceProjectName = "ProductAzureService"
 $ProductServiceRoleName = "ProductService"
+$ProductDaemonRoleProjectName = "WorkerRole"
 
 $AllowedCrossDomainHost="*"
 $ResourceGroupName="TalentGraberResourceGroup"
