@@ -288,6 +288,7 @@
     <Content Include="management-build.js" />
     <Content Include="management-index-debug.html" />
     <Content Include="management-index.html" />
+    <Content Include="management-main-built.js" />
     <Content Include="management-main.js" />
     <Content Include="manage\githubrepo\githubrepo-item.css" />
     <Content Include="manage\githubrepo\githubrepo-item.html" />
