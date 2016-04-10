@@ -7,7 +7,7 @@ namespace Macrodeek.HappyZLServiceBase
     {
         protected override bool IsAuthorized(HttpActionContext actionContext)
         {
-            return AuthorizeUtil.IsAuthorized(actionContext, this.Roles);
+            return AuthorizeUtil.IsAuthorized(actionContext);
         }
     }
 }

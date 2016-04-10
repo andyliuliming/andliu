@@ -39,7 +39,7 @@ namespace Macrodeek.HappyZLServiceBase
             return null;
         }
 
-        public static bool IsAuthorized(HttpActionContext actionContext, string requiredRolesStr)
+        public static bool IsAuthorized(HttpActionContext actionContext)
         {
             if (actionContext != null && actionContext.Request != null && actionContext.Request.Headers != null)
             {
@@ -57,7 +57,7 @@ namespace Macrodeek.HappyZLServiceBase
                     UserToken tokenInCache = db.UserTokens.Where(ut => ut.UserName == userIdStr && ut.Token == tokenToVerify).FirstOrDefault();
                     if (tokenInCache != null)
                     {
-                        if (string.Equals(tokenToVerify, tokenInCache))
+                        if (string.Equals(tokenToVerify, tokenInCache.Token))
                         {
                             byte[] data = Convert.FromBase64String(tokenInCache.Token);
                             DateTime when = DateTime.FromBinary(BitConverter.ToInt64(data, 0));
