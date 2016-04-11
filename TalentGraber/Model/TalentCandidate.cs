@@ -23,5 +23,7 @@ namespace Macrodeek.Model
         public string Followers { get; set; }
         public string ReposUrl { get; set; }
         public string FollowersUrl { get; set; }
+        public long CacheTotalCommits { get; set; }
+        public long CalculatingTotalCommits { get; set; }
     }
 }

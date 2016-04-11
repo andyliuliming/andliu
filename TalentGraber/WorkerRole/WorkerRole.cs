@@ -173,6 +173,8 @@ namespace WorkerRole
                                                 if (contributerInfo == null)
                                                 {
                                                     contributerInfo = new ContributerToRepo();
+                                                    contributerInfo.RepoId = githubRepo.Id;
+                                                    contributerInfo.TalentCandidateId = candidate.Id;
                                                     db.ContributerToRepoes.Add(contributerInfo);
                                                     db.SaveChanges();
                                                 }

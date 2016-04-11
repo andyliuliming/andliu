@@ -155,10 +155,11 @@ Function SetDiagnosticExtension
         $ServiceName,
         $DiagnosticConfigurationPath,
         $RoleName,
+        $StorageContext,
         $Slot
     )
     Write-Host "setting diagnostic extension for $ServiceName $RoleName"
-    Set-AzureServiceDiagnosticsExtension -ServiceName $ServiceName -DiagnosticsConfigurationPath $DiagnosticConfigurationPath -Role $RoleName -Slot $Slot
+    Set-AzureServiceDiagnosticsExtension -ServiceName $ServiceName -DiagnosticsConfigurationPath $DiagnosticConfigurationPath -Role $RoleName -Slot $Slot -StorageContext $StorageContext 
 }
 
 Function MakeSureReservedIpExists
