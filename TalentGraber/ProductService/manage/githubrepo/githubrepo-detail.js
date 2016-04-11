@@ -12,33 +12,32 @@
     var tmpl = require("text!manage/githubrepo/githubrepo-detail.html");
     util.loadTmpl(tmplId, tmpl);
 
-    githubRepoDetail.GithubRepoDetailViewModel = function (isAdd) {
+    githubRepoDetail.GithubDetailViewModel = function () {
         var self = this;
         self.loading = ko.observable(true);
         self.error = ko.observable("");
-        self.githubRepo = komapping.fromJS({
-            Id: 0,
-            Url: ""
-        });
+        self.contributions = ko.observableArray([]);
 
         self.loading(false);
     };
 
-    githubRepoDetail.GithubRepoDetailViewModel.prototype.saveGithubRepo = function () {
-        console.dir("save github repo");
+    githubRepoDetail.GithubDetailViewModel.prototype.refresh = function () {
         var self = this;
-        var githubRepoObj = komapping.toJS(self.githubRepo);
+        var Id = util.getQuery("Id");
         util.ajax({
-            url: util.productEndpoint + "odata/GithubRepoes",
-            type: "POST",
-            data: JSON.stringify(githubRepoObj),
-            success: function (data) {
-                if (!data) {
-                    alert("Failed to create github repo.");
-                }
+            url: util.productEndpoint + "/odata/ContributerToRepoes?$filter=(RepoId eq " + Id + ")",
+            type: "GET",
+            success: function (contributions) {
+                self.contributions.removeAll();
+                contributions.value.forEach(function (contribution) {
+                    self.contributions.push(contribution);
+                });
+                self.loading(false);
             },
             error: function (e) {
-                console.log("Failed to submit github repo code: " + e.status);
+                console.log(e);
+                self.error("could not get the contribution information.")
+                self.loading(false);
             }
         });
     };

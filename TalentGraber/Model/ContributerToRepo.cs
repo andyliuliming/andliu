@@ -18,6 +18,7 @@ namespace Macrodeek.Model
         public long RepoId { get; set; }
         public string RepoUrl { get; set; }
         public long TalentCandidateId { get; set; }
+        public string TalentCandidateName { get; set; }
         public long CacheCommitNumber { get; set; }
         public long CalculatingCommitNumber { get; set; }
     }

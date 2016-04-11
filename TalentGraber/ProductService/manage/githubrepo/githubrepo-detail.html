@@ -1,15 +1,12 @@
-﻿<form class="githubrepo-detail-box form" data-bind="ifnot:loading">
-    <div class="form-line">
-        <div class="form-left">
-            <lable>Url:</lable>
-        </div>
-        <div class="form-right">
-            <input type="text" id="add-githubrepo-text" data-bind="value:githubRepo.Url, valueUpdate:'afterkeydown'" />
-        </div>
-        <div class="form-line">
-            <div class="form-left">
-                <input class="btn new-or-update-githubrepo-btn" type="button" value="Submt" data-bind="click: saveGithubRepo" />
-            </div>
-        </div>
-    </div>
-</form>
+﻿<div>
+    <span>talents contributed to this repository:</span>
+    <ul>
+        <!-- ko template: { ifnot:loading, foreach: contributions } -->
+        <li>
+            <label>Talent:</label>
+            <span data-bind="text:TalentCandidateName" />
+            <span data-bind="text:CacheCommitNumber"></span>
+        </li>
+        <!-- /ko -->
+    </ul>
+</div>

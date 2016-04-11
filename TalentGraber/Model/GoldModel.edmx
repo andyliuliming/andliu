@@ -70,6 +70,7 @@
     <Property Name="RepoId" Type="bigint" Nullable="false" />
     <Property Name="RepoUrl" Type="nvarchar(max)" Nullable="false" />
     <Property Name="TalentCandidateId" Type="bigint" Nullable="false" />
+    <Property Name="TalentCandidateName" Type="nvarchar(max)" Nullable="false" />
     <Property Name="CacheCommitNumber" Type="bigint" Nullable="false" />
     <Property Name="CalculatingCommitNumber" Type="bigint" Nullable="false" />
   </EntityType>
@@ -142,6 +143,7 @@
           <Property Name="RepoId" Type="Int64" Nullable="false" />
           <Property Name="RepoUrl" Type="String" Nullable="false" />
           <Property Name="TalentCandidateId" Type="Int64" Nullable="false" />
+          <Property Name="TalentCandidateName" Type="String" Nullable="false" />
           <Property Name="CacheCommitNumber" Type="Int64" Nullable="false" />
           <Property Name="CalculatingCommitNumber" Type="Int64" Nullable="false" />
         </EntityType>
@@ -212,6 +214,7 @@
           <ScalarProperty Name="RepoId" ColumnName="RepoId" />
           <ScalarProperty Name="RepoUrl" ColumnName="RepoUrl" />
           <ScalarProperty Name="TalentCandidateId" ColumnName="TalentCandidateId" />
+          <ScalarProperty Name="TalentCandidateName" ColumnName="TalentCandidateName" />
           <ScalarProperty Name="CacheCommitNumber" ColumnName="CacheCommitNumber" />
           <ScalarProperty Name="CalculatingCommitNumber" ColumnName="CalculatingCommitNumber" />
         </MappingFragment>

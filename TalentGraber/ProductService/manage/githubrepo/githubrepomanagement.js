@@ -30,6 +30,8 @@
                 name: "Id"
             }, {
                 name: "Url"
+            }, {
+                name: "Details"
             }],
             tags: [{
                 "name": "All",

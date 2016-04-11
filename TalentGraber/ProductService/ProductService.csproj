@@ -298,6 +298,9 @@
     <Content Include="manage\githubrepo\githubrepomanagement.css" />
     <Content Include="manage\githubrepo\githubrepomanagement.html" />
     <Content Include="manage\githubrepo\githubrepomanagement.js" />
+    <Content Include="manage\githubrepo\githubrepo-add.css" />
+    <Content Include="manage\githubrepo\githubrepo-add.html" />
+    <Content Include="manage\githubrepo\githubrepo-add.js" />
     <Content Include="manage\githubrepo\githubrepo-detail.css" />
     <Content Include="manage\githubrepo\githubrepo-detail.html" />
     <Content Include="manage\githubrepo\githubrepo-detail.js" />

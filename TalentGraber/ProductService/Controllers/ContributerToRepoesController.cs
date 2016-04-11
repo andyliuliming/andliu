@@ -40,7 +40,8 @@ namespace Macrodeek.StarDustProductService.Controllers
         [MacroDeekAuthorize]
         public async Task<IHttpActionResult> GetContributerToRepoes(ODataQueryOptions<ContributerToRepo> queryOptions)
         {
-            return Ok<IEnumerable<ContributerToRepo>>((IQueryable<ContributerToRepo>)queryOptions.ApplyTo(db.ContributerToRepoes));
+            IQueryable<ContributerToRepo> contributerToRepoes = (IQueryable<ContributerToRepo>)queryOptions.ApplyTo(db.ContributerToRepoes);
+            return Ok<IEnumerable<ContributerToRepo>>(contributerToRepoes);
         }
     }
 }
