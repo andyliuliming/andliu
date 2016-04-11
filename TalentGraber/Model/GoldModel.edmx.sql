@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/11/2016 16:53:32
+-- Date Created: 04/11/2016 22:16:04
 -- Generated from EDMX file: C:\Personal\andliu\TalentGraber\Model\GoldModel.edmx
 -- --------------------------------------------------
 
@@ -98,6 +98,7 @@ GO
 CREATE TABLE [dbo].[ContributerToRepoes] (
     [Id] bigint IDENTITY(1,1) NOT NULL,
     [RepoId] bigint  NOT NULL,
+    [RepoUrl] nvarchar(max)  NOT NULL,
     [TalentCandidateId] bigint  NOT NULL,
     [CacheCommitNumber] bigint  NOT NULL,
     [CalculatingCommitNumber] bigint  NOT NULL

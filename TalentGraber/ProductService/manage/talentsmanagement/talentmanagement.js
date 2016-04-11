@@ -36,6 +36,8 @@
                 name: "Locatoin"
             }, {
                 name: "TotalCommits"
+            }, {
+                name: "Details"
             }],
             tags: [{
                 "name": "All",

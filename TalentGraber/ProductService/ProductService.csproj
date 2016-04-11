@@ -238,6 +238,7 @@
     <Compile Include="Controllers\GithubRepoesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
+    <Compile Include="Controllers\ContributerToRepoesController.cs" />
     <Compile Include="Controllers\TalentCandidatesController.cs" />
     <Compile Include="Controllers\UserTokensController.cs" />
     <Compile Include="Global.asax.cs">
@@ -300,6 +301,9 @@
     <Content Include="manage\githubrepo\githubrepo-detail.css" />
     <Content Include="manage\githubrepo\githubrepo-detail.html" />
     <Content Include="manage\githubrepo\githubrepo-detail.js" />
+    <Content Include="manage\talentsmanagement\talent-detail.css" />
+    <Content Include="manage\talentsmanagement\talent-detail.html" />
+    <Content Include="manage\talentsmanagement\talent-detail.js" />
     <Content Include="manage\talentsmanagement\talent-item.css" />
     <Content Include="manage\talentsmanagement\talent-item.html" />
     <Content Include="manage\talentsmanagement\talent-item.js" />

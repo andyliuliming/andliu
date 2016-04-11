@@ -37,6 +37,7 @@ namespace Macrodeek.StarDustProductService
             builder.EntitySet<GithubRepo>("GithubRepoes");
             builder.EntitySet<TalentCandidate>("TalentCandidates");
             builder.EntitySet<UserToken>("UserTokens");
+            builder.EntitySet<ContributerToRepo>("ContributerToRepoes");
 
             // External Notify Backs
             iEdmModel = builder.GetEdmModel();
