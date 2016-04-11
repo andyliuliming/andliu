@@ -220,9 +220,13 @@ namespace WorkerRole
                                                     contributerInfo = new ContributerToRepo();
                                                     contributerInfo.RepoId = githubRepo.Id;
                                                     contributerInfo.TalentCandidateId = candidate.Id;
+                                                    contributerInfo.RepoUrl = githubRepo.Url;
+                                                    contributerInfo.TalentCandidateName = (candidate.Name == null ? string.Empty : candidate.Name);
                                                     db.ContributerToRepoes.Add(contributerInfo);
                                                     db.SaveChanges();
                                                 }
+                                                contributerInfo.RepoUrl = githubRepo.Url;
+                                                contributerInfo.TalentCandidateName = (candidate.Name == null ? string.Empty : candidate.Name);
                                                 contributerInfo.CalculatingCommitNumber += 1;
                                                 candidate.CalculatingTotalCommits += 1;
                                                 db.SaveChanges();
