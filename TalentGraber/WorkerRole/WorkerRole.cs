@@ -206,6 +206,7 @@ namespace WorkerRole
                                                     db.SaveChanges();
                                                 }
                                                 contributerInfo.CalculatingCommitNumber += 1;
+                                                candidate.CalculatingTotalCommits += 1;
                                                 db.SaveChanges();
                                                 transaction.Commit();
                                             }
