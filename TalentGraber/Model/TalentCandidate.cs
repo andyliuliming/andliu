@@ -14,7 +14,7 @@ namespace Macrodeek.Model
     
     public partial class TalentCandidate
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Email { get; set; }
         public string Company { get; set; }
         public string Location { get; set; }

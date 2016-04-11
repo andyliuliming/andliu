@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/10/2016 18:24:02
--- Generated from EDMX file: C:\Users\andliu\Documents\GitHub\andliu\TalentGraber\Model\GoldModel.edmx
+-- Date Created: 04/11/2016 16:31:14
+-- Generated from EDMX file: C:\Personal\andliu\TalentGraber\Model\GoldModel.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -37,6 +37,9 @@ GO
 IF OBJECT_ID(N'[dbo].[UserTokens]', 'U') IS NOT NULL
     DROP TABLE [dbo].[UserTokens];
 GO
+IF OBJECT_ID(N'[dbo].[ContributerToRepoes]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[ContributerToRepoes];
+GO
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -44,14 +47,14 @@ GO
 
 -- Creating table 'GithubRepoes'
 CREATE TABLE [dbo].[GithubRepoes] (
-    [Id] int IDENTITY(1,1) NOT NULL,
+    [Id] bigint IDENTITY(1,1) NOT NULL,
     [Url] nvarchar(max)  NOT NULL
 );
 GO
 
 -- Creating table 'TalentCandidates'
 CREATE TABLE [dbo].[TalentCandidates] (
-    [Id] int IDENTITY(1,1) NOT NULL,
+    [Id] bigint IDENTITY(1,1) NOT NULL,
     [Email] nvarchar(max)  NOT NULL,
     [Company] nvarchar(max)  NOT NULL,
     [Location] nvarchar(max)  NOT NULL,
@@ -65,7 +68,7 @@ GO
 
 -- Creating table 'GithubAccounts'
 CREATE TABLE [dbo].[GithubAccounts] (
-    [Id] int IDENTITY(1,1) NOT NULL,
+    [Id] bigint IDENTITY(1,1) NOT NULL,
     [UserName] nvarchar(max)  NOT NULL,
     [Password] nvarchar(max)  NOT NULL
 );
@@ -73,7 +76,7 @@ GO
 
 -- Creating table 'TalentGraberUsers'
 CREATE TABLE [dbo].[TalentGraberUsers] (
-    [Id] int IDENTITY(1,1) NOT NULL,
+    [Id] bigint IDENTITY(1,1) NOT NULL,
     [UserName] nvarchar(max)  NOT NULL,
     [Password] nvarchar(max)  NOT NULL
 );
@@ -81,11 +84,21 @@ GO
 
 -- Creating table 'UserTokens'
 CREATE TABLE [dbo].[UserTokens] (
-    [Id] int IDENTITY(1,1) NOT NULL,
+    [Id] bigint IDENTITY(1,1) NOT NULL,
     [UserName] nvarchar(max)  NOT NULL,
     [Token] nvarchar(max)  NOT NULL,
     [Password] nvarchar(max)  NOT NULL,
     [Timestamp] datetime  NOT NULL
+);
+GO
+
+-- Creating table 'ContributerToRepoes'
+CREATE TABLE [dbo].[ContributerToRepoes] (
+    [Id] bigint IDENTITY(1,1) NOT NULL,
+    [RepoId] bigint  NOT NULL,
+    [TalentCandidateId] bigint  NOT NULL,
+    [CacheCommitNumber] bigint  NOT NULL,
+    [CalculatingCommitNumber] bigint  NOT NULL
 );
 GO
 
@@ -120,6 +133,12 @@ GO
 -- Creating primary key on [Id] in table 'UserTokens'
 ALTER TABLE [dbo].[UserTokens]
 ADD CONSTRAINT [PK_UserTokens]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'ContributerToRepoes'
+ALTER TABLE [dbo].[ContributerToRepoes]
+ADD CONSTRAINT [PK_ContributerToRepoes]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 

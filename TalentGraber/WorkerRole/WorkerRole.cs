@@ -9,6 +9,7 @@ using Macrodeek.Model;
 using GithubGraberLib;
 using GithubGraberLib.Domain;
 using ExtractBase.RestApi;
+using System;
 
 namespace WorkerRole
 {
@@ -73,109 +74,166 @@ namespace WorkerRole
             return value == null ? string.Empty : value;
         }
 
+        private void ResetContributersToRepo(GithubRepo repo)
+        {
+            IQueryable<ContributerToRepo> currentContributersToRepo = db.ContributerToRepoes.Where(ctp => ctp.RepoId == repo.Id);
+            foreach (var contributer in currentContributersToRepo)
+            {
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    contributer.CalculatingCommitNumber = 0;
+                    db.SaveChanges();
+                    transaction.Commit();
+                }
+            }
+        }
+        private void SetValueForContributerToRepo(GithubRepo repo)
+        {
+            IQueryable<ContributerToRepo> currentContributersToRepo = db.ContributerToRepoes.Where(ctp => ctp.RepoId == repo.Id);
+            foreach (var contributer in currentContributersToRepo)
+            {
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    contributer.CacheCommitNumber = contributer.CalculatingCommitNumber;
+                    db.SaveChanges();
+                    transaction.Commit();
+                }
+            }
+        }
+
         private async Task RunAsync(CancellationToken cancellationToken)
         {
             // TODO: Replace the following with your own logic.
             while (!cancellationToken.IsCancellationRequested)
             {
-                Trace.TraceInformation("Working");
-
-                List<GithubAccount> githubAccounts = db.GithubAccounts.ToList<GithubAccount>();
-
-                int accountIndex = 0;
-                string accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
-
-                GithubExtractor githubExtractor = new GithubExtractor();
-                foreach (var githubRepo in db.GithubRepoes.ToList())
+                try
                 {
-                    int startPage = 0;
-                    int perPage = 100;
+                    Trace.TraceInformation("Working");
 
-                    GithubFeed githubFee = this.Parse(githubRepo.Url);
+                    List<GithubAccount> githubAccounts = db.GithubAccounts.ToList<GithubAccount>();
+                    GithubExtractor githubExtractor = new GithubExtractor();
                     RestApiCaller<List<CommitDetail>> commitInfoCaller = new RestApiCaller<List<CommitDetail>>(ApiFormats.BaseUri);
-                    string repoBaseUri = string.Format(ApiFormats.CommitRelativePathPattern, githubFee.owner, githubFee.repo);
 
-                    while (true)
+                    int accountIndex = 0;
+                    string accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
+
+                    foreach (GithubRepo githubRepo in db.GithubRepoes.ToList())
                     {
-                        string urlParameters = repoBaseUri + "?page=" + startPage + "&per_page=" + perPage;
-                        try
+                        // clear the calculating number of the repository
+
+                        this.ResetContributersToRepo(githubRepo);
+
+                        int startPage = 0;
+                        int perPage = 100;
+
+                        GithubFeed githubFee = this.Parse(githubRepo.Url);
+                        string repoBaseUri = string.Format(ApiFormats.CommitRelativePathPattern, githubFee.owner, githubFee.repo);
+
+                        while (true)
                         {
-                            List<CommitDetail> pagedCommitDetails = commitInfoCaller.CallApi("get", accessToken, urlParameters, null);
-                            if (pagedCommitDetails == null || pagedCommitDetails.Count == 0)
+                            string urlParameters = repoBaseUri + "?page=" + startPage + "&per_page=" + perPage;
+                            try
                             {
-                                break;
-                            }
-                            else
-                            {
-                                for (int i = 0; i < pagedCommitDetails.Count; i++)
+                                List<CommitDetail> pagedCommitDetails = commitInfoCaller.CallApi("get", accessToken, urlParameters, null);
+                                if (pagedCommitDetails == null || pagedCommitDetails.Count == 0)
                                 {
-                                    if (pagedCommitDetails[i].author != null)
+                                    break;
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < pagedCommitDetails.Count; i++)
                                     {
-                                        string loginString = pagedCommitDetails[i].author.login;
-                                        TalentCandidate candidate = db.TalentCandidates.Where(
-                                            (tc) => tc.Login == loginString).FirstOrDefault();
-                                        if (candidate == null)
+                                        if (pagedCommitDetails[i].author != null)
                                         {
-                                            TalentCandidate newCandidate = new TalentCandidate();
-                                            newCandidate.Company = string.Empty;
-                                            newCandidate.Email = string.Empty;
-                                            newCandidate.Followers = string.Empty;
-                                            newCandidate.FollowersUrl = string.Empty;
-                                            newCandidate.Location = string.Empty;
-                                            newCandidate.Login = pagedCommitDetails[i].author.login;
-                                            newCandidate.Name = string.Empty;
-                                            newCandidate.ReposUrl = string.Empty;
-                                            db.TalentCandidates.Add(newCandidate);
-                                            db.SaveChanges();
+                                            string loginString = pagedCommitDetails[i].author.login;
+                                            TalentCandidate candidate = db.TalentCandidates.Where(
+                                                (tc) => tc.Login == loginString).FirstOrDefault();
+                                            if (candidate == null)
+                                            {
+                                                using (var transaction = db.Database.BeginTransaction())
+                                                {
+                                                    candidate = new TalentCandidate();
+                                                    candidate.Company = string.Empty;
+                                                    candidate.Email = string.Empty;
+                                                    candidate.Followers = string.Empty;
+                                                    candidate.FollowersUrl = string.Empty;
+                                                    candidate.Location = string.Empty;
+                                                    candidate.Login = pagedCommitDetails[i].author.login;
+                                                    candidate.Name = string.Empty;
+                                                    candidate.ReposUrl = string.Empty;
+                                                    db.TalentCandidates.Add(candidate);
+                                                    db.SaveChanges();
+                                                    transaction.Commit();
+                                                }
+                                            }
+                                            ContributerToRepo contributerInfo = null;
+                                            using (var transaction = db.Database.BeginTransaction())
+                                            {
+                                                contributerInfo = db.ContributerToRepoes.Where(ctp => ctp.RepoId == githubRepo.Id && ctp.TalentCandidateId == candidate.Id).FirstOrDefault();
+                                                if (contributerInfo == null)
+                                                {
+                                                    contributerInfo = new ContributerToRepo();
+                                                    db.ContributerToRepoes.Add(contributerInfo);
+                                                    db.SaveChanges();
+                                                }
+                                                contributerInfo.CalculatingCommitNumber += 1;
+                                                db.SaveChanges();
+                                                transaction.Commit();
+                                            }
                                         }
                                     }
+                                    startPage++;
                                 }
-                                startPage++;
+                            }
+                            catch (HttpException e)
+                            {
+                                if (e.StatusCode == HttpStatusCode.Forbidden)
+                                {
+                                    accountIndex++;
+                                    accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
+                                }
+                                else
+                                {
+                                    throw e;
+                                }
                             }
                         }
-                        catch (HttpException e)
+                        this.SetValueForContributerToRepo(githubRepo);
+                    }
+
+                    RestApiCaller<User> userInfoCaller = new RestApiCaller<User>(ApiFormats.BaseUri);
+                    int candidateIndex = 0;
+                    int stepSize = 10;
+                    while (true)
+                    {
+                        List<TalentCandidate> talentCandidates =
+                            db.TalentCandidates.OrderBy(tc => tc.Id).Skip(candidateIndex).Take(stepSize).ToList<TalentCandidate>();
+                        if (talentCandidates != null && talentCandidates.Count<TalentCandidate>() > 0)
                         {
-                            if (e.StatusCode == HttpStatusCode.Forbidden)
+                            foreach (TalentCandidate tc in talentCandidates)
                             {
-                                accountIndex++;
-                                accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
-                            }
-                            else
-                            {
-                                throw e;
+                                string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
+                                User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
+                                tc.Company = getEmptyOrValue(user.company);
+                                tc.Email = getEmptyOrValue(user.email);
+                                tc.Followers = getEmptyOrValue(user.followers);
+                                tc.FollowersUrl = getEmptyOrValue(user.followers_url);
+                                tc.Location = getEmptyOrValue(user.location);
+                                tc.Name = getEmptyOrValue(user.name);
+                                tc.ReposUrl = getEmptyOrValue(user.repos_url);
+                                db.SaveChanges();
                             }
                         }
+                        else
+                        {
+                            break;
+                        }
+                        candidateIndex += stepSize;
                     }
                 }
-
-                RestApiCaller<User> userInfoCaller = new RestApiCaller<User>(ApiFormats.BaseUri);
-                int candidateIndex = 0;
-                int stepSize = 10;
-                while (true)
+                catch (Exception e)
                 {
-                    List<TalentCandidate> talentCandidates = 
-                        db.TalentCandidates.OrderBy(tc => tc.Id).Skip(candidateIndex).Take(stepSize).ToList<TalentCandidate>();
-                    if (talentCandidates != null && talentCandidates.Count<TalentCandidate>() > 0)
-                    {
-                        foreach (TalentCandidate tc in talentCandidates)
-                        {
-                            string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
-                            User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
-                            tc.Company = getEmptyOrValue(user.company);
-                            tc.Email = getEmptyOrValue(user.email);
-                            tc.Followers = getEmptyOrValue(user.followers);
-                            tc.FollowersUrl = getEmptyOrValue(user.followers_url);
-                            tc.Location = getEmptyOrValue(user.location);
-                            tc.Name = getEmptyOrValue(user.name);
-                            tc.ReposUrl = getEmptyOrValue(user.repos_url);
-                            db.SaveChanges();
-                        }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                    candidateIndex += stepSize;
+                    Trace.TraceError(e.ToString());
                 }
                 await Task.Delay(1000 * 60 * 60 * 5);
             }

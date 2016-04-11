@@ -239,3 +239,4 @@ AzureNativeLinuxAgent/Makefile
 AzureNativeLinuxAgent/src/Makefile
 
 AzureNativeLinuxAgent/config.status
+TalentGraber/ProductService/management-main-built.js

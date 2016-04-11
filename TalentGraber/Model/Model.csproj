@@ -130,6 +130,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContributerToRepo.cs">
+      <DependentUpon>GoldModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="GithubAccount.cs">
       <DependentUpon>GoldModel.tt</DependentUpon>
     </Compile>

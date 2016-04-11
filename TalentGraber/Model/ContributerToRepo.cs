@@ -12,9 +12,12 @@ namespace Macrodeek.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class GithubRepo
+    public partial class ContributerToRepo
     {
         public long Id { get; set; }
-        public string Url { get; set; }
+        public long RepoId { get; set; }
+        public long TalentCandidateId { get; set; }
+        public long CacheCommitNumber { get; set; }
+        public long CalculatingCommitNumber { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace Macrodeek.Model
     
     public partial class TalentGraberUser
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
     }

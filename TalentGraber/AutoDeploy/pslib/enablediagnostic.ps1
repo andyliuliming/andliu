@@ -7,10 +7,6 @@ if($Environment -eq "AzureChinaCloud")
 }
 . .\pslib\azureadapter.ps1
 
-Write-Host "DiagnosticStorageAccountName is $diagnosticStorageAccountName "
-$diagnosticStorageKey=GetStorageAccountKey -ResourceGroupName $ResourceGroupName -StorageAccountName $diagnosticStorageAccountName
-$diagnosticStorageContext = New-AzureStorageContext -StorageAccountName $diagnosticStorageAccountName -StorageAccountKey $diagnosticStorageKey
-
 $ProductServiceDiagnosticConfig = "$currentFolder/$ProductAzureServiceProjectName/bin/$buildType/app.publish/Extensions/PaaSDiagnostics.$ProductServiceRoleName.PubConfig.xml"
 $diagnosticConfig = Get-Content -Encoding UTF8 -Path $ProductServiceDiagnosticConfig
 $diagnosticConfig = ReplaceRealValue -TemplateOrigin $diagnosticConfig
@@ -23,5 +19,5 @@ Set-Content -Encoding UTF8 -Path $ProductWorkRoleDiagnosticConfig -Value $diagno
 
 
 Write-Host "setting the product service diagnostic extension"
-SetDiagnosticExtension -ServiceName $ProductAzureServiceName -StorageContext $diagnosticStorageContext -RoleName $ProductServiceRoleName -DiagnosticConfigurationPath $ProductServiceDiagnosticConfig -Slot Production
-SetDiagnosticExtension -ServiceName $ProductAzureServiceName -StorageContext $diagnosticStorageContext -RoleName $ProductDaemonRoleProjectName -DiagnosticConfigurationPath $ProductWorkRoleDiagnosticConfig -Slot Production
+SetDiagnosticExtension -ServiceName $ProductAzureServiceName -RoleName $ProductServiceRoleName -DiagnosticConfigurationPath $ProductServiceDiagnosticConfig -Slot Production
+SetDiagnosticExtension -ServiceName $ProductAzureServiceName -RoleName $ProductDaemonRoleProjectName -DiagnosticConfigurationPath $ProductWorkRoleDiagnosticConfig -Slot Production

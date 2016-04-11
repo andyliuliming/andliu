@@ -11,19 +11,20 @@
     <EntitySet Name="GithubAccounts" EntityType="GoldModel.Store.GithubAccounts" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="TalentGraberUsers" EntityType="GoldModel.Store.TalentGraberUsers" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="UserTokens" EntityType="GoldModel.Store.UserTokens" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ContributerToRepoes" EntityType="GoldModel.Store.ContributerToRepoes" store:Type="Tables" Schema="dbo" />
   </EntityContainer>
   <EntityType Name="GithubRepoes">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Url" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="TalentCandidates">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Email" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Company" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Location" Type="nvarchar(max)" Nullable="false" />
@@ -37,7 +38,7 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="UserName" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
@@ -45,7 +46,7 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="UserName" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
@@ -53,11 +54,21 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="UserName" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Token" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Timestamp" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ContributerToRepoes">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RepoId" Type="bigint" Nullable="false" />
+    <Property Name="TalentCandidateId" Type="bigint" Nullable="false" />
+    <Property Name="CacheCommitNumber" Type="bigint" Nullable="false" />
+    <Property Name="CalculatingCommitNumber" Type="bigint" Nullable="false" />
   </EntityType>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -69,19 +80,20 @@
           <EntitySet Name="GithubAccounts" EntityType="GoldModel.GithubAccount" />
           <EntitySet Name="TalentGraberUsers" EntityType="GoldModel.TalentGraberUser" />
           <EntitySet Name="UserTokens" EntityType="GoldModel.UserToken" />
+          <EntitySet Name="ContributerToRepoes" EntityType="GoldModel.ContributerToRepo" />
         </EntityContainer>
         <EntityType Name="GithubRepo">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Url" Type="String" Nullable="false" />
         </EntityType>
         <EntityType Name="TalentCandidate">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Email" Type="String" Nullable="false" />
           <Property Name="Company" Type="String" Nullable="false" />
           <Property Name="Location" Type="String" Nullable="false" />
@@ -95,7 +107,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserName" Type="String" Nullable="false" />
           <Property Name="Password" Type="String" Nullable="false" />
         </EntityType>
@@ -103,7 +115,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserName" Type="String" Nullable="false" />
           <Property Name="Password" Type="String" Nullable="false" />
         </EntityType>
@@ -111,11 +123,21 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserName" Type="String" Nullable="false" />
           <Property Name="Token" Type="String" Nullable="false" />
           <Property Name="Password" Type="String" Nullable="false" />
           <Property Name="Timestamp" Type="DateTime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ContributerToRepo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RepoId" Type="Int64" Nullable="false" />
+          <Property Name="TalentCandidateId" Type="Int64" Nullable="false" />
+          <Property Name="CacheCommitNumber" Type="Int64" Nullable="false" />
+          <Property Name="CalculatingCommitNumber" Type="Int64" Nullable="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -172,6 +194,17 @@
           <ScalarProperty Name="Token" ColumnName="Token" />
           <ScalarProperty Name="Password" ColumnName="Password" />
           <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ContributerToRepoes">
+      <EntityTypeMapping TypeName="IsTypeOf(GoldModel.ContributerToRepo)">
+        <MappingFragment StoreEntitySet="ContributerToRepoes">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="RepoId" ColumnName="RepoId" />
+          <ScalarProperty Name="TalentCandidateId" ColumnName="TalentCandidateId" />
+          <ScalarProperty Name="CacheCommitNumber" ColumnName="CacheCommitNumber" />
+          <ScalarProperty Name="CalculatingCommitNumber" ColumnName="CalculatingCommitNumber" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
