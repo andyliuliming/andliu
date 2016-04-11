@@ -109,7 +109,7 @@ namespace WorkerRole
             {
                 using (var transaction = db.Database.BeginTransaction())
                 {
-                    contributer.CacheTotalCommits = 0;
+                    contributer.CalculatingTotalCommits = 0;
                     db.SaveChanges();
                     transaction.Commit();
                 }
