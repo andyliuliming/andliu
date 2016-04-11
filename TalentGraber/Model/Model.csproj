@@ -200,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CreateIndex.sql" />
+    <Content Include="dbo.Initialize.data.sql" />
     <Content Include="GoldModel.edmx.sql" />
     <Content Include="pre-post-build.txt" />
   </ItemGroup>

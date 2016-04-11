@@ -101,6 +101,33 @@ namespace WorkerRole
             }
         }
 
+
+        private void ResetTalentCandidateCommits()
+        {
+            IQueryable<TalentCandidate> talentCandidates = db.TalentCandidates;
+            foreach (var contributer in talentCandidates)
+            {
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    contributer.CacheTotalCommits = 0;
+                    db.SaveChanges();
+                    transaction.Commit();
+                }
+            }
+        }
+        private void SetValueForTalentCandidateCommits()
+        {
+            IQueryable<TalentCandidate> talentCandidates = db.TalentCandidates;
+            foreach (var contributer in talentCandidates)
+            {
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    contributer.CacheTotalCommits = contributer.CalculatingTotalCommits;
+                    db.SaveChanges();
+                    transaction.Commit();
+                }
+            }
+        }
         private async Task RunAsync(CancellationToken cancellationToken)
         {
             // TODO: Replace the following with your own logic.
@@ -116,7 +143,7 @@ namespace WorkerRole
 
                     int accountIndex = 0;
                     string accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
-
+                    this.ResetTalentCandidateCommits();
                     foreach (GithubRepo githubRepo in db.GithubRepoes.ToList())
                     {
                         // clear the calculating number of the repository
@@ -204,34 +231,26 @@ namespace WorkerRole
                     }
 
                     RestApiCaller<User> userInfoCaller = new RestApiCaller<User>(ApiFormats.BaseUri);
-                    int candidateIndex = 0;
-                    int stepSize = 10;
-                    while (true)
+
+                    foreach (TalentCandidate tc in db.TalentCandidates)
                     {
-                        List<TalentCandidate> talentCandidates =
-                            db.TalentCandidates.OrderBy(tc => tc.Id).Skip(candidateIndex).Take(stepSize).ToList<TalentCandidate>();
-                        if (talentCandidates != null && talentCandidates.Count<TalentCandidate>() > 0)
+                        using (var transaction = db.Database.BeginTransaction())
                         {
-                            foreach (TalentCandidate tc in talentCandidates)
-                            {
-                                string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
-                                User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
-                                tc.Company = getEmptyOrValue(user.company);
-                                tc.Email = getEmptyOrValue(user.email);
-                                tc.Followers = getEmptyOrValue(user.followers);
-                                tc.FollowersUrl = getEmptyOrValue(user.followers_url);
-                                tc.Location = getEmptyOrValue(user.location);
-                                tc.Name = getEmptyOrValue(user.name);
-                                tc.ReposUrl = getEmptyOrValue(user.repos_url);
-                                db.SaveChanges();
-                            }
+                            string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
+                            User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
+                            tc.Company = getEmptyOrValue(user.company);
+                            tc.Email = getEmptyOrValue(user.email);
+                            tc.Followers = getEmptyOrValue(user.followers);
+                            tc.FollowersUrl = getEmptyOrValue(user.followers_url);
+                            tc.Location = getEmptyOrValue(user.location);
+                            tc.Name = getEmptyOrValue(user.name);
+                            tc.ReposUrl = getEmptyOrValue(user.repos_url);
+                            db.SaveChanges();
+                            transaction.Commit();
                         }
-                        else
-                        {
-                            break;
-                        }
-                        candidateIndex += stepSize;
                     }
+
+                    this.SetValueForTalentCandidateCommits();
                 }
                 catch (Exception e)
                 {
