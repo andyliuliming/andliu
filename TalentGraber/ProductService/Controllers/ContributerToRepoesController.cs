@@ -37,7 +37,7 @@ namespace Macrodeek.StarDustProductService.Controllers
         // the format of the query could be 
         // odata/AzureImages?$FileName=a.jpg&$Tag=small1
         // odata/AzureImages?$FileName=b.jpg&$Tag=watermark1
-        //[MacroDeekAuthorize]
+        [MacroDeekAuthorize]
         public async Task<IHttpActionResult> GetContributerToRepoes(ODataQueryOptions<ContributerToRepo> queryOptions)
         {
             return Ok<IEnumerable<ContributerToRepo>>((IQueryable<ContributerToRepo>)queryOptions.ApplyTo(db.ContributerToRepoes));
