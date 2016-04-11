@@ -10,6 +10,7 @@ using GithubGraberLib;
 using GithubGraberLib.Domain;
 using ExtractBase.RestApi;
 using System;
+using System.Data.Entity;
 
 namespace WorkerRole
 {
@@ -74,60 +75,77 @@ namespace WorkerRole
             return value == null ? string.Empty : value;
         }
 
-        private void ResetContributersToRepo(GithubRepo repo)
+        private void InterateChange<T>(IOrderedQueryable<T> iqueryable, Action<T> action)
         {
-            IQueryable<ContributerToRepo> currentContributersToRepo = db.ContributerToRepoes.Where(ctp => ctp.RepoId == repo.Id);
-            foreach (var contributer in currentContributersToRepo)
+            int skipSize = 0;
+            int batchSize = 10;
+            while (true)
             {
-                using (var transaction = db.Database.BeginTransaction())
+                IQueryable<T> currentContributersToRepo = iqueryable.Skip(skipSize).Take(batchSize);
+                if (currentContributersToRepo != null)
                 {
-                    contributer.CalculatingCommitNumber = 0;
-                    db.SaveChanges();
-                    transaction.Commit();
+                    List<T> contributerList = currentContributersToRepo.ToList();
+                    if (contributerList.Count == 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        skipSize += 10;
+                        foreach (T item in contributerList)
+                        {
+                            using (var transaction = db.Database.BeginTransaction())
+                            {
+                                action(item);
+                                db.SaveChanges();
+                                transaction.Commit();
+                            }
+                        }
+                    }
                 }
-            }
-        }
-        private void SetValueForContributerToRepo(GithubRepo repo)
-        {
-            IQueryable<ContributerToRepo> currentContributersToRepo = db.ContributerToRepoes.Where(ctp => ctp.RepoId == repo.Id);
-            foreach (var contributer in currentContributersToRepo)
-            {
-                using (var transaction = db.Database.BeginTransaction())
+                else
                 {
-                    contributer.CacheCommitNumber = contributer.CalculatingCommitNumber;
-                    db.SaveChanges();
-                    transaction.Commit();
+                    break;
                 }
             }
         }
 
+        private void ResetContributersToRepo(GithubRepo repo)
+        {
+            IOrderedQueryable<ContributerToRepo> orderedQueryable =
+                (IOrderedQueryable<ContributerToRepo>)db.ContributerToRepoes.Where(ctp => ctp.RepoId == repo.Id).OrderBy(ctp => ctp.Id);
+            this.InterateChange<ContributerToRepo>(orderedQueryable, new Action<ContributerToRepo>(ctp =>
+            {
+                ctp.CalculatingCommitNumber = 0;
+            }));
+        }
+
+        private void SetValueForContributerToRepo(GithubRepo repo)
+        {
+            IOrderedQueryable<ContributerToRepo> orderedQueryable =
+                (IOrderedQueryable<ContributerToRepo>)db.ContributerToRepoes.Where(ctp => ctp.RepoId == repo.Id).OrderBy(ctp => ctp.Id);
+            this.InterateChange<ContributerToRepo>(orderedQueryable, new Action<ContributerToRepo>(ctp =>
+            {
+                ctp.CacheCommitNumber = ctp.CalculatingCommitNumber;
+            }));
+        }
 
         private void ResetTalentCandidateCommits()
         {
-            IQueryable<TalentCandidate> talentCandidates = db.TalentCandidates;
-            foreach (var contributer in talentCandidates)
+            this.InterateChange<TalentCandidate>(db.TalentCandidates.OrderBy(tc => tc.Id), new Action<TalentCandidate>(tc =>
             {
-                using (var transaction = db.Database.BeginTransaction())
-                {
-                    contributer.CalculatingTotalCommits = 0;
-                    db.SaveChanges();
-                    transaction.Commit();
-                }
-            }
+                tc.CalculatingTotalCommits = 0;
+            }));
         }
+
         private void SetValueForTalentCandidateCommits()
         {
-            IQueryable<TalentCandidate> talentCandidates = db.TalentCandidates;
-            foreach (var contributer in talentCandidates)
+            this.InterateChange<TalentCandidate>(db.TalentCandidates.OrderBy(tc => tc.Id), new Action<TalentCandidate>(tc =>
             {
-                using (var transaction = db.Database.BeginTransaction())
-                {
-                    contributer.CacheTotalCommits = contributer.CalculatingTotalCommits;
-                    db.SaveChanges();
-                    transaction.Commit();
-                }
-            }
+                tc.CacheTotalCommits = tc.CalculatingTotalCommits;
+            }));
         }
+
         private async Task RunAsync(CancellationToken cancellationToken)
         {
             // TODO: Replace the following with your own logic.
@@ -233,23 +251,18 @@ namespace WorkerRole
 
                     RestApiCaller<User> userInfoCaller = new RestApiCaller<User>(ApiFormats.BaseUri);
 
-                    foreach (TalentCandidate tc in db.TalentCandidates)
+                    this.InterateChange<TalentCandidate>(db.TalentCandidates.OrderBy(tc => tc.Id), new Action<TalentCandidate>(tc =>
                     {
-                        using (var transaction = db.Database.BeginTransaction())
-                        {
-                            string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
-                            User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
-                            tc.Company = getEmptyOrValue(user.company);
-                            tc.Email = getEmptyOrValue(user.email);
-                            tc.Followers = getEmptyOrValue(user.followers);
-                            tc.FollowersUrl = getEmptyOrValue(user.followers_url);
-                            tc.Location = getEmptyOrValue(user.location);
-                            tc.Name = getEmptyOrValue(user.name);
-                            tc.ReposUrl = getEmptyOrValue(user.repos_url);
-                            db.SaveChanges();
-                            transaction.Commit();
-                        }
-                    }
+                        string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
+                        User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
+                        tc.Company = getEmptyOrValue(user.company);
+                        tc.Email = getEmptyOrValue(user.email);
+                        tc.Followers = getEmptyOrValue(user.followers);
+                        tc.FollowersUrl = getEmptyOrValue(user.followers_url);
+                        tc.Location = getEmptyOrValue(user.location);
+                        tc.Name = getEmptyOrValue(user.name);
+                        tc.ReposUrl = getEmptyOrValue(user.repos_url);
+                    }));
 
                     this.SetValueForTalentCandidateCommits();
                 }
