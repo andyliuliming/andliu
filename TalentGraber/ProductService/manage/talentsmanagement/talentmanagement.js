@@ -33,7 +33,7 @@
             }, {
                 name: "Company"
             }, {
-                name: "Locatoin"
+                name: "Location"
             }, {
                 name: "TotalCommits"
             }, {
