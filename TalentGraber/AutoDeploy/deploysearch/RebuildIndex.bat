@@ -24,7 +24,7 @@ set TALENTCANDIDATES={ ^
              "host" : "localhost",^
              "port" : 9300^
         },^
-        "index" : "products" ^
+        "index" : "talentcandidates" ^
     } ^
 }
 
