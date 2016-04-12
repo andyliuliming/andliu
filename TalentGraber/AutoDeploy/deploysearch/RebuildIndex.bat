@@ -20,7 +20,7 @@ set TALENTCANDIDATES={ ^
         "password": "User@123", ^
         "sql": "select * , id as _id from dbo.TalentCandidates", ^
 	"elasticsearch" : {^
-             "cluster" : "HappyZL",^
+             "cluster" : "TalentGraber",^
              "host" : "localhost",^
              "port" : 9300^
         },^

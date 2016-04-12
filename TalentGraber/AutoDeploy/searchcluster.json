@@ -35,7 +35,7 @@
     },
     "vmNamePrefix": {
       "type": "string",
-      "defaultValue": "happyVM",
+      "defaultValue": "searchVM",
       "metadata": {
         "description": "Prefix to use for VM names"
       }
@@ -70,7 +70,7 @@
     },
     "lbName": {
       "type": "string",
-      "defaultValue": "happylb",
+      "defaultValue": "searchlb",
       "metadata": {
         "description": "Load Balancer name"
       }
@@ -84,14 +84,14 @@
     },
     "publicIPAddressName": {
       "type": "string",
-      "defaultValue": "happyip",
+      "defaultValue": "searchip",
       "metadata": {
         "description": "Public IP Name"
       }
     },
     "vnetName": {
       "type": "string",
-      "defaultValue": "happyvnet",
+      "defaultValue": "searchvnet",
       "metadata": {
         "description": "VNET name"
       }
@@ -106,7 +106,7 @@
   },
   "variables": {
     "storageAccountType": "Standard_LRS",
-    "availabilitySetName": "happyAvSet",
+    "availabilitySetName": "searchAvSet",
     "addressPrefix": "10.0.0.0/16",
     "subnetName": "Subnet-1",
     "subnetPrefix": "10.0.0.0/24",

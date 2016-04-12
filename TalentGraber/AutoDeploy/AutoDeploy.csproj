@@ -118,7 +118,7 @@
     <None Include="packages.config" />
     <None Include="pslib\azureadapter.ps1" />
     <None Include="azureauth.ps1" />
-    <None Include="pslib\buildstardust.ps1" />
+    <None Include="pslib\build.ps1" />
     <None Include="pslib\common-global.ps1" />
     <None Include="pslib\common-china.ps1" />
     <None Include="pslib\common.ps1" />
