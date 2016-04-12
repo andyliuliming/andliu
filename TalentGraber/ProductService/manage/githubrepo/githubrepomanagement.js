@@ -43,7 +43,7 @@
     };
 
     githubRepoModule.GithubRepoListViewModel.prototype.addGithubRepo = function () {
-        window.location.href = "#githubrepo-new";
+        window.location.href = "#githubrepo-add";
     };
 
     githubRepoModule.GithubRepoListViewModel.prototype.refresh = function () {
