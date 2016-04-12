@@ -10,6 +10,7 @@ using System.Web.Http.Routing;
 using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
 using Macrodeek.Model;
+using Macrodeek.Model.WrapUp;
 
 namespace Macrodeek.StarDustProductService
 {
@@ -38,7 +39,7 @@ namespace Macrodeek.StarDustProductService
             builder.EntitySet<TalentCandidate>("TalentCandidates");
             builder.EntitySet<UserToken>("UserTokens");
             builder.EntitySet<ContributerToRepo>("ContributerToRepoes");
-
+            builder.EntitySet<Warmer>("Warmers");
             // External Notify Backs
             iEdmModel = builder.GetEdmModel();
             config.MapODataServiceRoute("odata", "odata", iEdmModel);

@@ -82,7 +82,7 @@ namespace ExtractBase.RestApi
                     }
                     else
                     {
-                        throw new HttpException(response.StatusCode, null);
+                        throw new HttpException(response.StatusCode, response.Headers.ToString());
                     }
                 case "post":
                     if (!string.IsNullOrEmpty(accessToken))

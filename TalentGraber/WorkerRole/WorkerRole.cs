@@ -146,132 +146,153 @@ namespace WorkerRole
             }));
         }
 
+        private void RealWork()
+        {
+            List<GithubAccount> githubAccounts = db.GithubAccounts.ToList<GithubAccount>();
+            GithubExtractor githubExtractor = new GithubExtractor();
+            RestApiCaller<List<CommitDetail>> commitInfoCaller = new RestApiCaller<List<CommitDetail>>(ApiFormats.BaseUri);
+
+            int accountIndex = 0;
+            string accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
+            this.ResetTalentCandidateCommits();
+            foreach (GithubRepo githubRepo in db.GithubRepoes.ToList())
+            {
+                // clear the calculating number of the repository
+                this.ResetContributersToRepo(githubRepo);
+                int startPage = 0;
+                int perPage = 100;
+
+                GithubFeed githubFee = this.Parse(githubRepo.Url);
+                string repoBaseUri = string.Format(ApiFormats.CommitRelativePathPattern, githubFee.owner, githubFee.repo);
+
+                while (true)
+                {
+                    string urlParameters = repoBaseUri + "?page=" + startPage + "&per_page=" + perPage;
+                    try
+                    {
+                        List<CommitDetail> pagedCommitDetails = commitInfoCaller.CallApi("get", accessToken, urlParameters, null);
+                        if (pagedCommitDetails == null || pagedCommitDetails.Count == 0)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            for (int i = 0; i < pagedCommitDetails.Count; i++)
+                            {
+                                if (pagedCommitDetails[i].author != null)
+                                {
+                                    string loginString = pagedCommitDetails[i].author.login;
+                                    TalentCandidate candidate = db.TalentCandidates.Where(
+                                        (tc) => tc.Login == loginString).FirstOrDefault();
+                                    if (candidate == null)
+                                    {
+                                        using (var transaction = db.Database.BeginTransaction())
+                                        {
+                                            candidate = new TalentCandidate();
+                                            candidate.Company = string.Empty;
+                                            candidate.Email = string.Empty;
+                                            candidate.Followers = string.Empty;
+                                            candidate.FollowersUrl = string.Empty;
+                                            candidate.Location = string.Empty;
+                                            candidate.Login = pagedCommitDetails[i].author.login;
+                                            candidate.Name = string.Empty;
+                                            candidate.ReposUrl = string.Empty;
+                                            db.TalentCandidates.Add(candidate);
+                                            db.SaveChanges();
+                                            transaction.Commit();
+                                        }
+                                    }
+                                    ContributerToRepo contributerInfo = null;
+                                    using (var transaction = db.Database.BeginTransaction())
+                                    {
+                                        contributerInfo = db.ContributerToRepoes.Where(ctp => ctp.RepoId == githubRepo.Id && ctp.TalentCandidateId == candidate.Id).FirstOrDefault();
+                                        if (contributerInfo == null)
+                                        {
+                                            contributerInfo = new ContributerToRepo();
+                                            contributerInfo.RepoId = githubRepo.Id;
+                                            contributerInfo.TalentCandidateId = candidate.Id;
+                                            contributerInfo.RepoUrl = githubRepo.Url;
+                                            contributerInfo.TalentCandidateName = (candidate.Name == null ? string.Empty : candidate.Name);
+                                            db.ContributerToRepoes.Add(contributerInfo);
+                                            db.SaveChanges();
+                                        }
+                                        contributerInfo.RepoUrl = githubRepo.Url;
+                                        contributerInfo.TalentCandidateName = (candidate.Name == null ? string.Empty : candidate.Name);
+                                        contributerInfo.CalculatingCommitNumber += 1;
+                                        candidate.CalculatingTotalCommits += 1;
+                                        db.SaveChanges();
+                                        transaction.Commit();
+                                    }
+                                }
+                            }
+                            startPage++;
+                        }
+                    }
+                    catch (HttpException e)
+                    {
+                        if (e.StatusCode == HttpStatusCode.Forbidden)
+                        {
+                            Trace.TraceWarning(string.Format("account quota exhausted {0}.", githubAccounts[accountIndex].UserName));
+                            accountIndex++;
+                            accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
+                        }
+                        else
+                        {
+                            throw e;
+                        }
+                    }
+                }
+                this.SetValueForContributerToRepo(githubRepo);
+            }
+
+            RestApiCaller<User> userInfoCaller = new RestApiCaller<User>(ApiFormats.BaseUri);
+
+            this.InterateChange<TalentCandidate>(db.TalentCandidates.OrderBy(tc => tc.Id), new Action<TalentCandidate>(tc =>
+            {
+                string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
+                Trace.TraceWarning(string.Format("getting the user {0}", tc.Login));
+                User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
+                tc.Company = getEmptyOrValue(user.company);
+                tc.Email = getEmptyOrValue(user.email);
+                tc.Followers = getEmptyOrValue(user.followers);
+                tc.FollowersUrl = getEmptyOrValue(user.followers_url);
+                tc.Location = getEmptyOrValue(user.location);
+                tc.Name = getEmptyOrValue(user.name);
+                tc.ReposUrl = getEmptyOrValue(user.repos_url);
+            }));
+
+            this.SetValueForTalentCandidateCommits();
+        }
+
+        private void KeepWarm()
+        {
+            RestApiCaller<string> warmersCaller = new RestApiCaller<string>("/");
+            warmersCaller.Get("/odata/Warmers",null);
+        }
+
+
         private async Task RunAsync(CancellationToken cancellationToken)
         {
+            int currentStep = 0;
+            int stepForKeepWarm = 1;
+            int stepForRealWork = 60;
             // TODO: Replace the following with your own logic.
             while (!cancellationToken.IsCancellationRequested)
             {
                 try
                 {
                     Trace.TraceWarning("Working");
-
-                    List<GithubAccount> githubAccounts = db.GithubAccounts.ToList<GithubAccount>();
-                    GithubExtractor githubExtractor = new GithubExtractor();
-                    RestApiCaller<List<CommitDetail>> commitInfoCaller = new RestApiCaller<List<CommitDetail>>(ApiFormats.BaseUri);
-
-                    int accountIndex = 0;
-                    string accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
-                    this.ResetTalentCandidateCommits();
-                    foreach (GithubRepo githubRepo in db.GithubRepoes.ToList())
+                    if ((currentStep % stepForKeepWarm)==0)
                     {
-                        // clear the calculating number of the repository
-                        this.ResetContributersToRepo(githubRepo);
-                        int startPage = 0;
-                        int perPage = 100;
-
-                        GithubFeed githubFee = this.Parse(githubRepo.Url);
-                        string repoBaseUri = string.Format(ApiFormats.CommitRelativePathPattern, githubFee.owner, githubFee.repo);
-
-                        while (true)
-                        {
-                            string urlParameters = repoBaseUri + "?page=" + startPage + "&per_page=" + perPage;
-                            try
-                            {
-                                List<CommitDetail> pagedCommitDetails = commitInfoCaller.CallApi("get", accessToken, urlParameters, null);
-                                if (pagedCommitDetails == null || pagedCommitDetails.Count == 0)
-                                {
-                                    break;
-                                }
-                                else
-                                {
-                                    for (int i = 0; i < pagedCommitDetails.Count; i++)
-                                    {
-                                        if (pagedCommitDetails[i].author != null)
-                                        {
-                                            string loginString = pagedCommitDetails[i].author.login;
-                                            TalentCandidate candidate = db.TalentCandidates.Where(
-                                                (tc) => tc.Login == loginString).FirstOrDefault();
-                                            if (candidate == null)
-                                            {
-                                                using (var transaction = db.Database.BeginTransaction())
-                                                {
-                                                    candidate = new TalentCandidate();
-                                                    candidate.Company = string.Empty;
-                                                    candidate.Email = string.Empty;
-                                                    candidate.Followers = string.Empty;
-                                                    candidate.FollowersUrl = string.Empty;
-                                                    candidate.Location = string.Empty;
-                                                    candidate.Login = pagedCommitDetails[i].author.login;
-                                                    candidate.Name = string.Empty;
-                                                    candidate.ReposUrl = string.Empty;
-                                                    db.TalentCandidates.Add(candidate);
-                                                    db.SaveChanges();
-                                                    transaction.Commit();
-                                                }
-                                            }
-                                            ContributerToRepo contributerInfo = null;
-                                            using (var transaction = db.Database.BeginTransaction())
-                                            {
-                                                contributerInfo = db.ContributerToRepoes.Where(ctp => ctp.RepoId == githubRepo.Id && ctp.TalentCandidateId == candidate.Id).FirstOrDefault();
-                                                if (contributerInfo == null)
-                                                {
-                                                    contributerInfo = new ContributerToRepo();
-                                                    contributerInfo.RepoId = githubRepo.Id;
-                                                    contributerInfo.TalentCandidateId = candidate.Id;
-                                                    contributerInfo.RepoUrl = githubRepo.Url;
-                                                    contributerInfo.TalentCandidateName = (candidate.Name == null ? string.Empty : candidate.Name);
-                                                    db.ContributerToRepoes.Add(contributerInfo);
-                                                    db.SaveChanges();
-                                                }
-                                                contributerInfo.RepoUrl = githubRepo.Url;
-                                                contributerInfo.TalentCandidateName = (candidate.Name == null ? string.Empty : candidate.Name);
-                                                contributerInfo.CalculatingCommitNumber += 1;
-                                                candidate.CalculatingTotalCommits += 1;
-                                                db.SaveChanges();
-                                                transaction.Commit();
-                                            }
-                                        }
-                                    }
-                                    startPage++;
-                                }
-                            }
-                            catch (HttpException e)
-                            {
-                                if (e.StatusCode == HttpStatusCode.Forbidden)
-                                {
-                                    Trace.TraceWarning(string.Format("account quota exhausted {0}.",githubAccounts[accountIndex].UserName));
-                                    accountIndex++;
-                                    accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
-                                }
-                                else
-                                {
-                                    throw e;
-                                }
-                            }
-                        }
-                        this.SetValueForContributerToRepo(githubRepo);
+                        this.KeepWarm();
                     }
-
-                    RestApiCaller<User> userInfoCaller = new RestApiCaller<User>(ApiFormats.BaseUri);
-
-                    this.InterateChange<TalentCandidate>(db.TalentCandidates.OrderBy(tc => tc.Id), new Action<TalentCandidate>(tc =>
+                    if ((currentStep % stepForRealWork) == 0)
                     {
-                        string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
-                        Trace.TraceWarning(string.Format("getting the user {0}",tc.Login));
-                        User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
-                        tc.Company = getEmptyOrValue(user.company);
-                        tc.Email = getEmptyOrValue(user.email);
-                        tc.Followers = getEmptyOrValue(user.followers);
-                        tc.FollowersUrl = getEmptyOrValue(user.followers_url);
-                        tc.Location = getEmptyOrValue(user.location);
-                        tc.Name = getEmptyOrValue(user.name);
-                        tc.ReposUrl = getEmptyOrValue(user.repos_url);
-                    }));
-
-                    this.SetValueForTalentCandidateCommits();
-
-                    // deplay for 1 hour.
-                    await Task.Delay(1000 * 60 * 60 * 1);
+                        this.RealWork();
+                    }
+                    currentStep++;
+                    // deplay for 1 min.
+                    await Task.Delay(1000 * 60 * 1 * 1);
                 }
                 catch (Exception e)
                 {
