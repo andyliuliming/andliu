@@ -8,8 +8,12 @@
         </div>
         <div class="form-line">
             <div class="form-left">
-                <input class="btn new-or-update-githubrepo-btn" type="button" value="Submt" data-bind="click: saveGithubRepo" />
+                <input class="btn new-or-update-githubrepo-btn" 
+                       type="button" value="Submt" data-bind="click: saveGithubRepo, enable:enableSave" />
             </div>
+        </div>
+        <div>
+            <span class="error-msg" data-bind="text:error"></span>
         </div>
     </div>
 </form>
