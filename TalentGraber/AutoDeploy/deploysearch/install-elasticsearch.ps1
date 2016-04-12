@@ -5,10 +5,10 @@ param(
     [String]$StorageAccountEndpoint = "core.chinacloudapi.cn"
 )
 
-$resourcesUri = "https://$deploymentStorageAccount.$StorageAccountEndpoint/searchresource/deploysearch.zip"
+$resourcesUri = "https://$deploymentStorageAccount.blob.$StorageAccountEndpoint/searchresource/deploysearch.zip"
 $resourcesZip = "$installRoot\deploysearch.zip"
 
-$scriptBase = "http://$deploymentStorageAccount.$StorageAccountEndpoint/searchresource"
+$scriptBase = "http://$deploymentStorageAccount.blob.$StorageAccountEndpoint/searchresource"
 
 $jdkInstaller = "${installRoot}\jdk-8u45-windows-x64.exe"
 $jdkPath = "C:\Program Files\JAVA\JDK"
