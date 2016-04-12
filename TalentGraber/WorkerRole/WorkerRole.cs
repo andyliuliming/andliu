@@ -165,9 +165,7 @@ namespace WorkerRole
                     foreach (GithubRepo githubRepo in db.GithubRepoes.ToList())
                     {
                         // clear the calculating number of the repository
-
                         this.ResetContributersToRepo(githubRepo);
-
                         int startPage = 0;
                         int perPage = 100;
 
@@ -241,6 +239,7 @@ namespace WorkerRole
                             {
                                 if (e.StatusCode == HttpStatusCode.Forbidden)
                                 {
+                                    Trace.TraceWarning(string.Format("account quota exhausted {0}.",githubAccounts[accountIndex].UserName));
                                     accountIndex++;
                                     accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
                                 }
@@ -258,6 +257,7 @@ namespace WorkerRole
                     this.InterateChange<TalentCandidate>(db.TalentCandidates.OrderBy(tc => tc.Id), new Action<TalentCandidate>(tc =>
                     {
                         string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
+                        Trace.TraceWarning(string.Format("getting the user {0}",tc.Login));
                         User user = userInfoCaller.CallApi("get", accessToken, urlParameters, null);
                         tc.Company = getEmptyOrValue(user.company);
                         tc.Email = getEmptyOrValue(user.email);
