@@ -93,6 +93,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{dc609afb-a535-4f76-adea-4e1187db2a56}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GithubGraberLib\GithubGraberLib.csproj">
       <Project>{ac117594-8748-4e22-a38d-c14ee764537d}</Project>
       <Name>GithubGraberLib</Name>
