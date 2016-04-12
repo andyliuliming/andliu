@@ -31,8 +31,6 @@ $deploymentStorageKey = GetStorageAccountKey -ResourceGroupName $ResourceGroupNa
 Write-Host "DeploymentStorageAccountName is $storageAccountName "
 $deploymentStorageContext = New-AzureStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $deploymentStorageKey
 
-
-
 ##### product service ############################################################
 Write-Host "deploying the product service"
 NewOrUpgradeDeployment -ServiceName $ProductAzureServiceName `

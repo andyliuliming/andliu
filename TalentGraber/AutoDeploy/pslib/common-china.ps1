@@ -18,3 +18,4 @@ $currentFolder="$currentFolder/.."
 $searchLBIPName = "searchlbip"
 $searchClusterInstanceCount = 1
 $searchVMNamePrefix = "searchVM"
+$searchDnsSuffix =".chinaeast.cloudapp.chinacloudapi.cn"

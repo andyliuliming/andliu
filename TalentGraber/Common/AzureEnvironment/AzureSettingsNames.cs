@@ -5,5 +5,6 @@
     {
         public string AllowedCrossDomainHost { get; set; }
         public string ProductServiceAddress { get; set; }
+        public string SearchServiceAddress { get; set; }
     }
 }

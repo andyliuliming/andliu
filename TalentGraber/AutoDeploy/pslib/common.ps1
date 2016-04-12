@@ -55,7 +55,7 @@ function ReplaceRealValue
     $TemplateOrigin=$TemplateOrigin -replace "{DATABASE_PASSWORD}",$databasePassword
     $TemplateOrigin=$TemplateOrigin -replace "{ProductServiceAddress}",$ProductServiceAddress
     $TemplateOrigin=$TemplateOrigin -replace "{StorageAccountEndpoint}",$StorageAccountEndpoint
-
+    $TemplateOrigin=$TemplateOrigin -replace "{SearchServiceAddress}","$searchLBIPName$searchDnsSuffix"
     # ##################### network related ##############################
     $TemplateOrigin=$TemplateOrigin -replace "{AllowedCrossDomainHost}",$AllowedCrossDomainHost
     return $TemplateOrigin
