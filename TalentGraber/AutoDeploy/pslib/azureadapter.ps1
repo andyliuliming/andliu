@@ -277,10 +277,11 @@ function UploadResource($Context, $ContainerName, $FileName, [Switch]$Overwrite)
 
 function RunCommandOnVM($ResourceGroupName, $location, $vmName, $scripturi, $command)
 {
+    Write-Host "run command on vm: $ResourceGroupName $location $vmName $scripturi $command"
     Set-AzureRmVMCustomScriptExtension -ResourceGroupName $ResourceGroupName -Location $location -Name $vmName -VMName $vmName -FileUri @($scripturi) -Run $command
 }
 
-function MakeSureSearchClusterExists($ResourceGroupName, $StorageAccountEndpoint, $Location, $storageAccountName, $lbIpName, $numberOfInstances)
+function MakeSureSearchClusterExists($ResourceGroupName, $StorageAccountEndpoint, $Location, $storageAccountName,$searchVMNamePrefix, $lbIpName, $numberOfInstances)
 {
     $rg = Get-AzureRmResourceGroup -ResourceGroupName $ResourceGroupName -Location $Location -ErrorAction SilentlyContinue
 
@@ -293,6 +294,7 @@ function MakeSureSearchClusterExists($ResourceGroupName, $StorageAccountEndpoint
     $params = @{};
     $params["storageAccountName"] = $storageAccountName
     $params["numberOfInstances"] = "$numberOfInstances"
+    $params["vmNamePrefix"]=$searchVMNamePrefix
     $params["adminUserName"] = "andy"
     $params["adminPassword"] = "User@123" #ConvertTo-SecureString  "User@123" -AsPlainText -Force;
     $params["dnsNameforLBIP"] = $lbIpName
