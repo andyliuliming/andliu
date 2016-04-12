@@ -269,13 +269,15 @@ namespace WorkerRole
                     }));
 
                     this.SetValueForTalentCandidateCommits();
+
+                    // deplay for 1 hour.
+                    await Task.Delay(1000 * 60 * 60 * 1);
                 }
                 catch (Exception e)
                 {
                     Trace.TraceError(e.ToString());
+                    await Task.Delay(1000 * 60 * 1 * 1);
                 }
-                // deplay for 1 hour.
-                await Task.Delay(1000 * 60 * 60 * 1);
             }
         }
     }
