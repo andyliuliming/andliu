@@ -19,5 +19,5 @@ Set-Content -Encoding UTF8 -Path $ProductWorkRoleDiagnosticConfig -Value $diagno
 
 
 Write-Host "setting the product service diagnostic extension"
-SetDiagnosticExtension -ServiceName $ProductAzureServiceName -StorageContext $diagnosticStorageContext -RoleName $ProductServiceRoleName -DiagnosticConfigurationPath $ProductServiceDiagnosticConfig -Slot Production
 SetDiagnosticExtension -ServiceName $ProductAzureServiceName -StorageContext $diagnosticStorageContext -RoleName $ProductDaemonRoleProjectName -DiagnosticConfigurationPath $ProductWorkRoleDiagnosticConfig -Slot Production
+SetDiagnosticExtension -ServiceName $ProductAzureServiceName -StorageContext $diagnosticStorageContext -RoleName $ProductServiceRoleName -DiagnosticConfigurationPath $ProductServiceDiagnosticConfig -Slot Production
