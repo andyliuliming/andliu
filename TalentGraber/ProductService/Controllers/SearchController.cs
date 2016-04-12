@@ -3,7 +3,9 @@ using Macrodeek.HappyZLModel;
 using Macrodeek.HappyZLModel.WrapUp.SearchRelated;
 using Macrodeek.MacrodeekCommon;
 using Macrodeek.Model;
+using Nest;
 using Newtonsoft.Json.Linq;
+using StarDustCommon.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +20,32 @@ namespace Macrodeek.HappyZLProductService.Controllers.SeachWrapper
         // POST: api/Search
         public IHttpActionResult Post([FromBody]SearchQueryBody body)
         {
-            GoldModelContainer db = new GoldModelContainer();
+            string searchAddress = AppSettingsProvider.GetSetting(FieldNameUtil.GetMemberName((AzureSettingsNames c) => c.SearchServiceAddress));
+            var node = new Uri(searchAddress);
+            var settings = new ConnectionSettings(node);
+            var client = new ElasticClient(settings);
+
             switch (body.ObjectType)
             {
                 case ObjectType.TalentCandidate:
-                    
-                    return Json<IEnumerable<TalentCandidate>>(db.TalentCandidates.Where(tc => tc.Location.Contains(body.FullText)).OrderBy(tc => tc.Id).Skip(body.From).Take(body.Size));
+
+                    SearchRequest<TalentCandidate> userRequest = null;
+                    userRequest = new SearchRequest<TalentCandidate>();
+
+                    userRequest.From = body.From;
+                    userRequest.Size = body.Size;
+                    if (!string.IsNullOrEmpty(body.FullText))
+                    {
+                        userRequest.Query = new MatchQuery { Field = "_all", Query = body.FullText, MinimumShouldMatch = body.MinimumShouldMatch };
+                    }
+                    else
+                    {
+                        //TODO implement this.
+
+                    }
+                    ISearchResponse<TalentCandidate> userResponse = client.Search<TalentCandidate>(userRequest);
+                    return Json<IEnumerable<TalentCandidate>>(userResponse.Documents);
+
                 default:
                     return null;
             }

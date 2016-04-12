@@ -2,10 +2,6 @@
 $buildType = "Debug"
 $Prefix = "TalentGraber"
 
-###################### account for monitoring #######################
-$MonitoringAccount="13310100283"
-$MonitoringPassword="User@123"
-
 ###################### storage related  #############################
 $storageType="Standard_GRS"
 $storageAccountName=$Prefix.ToLower() + "storage"
@@ -33,7 +29,8 @@ $ProductDaemonRoleProjectName = "WorkerRole"
 $AllowedCrossDomainHost="*"
 $ResourceGroupName="TalentGraberResourceGroup"
 
-#################################### all kinds of accounts #######################################
+#################################### search related #######################################
+$searchPort="9200"
 
 $ErrorActionPreference= 'Stop'
 $currentFolder = pwd
@@ -55,7 +52,7 @@ function ReplaceRealValue
     $TemplateOrigin=$TemplateOrigin -replace "{DATABASE_PASSWORD}",$databasePassword
     $TemplateOrigin=$TemplateOrigin -replace "{ProductServiceAddress}",$ProductServiceAddress
     $TemplateOrigin=$TemplateOrigin -replace "{StorageAccountEndpoint}",$StorageAccountEndpoint
-    $TemplateOrigin=$TemplateOrigin -replace "{SearchServiceAddress}","$searchLBIPName$searchDnsSuffix"
+    $TemplateOrigin=$TemplateOrigin -replace "{SearchServiceAddress}","$searchLBIPName$searchDnsSuffix"+":$searchPort"
     # ##################### network related ##############################
     $TemplateOrigin=$TemplateOrigin -replace "{AllowedCrossDomainHost}",$AllowedCrossDomainHost
     return $TemplateOrigin
