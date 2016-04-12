@@ -14,3 +14,7 @@ $AllowedCrossDomainHost="*"
 $ErrorActionPreference= 'Stop'
 $currentFolder = pwd
 $currentFolder="$currentFolder/.."
+
+$searchLBIPName = "searchlbip"
+$searchClusterInstanceCount = 1
+$searchVMNamePrefix = "searchVM"

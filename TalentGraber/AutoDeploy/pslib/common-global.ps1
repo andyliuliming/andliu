@@ -1,7 +1,6 @@
 ﻿. .\pslib\common.ps1
 ######################  common config     ############################
 $buildType = "Debug"
-$Prefix = "StarDust"
 $location = "East Asia"
 $Environment = "AzureCloud"
 $subscriptionId="c4528d9e-c99a-48bb-b12d-fde2176a43b8"
@@ -16,3 +15,7 @@ $AllowedCrossDomainHost="*"
 $ErrorActionPreference= 'Stop'
 $currentFolder = pwd
 $currentFolder="$currentFolder/.."
+
+$searchLBIPName = "searchlbip"
+$searchClusterInstanceCount = 1
+$searchVMNamePrefix = "searchVM"

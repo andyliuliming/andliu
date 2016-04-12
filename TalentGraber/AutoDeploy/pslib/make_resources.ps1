@@ -20,6 +20,9 @@ $databaseCredential = New-Object System.Management.Automation.PSCredential ($dat
 MakeSureDatabaseServerExists -ResourceGroupName $ResourceGroupName -ServerName $databaseServerName -Credential $databaseCredential -Location $location
 MakeSureDatabaseExists -ResourceGroupName $ResourceGroupName -DatabaseName $goldDataBaseName -ServerName $databaseServerName -DatabaseEdition $databaseEdition -DatabaseMaxSize $databaseMaxSize
 
-MakeSureStorageAccountExists -StorageName $diagnosticStorageAccountName -Location $location
-MakeSureStorageAccountExists -StorageName $deploymentStorageAccountName -Location $location
-MakeSureStorageAccountExists -StorageName $imageStorageAccountName -Location $location
+MakeSureStorageAccountExists -StorageName $storageAccountName -Location $location
+
+
+MakeSureSearchClusterExists -ResourceGroupName $ResourceGroupName `
+                            -Location $location -storageAccountName $storageAccountName -StorageAccountEndpoint $StorageAccountEndpoint `
+                            -lbIpName $searchLBIPName -numberOfInstances $searchClusterInstanceCount

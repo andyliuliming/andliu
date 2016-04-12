@@ -8,8 +8,7 @@ $MonitoringPassword="User@123"
 
 ###################### storage related  #############################
 $storageType="Standard_GRS"
-$deploymentStorageAccountName=$Prefix.ToLower() + "deployments"
-$diagnosticStorageAccountName=$Prefix.ToLower() + "diagnostic"
+$storageAccountName=$Prefix.ToLower() + "storage"
 $StorageAccountEndpoint = ""
 
 ######################  database related  ############################
@@ -25,7 +24,7 @@ $databaseServerName="talentgraberdatabase"
 
 ######################  azure service related  ############################
 $AffinityGroupName = "TalentGraberAffinityGroup"
-$ProductAzureServiceName = "TalentGraberProductAzureService"
+$ProductAzureServiceName = "TalentGraber"
 $ProductAzureServiceProjectName = "ProductAzureService"
 $ProductServiceRoleName = "ProductService"
 $ProductDaemonRoleProjectName = "WorkerRole"
@@ -46,8 +45,8 @@ function ReplaceRealValue
     $TemplateOrigin
     )
     # get the account key
-    $TemplateOrigin=$TemplateOrigin -replace "{DiagnosticStorageAccountName}",$diagnosticStorageAccountName
-    $TemplateOrigin=$TemplateOrigin -replace "{DiagnosticStorageAccountKey}",$diagnosticStorageKey
+    $TemplateOrigin=$TemplateOrigin -replace "{DiagnosticStorageAccountName}",$storageAccountName
+    $TemplateOrigin=$TemplateOrigin -replace "{DiagnosticStorageAccountKey}",$storageAccountKey
     $TemplateOrigin=$TemplateOrigin -replace "{DATABASE_SERVER_NAME}",$databaseServerName
     $TemplateOrigin=$TemplateOrigin -replace "{DATABASE_SUFFIX}",$databaseSuffix
     $TemplateOrigin=$TemplateOrigin -replace "{GOLD_DATABASENAME}",$goldDataBaseName

@@ -25,11 +25,11 @@ Invoke-MsBuild -Path ..\Model\Model.csproj -P "/P:Configuration=$buildType" #-Sh
 # build the service base project
 Invoke-MsBuild -Path ..\ServiceBase\ServiceBase.csproj -P "/P:Configuration=$buildType" #-ShowBuildWindow
 
-Write-Host "DiagnosticStorageAccountName is $diagnosticStorageAccountName"
-$diagnosticStorageKey = GetStorageAccountKey -ResourceGroupName $ResourceGroupName -StorageAccountName $diagnosticStorageAccountName
-Write-Host "diagnosticStorageKey is $diagnosticStorageKey"
+Write-Host "DiagnosticStorageAccountName is $storageAccountName"
+$storageAccountKey = GetStorageAccountKey -ResourceGroupName $ResourceGroupName -StorageAccountName $storageAccountName
+Write-Host "diagnosticStorageKey is $storageAccountKey"
 
-$intelliTraceConnectionString="BaseEndpoint="+$StorageAccountEndpoint+";Protocol=https;AccountName="+$diagnosticStorageAccountName+";AccountKey="+$diagnosticStorageKey
+$intelliTraceConnectionString="BaseEndpoint="+$StorageAccountEndpoint+";Protocol=https;AccountName="+$storageAccountName+";AccountKey="+$storageAccountKey
 
 $intelliTraceParameter='"'+"$intelliTraceConnectionString"+'"'
 

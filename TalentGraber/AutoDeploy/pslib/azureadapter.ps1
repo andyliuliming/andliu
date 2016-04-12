@@ -236,3 +236,29 @@ Function GetRedisCacheKey
     $redisCacheKey=(Get-AzureRmRedisCacheKey -ResourceGroupName $ResourceGroupName -name $Name).PrimaryKey
     return $redisCacheKey
 }
+
+
+function MakeSureSearchClusterExists($ResourceGroupName, $StorageAccountEndpoint, $Location, $storageAccountName, $lbIpName, $numberOfInstances)
+{
+    $rg = Get-AzureRmResourceGroup -ResourceGroupName $ResourceGroupName -Location $Location -ErrorAction SilentlyContinue
+
+    if($rg -ne $null)
+    {
+        Write-Host "Search cluster already exists: $ResourceGroupName" -ForegroundColor Gray
+        #return
+    }
+
+    $params = @{};
+    $params["storageAccountName"] = $storageAccountName
+    $params["numberOfInstances"] = "$numberOfInstances"
+    $params["adminUserName"] = "andy"
+    $params["adminPassword"] = "User@123" #ConvertTo-SecureString  "User@123" -AsPlainText -Force;
+    $params["dnsNameforLBIP"] = $lbIpName
+    $params["storageEndpoint"] = $StorageAccountEndpoint
+
+    Test-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName `
+                                       -TemplateFile ".\searchcluster.json" -TemplateParameterObject $params
+
+    New-AzureRmResourceGroupDeployment -Name "SearchCluster" -ResourceGroupName $ResourceGroupName `
+                                       -TemplateFile ".\searchcluster.json" -TemplateParameterObject $params
+}

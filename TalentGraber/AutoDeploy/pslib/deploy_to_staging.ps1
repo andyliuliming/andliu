@@ -10,12 +10,12 @@ if($Environment -eq "AzureChinaCloud")
 
 .\pslib\buildStarDust.ps1
 
-Set-AzureSubscription -SubscriptionId $subscriptionId -CurrentStorageAccountName $deploymentStorageAccountName
+Set-AzureSubscription -SubscriptionId $subscriptionId -CurrentStorageAccountName $storageAccountName
 
-$diagnosticStorageKey = GetStorageAccountKey -ResourceGroupName $ResourceGroupName -StorageAccountName $diagnosticStorageAccountName
-Write-Host "DiagnosticStorageAccountName is $diagnosticStorageAccountName and key is $diagnosticStorageKey"
+$storageAccountKey = GetStorageAccountKey -ResourceGroupName $ResourceGroupName -StorageAccountName $storageAccountName
+Write-Host "DiagnosticStorageAccountName is $storageAccountName and key is $storageAccountKey"
 
-$diagnosticStorageContext = New-AzureStorageContext -StorageAccountName $diagnosticStorageAccountName -StorageAccountKey $diagnosticStorageKey
+$diagnosticStorageContext = New-AzureStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $storageAccountKey
 
 # Set-AzureDeployment -Upgrade we should check whether the azure service exists.
 # i don't know why the CurrentStorageAccountName is mandatory...
@@ -27,9 +27,9 @@ $cloudConfig = ReplaceRealValue -TemplateOrigin $cloudConfig
 Set-Content -Encoding UTF8 -Path $ProductServiceConfig -Value $cloudConfig
 
 #todo generate the CloudDeploy.cscfg according to the cloud because.
-$deploymentStorageKey = GetStorageAccountKey -ResourceGroupName $ResourceGroupName -StorageAccountName $deploymentStorageAccountName
-Write-Host "DeploymentStorageAccountName is $deploymentStorageAccountName "
-$deploymentStorageContext = New-AzureStorageContext -StorageAccountName $deploymentStorageAccountName -StorageAccountKey $deploymentStorageKey
+$deploymentStorageKey = GetStorageAccountKey -ResourceGroupName $ResourceGroupName -StorageAccountName $storageAccountName
+Write-Host "DeploymentStorageAccountName is $storageAccountName "
+$deploymentStorageContext = New-AzureStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $deploymentStorageKey
 
 
 

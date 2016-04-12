@@ -10,3 +10,6 @@
 #. .\pslib\set_static_public_ip_to_staging.ps1
 . .\pslib\removestaging.ps1
 . .\pslib\enablediagnostic.ps1
+
+
+.\deploy-search.ps1

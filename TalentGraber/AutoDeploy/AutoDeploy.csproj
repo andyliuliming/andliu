@@ -109,6 +109,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="deploy-search.ps1" />
+    <None Include="deploysearch\install-elasticsearch.ps1" />
+    <None Include="deploysearch\README.md" />
+    <None Include="deploysearch\RebuildIndex.bat" />
     <None Include="makeresources-china.ps1" />
     <None Include="makeresources-global.ps1" />
     <None Include="packages.config" />
@@ -126,6 +130,7 @@
     <None Include="pslib\Invoke-MsBuild.ps1" />
     <None Include="pslib\removestaging.ps1" />
     <None Include="pslib\swapping.ps1" />
+    <None Include="searchcluster.json" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
