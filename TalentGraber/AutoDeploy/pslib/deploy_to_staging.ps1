@@ -8,7 +8,7 @@ if($Environment -eq "AzureChinaCloud")
 . .\pslib\common-global.ps1
 }
 
-.\pslib\buildStarDust.ps1
+.\pslib\build.ps1
 
 Set-AzureSubscription -SubscriptionId $subscriptionId -CurrentStorageAccountName $storageAccountName
 

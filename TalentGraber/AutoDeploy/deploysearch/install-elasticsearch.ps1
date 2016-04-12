@@ -5,7 +5,7 @@ param(
     [String]$StorageAccountEndpoint = "core.chinacloudapi.cn"
 )
 
-$resourcesUri = "https://andliu.blob.core.windows.net/elasticsearch/deploysearch.zip"
+$resourcesUri = "https://$deploymentStorageAccount.$StorageAccountEndpoint/searchresource/deploysearch.zip"
 $resourcesZip = "$installRoot\deploysearch.zip"
 
 $scriptBase = "http://$deploymentStorageAccount.$StorageAccountEndpoint/searchresource"

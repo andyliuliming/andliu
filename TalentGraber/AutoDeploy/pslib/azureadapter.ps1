@@ -237,6 +237,48 @@ Function GetRedisCacheKey
     return $redisCacheKey
 }
 
+#-----------------------------------------------
+# Common functions for search
+#-----------------------------------------------
+
+function GetStorageAccountContext($ResoureGroupName, $Name)
+{
+    $keys = Get-AzureRmStorageAccountKey -ResourceGroupName $ResoureGroupName -Name $Name
+    $key = $keys[0].Key1
+    $context = New-AzureStorageContext -StorageAccountName $Name -StorageAccountKey $key
+    return $context
+}
+
+function MakeSureContainerExits($Context, $ContainerName)
+{
+    $container = Get-AzureStorageContainer -Name $ContainerName -Context $Context -ErrorAction SilentlyContinue
+    if($container -ne $null)
+    {
+        Write-Host "Container:$ContainerName already exists." -ForegroundColor Gray
+        return;
+    }
+    New-AzureStorageContainer -Name $ContainerName -Context $Context -Permission Blob
+}
+
+function UploadResource($Context, $ContainerName, $FileName, [Switch]$Overwrite)
+{
+    if( -not $Overwrite.ToBool())
+    {        
+        $blob = Get-AzureStorageBlob -Context $Context -Container $ContainerName -Blob $FileName -ErrorAction SilentlyContinue
+        if($blob -ne $null)
+        {            
+            Write-Host "Blob:$blob already exists." -ForegroundColor Gray
+            return;
+        }
+    }
+
+    Set-AzureStorageBlobContent -Container $ContainerName -Context $Context -File "deploysearch\$FileName" -Force
+}
+
+function RunCommandOnVM($ResourceGroupName, $location, $vmName, $scripturi, $command)
+{
+    Set-AzureRmVMCustomScriptExtension -ResourceGroupName $ResourceGroupName -Location $location -Name $vmName -VMName $vmName -FileUri @($scripturi) -Run $command
+}
 
 function MakeSureSearchClusterExists($ResourceGroupName, $StorageAccountEndpoint, $Location, $storageAccountName, $lbIpName, $numberOfInstances)
 {
