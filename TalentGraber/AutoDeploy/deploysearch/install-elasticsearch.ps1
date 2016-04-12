@@ -1,7 +1,7 @@
 param(
 	[String]$clusterName = "TalentGraber",
 	[String]$installRoot = "c:",
-    [String]$deploymentStorageAccount="TalentGraberstorage",
+    [String]$deploymentStorageAccount="searchstorage",
     [String]$StorageAccountEndpoint = "core.chinacloudapi.cn"
 )
 
