@@ -30,7 +30,7 @@ $AllowedCrossDomainHost="*"
 $ResourceGroupName="TalentGraberResourceGroup"
 
 #################################### search related #######################################
-$searchPort="9200"
+$searchPort=":9200"
 
 $ErrorActionPreference= 'Stop'
 $currentFolder = pwd
@@ -52,7 +52,7 @@ function ReplaceRealValue
     $TemplateOrigin=$TemplateOrigin -replace "{DATABASE_PASSWORD}",$databasePassword
     $TemplateOrigin=$TemplateOrigin -replace "{ProductServiceAddress}",$ProductServiceAddress
     $TemplateOrigin=$TemplateOrigin -replace "{StorageAccountEndpoint}",$StorageAccountEndpoint
-    $TemplateOrigin=$TemplateOrigin -replace "{SearchServiceAddress}","http://$searchLBIPName$searchDnsSuffix"+":$searchPort"
+    $TemplateOrigin=$TemplateOrigin -replace "{SearchServiceAddress}","http://$searchLBIPName$searchDnsSuffix$searchPort"
     # ##################### network related ##############################
     $TemplateOrigin=$TemplateOrigin -replace "{AllowedCrossDomainHost}",$AllowedCrossDomainHost
     return $TemplateOrigin

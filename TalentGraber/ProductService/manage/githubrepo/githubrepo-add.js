@@ -41,7 +41,7 @@
             },
             error: function (e) {
                 self.enableSave(true);
-                self.error("Add failed, Please try again later.");
+                self.error("Add failed, probably the github exists already.");
                 console.log("Failed to submit github repo code: " + e.status);
             }
         });

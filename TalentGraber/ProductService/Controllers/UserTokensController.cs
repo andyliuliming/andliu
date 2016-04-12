@@ -48,11 +48,24 @@ namespace Macrodeek.StarDustProductService.Controllers
 
             if (user != null)
             {
-                UserToken userToken = this.GenerateUserToken();
-                userToken.UserName = userTokenToAuth.UserName;
-                db.UserTokens.Add(userToken);
-                db.SaveChanges();
-                return Created(userToken);
+                UserToken userTokenInDb = db.UserTokens.Where(ut => ut.UserName == user.UserName).FirstOrDefault();
+                if (userTokenInDb != null)
+                {
+                    userTokenInDb.Token = this.GenerateUserToken().Token;
+                    userTokenInDb.Timestamp = DateTime.UtcNow;
+                    db.SaveChanges();
+                    return Created(userTokenInDb);
+                }
+                else
+                {
+                    UserToken userToken = this.GenerateUserToken();
+                    userToken.UserName = userTokenToAuth.UserName;
+                    db.UserTokens.Add(userToken);
+
+                    db.SaveChanges();
+
+                    return Created(userToken);
+                }
             }
             else
             {
