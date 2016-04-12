@@ -20,6 +20,7 @@
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
       <Setting name="GoldModelContainer" />
+      <Setting name="ProductServiceAddress" />
     </ConfigurationSettings>
   </WorkerRole>
 </ServiceDefinition>

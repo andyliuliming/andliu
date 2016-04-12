@@ -11,6 +11,9 @@ using GithubGraberLib.Domain;
 using ExtractBase.RestApi;
 using System;
 using System.Data.Entity;
+using Macrodeek.MacrodeekCommon;
+using StarDustCommon.Util;
+using Macrodeek.AzureEnvironment;
 
 namespace WorkerRole
 {
@@ -280,7 +283,10 @@ namespace WorkerRole
 
         private void KeepWarm()
         {
-            RestApiCaller<string> warmersCaller = new RestApiCaller<string>("/");
+
+            string baseUrl = AppSettingsProvider.GetSetting(FieldNameUtil.GetMemberName((AzureSettingsNames c) => c.ProductServiceAddress));
+
+            RestApiCaller<string> warmersCaller = new RestApiCaller<string>(baseUrl);
             warmersCaller.Get("/odata/Warmers",null);
         }
 

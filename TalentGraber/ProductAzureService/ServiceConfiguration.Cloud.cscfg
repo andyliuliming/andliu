@@ -12,6 +12,7 @@
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName={DiagnosticStorageAccountName};AccountKey={DiagnosticStorageAccountKey};EndpointSuffix={StorageAccountEndpoint}" />
       <Setting name="GoldModelContainer" value="Provider=System.Data.SqlClient;Metadata=res://*/GoldModel.csdl|res://*/GoldModel.ssdl|res://*/GoldModel.msl;Provider Connection String='Data Source={DATABASE_SERVER_NAME}.{DATABASE_SUFFIX};initial catalog={GOLD_DATABASENAME};persist security info=True;user id={DATABASE_USER_NAME};password={DATABASE_PASSWORD};MultipleActiveResultSets=True;App=EntityFramework';" />
+      <Setting name="ProductServiceAddress" value="{ProductServiceAddress}" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>
