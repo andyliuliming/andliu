@@ -9,7 +9,7 @@ $MonitoringPassword="User@123"
 ###################### storage related  #############################
 $storageType="Standard_GRS"
 $storageAccountName=$Prefix.ToLower() + "storage"
-$searchStorageAccount = "searchstorage"
+$searchVMStorageAccount = "searchstorage"
 $StorageAccountEndpoint = ""
 
 ######################  database related  ############################

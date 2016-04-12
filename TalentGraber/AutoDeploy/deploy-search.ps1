@@ -11,10 +11,11 @@ if($Environment -eq "AzureChinaCloud")
 $deploySearchCommand = "install-elasticsearch.ps1"
 $rebuildIndex = "RebuildIndex.bat"
 $searchContainer = "searchresource"
-$deploySearchScript = "http://$searchStorageAccount.blob.$StorageAccountEndpoint/$searchContainer/$deploySearchCommand"
+$deploySearchScript = "http://$storageAccountName.blob.$StorageAccountEndpoint/$searchContainer/$deploySearchCommand"
 
 #Upload resource to storage account
-$context = GetStorageAccountContext -ResoureGroupName $ResourceGroupName -Name $searchStorageAccount
+$storageAccountKey = GetStorageAccountKey -ResoureGroupName $ResourceGroupName -StorageAccountName $storageAccountName
+$context = New-AzureStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $storageAccountKey
 MakeSureContainerExits -Context $context -Container $searchContainer
 
 UploadResource -Context $context -ContainerName $searchContainer -FileName "$deploySearchCommand" -Overwrite
@@ -24,6 +25,6 @@ for($i = 0; $i -lt $searchClusterInstanceCount; $i++)
 {
     Write-Host "Deploy ElasticSearch on $searchVMNamePrefix$i" -ForegroundColor Green
 
-    $scripturi = "http://$searchStorageAccount.blob.$StorageAccountEndpoint/$searchContainer/$deploySearchCommand"
-    RunCommandOnVM -ResourceGroupName $ResourceGroupName -Location $location -vmName "$searchVMNamePrefix$i" -scripturi $scripturi -command "$deploySearchCommand -deploymentStorageAccount $searchStorageAccount > c:\install-elasticsearch.txt 2>&1"
+    $scripturi = "http://$storageAccountName.blob.$StorageAccountEndpoint/$searchContainer/$deploySearchCommand"
+    RunCommandOnVM -ResourceGroupName $ResourceGroupName -Location $location -vmName "$searchVMNamePrefix$i" -scripturi $scripturi -command "$deploySearchCommand -deploymentStorageAccount $storageAccountName > c:\install-elasticsearch.txt 2>&1"
 }

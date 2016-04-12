@@ -24,5 +24,5 @@ MakeSureStorageAccountExists -StorageName $storageAccountName -Location $locatio
 
 
 MakeSureSearchClusterExists -ResourceGroupName $ResourceGroupName `
-                            -Location $location -storageAccountName $searchStorageAccount -searchVMNamePrefix $searchVMNamePrefix -StorageAccountEndpoint $StorageAccountEndpoint `
+                            -Location $location -storageAccountName $searchVMStorageAccount -searchVMNamePrefix $searchVMNamePrefix -StorageAccountEndpoint $StorageAccountEndpoint `
                             -lbIpName $searchLBIPName -numberOfInstances $searchClusterInstanceCount

@@ -110,6 +110,8 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="deploy-search.ps1" />
+    <None Include="deployin-search-china.ps1" />
+    <None Include="deployin-search-global.ps1" />
     <None Include="deploysearch\install-elasticsearch.ps1" />
     <None Include="deploysearch\README.md" />
     <None Include="deploysearch\RebuildIndex.bat" />
