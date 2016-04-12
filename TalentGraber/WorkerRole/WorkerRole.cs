@@ -14,6 +14,13 @@ using System.Data.Entity;
 
 namespace WorkerRole
 {
+    public class TalentGraberException : Exception
+    {
+        public TalentGraberException(string msg) : base(msg)
+        {
+
+        }
+    }
     public class WorkerRole : RoleEntryPoint
     {
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -234,7 +241,14 @@ namespace WorkerRole
                         {
                             Trace.TraceWarning(string.Format("account quota exhausted {0}.", githubAccounts[accountIndex].UserName));
                             accountIndex++;
-                            accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
+                            if ((githubAccounts.Count-1) < accountIndex)
+                            {
+                                throw new TalentGraberException("all account quota reached.");
+                            }
+                            else
+                            {
+                                accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
+                            }
                         }
                         else
                         {
