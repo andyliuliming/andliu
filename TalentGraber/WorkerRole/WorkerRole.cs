@@ -153,7 +153,7 @@ namespace WorkerRole
             {
                 try
                 {
-                    Trace.TraceInformation("Working");
+                    Trace.TraceWarning("Working");
 
                     List<GithubAccount> githubAccounts = db.GithubAccounts.ToList<GithubAccount>();
                     GithubExtractor githubExtractor = new GithubExtractor();
@@ -274,7 +274,8 @@ namespace WorkerRole
                 {
                     Trace.TraceError(e.ToString());
                 }
-                await Task.Delay(1000 * 60 * 60 * 5);
+                // deplay for 1 hour.
+                await Task.Delay(1000 * 60 * 60 * 1);
             }
         }
     }
