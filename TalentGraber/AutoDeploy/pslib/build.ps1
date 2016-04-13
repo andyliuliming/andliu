@@ -16,7 +16,6 @@ Invoke-MsBuild -Path ..\TalentGraberService.sln -P "/t:Clean" #-ShowBuildWindow
 
 # build the authentication lib
 Invoke-MsBuild -Path ..\Common\Common.csproj -P "/P:Configuration=$buildType" # -ShowBuildWindow
-Invoke-MsBuild -Path ..\GithubGraberLib\GithubGraberLib.csproj -P "/P:Configuration=$buildType" # -ShowBuildWindow
 # build the AzureEnvironment
 
 # build the database model project
