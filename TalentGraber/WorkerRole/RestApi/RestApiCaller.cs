@@ -157,7 +157,6 @@ namespace ExtractBase.RestApi
             {
                 return CallRun(method, urlParameters);
             }
-            
         }
 
         public T Get(string urlParameters,bool retryUntil)

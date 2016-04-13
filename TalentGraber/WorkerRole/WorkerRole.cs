@@ -153,6 +153,27 @@ namespace WorkerRole
             commitInfoCaller.AccountResource = accountResource;
             userInfoCaller.AccountResource = accountResource;
 
+            this.InterateChange<TalentCandidate>(db.TalentCandidates.OrderBy(tc => tc.Id), new Action<TalentCandidate>(tc =>
+            {
+                string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
+                Trace.TraceWarning(string.Format("getting the user {0}", tc.Login));
+                User user = userInfoCaller.CallApi("get", urlParameters);
+                if (user != null)
+                {
+                    tc.Company = getEmptyOrValue(user.company);
+                    tc.Email = getEmptyOrValue(user.email);
+                    tc.Followers = getEmptyOrValue(user.followers);
+                    tc.FollowersUrl = getEmptyOrValue(user.followers_url);
+                    tc.Location = getEmptyOrValue(user.location);
+                    tc.Name = getEmptyOrValue(user.name);
+                    tc.ReposUrl = getEmptyOrValue(user.repos_url);
+                }
+                else
+                {
+                    Trace.TraceError("user result is null for: " + urlParameters);
+                }
+            }));
+
             this.ResetTalentCandidateCommits();
             foreach (GithubRepo githubRepo in db.GithubRepoes.ToList())
             {
@@ -233,26 +254,6 @@ namespace WorkerRole
                 this.SetValueForContributerToRepo(githubRepo);
             }
 
-            this.InterateChange<TalentCandidate>(db.TalentCandidates.OrderBy(tc => tc.Id), new Action<TalentCandidate>(tc =>
-            {
-                string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
-                Trace.TraceWarning(string.Format("getting the user {0}", tc.Login));
-                User user = userInfoCaller.CallApi("get", urlParameters);
-                if (user != null)
-                {
-                    tc.Company = getEmptyOrValue(user.company);
-                    tc.Email = getEmptyOrValue(user.email);
-                    tc.Followers = getEmptyOrValue(user.followers);
-                    tc.FollowersUrl = getEmptyOrValue(user.followers_url);
-                    tc.Location = getEmptyOrValue(user.location);
-                    tc.Name = getEmptyOrValue(user.name);
-                    tc.ReposUrl = getEmptyOrValue(user.repos_url);
-                }
-                else
-                {
-                    Trace.TraceError("user result is null for: " + urlParameters);
-                }
-            }));
 
             this.SetValueForTalentCandidateCommits();
         }
