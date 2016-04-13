@@ -106,64 +106,63 @@ namespace ExtractBase.RestApi
             return t;
         }
 
-        public T CallApi(string method, string urlParameters, T body)
-        {
-            return this.RetryUntil(() =>
-            {
-                HttpClient client = new HttpClient();
-                client.BaseAddress = new Uri(this.baseUrl);
 
+        public T CallRun(string method, string urlParameters)
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(this.baseUrl);
+            if (accountResource != null)
+            {
                 accessToken = accountResource.GetCurrentAccessToken();
                 client.DefaultRequestHeaders.Add(AuthorizeUtil.TokenHeaderName, "Basic " + accessToken);
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36");
+            }
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36");
 
-                // Add an Accept header for JSON format.
-                HttpResponseMessage response = null;
-                T result = null;
-                switch (method.ToLower())
-                {
-                    case "get":
-                        response = client.GetAsync(urlParameters).Result;
-                        if (response.StatusCode == HttpStatusCode.Accepted
-                            || response.StatusCode == HttpStatusCode.OK)
-                        {
-                            result = response.Content.ReadAsAsync<T>().Result;
-                            return result;
-                        }
-                        else
-                        {
-                            throw new TalentGraberException(response.StatusCode);
-                        }
-                    case "post":
-                        if (!string.IsNullOrEmpty(accessToken))
-                        {
-                            client.DefaultRequestHeaders.Add(AuthorizeUtil.TokenHeaderName, accessToken);
-                        }
-                        response = client.PostAsJsonAsync<T>(urlParameters, body).Result;
-                        if (response.StatusCode == HttpStatusCode.Accepted
-                            || response.StatusCode == HttpStatusCode.OK)
-                        {
-                            result = response.Content.ReadAsAsync<T>().Result;
-                            return result;
-                        }
-                        else
-                        {
-                            throw new HttpException(response.StatusCode, null);
-                        }
-                    default:
-                        throw new NotImplementedException();
-                }
-            }, () =>
+            // Add an Accept header for JSON format.
+            HttpResponseMessage response = null;
+            T result = null;
+            switch (method.ToLower())
             {
-                this.accessToken = accountResource.GetNextAccessToken();
-            });
-
+                case "get":
+                    response = client.GetAsync(urlParameters).Result;
+                    if (response.StatusCode == HttpStatusCode.Accepted
+                        || response.StatusCode == HttpStatusCode.OK)
+                    {
+                        result = response.Content.ReadAsAsync<T>().Result;
+                        return result;
+                    }
+                    else
+                    {
+                        throw new TalentGraberException(response.StatusCode);
+                    }
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
-        public T Get(string urlParameters)
+        public T CallApi(string method, string urlParameters, bool retryUntil = true)
         {
-            return this.CallApi("Get", urlParameters, null);
+            if(retryUntil)
+            {
+                return this.RetryUntil(() =>
+                {
+                    return CallRun(method, urlParameters);
+                }, () =>
+                {
+                    this.accessToken = accountResource.GetNextAccessToken();
+                });
+            }
+            else
+            {
+                return CallRun(method, urlParameters);
+            }
+            
+        }
+
+        public T Get(string urlParameters,bool retryUntil)
+        {
+            return this.CallApi("Get", urlParameters, retryUntil);
         }
     }
 }

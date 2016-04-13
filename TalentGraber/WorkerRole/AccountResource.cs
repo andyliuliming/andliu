@@ -16,7 +16,7 @@ namespace WorkerRole
         public AccountResource()
         {
             accountIndex = 0;
-            githubAccounts = db.GithubAccounts.ToList<GithubAccount>();
+            githubAccounts = new List<GithubAccount>();
         }
 
         public string GetNextAccessToken()
@@ -37,6 +37,10 @@ namespace WorkerRole
 
         public string GetCurrentAccessToken()
         {
+            if(githubAccounts==null||githubAccounts.Count==0)
+            {
+                githubAccounts = db.GithubAccounts.ToList<GithubAccount>();
+            }
             string accessToken = AuthorizeUtil.GetToken(githubAccounts[accountIndex].UserName, githubAccounts[accountIndex].Password);
             return accessToken;
         }

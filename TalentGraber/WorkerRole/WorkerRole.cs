@@ -167,7 +167,7 @@ namespace WorkerRole
                 while (true)
                 {
                     string urlParameters = repoBaseUri + "?page=" + startPage + "&per_page=" + perPage;
-                    List<CommitDetail> pagedCommitDetails = commitInfoCaller.CallApi("get", urlParameters, null);
+                    List<CommitDetail> pagedCommitDetails = commitInfoCaller.CallApi("get", urlParameters);
                     if (pagedCommitDetails == null)
                     {
                         break;
@@ -237,7 +237,7 @@ namespace WorkerRole
             {
                 string urlParameters = string.Format(ApiFormats.UserApi, tc.Login);
                 Trace.TraceWarning(string.Format("getting the user {0}", tc.Login));
-                User user = userInfoCaller.CallApi("get", urlParameters, null);
+                User user = userInfoCaller.CallApi("get", urlParameters);
                 if (user != null)
                 {
                     tc.Company = getEmptyOrValue(user.company);
@@ -259,9 +259,16 @@ namespace WorkerRole
 
         private void KeepWarm()
         {
-            string baseUrl = AppSettingsProvider.GetSetting(FieldNameUtil.GetMemberName((AzureSettingsNames c) => c.ProductServiceAddress));
-            RestApiCaller<string> warmersCaller = new RestApiCaller<string>(baseUrl);
-            warmersCaller.Get("/odata/Warmers");
+            try
+            {
+                string baseUrl = AppSettingsProvider.GetSetting(FieldNameUtil.GetMemberName((AzureSettingsNames c) => c.ProductServiceAddress));
+                RestApiCaller<string> warmersCaller = new RestApiCaller<string>(baseUrl);
+                warmersCaller.Get("/odata/Warmers", false);
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError(e.ToString());
+            }
         }
 
         private async Task RunAsync(CancellationToken cancellationToken)
