@@ -1,8 +1,8 @@
 SET IDENTITY_INSERT [dbo].[GithubAccounts] ON
-INSERT INTO [dbo].[GithubAccounts] ([Id], [UserName], [Password]) VALUES (1, N'talantextract@outlook.com', N'Quattro!888')
-INSERT INTO [dbo].[GithubAccounts] ([Id], [UserName], [Password]) VALUES (3, N'talantextract2@outlook.com', N'Quattro!888')
-INSERT INTO [dbo].[GithubAccounts] ([Id], [UserName], [Password]) VALUES (4, N'talantextract3@outlook.com', N'Quattro!888')
-INSERT INTO [dbo].[GithubAccounts] ([Id], [UserName], [Password]) VALUES (6, N'talantextract4@outlook.com', N'Quattro!888')
+INSERT INTO [dbo].[GithubAccounts] ([Id], [UserName], [Password]) VALUES (1, N'talentextract@outlook.com', N'Quattro!888')
+INSERT INTO [dbo].[GithubAccounts] ([Id], [UserName], [Password]) VALUES (3, N'talentextract2@outlook.com', N'Quattro!888')
+INSERT INTO [dbo].[GithubAccounts] ([Id], [UserName], [Password]) VALUES (4, N'talentextract3@outlook.com', N'Quattro!888')
+INSERT INTO [dbo].[GithubAccounts] ([Id], [UserName], [Password]) VALUES (6, N'talentextract4@outlook.com', N'Quattro!888')
 SET IDENTITY_INSERT [dbo].[GithubAccounts] OFF
 
 SET IDENTITY_INSERT [dbo].[GithubRepoes] ON

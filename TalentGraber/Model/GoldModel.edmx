@@ -35,6 +35,7 @@
     <Property Name="FollowersUrl" Type="nvarchar(max)" Nullable="false" />
     <Property Name="CacheTotalCommits" Type="bigint" Nullable="false" />
     <Property Name="CalculatingTotalCommits" Type="bigint" Nullable="false" />
+    <Property Name="Timestamp" Type="datetime" Nullable="false" />
   </EntityType>
   <EntityType Name="GithubAccounts">
     <Key>
@@ -108,6 +109,7 @@
           <Property Name="FollowersUrl" Type="String" Nullable="false" />
           <Property Name="CacheTotalCommits" Type="Int64" Nullable="false" />
           <Property Name="CalculatingTotalCommits" Type="Int64" Nullable="false" />
+          <Property Name="Timestamp" Type="DateTime" Nullable="false" />
         </EntityType>
         <EntityType Name="GithubAccount">
           <Key>
@@ -175,6 +177,7 @@
           <ScalarProperty Name="FollowersUrl" ColumnName="FollowersUrl" />
           <ScalarProperty Name="CacheTotalCommits" ColumnName="CacheTotalCommits" />
           <ScalarProperty Name="CalculatingTotalCommits" ColumnName="CalculatingTotalCommits" />
+          <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

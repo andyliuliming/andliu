@@ -167,6 +167,7 @@ namespace WorkerRole
                     tc.Location = getEmptyOrValue(user.location);
                     tc.Name = getEmptyOrValue(user.name);
                     tc.ReposUrl = getEmptyOrValue(user.repos_url);
+                    tc.Timestamp = DateTime.UtcNow;
                 }
                 else
                 {
@@ -219,6 +220,7 @@ namespace WorkerRole
                                         candidate.Login = pagedCommitDetails[i].author.login;
                                         candidate.Name = string.Empty;
                                         candidate.ReposUrl = string.Empty;
+                                        candidate.Timestamp = DateTime.UtcNow;
                                         db.TalentCandidates.Add(candidate);
                                         db.SaveChanges();
                                         transaction.Commit();

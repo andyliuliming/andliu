@@ -25,5 +25,6 @@ namespace Macrodeek.Model
         public string FollowersUrl { get; set; }
         public long CacheTotalCommits { get; set; }
         public long CalculatingTotalCommits { get; set; }
+        public System.DateTime Timestamp { get; set; }
     }
 }
