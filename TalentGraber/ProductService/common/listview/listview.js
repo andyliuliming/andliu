@@ -23,7 +23,7 @@
         this.DataItemViewModel = option.DataItemViewModel || Object;
         this.itemList = ko.observableArray([]);
 
-        this.top = 20;
+        this.top = 100;
         this.skip = 0;
 
         this.filter = ko.observable(option.filter);
@@ -90,6 +90,7 @@
     list.ListViewModel.prototype.search = function () {
         console.dir("search");
         var self = this;
+        self.skip = 0;
         self.Jump();
     }
 
