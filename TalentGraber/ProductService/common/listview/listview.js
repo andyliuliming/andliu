@@ -23,9 +23,15 @@
         this.DataItemViewModel = option.DataItemViewModel || Object;
         this.itemList = ko.observableArray([]);
 
-        this.top = 100;
-        this.skip = 0;
-
+        if (option.top == undefined) {
+            this.top = 100;
+        } else {
+            this.top = option.top;
+        }
+        if (option.skip = undefined) {
+            this.skip = 0;
+            this.skip = option.skip;
+        }
         this.filter = ko.observable(option.filter);
         this.searchFieldText = ko.observable("");
 
