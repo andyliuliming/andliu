@@ -134,7 +134,12 @@ namespace ExtractBase.RestApi
                     }
                     else
                     {
-                        throw new TalentGraberException(response.StatusCode);
+                        string headerMessage = string.Empty;
+                        foreach(var header in response.Headers)
+                        {
+                            headerMessage += string.Format("Key:{0},Value:{1}", header.Key, header.Value);
+                        }
+                        throw new TalentGraberException(response.StatusCode,headerMessage);
                     }
                 default:
                     throw new NotImplementedException();

@@ -15,7 +15,7 @@ namespace WorkerRole
     public class TalentGraberException : Exception
     {
         private HttpStatusCode statusCode;
-        public TalentGraberException( HttpStatusCode statusCode)
+        public TalentGraberException(HttpStatusCode statusCode, string msg = null) : base(msg)
         {
             this.StatusCode = statusCode;
         }

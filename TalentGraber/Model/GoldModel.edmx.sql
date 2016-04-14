@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/13/2016 23:18:05
+-- Date Created: 04/14/2016 16:49:29
 -- Generated from EDMX file: C:\Personal\andliu\TalentGraber\Model\GoldModel.edmx
 -- --------------------------------------------------
 
