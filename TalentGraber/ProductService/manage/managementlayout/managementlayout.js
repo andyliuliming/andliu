@@ -41,7 +41,7 @@ define(function (require) {
 
     LayoutViewModel.prototype.getUser = function () {
         var self = this;
-        self.userName($.cookie("cellphone"));
+        self.userName($.cookie("userName"));
     };
 
     LayoutViewModel.prototype.logout = function () {
