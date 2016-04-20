@@ -1,6 +1,0 @@
-Permissions: all-permissions
-Trusted-Library: true
-Application-Name: Azure Terminal
-Caller-Allowable-Codebase: azureterminal.cloudapp.net localhost
-Application-Library-Allowable-Codebase: *
-Codebase: *
